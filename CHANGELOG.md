@@ -16,3 +16,6 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Etat du paquet en partie (pioche, main, defausse) avec melange a seed injectee.
 - CardInstance : carte en jeu distincte de sa definition.
 - Regles de round en donnees (taille de main) dans content/rules/.
+- Detection des 12 mains, definies en donnees dans content/hands/ avec des detecteurs configurables.
+- Chargement automatique du contenu d'un dossier (compatible export web).
+- Fichier de traduction FR/EN des noms de mains.

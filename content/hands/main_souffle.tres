@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HandDefinition" format=3 uid="uid://8no3ebrj58er"]
+
+[ext_resource type="Script" path="res://core/hands/hand_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/hands/detectors/high_card_detector.gd" id="2"]
+
+[sub_resource type="Resource" id="detector"]
+script = ExtResource("2")
+
+[resource]
+script = ExtResource("1")
+id = "main_souffle"
+name_key = "HAND_SOUFFLE"
+priority = 10
+base_qi = 5
+base_comprehension = 1
+detector = SubResource("detector")
+metadata/_custom_type_script = "uid://ddj28r1xbwom5"
