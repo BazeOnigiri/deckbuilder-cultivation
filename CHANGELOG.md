@@ -20,3 +20,4 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Chargement automatique du contenu d'un dossier (compatible export web).
 - Fichier de traduction FR/EN des noms de mains.
 - Pipeline de scoring Qi x Comprehension a phases fixes (additions puis multiplications), avec effets injectes.
+- Round : jouer ou defausser, mains et defausses limitees, victoire a l'objectif, defaite sinon. Regles en donnees.
