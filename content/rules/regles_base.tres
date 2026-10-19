@@ -6,4 +6,7 @@
 script = ExtResource("1_2yod5")
 id = "regles_base"
 hand_size = 8
+hands_per_round = 4
+discards_per_round = 3
+max_selected_cards = 5
 metadata/_custom_type_script = "uid://b5vitpknm3v32"
