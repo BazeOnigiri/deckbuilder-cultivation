@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="HandDefinition" format=3 uid="uid://uwqeihws4ekh"]
+
+[ext_resource type="Script" path="res://core/hands/hand_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/hands/detectors/rank_group_detector.gd" id="2"]
+
+[sub_resource type="Resource" id="detector"]
+script = ExtResource("2")
+group_sizes = Array[int]([4])
+
+[resource]
+script = ExtResource("1")
+id = "main_carre"
+name_key = "HAND_CARRE"
+priority = 90
+base_qi = 70
+base_comprehension = 7
+detector = SubResource("detector")
+metadata/_custom_type_script = "uid://ddj28r1xbwom5"

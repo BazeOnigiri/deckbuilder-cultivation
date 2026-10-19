@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="HandDefinition" format=3 uid="uid://dx7xw00cxngh7"]
+
+[ext_resource type="Script" path="res://core/hands/hand_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/hands/detectors/element_detector.gd" id="2"]
+
+[sub_resource type="Resource" id="detector"]
+script = ExtResource("2")
+mode = 1
+count = 5
+
+[resource]
+script = ExtResource("1")
+id = "main_harmonie"
+name_key = "HAND_HARMONIE"
+priority = 40
+base_qi = 25
+base_comprehension = 2
+detector = SubResource("detector")
+metadata/_custom_type_script = "uid://ddj28r1xbwom5"
