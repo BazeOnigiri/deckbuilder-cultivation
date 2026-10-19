@@ -21,3 +21,4 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Fichier de traduction FR/EN des noms de mains.
 - Pipeline de scoring Qi x Comprehension a phases fixes (additions puis multiplications), avec effets injectes.
 - Round : jouer ou defausser, mains et defausses limitees, victoire a l'objectif, defaite sinon. Regles en donnees.
+- Premier ecran jouable : selection des cartes, jouer, defausser, score, victoire ou defaite, rejouer.
