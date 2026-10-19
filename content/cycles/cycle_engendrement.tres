@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ElementCycle" format=3 uid="uid://b2qdubsk7bp5i"]
+
+[ext_resource type="Script" uid="uid://8hvn6ul72j81" path="res://core/cards/element_cycle.gd" id="1_u7nxp"]
+
+[resource]
+script = ExtResource("1_u7nxp")
+order = Array[int]([0, 1, 2, 3, 4])
+metadata/_custom_type_script = "uid://8hvn6ul72j81"
