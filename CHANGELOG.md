@@ -11,3 +11,5 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Arborescence par domaine : core, content, ui, test.
 - Configuration godot-tools et lancement debug depuis l'IDE.
 - Framework de tests GUT 9.7.0 avec un test de fumée exécutable en headless.
+- Éléments (bois, feu, terre, métal, eau) et cycle d'engendrement en donnée.
+- Modèle de carte et de paquet, paquet de départ de 45 cartes généré par script.
