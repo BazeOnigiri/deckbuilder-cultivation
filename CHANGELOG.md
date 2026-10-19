@@ -19,3 +19,4 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Detection des 12 mains, definies en donnees dans content/hands/ avec des detecteurs configurables.
 - Chargement automatique du contenu d'un dossier (compatible export web).
 - Fichier de traduction FR/EN des noms de mains.
+- Pipeline de scoring Qi x Comprehension a phases fixes (additions puis multiplications), avec effets injectes.
