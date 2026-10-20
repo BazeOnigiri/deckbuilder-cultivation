@@ -6,6 +6,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-20
+
 ### Ajouté
 
 - Arborescence par domaine : core, content, ui, test.
