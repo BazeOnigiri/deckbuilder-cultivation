@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+    pull_request:
+        branches: [Develop, Production]
+    workflow_dispatch: # permet aussi de le lancer à la main depuis l'onglet Actions
+
+jobs:
+    gut:
+        name: gut
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        env:
+            GODOT_VERSION: "4.7.1"
+
+        steps:
+            - name: Récupérer le code
+              uses: actions/checkout@v4
+
+            - name: Cache de Godot
+              id: cache-godot
+              uses: actions/cache@v4
+              with:
+                  path: ~/godot
+                  key: godot-${{ env.GODOT_VERSION }}-linux
+
+            - name: Télécharger Godot
+              if: steps.cache-godot.outputs.cache-hit != 'true'
+              run: |
+                  mkdir -p ~/godot
+                  curl -fsSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+                  unzip -q godot.zip -d ~/godot
+                  mv ~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64 ~/godot/godot
+                  chmod +x ~/godot/godot
+
+            - name: Importer le projet
+              run: ~/godot/godot --headless --path . --import
+
+            - name: Lancer GUT
+              run: ~/godot/godot --headless --path . -s addons/gut/gut_cmdln.gd

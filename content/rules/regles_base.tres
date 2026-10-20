@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RoundRules" format=3 uid="uid://y8yr45mk7mak"]
+
+[ext_resource type="Script" uid="uid://b5vitpknm3v32" path="res://core/rules/round_rules.gd" id="1_2yod5"]
+
+[resource]
+script = ExtResource("1_2yod5")
+id = "regles_base"
+hand_size = 8
+hands_per_round = 4
+discards_per_round = 3
+max_selected_cards = 5
+metadata/_custom_type_script = "uid://b5vitpknm3v32"

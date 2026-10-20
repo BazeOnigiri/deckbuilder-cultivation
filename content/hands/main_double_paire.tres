@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="HandDefinition" format=3 uid="uid://dxjvtdyd57rk2"]
+
+[ext_resource type="Script" uid="uid://ddj28r1xbwom5" path="res://core/hands/hand_definition.gd" id="1"]
+[ext_resource type="Script" uid="uid://coikn0muymatu" path="res://core/hands/detectors/rank_group_detector.gd" id="2"]
+
+[sub_resource type="Resource" id="detector"]
+script = ExtResource("2")
+group_sizes = Array[int]([2, 2])
+
+[resource]
+script = ExtResource("1")
+id = "main_double_paire"
+name_key = "HAND_DOUBLE_PAIRE"
+priority = 30
+base_qi = 20
+base_comprehension = 2
+detector = SubResource("detector")
+metadata/_custom_type_script = "uid://ddj28r1xbwom5"

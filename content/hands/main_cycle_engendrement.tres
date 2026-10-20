@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="HandDefinition" format=3 uid="uid://d01hua55ihk3l"]
+
+[ext_resource type="Script" uid="uid://ddj28r1xbwom5" path="res://core/hands/hand_definition.gd" id="1"]
+[ext_resource type="Script" uid="uid://ceihlnwfaer" path="res://core/hands/detectors/straight_detector.gd" id="2"]
+[ext_resource type="Resource" uid="uid://b2qdubsk7bp5i" path="res://content/cycles/cycle_engendrement.tres" id="3"]
+
+[sub_resource type="Resource" id="detector"]
+script = ExtResource("2")
+length = 5
+cycle = ExtResource("3")
+
+[resource]
+script = ExtResource("1")
+id = "main_cycle_engendrement"
+name_key = "HAND_CYCLE_ENGENDREMENT"
+priority = 110
+base_qi = 120
+base_comprehension = 10
+detector = SubResource("detector")
+metadata/_custom_type_script = "uid://ddj28r1xbwom5"

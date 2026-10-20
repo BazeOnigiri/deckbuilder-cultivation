@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://core/cards/card_data.gd" id="1_secwn"]
+
+[resource]
+script = ExtResource("1_secwn")
+id = &"carte_bois_5"
+rank = 5
