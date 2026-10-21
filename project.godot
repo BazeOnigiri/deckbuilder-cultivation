@@ -11,9 +11,9 @@ config_version=5
 [application]
 
 config/name="deckbuilder-cultivation"
+run/main_scene="res://ui/round/round_screen.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
-run/main_scene="res://ui/round/round_screen.tscn"
 
 [display]
 
