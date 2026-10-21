@@ -25,3 +25,10 @@ UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
 UI_ROUND_LOST,Échec de la percée.,Breakthrough failed.
 UI_CREDITS,Crédits,Credits
 UI_CREDITS_INTRO,Ce jeu utilise le moteur Godot (godotengine.org).,This game uses the Godot Engine (godotengine.org).
+REALM_RAFFINEMENT_QI,Raffinement du Qi,Qi Refining
+REALM_FONDATIONS,Établissement des fondations,Foundation Establishment
+REALM_NOYAU_OR,Noyau d'or,Golden Core
+BOTTLENECK_PETIT,Petit goulot,Minor Bottleneck
+BOTTLENECK_GRAND,Grand goulot,Major Bottleneck
+BOTTLENECK_TRIBULATION,Tribulation céleste,Heavenly Tribulation
+UI_STAGE,%s : %s,%s: %s

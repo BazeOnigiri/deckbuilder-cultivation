@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RealmDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/realms/realm_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/realms/bottleneck_definition.gd" id="2"]
+[ext_resource type="Resource" path="res://content/bottlenecks/goulot_petit.tres" id="3"]
+[ext_resource type="Resource" path="res://content/bottlenecks/goulot_grand.tres" id="4"]
+[ext_resource type="Resource" path="res://content/bottlenecks/tribulation.tres" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = &"royaume_noyau_or"
+name_key = "REALM_NOYAU_OR"
+order = 3
+base_score = 1600
+bottlenecks = Array[ExtResource("2")]([ExtResource("3"), ExtResource("4"), ExtResource("5")])

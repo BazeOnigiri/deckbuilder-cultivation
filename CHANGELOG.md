@@ -6,6 +6,11 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Ajouté
+
+- Royaumes et goulots en donnees (3 royaumes x 3 goulots), objectif = score de base du royaume x multiplicateur du goulot.
+- L'ecran de round affiche le royaume et le goulot, et lit son objectif dans les donnees.
+
 ### Corrigé
 
 - Le dossier build/ est ignore par Godot, les exports ne sont plus importes comme ressources du jeu.

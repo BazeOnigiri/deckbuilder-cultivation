@@ -4,11 +4,9 @@ extends Control
 const DECK_PATH := "res://content/decks/paquet_depart.tres"
 const RULES_PATH := "res://content/rules/regles_base.tres"
 
-# shortcut: objectif fixe en attendant les royaumes, a deplacer dans les donnees de goulot.
-@export var target_score: int = 300
-
 var _round: RoundState
 var _rules: RoundRules
+var _progress: RunProgress
 
 @onready var _info: Label = %Info
 @onready var _last_hand: Label = %LastHand
@@ -23,7 +21,8 @@ func _ready() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	var deck := DeckState.new(load(DECK_PATH), rng)
-	_round = RoundState.new(deck, _rules, HandEvaluator.new(HandCatalog.load_definitions()), target_score)
+	_progress = RunProgress.new(RealmCatalog.load_definitions())
+	_round = RoundState.new(deck, _rules, HandEvaluator.new(HandCatalog.load_definitions()), _progress.current_target())
 	_round.hand_played.connect(_on_hand_played)
 	_round.finished.connect(_on_finished)
 	_play_button.pressed.connect(_on_play_pressed)
@@ -36,7 +35,8 @@ func _ready() -> void:
 
 
 func _refresh() -> void:
-	_info.text = tr("UI_ROUND_INFO") % [_round.score, _round.target_score, _round.hands_left, _round.discards_left]
+	var stage: String = tr("UI_STAGE") % [tr(_progress.current_realm().name_key), tr(_progress.current_bottleneck().name_key)]
+	_info.text = stage + "\n" + tr("UI_ROUND_INFO") % [_round.score, _round.target_score, _round.hands_left, _round.discards_left]
 	for child: Node in _hand_row.get_children():
 		# remove_child tout de suite : queue_free seul laisse l'enfant compte jusqu'a la frame suivante.
 		_hand_row.remove_child(child)
