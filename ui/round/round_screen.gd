@@ -16,7 +16,7 @@ var _rules: RoundRules
 @onready var _play_button: Button = %PlayButton
 @onready var _discard_button: Button = %DiscardButton
 @onready var _restart_button: Button = %RestartButton
-
+@onready var _credits_button: Button = %CreditsButton
 
 func _ready() -> void:
 	_rules = load(RULES_PATH)
@@ -29,6 +29,7 @@ func _ready() -> void:
 	_play_button.pressed.connect(_on_play_pressed)
 	_discard_button.pressed.connect(_on_discard_pressed)
 	_restart_button.pressed.connect(func() -> void: get_tree().reload_current_scene())
+	_credits_button.pressed.connect(_show_credits)
 	_restart_button.hide()
 	_round.start()
 	_refresh()
@@ -83,3 +84,16 @@ func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 func _on_finished(won: bool) -> void:
 	_last_hand.text += "\n" + tr("UI_ROUND_WON" if won else "UI_ROUND_LOST")
 	_restart_button.show()
+
+## La licence MIT de Godot exige que son texte accompagne le jeu publie.
+func _show_credits() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = tr("UI_CREDITS")
+	var text := RichTextLabel.new()
+	text.custom_minimum_size = Vector2(600, 400)
+	text.text = tr("UI_CREDITS_INTRO") + "\n\n" + Engine.get_license_text()
+	dialog.add_child(text)
+	dialog.confirmed.connect(dialog.queue_free)
+	dialog.canceled.connect(dialog.queue_free)
+	add_child(dialog)
+	dialog.popup_centered()
