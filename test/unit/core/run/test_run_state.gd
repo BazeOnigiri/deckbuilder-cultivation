@@ -127,3 +127,17 @@ func test_goulot_franchi_rapporte_des_pierres() -> void:
 	assert_eq(run.stones, 9)
 	var reward: RoundReward = get_signal_parameters(run, "round_won")[0]
 	assert_eq(reward.total(), 5)
+
+func test_artefacts_de_la_run_agissent_dans_le_round() -> void:
+	var score := ScoreEffect.new()
+	score.phase = ScoreEffect.Phase.ADD_QI
+	score.amount = 1000.0
+	var effect := ArtifactEffect.new()
+	effect.score_effect = score
+	var artifact := ArtifactDefinition.new()
+	artifact.effects.append(effect)
+	var run := _run([_realm(1, 500, [1.0])])
+	run.artifacts.append(artifact)
+	run.start()
+	_play_one(run)
+	assert_eq(run.status, RunState.Status.WON)

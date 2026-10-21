@@ -13,6 +13,8 @@ var status: Status = Status.IN_ROUND
 var progress: RunProgress
 var current_round: RoundState
 var stones: int = 0
+## Partage avec chaque round : un artefact ajoute agit des la main suivante.
+var artifacts: Array[ArtifactDefinition] = []
 
 var _deck: DeckState
 var _rules: RoundRules
@@ -43,7 +45,7 @@ func next_round() -> bool:
 
 func _start_round() -> void:
 	status = Status.IN_ROUND
-	current_round = RoundState.new(_deck, _rules, _evaluator, progress.current_target())
+	current_round = RoundState.new(_deck, _rules, _evaluator, progress.current_target(), artifacts)
 	current_round.finished.connect(_on_round_finished)
 	# Emis avant start() : l'UI se branche sur le round avant la premiere pioche.
 	round_started.emit(current_round)

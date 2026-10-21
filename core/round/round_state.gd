@@ -16,12 +16,14 @@ var discards_left: int
 var _deck: DeckState
 var _rules: RoundRules
 var _evaluator: HandEvaluator
+var _artifacts: Array[ArtifactDefinition]
 
 
-func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int) -> void:
+func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition]) -> void:
 	_deck = deck
 	_rules = rules
 	_evaluator = evaluator
+	_artifacts = artifacts
 	target_score = p_target_score
 	hands_left = rules.hands_per_round
 	discards_left = rules.discards_per_round
@@ -45,8 +47,7 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 	var result: HandResult = _evaluator.evaluate(cards)
 	if result == null or not _deck.discard(cards):
 		return null
-	# shortcut: aucun effet tant que les artefacts n'existent pas, les injecter ici avec la feature artefacts.
-	var effects: Array[ScoreEffect] = []
+	var effects := ArtifactResolver.effects_for(_artifacts, result)
 	var context := ScoringPipeline.score(result, effects)
 	score += context.total()
 	hands_left -= 1

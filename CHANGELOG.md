@@ -12,6 +12,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - L'ecran de round affiche le royaume et le goulot, et lit son objectif dans les donnees.
 - Flux de jeu : menu principal, enchainement des 9 goulots, victoire ou defaite de la run, retour au menu.
 - Economie : pierres spirituelles gagnees a chaque goulot (base du goulot, mains restantes, interets plafonnes), regles en donnees.
+- Artefacts en donnees : declencheur (main jouee, carte comptee), condition (main, element) et effet de score. 5 premiers artefacts.
+- Liste des artefacts possedes a l'ecran, avec leur description en infobulle. Artefacts de debug reglables dans l'inspecteur.
 
 ### Corrigé
 

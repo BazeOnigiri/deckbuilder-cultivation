@@ -12,6 +12,9 @@ var _round: RoundState
 var _rules: RoundRules
 var _stage: String = ""
 
+## Debug : artefacts donnes au debut de la run (inspecteur de la scene). Ignores dans une build release.
+@export var debug_artifacts: Array[ArtifactDefinition] = []
+
 @onready var _info: Label = %Info
 @onready var _last_hand: Label = %LastHand
 @onready var _hand_row: HBoxContainer = %HandRow
@@ -20,6 +23,7 @@ var _stage: String = ""
 @onready var _continue_button: Button = %ContinueButton
 @onready var _menu_button: Button = %MenuButton
 @onready var _credits_button: Button = %CreditsButton
+@onready var _artifacts_label: Label = %Artifacts
 
 
 func _ready() -> void:
@@ -29,6 +33,8 @@ func _ready() -> void:
 	var deck := DeckState.new(load(DECK_PATH), rng)
 	var evaluator := HandEvaluator.new(HandCatalog.load_definitions())
 	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()), load(ECONOMY_PATH))
+	if OS.is_debug_build():
+		_run.artifacts.append_array(debug_artifacts)
 	_run.round_started.connect(_on_round_started)
 	_run.round_won.connect(_on_round_won)
 	_run.finished.connect(_on_run_finished)
@@ -57,6 +63,13 @@ func _refresh() -> void:
 		view.toggled.connect(_on_selection_changed.unbind(1))
 		_hand_row.add_child(view)
 	_on_selection_changed()
+	var names: Array[String] = []
+	var descriptions: Array[String] = []
+	for artifact: ArtifactDefinition in _run.artifacts:
+		names.append(tr(artifact.name_key))
+		descriptions.append(tr(artifact.name_key) + " : " + tr(artifact.description_key))
+	_artifacts_label.text = tr("UI_ARTIFACTS") % (", ".join(names) if not names.is_empty() else tr("UI_NONE"))
+	_artifacts_label.tooltip_text = "\n".join(descriptions)
 
 
 func _selected() -> Array[CardInstance]:

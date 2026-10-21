@@ -23,14 +23,16 @@ func _evaluator() -> HandEvaluator:
 	return HandEvaluator.new(definitions)
 
 
-func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards: int = 1) -> RoundState:
+func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards: int = 1, artifacts: Array = []) -> RoundState:
 	var definition := DeckDefinition.new()
 	for i: int in ranks.size():
 		definition.cards.append(CardData.create(StringName("c%d" % i), Element.Type.BOIS, ranks[i]))
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1
 	var deck := DeckState.new(definition, rng)
-	var round_state := RoundState.new(deck, _rules(hand_size, hands, discards), _evaluator(), target)
+	var typed: Array[ArtifactDefinition] = []
+	typed.assign(artifacts)
+	var round_state := RoundState.new(deck, _rules(hand_size, hands, discards), _evaluator(), target, typed)
 	round_state.start()
 	return round_state
 
@@ -123,3 +125,15 @@ func test_defausse_repioche_et_consomme_une_defausse() -> void:
 	assert_eq(r.discards_left, 0)
 	assert_eq(r.hand().size(), 8)
 	assert_false(r.discard(_first(r, 1)))
+
+func test_artefact_ajoute_son_effet_au_score() -> void:
+	var score := ScoreEffect.new()
+	score.phase = ScoreEffect.Phase.ADD_QI
+	score.amount = 10.0
+	var effect := ArtifactEffect.new()
+	effect.score_effect = score
+	var artifact := ArtifactDefinition.new()
+	artifact.effects.append(effect)
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100, 3, 1, [artifact])
+	r.play(_pick(r, 5))
+	assert_eq(r.score, 15)
