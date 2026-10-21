@@ -6,6 +6,10 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Corrigé
+
+- Le dossier build/ est ignore par Godot, les exports ne sont plus importes comme ressources du jeu.
+
 ## [0.2.0] - 2026-10-21
 
 ### Ajouté
