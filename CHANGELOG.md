@@ -6,6 +6,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-21
+
 ### Ajouté
 
 - Preset d'export Web (sans threads), avec tools/, test/ et addons/gut/ exclus du jeu publie.
