@@ -50,3 +50,6 @@ ARTIFACT_MIROIR_JUMEAU,Miroir jumeau,Twin Mirror
 ARTIFACT_MIROIR_JUMEAU_DESC,x2 Compréhension si la main est une Paire ou une Double paire.,x2 Comprehension if the hand is a Pair or Two Pair.
 UI_ARTIFACTS,Artefacts : %s,Artifacts: %s
 UI_NONE,aucun,none
+UI_SHOP,Boutique,Shop
+UI_SHOP_OFFER,%s (%d pierres),%s (%d stones)
+UI_SHOP_REROLL,Relancer (%d pierres),Reroll (%d stones)

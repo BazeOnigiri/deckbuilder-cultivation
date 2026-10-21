@@ -6,11 +6,15 @@ signal menu_requested
 const DECK_PATH := "res://content/decks/paquet_depart.tres"
 const RULES_PATH := "res://content/rules/regles_base.tres"
 const ECONOMY_PATH := "res://content/rules/economie_base.tres"
+const SHOP_RULES_PATH := "res://content/rules/boutique_base.tres"
 
 var _run: RunState
 var _round: RoundState
 var _rules: RoundRules
 var _stage: String = ""
+var _rng: RandomNumberGenerator
+var _shop_rules: ShopRules
+var _artifact_catalog: Array[ArtifactDefinition]
 
 ## Debug : artefacts donnes au debut de la run (inspecteur de la scene). Ignores dans une build release.
 @export var debug_artifacts: Array[ArtifactDefinition] = []
@@ -24,13 +28,16 @@ var _stage: String = ""
 @onready var _menu_button: Button = %MenuButton
 @onready var _credits_button: Button = %CreditsButton
 @onready var _artifacts_label: Label = %Artifacts
+@onready var _shop_panel: ShopPanel = %ShopPanel
 
 
 func _ready() -> void:
 	_rules = load(RULES_PATH)
-	var rng := RandomNumberGenerator.new()
-	rng.randomize()
-	var deck := DeckState.new(load(DECK_PATH), rng)
+	_rng = RandomNumberGenerator.new()
+	_rng.randomize()
+	_shop_rules = load(SHOP_RULES_PATH)
+	_artifact_catalog = ArtifactCatalog.load_definitions()
+	var deck := DeckState.new(load(DECK_PATH), _rng)
 	var evaluator := HandEvaluator.new(HandCatalog.load_definitions())
 	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()), load(ECONOMY_PATH))
 	if OS.is_debug_build():
@@ -43,6 +50,7 @@ func _ready() -> void:
 	_continue_button.pressed.connect(_on_continue_pressed)
 	_menu_button.pressed.connect(menu_requested.emit)
 	_credits_button.pressed.connect(_show_credits)
+	_shop_panel.changed.connect(_refresh)
 	_continue_button.hide()
 	_menu_button.hide()
 	_run.start()
@@ -108,6 +116,7 @@ func _on_discard_pressed() -> void:
 
 
 func _on_continue_pressed() -> void:
+	_shop_panel.hide()
 	_continue_button.hide()
 	_run.next_round()
 	_refresh()
@@ -120,6 +129,7 @@ func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 func _on_round_won(reward: RoundReward) -> void:
 	_last_hand.text += "\n" + tr("UI_ROUND_WON")
 	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
+	_shop_panel.open(ShopState.new(_run, _artifact_catalog, _shop_rules, _rng))
 	_continue_button.show()
 
 

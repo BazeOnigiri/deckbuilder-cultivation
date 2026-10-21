@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://content/artifacts/artefact_epee_volante.tres" id="3_ogkl3"]
 [ext_resource type="Resource" path="res://content/artifacts/artefact_gourde_elixir.tres" id="4_ubaed"]
 [ext_resource type="Resource" path="res://content/artifacts/artefact_lotus_flamme.tres" id="5_1t274"]
+[ext_resource type="Script" path="res://ui/shop/shop_panel.gd" id="shop_panel"]
 
 [node name="RoundScreen" type="Control" unique_id=1153754067]
 layout_mode = 3
@@ -50,6 +51,12 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
+
+[node name="ShopPanel" type="VBoxContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("shop_panel")
 
 [node name="Actions" type="HBoxContainer" parent="Margin/Layout" unique_id=198904807]
 layout_mode = 2
