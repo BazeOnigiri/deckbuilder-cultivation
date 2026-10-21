@@ -11,6 +11,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Royaumes et goulots en donnees (3 royaumes x 3 goulots), objectif = score de base du royaume x multiplicateur du goulot.
 - L'ecran de round affiche le royaume et le goulot, et lit son objectif dans les donnees.
 - Flux de jeu : menu principal, enchainement des 9 goulots, victoire ou defaite de la run, retour au menu.
+- Economie : pierres spirituelles gagnees a chaque goulot (base du goulot, mains restantes, interets plafonnes), regles en donnees.
 
 ### Corrigé
 
