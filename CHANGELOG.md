@@ -6,6 +6,13 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Ajouté
+
+- Preset d'export Web (sans threads), avec tools/, test/ et addons/gut/ exclus du jeu publie.
+- Bouton Credits affichant la licence de Godot.
+
+---
+
 ## [0.1.0] - 2026-10-20
 
 ### Ajouté

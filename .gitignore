@@ -3,3 +3,5 @@
 /android/
 .vscode/settings.json
 
+# Builds exportees
+build/
