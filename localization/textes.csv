@@ -38,3 +38,15 @@ UI_RUN_WON,Tu as atteint le sommet de la cultivation !,You reached the peak of c
 UI_RUN_LOST,Échec de la percée. La run est terminée.,Breakthrough failed. The run is over.
 UI_STONES,Pierres spirituelles : %d,Spirit stones: %d
 UI_REWARD,+%d pierres (goulot %d + mains %d + intérêts %d),+%d stones (bottleneck %d + hands %d + interest %d)
+ARTIFACT_EPEE_VOLANTE,Épée volante de jade,Flying Jade Sword
+ARTIFACT_EPEE_VOLANTE_DESC,+15 Qi à chaque main jouée.,+15 Qi on every hand played.
+ARTIFACT_GOURDE_ELIXIR,Gourde d'élixir,Elixir Gourd
+ARTIFACT_GOURDE_ELIXIR_DESC,+4 Compréhension à chaque main jouée.,+4 Comprehension on every hand played.
+ARTIFACT_LOTUS_FLAMME,Lotus de flamme,Flame Lotus
+ARTIFACT_LOTUS_FLAMME_DESC,+4 Qi pour chaque carte Feu qui compte.,+4 Qi for each scoring Fire card.
+ARTIFACT_PERLE_MAREES,Perle des marées,Tidal Pearl
+ARTIFACT_PERLE_MAREES_DESC,+1 Compréhension pour chaque carte Eau qui compte.,+1 Comprehension for each scoring Water card.
+ARTIFACT_MIROIR_JUMEAU,Miroir jumeau,Twin Mirror
+ARTIFACT_MIROIR_JUMEAU_DESC,x2 Compréhension si la main est une Paire ou une Double paire.,x2 Comprehension if the hand is a Pair or Two Pair.
+UI_ARTIFACTS,Artefacts : %s,Artifacts: %s
+UI_NONE,aucun,none
