@@ -20,9 +20,7 @@ UI_ROUND_INFO,Score : %d / %d    Mains : %d    Défausses : %d,Score: %d / %d   
 UI_LAST_HAND,%s : %d Qi x %.1f = %d,%s: %d Qi x %.1f = %d
 UI_PLAY,Jouer,Play
 UI_DISCARD,Défausser,Discard
-UI_RESTART,Rejouer,Play again
 UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
-UI_ROUND_LOST,Échec de la percée.,Breakthrough failed.
 UI_CREDITS,Crédits,Credits
 UI_CREDITS_INTRO,Ce jeu utilise le moteur Godot (godotengine.org).,This game uses the Godot Engine (godotengine.org).
 REALM_RAFFINEMENT_QI,Raffinement du Qi,Qi Refining
@@ -32,3 +30,9 @@ BOTTLENECK_PETIT,Petit goulot,Minor Bottleneck
 BOTTLENECK_GRAND,Grand goulot,Major Bottleneck
 BOTTLENECK_TRIBULATION,Tribulation céleste,Heavenly Tribulation
 UI_STAGE,%s : %s,%s: %s
+UI_TITLE,Deckbuilder Cultivation,Deckbuilder Cultivation
+UI_NEW_RUN,Nouvelle partie,New run
+UI_CONTINUE,Continuer,Continue
+UI_MENU,Menu principal,Main menu
+UI_RUN_WON,Tu as atteint le sommet de la cultivation !,You reached the peak of cultivation!
+UI_RUN_LOST,Échec de la percée. La run est terminée.,Breakthrough failed. The run is over.

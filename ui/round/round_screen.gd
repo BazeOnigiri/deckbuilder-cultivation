@@ -1,42 +1,49 @@
 extends Control
-## Ecran de round jouable. Racine de composition : cree la logique, l'injecte, et l'affiche.
+## Ecran de run. Racine de composition : cree la logique, l'injecte, et l'affiche.
+
+signal menu_requested
 
 const DECK_PATH := "res://content/decks/paquet_depart.tres"
 const RULES_PATH := "res://content/rules/regles_base.tres"
 
+var _run: RunState
 var _round: RoundState
 var _rules: RoundRules
-var _progress: RunProgress
+var _stage: String = ""
 
 @onready var _info: Label = %Info
 @onready var _last_hand: Label = %LastHand
 @onready var _hand_row: HBoxContainer = %HandRow
 @onready var _play_button: Button = %PlayButton
 @onready var _discard_button: Button = %DiscardButton
-@onready var _restart_button: Button = %RestartButton
+@onready var _continue_button: Button = %ContinueButton
+@onready var _menu_button: Button = %MenuButton
 @onready var _credits_button: Button = %CreditsButton
+
 
 func _ready() -> void:
 	_rules = load(RULES_PATH)
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	var deck := DeckState.new(load(DECK_PATH), rng)
-	_progress = RunProgress.new(RealmCatalog.load_definitions())
-	_round = RoundState.new(deck, _rules, HandEvaluator.new(HandCatalog.load_definitions()), _progress.current_target())
-	_round.hand_played.connect(_on_hand_played)
-	_round.finished.connect(_on_finished)
+	var evaluator := HandEvaluator.new(HandCatalog.load_definitions())
+	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()))
+	_run.round_started.connect(_on_round_started)
+	_run.round_won.connect(_on_round_won)
+	_run.finished.connect(_on_run_finished)
 	_play_button.pressed.connect(_on_play_pressed)
 	_discard_button.pressed.connect(_on_discard_pressed)
-	_restart_button.pressed.connect(func() -> void: get_tree().reload_current_scene())
+	_continue_button.pressed.connect(_on_continue_pressed)
+	_menu_button.pressed.connect(menu_requested.emit)
 	_credits_button.pressed.connect(_show_credits)
-	_restart_button.hide()
-	_round.start()
+	_continue_button.hide()
+	_menu_button.hide()
+	_run.start()
 	_refresh()
 
 
 func _refresh() -> void:
-	var stage: String = tr("UI_STAGE") % [tr(_progress.current_realm().name_key), tr(_progress.current_bottleneck().name_key)]
-	_info.text = stage + "\n" + tr("UI_ROUND_INFO") % [_round.score, _round.target_score, _round.hands_left, _round.discards_left]
+	_info.text = _stage + "\n" + tr("UI_ROUND_INFO") % [_round.score, _round.target_score, _round.hands_left, _round.discards_left]
 	for child: Node in _hand_row.get_children():
 		# remove_child tout de suite : queue_free seul laisse l'enfant compte jusqu'a la frame suivante.
 		_hand_row.remove_child(child)
@@ -67,6 +74,15 @@ func _on_selection_changed() -> void:
 	_discard_button.disabled = not can_act or _round.discards_left == 0
 
 
+func _on_round_started(round_state: RoundState) -> void:
+	_round = round_state
+	_round.hand_played.connect(_on_hand_played)
+	# Nom du goulot fige au debut du round : progress avance des la victoire.
+	var progress := _run.progress
+	_stage = tr("UI_STAGE") % [tr(progress.current_realm().name_key), tr(progress.current_bottleneck().name_key)]
+	_last_hand.text = ""
+
+
 func _on_play_pressed() -> void:
 	_round.play(_selected())
 	_refresh()
@@ -77,13 +93,25 @@ func _on_discard_pressed() -> void:
 	_refresh()
 
 
+func _on_continue_pressed() -> void:
+	_continue_button.hide()
+	_run.next_round()
+	_refresh()
+
+
 func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 	_last_hand.text = tr("UI_LAST_HAND") % [tr(result.definition.name_key), score.qi, score.comprehension, score.total()]
 
 
-func _on_finished(won: bool) -> void:
-	_last_hand.text += "\n" + tr("UI_ROUND_WON" if won else "UI_ROUND_LOST")
-	_restart_button.show()
+func _on_round_won() -> void:
+	_last_hand.text += "\n" + tr("UI_ROUND_WON")
+	_continue_button.show()
+
+
+func _on_run_finished(won: bool) -> void:
+	_last_hand.text += "\n" + tr("UI_RUN_WON" if won else "UI_RUN_LOST")
+	_menu_button.show()
+
 
 ## La licence MIT de Godot exige que son texte accompagne le jeu publie.
 func _show_credits() -> void:

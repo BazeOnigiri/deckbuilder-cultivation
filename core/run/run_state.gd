@@ -1,0 +1,58 @@
+class_name RunState
+extends RefCounted
+## Une run : enchaine les goulots des royaumes jusqu'a la victoire ou la defaite. Logique pure.
+
+signal round_started(round_state: RoundState)
+signal round_won
+signal finished(won: bool)
+
+## BETWEEN_ROUNDS : goulot franchi, en attente du suivant (la boutique s'inserera ici).
+enum Status {IN_ROUND, BETWEEN_ROUNDS, WON, LOST}
+
+var status: Status = Status.IN_ROUND
+var progress: RunProgress
+var current_round: RoundState
+
+var _deck: DeckState
+var _rules: RoundRules
+var _evaluator: HandEvaluator
+
+
+func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_progress: RunProgress) -> void:
+	_deck = deck
+	_rules = rules
+	_evaluator = evaluator
+	progress = p_progress
+
+
+func start() -> void:
+	_start_round()
+
+
+## Lance le goulot suivant. Refuse si on n'est pas entre deux goulots.
+func next_round() -> bool:
+	if status != Status.BETWEEN_ROUNDS:
+		return false
+	_start_round()
+	return true
+
+
+func _start_round() -> void:
+	status = Status.IN_ROUND
+	current_round = RoundState.new(_deck, _rules, _evaluator, progress.current_target())
+	current_round.finished.connect(_on_round_finished)
+	# Emis avant start() : l'UI se branche sur le round avant la premiere pioche.
+	round_started.emit(current_round)
+	current_round.start()
+
+
+func _on_round_finished(won: bool) -> void:
+	if not won:
+		status = Status.LOST
+		finished.emit(false)
+	elif progress.advance():
+		status = Status.BETWEEN_ROUNDS
+		round_won.emit()
+	else:
+		status = Status.WON
+		finished.emit(true)
