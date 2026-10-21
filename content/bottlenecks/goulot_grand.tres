@@ -7,3 +7,4 @@ script = ExtResource("1")
 id = &"goulot_grand"
 name_key = "BOTTLENECK_GRAND"
 score_multiplier = 1.5
+reward = 4

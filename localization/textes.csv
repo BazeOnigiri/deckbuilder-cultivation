@@ -36,3 +36,5 @@ UI_CONTINUE,Continuer,Continue
 UI_MENU,Menu principal,Main menu
 UI_RUN_WON,Tu as atteint le sommet de la cultivation !,You reached the peak of cultivation!
 UI_RUN_LOST,Échec de la percée. La run est terminée.,Breakthrough failed. The run is over.
+UI_STONES,Pierres spirituelles : %d,Spirit stones: %d
+UI_REWARD,+%d pierres (goulot %d + mains %d + intérêts %d),+%d stones (bottleneck %d + hands %d + interest %d)

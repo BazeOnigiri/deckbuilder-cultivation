@@ -7,3 +7,4 @@ script = ExtResource("1")
 id = &"tribulation"
 name_key = "BOTTLENECK_TRIBULATION"
 score_multiplier = 2.0
+reward = 5
