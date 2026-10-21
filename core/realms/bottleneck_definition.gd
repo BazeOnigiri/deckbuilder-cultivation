@@ -5,7 +5,9 @@ extends Resource
 @export var id: StringName = &""
 @export var name_key: String = ""
 @export var score_multiplier: float = 0.0
+## Pierres spirituelles de base gagnees en le franchissant.
+@export var reward: int = 0
 
 
 func is_valid() -> bool:
-	return not id.is_empty() and not name_key.is_empty() and score_multiplier > 0.0
+	return not id.is_empty() and not name_key.is_empty() and score_multiplier > 0.0 and reward >= 0

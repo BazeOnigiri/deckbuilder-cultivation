@@ -14,6 +14,7 @@ func _realm(order: int, base_score: int, multipliers: Array) -> RealmDefinition:
 		bottleneck.id = &"goulot"
 		bottleneck.name_key = "TEST"
 		bottleneck.score_multiplier = multiplier
+		bottleneck.reward = 3
 		realm.bottlenecks.append(bottleneck)
 	return realm
 
@@ -42,8 +43,13 @@ func _run(realms: Array, hands: int = 3) -> RunState:
 	rules.max_selected_cards = 5
 	var typed: Array[RealmDefinition] = []
 	typed.assign(realms)
-	return RunState.new(DeckState.new(deck_definition, rng), rules, _evaluator(), RunProgress.new(typed))
-
+	var economy := EconomyRules.new()
+	economy.id = &"test"
+	economy.starting_stones = 4
+	economy.stones_per_hand_left = 1
+	economy.interest_step = 5
+	economy.interest_cap = 5
+	return RunState.new(DeckState.new(deck_definition, rng), rules, _evaluator(), RunProgress.new(typed), economy)
 
 func _play_one(run: RunState) -> void:
 	var cards: Array[CardInstance] = [run.current_round.hand()[0]]
@@ -106,3 +112,18 @@ func test_dernier_goulot_franchi_gagne_la_run() -> void:
 	assert_eq(run.status, RunState.Status.WON)
 	assert_signal_emitted_with_parameters(run, "finished", [true])
 	assert_signal_not_emitted(run, "round_won")
+
+func test_run_demarre_avec_les_pierres_de_depart() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	assert_eq(run.stones, 4)
+
+
+func test_goulot_franchi_rapporte_des_pierres() -> void:
+	var run := _run([_realm(1, 1, [1.0, 2.0])])
+	watch_signals(run)
+	run.start()
+	_play_one(run)
+	# 4 de depart + 3 de base + 2 mains restantes + 0 d'interet (4 / 5).
+	assert_eq(run.stones, 9)
+	var reward: RoundReward = get_signal_parameters(run, "round_won")[0]
+	assert_eq(reward.total(), 5)

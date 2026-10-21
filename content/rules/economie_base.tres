@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EconomyRules" format=3]
+
+[ext_resource type="Script" path="res://core/economy/economy_rules.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"economie_base"
+starting_stones = 4
+stones_per_hand_left = 1
+interest_step = 5
+interest_cap = 5

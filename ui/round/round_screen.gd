@@ -5,6 +5,7 @@ signal menu_requested
 
 const DECK_PATH := "res://content/decks/paquet_depart.tres"
 const RULES_PATH := "res://content/rules/regles_base.tres"
+const ECONOMY_PATH := "res://content/rules/economie_base.tres"
 
 var _run: RunState
 var _round: RoundState
@@ -27,7 +28,7 @@ func _ready() -> void:
 	rng.randomize()
 	var deck := DeckState.new(load(DECK_PATH), rng)
 	var evaluator := HandEvaluator.new(HandCatalog.load_definitions())
-	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()))
+	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()), load(ECONOMY_PATH))
 	_run.round_started.connect(_on_round_started)
 	_run.round_won.connect(_on_round_won)
 	_run.finished.connect(_on_run_finished)
@@ -43,7 +44,7 @@ func _ready() -> void:
 
 
 func _refresh() -> void:
-	_info.text = _stage + "\n" + tr("UI_ROUND_INFO") % [_round.score, _round.target_score, _round.hands_left, _round.discards_left]
+	_info.text = _stage + "    " + tr("UI_STONES") % _run.stones + "\n" + tr("UI_ROUND_INFO") % [_round.score, _round.target_score, _round.hands_left, _round.discards_left]
 	for child: Node in _hand_row.get_children():
 		# remove_child tout de suite : queue_free seul laisse l'enfant compte jusqu'a la frame suivante.
 		_hand_row.remove_child(child)
@@ -103,8 +104,9 @@ func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 	_last_hand.text = tr("UI_LAST_HAND") % [tr(result.definition.name_key), score.qi, score.comprehension, score.total()]
 
 
-func _on_round_won() -> void:
+func _on_round_won(reward: RoundReward) -> void:
 	_last_hand.text += "\n" + tr("UI_ROUND_WON")
+	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
 	_continue_button.show()
 
 

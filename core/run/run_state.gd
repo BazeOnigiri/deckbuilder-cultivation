@@ -3,7 +3,7 @@ extends RefCounted
 ## Une run : enchaine les goulots des royaumes jusqu'a la victoire ou la defaite. Logique pure.
 
 signal round_started(round_state: RoundState)
-signal round_won
+signal round_won(reward: RoundReward)
 signal finished(won: bool)
 
 ## BETWEEN_ROUNDS : goulot franchi, en attente du suivant (la boutique s'inserera ici).
@@ -12,17 +12,21 @@ enum Status {IN_ROUND, BETWEEN_ROUNDS, WON, LOST}
 var status: Status = Status.IN_ROUND
 var progress: RunProgress
 var current_round: RoundState
+var stones: int = 0
 
 var _deck: DeckState
 var _rules: RoundRules
 var _evaluator: HandEvaluator
+var _economy: EconomyRules
 
 
-func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_progress: RunProgress) -> void:
+func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_progress: RunProgress, economy: EconomyRules) -> void:
 	_deck = deck
 	_rules = rules
 	_evaluator = evaluator
 	progress = p_progress
+	_economy = economy
+	stones = economy.starting_stones
 
 
 func start() -> void:
@@ -50,9 +54,13 @@ func _on_round_finished(won: bool) -> void:
 	if not won:
 		status = Status.LOST
 		finished.emit(false)
-	elif progress.advance():
+		return
+	# Recompense calculee avant advance() : elle depend du goulot qui vient d'etre franchi.
+	var reward := RoundReward.compute(_economy, progress.current_bottleneck().reward, current_round.hands_left, stones)
+	stones += reward.total()
+	if progress.advance():
 		status = Status.BETWEEN_ROUNDS
-		round_won.emit()
+		round_won.emit(reward)
 	else:
 		status = Status.WON
 		finished.emit(true)
