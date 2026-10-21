@@ -23,3 +23,5 @@ UI_DISCARD,Défausser,Discard
 UI_RESTART,Rejouer,Play again
 UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
 UI_ROUND_LOST,Échec de la percée.,Breakthrough failed.
+UI_CREDITS,Crédits,Credits
+UI_CREDITS_INTRO,Ce jeu utilise le moteur Godot (godotengine.org).,This game uses the Godot Engine (godotengine.org).
