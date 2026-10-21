@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bptjp4taw6127"]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://ui/round/round_screen.gd" id="1"]
 
@@ -55,10 +55,15 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "UI_DISCARD"
 
-[node name="RestartButton" type="Button" parent="Margin/Layout/Actions"]
+[node name="ContinueButton" type="Button" parent="Margin/Layout/Actions"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "UI_RESTART"
+text = "UI_CONTINUE"
+
+[node name="MenuButton" type="Button" parent="Margin/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_MENU"
 
 [node name="CreditsButton" type="Button" parent="Margin/Layout/Actions"]
 unique_name_in_owner = true
