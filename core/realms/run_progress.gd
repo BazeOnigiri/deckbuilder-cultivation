@@ -9,9 +9,9 @@ var _realm_index: int = 0
 var _bottleneck_index: int = 0
 
 
-func _init(realms: Array[RealmDefinition]) -> void:
-	assert(not realms.is_empty(), "une run demande au moins un royaume")
-	_realms = realms.duplicate()
+func _init(p_realms: Array[RealmDefinition]) -> void:
+	assert(not p_realms.is_empty(), "une run demande au moins un royaume")
+	_realms = p_realms.duplicate()
 	_realms.sort_custom(func(a: RealmDefinition, b: RealmDefinition) -> bool:
 		return a.order < b.order)
 
@@ -25,7 +25,18 @@ func current_bottleneck() -> BottleneckDefinition:
 
 
 func current_target() -> int:
-	return roundi(current_realm().base_score * current_bottleneck().score_multiplier)
+	return target_for(current_realm(), current_bottleneck())
+
+
+static func target_for(realm: RealmDefinition, bottleneck: BottleneckDefinition) -> int:
+	return roundi(realm.base_score * bottleneck.score_multiplier)
+
+
+## Goulot du royaume courant : -1 franchi, 0 en cours, 1 a venir. Run terminee : tout est franchi.
+func bottleneck_position(bottleneck_index: int) -> int:
+	if is_finished or bottleneck_index < _bottleneck_index:
+		return -1
+	return 0 if bottleneck_index == _bottleneck_index else 1
 
 
 ## Passe au goulot suivant. Renvoie false si la run est terminee (on reste alors sur le dernier goulot).

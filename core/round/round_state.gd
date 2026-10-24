@@ -4,6 +4,7 @@ extends RefCounted
 
 signal hand_played(result: HandResult, score: ScoreContext)
 signal finished(won: bool)
+signal discarded
 
 enum Status {PLAYING, WON, LOST}
 
@@ -79,6 +80,7 @@ func discard(cards: Array[CardInstance]) -> bool:
 	if not _deck.discard(cards):
 		return false
 	discards_left -= 1
+	discarded.emit()
 	_refill()
 	return true
 

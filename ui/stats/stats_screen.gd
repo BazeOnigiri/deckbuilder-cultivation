@@ -14,7 +14,7 @@ func _ready() -> void:
 	_add_row("UI_STATS_WIN_RATE", "%d %%" % _win_rate())
 	_add_row("UI_STATS_BEST_REALM", _realm_name(profile.best_realm))
 	_add_row("UI_STATS_BEST_HAND_SCORE", str(profile.best_hand_score))
-	_add_row("UI_STATS_HANDS_PLAYED", str(profile.total_hands()))
+	_add_row("UI_STATS_HANDS_PLAYED", str(profile.hands.total()))
 	_add_row("UI_STATS_FAVORITE_HAND", _favorite_hand())
 
 
@@ -42,10 +42,10 @@ func _realm_name(order: int) -> String:
 
 
 func _favorite_hand() -> String:
-	var id: String = profile.most_played_hand()
+	var id: String = profile.hands.most_played()
 	if id.is_empty():
 		return tr("UI_NONE")
 	for hand: HandDefinition in HandCatalog.load_definitions():
 		if hand.id == id:
-			return tr("UI_STATS_HAND_COUNT") % [tr(hand.name_key), profile.hand_counts[id]]
+			return tr("UI_STATS_HAND_COUNT") % [tr(hand.name_key), profile.hands.count_of(id)]
 	return id

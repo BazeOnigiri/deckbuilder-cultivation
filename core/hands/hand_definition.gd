@@ -18,3 +18,10 @@ extends Resource
 func is_valid() -> bool:
 	return (not id.is_empty() and not name_key.is_empty() and detector != null
 		and base_qi >= 0 and base_comprehension > 0 and level_qi >= 0 and level_comprehension >= 0)
+
+func qi_at(level: int) -> int:
+	return base_qi + (level - 1) * level_qi
+
+
+func comprehension_at(level: int) -> int:
+	return base_comprehension + (level - 1) * level_comprehension

@@ -19,6 +19,7 @@ var _shop_rules: ShopRules
 var _artifact_catalog: Array[ArtifactDefinition]
 var _manual_catalog: Array[ManualDefinition]
 var _pill_catalog: Array[PillDefinition]
+var _hand_catalog: Array[HandDefinition]
 
 ## Debug : artefacts donnes au debut de la run (inspecteur de la scene). Ignores dans une build release.
 @export var debug_artifacts: Array[ArtifactDefinition] = []
@@ -44,7 +45,8 @@ func _ready() -> void:
 	_manual_catalog = ManualCatalog.load_definitions()
 	_pill_catalog = PillCatalog.load_definitions()
 	var deck := DeckState.new(load(DECK_PATH), _rng)
-	var evaluator := HandEvaluator.new(HandCatalog.load_definitions())
+	_hand_catalog = HandCatalog.load_definitions()
+	var evaluator := HandEvaluator.new(_hand_catalog)
 	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()), load(ECONOMY_PATH))
 	if OS.is_debug_build():
 		_run.artifacts.append_array(debug_artifacts)
@@ -56,6 +58,7 @@ func _ready() -> void:
 	_continue_button.pressed.connect(_on_continue_pressed)
 	_menu_button.pressed.connect(menu_requested.emit)
 	_shop_panel.changed.connect(_refresh)
+	%InfoButton.pressed.connect(_show_run_info)
 	_continue_button.hide()
 	_menu_button.hide()
 	run_created.emit(_run)
@@ -181,3 +184,9 @@ func _show_credits() -> void:
 	dialog.canceled.connect(dialog.queue_free)
 	add_child(dialog)
 	dialog.popup_centered()
+
+func _show_run_info() -> void:
+	var dialog := RunInfoDialog.new()
+	dialog.setup(_run, _hand_catalog)
+	add_child(dialog)
+	dialog.popup_centered(RunInfoDialog.SIZE)
