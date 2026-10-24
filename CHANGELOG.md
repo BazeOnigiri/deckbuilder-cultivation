@@ -18,6 +18,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Niveaux de main et manuels de technique : un manuel achete en boutique fait monter sa main d'un niveau (+Qi, +Comprehension).
 - Generateur tools/generate_manuals.gd : un manuel par main.
 - Pilules : consommables utilises pendant un round sur les cartes selectionnees (changer l'element, monter le rang, detruire). 4 pilules, vendues en boutique, 2 places d'inventaire.
+- Tribulations : le dernier goulot de chaque royaume impose une contrainte (sceau d'element, une main de moins, main reduite). Contraintes en donnees.
 
 ### Modifié
 

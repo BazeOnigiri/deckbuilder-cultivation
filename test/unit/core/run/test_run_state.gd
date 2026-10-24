@@ -188,3 +188,13 @@ func test_pilule_refusee_hors_round() -> void:
 	assert_eq(run.status, RunState.Status.BETWEEN_ROUNDS)
 	var cards: Array[CardInstance] = [run.current_round.hand()[0]]
 	assert_false(run.use_pill(0, cards))
+
+func test_contrainte_du_goulot_appliquee_au_round() -> void:
+	var realm := _realm(1, 100, [1.0])
+	var constraint := ReducedHandsConstraint.new()
+	constraint.description_key = "TEST"
+	constraint.amount = 2
+	realm.bottlenecks[0].constraint = constraint
+	var run := _run([realm], 3)
+	run.start()
+	assert_eq(run.current_round.hands_left, 1)

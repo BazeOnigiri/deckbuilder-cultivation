@@ -24,7 +24,7 @@ func _evaluator() -> HandEvaluator:
 	return HandEvaluator.new(definitions)
 
 
-func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards: int = 1, artifacts: Array = [], levels: HandLevels = null) -> RoundState:
+func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards: int = 1, artifacts: Array = [], levels: HandLevels = null, constraint: TribulationConstraint = null) -> RoundState:
 	var definition := DeckDefinition.new()
 	for i: int in ranks.size():
 		definition.cards.append(CardData.create(StringName("c%d" % i), Element.Type.BOIS, ranks[i]))
@@ -34,7 +34,8 @@ func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards:
 	var typed: Array[ArtifactDefinition] = []
 	typed.assign(artifacts)
 	var round_levels: HandLevels = levels if levels != null else HandLevels.new()
-	var round_state := RoundState.new(deck, _rules(hand_size, hands, discards), _evaluator(), target, typed, round_levels)
+	var round_constraint: TribulationConstraint = constraint if constraint != null else TribulationConstraint.new()
+	var round_state := RoundState.new(deck, _rules(hand_size, hands, discards), _evaluator(), target, typed, round_levels, round_constraint)
 	round_state.start()
 	return round_state
 
@@ -146,3 +147,28 @@ func test_niveau_de_main_augmente_le_score() -> void:
 	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100, 3, 1, [], levels)
 	r.play(_pick(r, 5))
 	assert_eq(r.score, 15)
+
+func test_carte_scellee_ne_compte_pas() -> void:
+	var seal := ElementSealConstraint.new()
+	seal.element = Element.Type.BOIS
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100, 3, 1, [], null, seal)
+	var context := r.play(_pick(r, 5))
+	assert_not_null(context)
+	assert_eq(r.score, 0)
+	assert_eq(context.hand.scoring_cards.size(), 0)
+
+
+func test_tribulation_retire_une_main() -> void:
+	var constraint := ReducedHandsConstraint.new()
+	constraint.amount = 1
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100, 3, 1, [], null, constraint)
+	assert_eq(r.hands_left, 2)
+
+
+func test_tribulation_reduit_la_main() -> void:
+	var constraint := ReducedHandSizeConstraint.new()
+	constraint.amount = 2
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 8, 100, 3, 1, [], null, constraint)
+	assert_eq(r.hand().size(), 6)
+	r.discard(_first(r, 1))
+	assert_eq(r.hand().size(), 6)

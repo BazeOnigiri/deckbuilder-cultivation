@@ -7,7 +7,11 @@ extends Resource
 @export var score_multiplier: float = 0.0
 ## Pierres spirituelles de base gagnees en le franchissant.
 @export var reward: int = 0
+## Vide = aucune contrainte. Les tribulations en ont une.
+@export var constraint: TribulationConstraint
 
 
 func is_valid() -> bool:
-	return not id.is_empty() and not name_key.is_empty() and score_multiplier > 0.0 and reward >= 0
+	if id.is_empty() or name_key.is_empty() or score_multiplier <= 0.0 or reward < 0:
+		return false
+	return constraint == null or not constraint.description_key.is_empty()
