@@ -58,6 +58,7 @@ func use_pill(index: int, cards: Array[CardInstance]) -> bool:
 		return false
 	pills[index].effect.apply(cards, _deck)
 	pills.remove_at(index)
+	current_round.ensure_playable()
 	return true
 
 func _start_round() -> void:

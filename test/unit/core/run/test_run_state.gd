@@ -198,3 +198,18 @@ func test_contrainte_du_goulot_appliquee_au_round() -> void:
 	var run := _run([realm], 3)
 	run.start()
 	assert_eq(run.current_round.hands_left, 1)
+
+func test_pilule_qui_vide_la_main_fait_repiocher() -> void:
+	var effect := DestroyPillEffect.new()
+	var pill := PillDefinition.new()
+	pill.min_cards = 1
+	pill.max_cards = HAND_SIZE
+	pill.effect = effect
+	var run := _run([_realm(1, 100, [1.0])])
+	run.pills.append(pill)
+	run.start()
+	var all_cards: Array[CardInstance] = []
+	all_cards.assign(run.current_round.hand())
+	assert_true(run.use_pill(0, all_cards))
+	assert_eq(run.current_round.hand().size(), 2)
+	assert_eq(run.status, RunState.Status.IN_ROUND)

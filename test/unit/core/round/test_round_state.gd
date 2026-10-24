@@ -172,3 +172,28 @@ func test_tribulation_reduit_la_main() -> void:
 	assert_eq(r.hand().size(), 6)
 	r.discard(_first(r, 1))
 	assert_eq(r.hand().size(), 6)
+
+func test_main_vide_hors_coup_repioche() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 8, 100)
+	var all_cards: Array[CardInstance] = []
+	all_cards.assign(r.hand())
+	assert_true(r.hand().size() == 8)
+	_destroy(r, all_cards)
+	r.ensure_playable()
+	assert_eq(r.hand().size(), 2)
+	assert_eq(r.status, RoundState.Status.PLAYING)
+
+
+func test_main_et_pioche_vides_hors_coup_font_perdre() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100)
+	var all_cards: Array[CardInstance] = []
+	all_cards.assign(r.hand())
+	_destroy(r, all_cards)
+	r.ensure_playable()
+	assert_eq(r.status, RoundState.Status.LOST)
+
+
+## Passe par une pilule de destruction, comme en jeu.
+func _destroy(r: RoundState, cards: Array[CardInstance]) -> void:
+	var deck: DeckState = r.get("_deck")
+	DestroyPillEffect.new().apply(cards, deck)

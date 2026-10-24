@@ -82,6 +82,11 @@ func discard(cards: Array[CardInstance]) -> bool:
 	_refill()
 	return true
 
+## A appeler quand la main change hors d'un coup (pilule de destruction) :
+## main vide = repioche, et sans rien a piocher le round est perdu.
+func ensure_playable() -> void:
+	if status == Status.PLAYING and _deck.hand.is_empty():
+		_refill()
 
 func _valid_selection(cards: Array[CardInstance]) -> bool:
 	return not cards.is_empty() and cards.size() <= _rules.max_selected_cards
