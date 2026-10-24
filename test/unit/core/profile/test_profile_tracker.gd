@@ -80,4 +80,4 @@ func test_retient_la_meilleure_main() -> void:
 	assert_gt(stats.best_hand_score, 0)
 	assert_eq(run.status, RunState.Status.LOST)
 	assert_eq(stats.runs_won, 0)
-	assert_eq(stats.hand_counts.get("test", 0), 1)
+	assert_eq(stats.hands.count_of("test"), 1)

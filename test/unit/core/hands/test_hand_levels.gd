@@ -16,3 +16,13 @@ func test_mains_independantes() -> void:
 	var levels := HandLevels.new()
 	levels.level_up("main_paire")
 	assert_eq(levels.level_of("main_brelan"), 1)
+
+func test_valeurs_d_une_main_selon_son_niveau() -> void:
+	var hand := HandDefinition.new()
+	hand.base_qi = 10
+	hand.base_comprehension = 2
+	hand.level_qi = 15
+	hand.level_comprehension = 1
+	assert_eq(hand.qi_at(1), 10)
+	assert_eq(hand.qi_at(3), 40)
+	assert_eq(hand.comprehension_at(3), 4)

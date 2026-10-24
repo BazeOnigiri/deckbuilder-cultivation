@@ -60,3 +60,17 @@ func test_fin_de_run() -> void:
 	assert_true(progress.is_finished)
 	assert_false(progress.advance())
 	assert_eq(progress.current_target(), 1000)
+
+func test_position_des_goulots_du_royaume_courant() -> void:
+	var progress := _progress([_realm(1, 100, [1.0, 1.5, 2.0])])
+	progress.advance()
+	assert_eq(progress.bottleneck_position(0), -1)
+	assert_eq(progress.bottleneck_position(1), 0)
+	assert_eq(progress.bottleneck_position(2), 1)
+
+
+func test_run_terminee_tout_est_franchi() -> void:
+	var progress := _progress([_realm(1, 100, [1.0])])
+	progress.advance()
+	assert_true(progress.is_finished)
+	assert_eq(progress.bottleneck_position(0), -1)
