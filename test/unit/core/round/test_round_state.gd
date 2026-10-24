@@ -42,7 +42,7 @@ func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards:
 func _pick(round_state: RoundState, rank: int) -> Array[CardInstance]:
 	var picked: Array[CardInstance] = []
 	for card: CardInstance in round_state.hand():
-		if card.data.rank == rank:
+		if card.rank == rank:
 			picked.append(card)
 			break
 	return picked
