@@ -16,6 +16,7 @@ var stones: int = 0
 ## Partage avec chaque round : un artefact ajoute agit des la main suivante.
 var artifacts: Array[ArtifactDefinition] = []
 var hand_levels := HandLevels.new()
+var pills: Array[PillDefinition] = []
 
 var _deck: DeckState
 var _rules: RoundRules
@@ -43,6 +44,21 @@ func next_round() -> bool:
 	_start_round()
 	return true
 
+## Une pilule s'utilise pendant un round, sur des cartes de la main, en nombre autorise par la pilule.
+func can_use_pill(index: int, cards: Array[CardInstance]) -> bool:
+	if status != Status.IN_ROUND or index < 0 or index >= pills.size():
+		return false
+	var pill: PillDefinition = pills[index]
+	return (cards.size() >= pill.min_cards and cards.size() <= pill.max_cards
+		and _deck.all_in_hand(cards))
+
+
+func use_pill(index: int, cards: Array[CardInstance]) -> bool:
+	if not can_use_pill(index, cards):
+		return false
+	pills[index].effect.apply(cards, _deck)
+	pills.remove_at(index)
+	return true
 
 func _start_round() -> void:
 	status = Status.IN_ROUND

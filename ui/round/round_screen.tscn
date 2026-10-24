@@ -42,6 +42,10 @@ unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
 
+[node name="PillRow" type="HBoxContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="LastHand" type="Label" parent="Margin/Layout" unique_id=636644067]
 unique_name_in_owner = true
 layout_mode = 2
