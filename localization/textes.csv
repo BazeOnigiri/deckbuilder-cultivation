@@ -69,3 +69,14 @@ BOTTLENECK_TRIBULATION_DEMON,Tribulation du démon intérieur,Tribulation of the
 TRIB_FLAMMES_DESC,Les cartes Feu ne comptent pas.,Fire cards do not score.
 TRIB_VENT_NOIR_DESC,Une main de moins pour ce goulot.,One less hand for this bottleneck.
 TRIB_DEMON_DESC,Ta main contient 2 cartes de moins.,Your hand holds 2 fewer cards.
+UI_STATS_BUTTON,Statistiques,Statistics
+UI_STATS_TITLE,Statistiques,Statistics
+UI_STATS_RUNS,Parties lancées,Runs started
+UI_STATS_WINS,Victoires,Wins
+UI_STATS_WIN_RATE,Taux de victoire,Win rate
+UI_STATS_BEST_REALM,Meilleur royaume atteint,Best realm reached
+UI_STATS_BEST_HAND_SCORE,Meilleur score d'une main,Best hand score
+UI_STATS_HANDS_PLAYED,Mains jouées,Hands played
+UI_STATS_FAVORITE_HAND,Main favorite,Favorite hand
+UI_STATS_HAND_COUNT,%s (%d fois),%s (%d times)
+UI_BACK,Retour,Back

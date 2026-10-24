@@ -2,6 +2,8 @@ extends Control
 ## Ecran de run. Racine de composition : cree la logique, l'injecte, et l'affiche.
 
 signal menu_requested
+## Emis avant le debut de la run : main y branche le suivi du profil.
+signal run_created(run: RunState)
 
 const DECK_PATH := "res://content/decks/paquet_depart.tres"
 const RULES_PATH := "res://content/rules/regles_base.tres"
@@ -28,7 +30,6 @@ var _pill_catalog: Array[PillDefinition]
 @onready var _discard_button: Button = %DiscardButton
 @onready var _continue_button: Button = %ContinueButton
 @onready var _menu_button: Button = %MenuButton
-@onready var _credits_button: Button = %CreditsButton
 @onready var _artifacts_label: Label = %Artifacts
 @onready var _shop_panel: ShopPanel = %ShopPanel
 @onready var _pill_row: HBoxContainer = %PillRow
@@ -54,10 +55,10 @@ func _ready() -> void:
 	_discard_button.pressed.connect(_on_discard_pressed)
 	_continue_button.pressed.connect(_on_continue_pressed)
 	_menu_button.pressed.connect(menu_requested.emit)
-	_credits_button.pressed.connect(_show_credits)
 	_shop_panel.changed.connect(_refresh)
 	_continue_button.hide()
 	_menu_button.hide()
+	run_created.emit(_run)
 	_run.start()
 	_refresh()
 

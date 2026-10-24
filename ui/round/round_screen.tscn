@@ -85,8 +85,3 @@ text = "UI_CONTINUE"
 unique_name_in_owner = true
 layout_mode = 2
 text = "UI_MENU"
-
-[node name="CreditsButton" type="Button" parent="Margin/Layout/Actions" unique_id=1433531736]
-unique_name_in_owner = true
-layout_mode = 2
-text = "UI_CREDITS"
