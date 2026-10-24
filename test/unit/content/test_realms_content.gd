@@ -55,3 +55,9 @@ func test_objectifs_strictement_croissants() -> void:
 	while progress.advance():
 		assert_gt(progress.current_target(), previous, "objectif non croissant : %s" % progress.current_realm().id)
 		previous = progress.current_target()
+
+## Le dernier goulot de chaque royaume est une tribulation : elle doit imposer une contrainte.
+func test_chaque_royaume_finit_par_une_tribulation() -> void:
+	for realm: RealmDefinition in _realms:
+		var last: BottleneckDefinition = realm.bottlenecks[realm.bottlenecks.size() - 1]
+		assert_not_null(last.constraint, "pas de contrainte a la fin de %s" % realm.id)
