@@ -15,17 +15,31 @@ func _catalog(count: int, price: int = 5) -> Array[ArtifactDefinition]:
 	return catalog
 
 
+func _manuals(count: int = 3, price: int = 3) -> Array[ManualDefinition]:
+	var manuals: Array[ManualDefinition] = []
+	for i: int in count:
+		var hand := HandDefinition.new()
+		hand.id = "main_%d" % i
+		var manual := ManualDefinition.new()
+		manual.id = StringName("manuel_%d" % i)
+		manual.hand = hand
+		manual.price = price
+		manuals.append(manual)
+	return manuals
+
+
 func _rules(offer_count: int = 2, max_artifacts: int = 5) -> ShopRules:
 	var rules := ShopRules.new()
 	rules.id = &"test"
 	rules.offer_count = offer_count
+	rules.manual_offer_count = 1
 	rules.reroll_base_cost = 5
 	rules.reroll_cost_step = 1
 	rules.max_artifacts = max_artifacts
 	return rules
 
 
-## Seules les pierres et les artefacts de la run servent a la boutique.
+## Seuls les pierres, les artefacts et les niveaux de main de la run servent a la boutique.
 func _run(stones: int) -> RunState:
 	var economy := EconomyRules.new()
 	economy.starting_stones = stones
@@ -38,6 +52,10 @@ func _rng(seed_value: int = 1) -> RandomNumberGenerator:
 	return rng
 
 
+func _shop(run: RunState, catalog: Array[ArtifactDefinition], rules: ShopRules = null, seed_value: int = 1) -> ShopState:
+	return ShopState.new(run, catalog, _manuals(), rules if rules != null else _rules(), _rng(seed_value))
+
+
 func _ids(artifacts: Array[ArtifactDefinition]) -> Array:
 	var ids: Array = []
 	for artifact: ArtifactDefinition in artifacts:
@@ -46,7 +64,7 @@ func _ids(artifacts: Array[ArtifactDefinition]) -> Array:
 
 
 func test_offres_distinctes_au_bon_nombre() -> void:
-	var shop := ShopState.new(_run(10), _catalog(5), _rules(), _rng())
+	var shop := _shop(_run(10), _catalog(5))
 	assert_eq(shop.offers.size(), 2)
 	assert_ne(shop.offers[0].id, shop.offers[1].id)
 
@@ -55,14 +73,14 @@ func test_jamais_un_artefact_deja_possede() -> void:
 	var catalog := _catalog(3)
 	var run := _run(10)
 	run.artifacts.append(catalog[0])
-	var shop := ShopState.new(run, catalog, _rules(5), _rng())
+	var shop := _shop(run, catalog, _rules(5))
 	assert_eq(shop.offers.size(), 2)
 	assert_false(_ids(shop.offers).has(catalog[0].id))
 
 
 func test_achat_debite_ajoute_et_retire_l_offre() -> void:
 	var run := _run(10)
-	var shop := ShopState.new(run, _catalog(5, 6), _rules(), _rng())
+	var shop := _shop(run, _catalog(5, 6))
 	var bought: ArtifactDefinition = shop.offers[0]
 	assert_true(shop.buy(0))
 	assert_eq(run.stones, 4)
@@ -72,7 +90,7 @@ func test_achat_debite_ajoute_et_retire_l_offre() -> void:
 
 func test_achat_refuse_sans_assez_de_pierres() -> void:
 	var run := _run(3)
-	var shop := ShopState.new(run, _catalog(5, 6), _rules(), _rng())
+	var shop := _shop(run, _catalog(5, 6))
 	assert_false(shop.buy(0))
 	assert_eq(run.stones, 3)
 	assert_eq(run.artifacts.size(), 0)
@@ -82,20 +100,20 @@ func test_achat_refuse_sans_assez_de_pierres() -> void:
 func test_achat_refuse_au_maximum_d_artefacts() -> void:
 	var run := _run(100)
 	run.artifacts.append(_artifact("deja", 1))
-	var shop := ShopState.new(run, _catalog(5), _rules(2, 1), _rng())
+	var shop := _shop(run, _catalog(5), _rules(2, 1))
 	assert_false(shop.buy(0))
 	assert_eq(run.stones, 100)
 
 
 func test_achat_index_invalide() -> void:
-	var shop := ShopState.new(_run(100), _catalog(5), _rules(), _rng())
+	var shop := _shop(_run(100), _catalog(5))
 	assert_false(shop.buy(-1))
 	assert_false(shop.buy(2))
 
 
 func test_relance_debite_et_augmente_le_cout() -> void:
 	var run := _run(20)
-	var shop := ShopState.new(run, _catalog(5), _rules(), _rng())
+	var shop := _shop(run, _catalog(5))
 	assert_true(shop.reroll())
 	assert_eq(run.stones, 15)
 	assert_eq(shop.reroll_cost, 6)
@@ -104,7 +122,7 @@ func test_relance_debite_et_augmente_le_cout() -> void:
 
 func test_relance_refusee_sans_assez_de_pierres() -> void:
 	var run := _run(4)
-	var shop := ShopState.new(run, _catalog(5), _rules(), _rng())
+	var shop := _shop(run, _catalog(5))
 	assert_false(shop.reroll())
 	assert_eq(run.stones, 4)
 	assert_eq(shop.reroll_cost, 5)
@@ -112,6 +130,35 @@ func test_relance_refusee_sans_assez_de_pierres() -> void:
 
 func test_meme_seed_memes_offres() -> void:
 	var catalog := _catalog(10)
-	var a := ShopState.new(_run(10), catalog, _rules(), _rng(42))
-	var b := ShopState.new(_run(10), catalog, _rules(), _rng(42))
+	var a := _shop(_run(10), catalog, null, 42)
+	var b := _shop(_run(10), catalog, null, 42)
 	assert_eq(_ids(a.offers), _ids(b.offers))
+
+
+func test_un_manuel_propose() -> void:
+	var shop := _shop(_run(10), _catalog(5))
+	assert_eq(shop.manual_offers.size(), 1)
+
+
+func test_achat_manuel_monte_le_niveau_et_debite() -> void:
+	var run := _run(10)
+	var shop := _shop(run, _catalog(5))
+	var hand_id: String = shop.manual_offers[0].hand.id
+	assert_true(shop.buy_manual(0))
+	assert_eq(run.stones, 7)
+	assert_eq(run.hand_levels.level_of(hand_id), 2)
+	assert_eq(shop.manual_offers.size(), 0)
+
+
+func test_manuel_achetable_au_maximum_d_artefacts() -> void:
+	var run := _run(10)
+	run.artifacts.append(_artifact("deja", 1))
+	var shop := _shop(run, _catalog(5), _rules(2, 1))
+	assert_true(shop.buy_manual(0))
+
+
+func test_achat_manuel_refuse_sans_assez_de_pierres() -> void:
+	var run := _run(2)
+	var shop := _shop(run, _catalog(5))
+	assert_false(shop.buy_manual(0))
+	assert_eq(run.stones, 2)
