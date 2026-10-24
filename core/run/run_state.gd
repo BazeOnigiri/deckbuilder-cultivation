@@ -62,7 +62,10 @@ func use_pill(index: int, cards: Array[CardInstance]) -> bool:
 
 func _start_round() -> void:
 	status = Status.IN_ROUND
-	current_round = RoundState.new(_deck, _rules, _evaluator, progress.current_target(), artifacts, hand_levels)
+	var constraint: TribulationConstraint = progress.current_bottleneck().constraint
+	if constraint == null:
+		constraint = TribulationConstraint.new()
+	current_round = RoundState.new(_deck, _rules, _evaluator, progress.current_target(), artifacts, hand_levels, constraint)
 	current_round.finished.connect(_on_round_finished)
 	# Emis avant start() : l'UI se branche sur le round avant la premiere pioche.
 	round_started.emit(current_round)

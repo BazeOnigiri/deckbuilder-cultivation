@@ -128,6 +128,9 @@ func _on_round_started(round_state: RoundState) -> void:
 	# Nom du goulot fige au debut du round : progress avance des la victoire.
 	var progress := _run.progress
 	_stage = tr("UI_STAGE") % [tr(progress.current_realm().name_key), tr(progress.current_bottleneck().name_key)]
+	var constraint: TribulationConstraint = progress.current_bottleneck().constraint
+	if constraint != null:
+		_stage += "\n" + tr(constraint.description_key)
 	_last_hand.text = ""
 
 
