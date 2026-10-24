@@ -27,6 +27,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 ### Corrigé
 
 - Le dossier build/ est ignore par Godot, les exports ne sont plus importes comme ressources du jeu.
+- Une pilule qui detruit toute la main fait repiocher, ou perdre le round si la pioche est vide, au lieu de bloquer la partie.
 
 ## [0.2.0] - 2026-10-21
 
