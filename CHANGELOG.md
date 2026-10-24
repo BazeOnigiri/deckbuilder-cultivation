@@ -18,6 +18,10 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Niveaux de main et manuels de technique : un manuel achete en boutique fait monter sa main d'un niveau (+Qi, +Comprehension).
 - Generateur tools/generate_manuals.gd : un manuel par main.
 
+### Modifié
+
+- Les cartes en jeu ont leur propre element et rang, copies de leur definition : prepare les pilules.
+
 ### Corrigé
 
 - Le dossier build/ est ignore par Godot, les exports ne sont plus importes comme ressources du jeu.

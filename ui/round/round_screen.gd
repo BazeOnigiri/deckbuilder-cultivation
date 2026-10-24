@@ -66,7 +66,7 @@ func _refresh() -> void:
 		_hand_row.remove_child(child)
 		child.queue_free()
 	var cards: Array[CardInstance] = _round.hand().duplicate()
-	cards.sort_custom(func(a: CardInstance, b: CardInstance) -> bool: return a.data.rank < b.data.rank)
+	cards.sort_custom(func(a: CardInstance, b: CardInstance) -> bool: return a.rank < b.rank)
 	for card: CardInstance in cards:
 		var view := CardView.new()
 		view.card = card

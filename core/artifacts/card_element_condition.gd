@@ -6,4 +6,4 @@ extends ArtifactCondition
 
 
 func matches(_result: HandResult, card: CardInstance) -> bool:
-	return card != null and card.data.element == element
+	return card != null and card.element == element

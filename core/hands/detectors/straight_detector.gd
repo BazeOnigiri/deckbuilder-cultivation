@@ -15,14 +15,14 @@ func detect(cards: Array[CardInstance]) -> Array[CardInstance]:
 		return empty
 	var ordered: Array[CardInstance] = cards.duplicate()
 	ordered.sort_custom(func(a: CardInstance, b: CardInstance) -> bool:
-		return a.data.rank < b.data.rank)
+		return a.rank < b.rank)
 	for i: int in range(1, ordered.size()):
 		var prev: CardInstance = ordered[i - 1]
 		var cur: CardInstance = ordered[i]
-		if cur.data.rank != prev.data.rank + 1:
+		if cur.rank != prev.rank + 1:
 			return empty
-		if require_same_element and cur.data.element != prev.data.element:
+		if require_same_element and cur.element != prev.element:
 			return empty
-		if cycle != null and cur.data.element != cycle.next_of(prev.data.element):
+		if cycle != null and cur.element != cycle.next_of(prev.element):
 			return empty
 	return ordered

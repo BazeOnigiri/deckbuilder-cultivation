@@ -7,7 +7,7 @@ const CYCLE_PATH := "res://content/cycles/cycle_engendrement.tres"
 func _ranks(cards: Array[CardInstance]) -> Array:
 	var ranks: Array = []
 	for card: CardInstance in cards:
-		ranks.append(card.data.rank)
+		ranks.append(card.rank)
 	return ranks
 
 

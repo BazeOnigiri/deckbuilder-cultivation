@@ -11,7 +11,7 @@ static func score(hand: HandResult, effects: Array[ScoreEffect], level: int = 1)
 	context.qi = definition.base_qi + (level - 1) * definition.level_qi
 	context.comprehension = definition.base_comprehension + (level - 1) * definition.level_comprehension
 	for card: CardInstance in hand.scoring_cards:
-		context.qi += card.data.rank
+		context.qi += card.rank
 	# Boucle par phase plutot que sort_custom : sort_custom n'est pas stable et perdrait l'ordre d'ajout.
 	for phase: int in ScoreEffect.Phase.values():
 		for effect: ScoreEffect in effects:
