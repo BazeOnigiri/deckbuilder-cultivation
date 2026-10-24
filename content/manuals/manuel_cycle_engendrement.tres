@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ManualDefinition" format=3]
+
+[ext_resource type="Resource" path="res://content/hands/main_cycle_engendrement.tres" id="1_q5f7n"]
+[ext_resource type="Script" path="res://core/manuals/manual_definition.gd" id="2_7hf5i"]
+
+[resource]
+script = ExtResource("2_7hf5i")
+id = &"manuel_cycle_engendrement"
+hand = ExtResource("1_q5f7n")
+price = 3

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ManualDefinition" format=3]
+
+[ext_resource type="Resource" path="res://content/hands/main_cinq_souverains.tres" id="1_4qre6"]
+[ext_resource type="Script" path="res://core/manuals/manual_definition.gd" id="2_wykcf"]
+
+[resource]
+script = ExtResource("2_wykcf")
+id = &"manuel_cinq_souverains"
+hand = ExtResource("1_4qre6")
+price = 3

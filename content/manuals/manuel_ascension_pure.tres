@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ManualDefinition" format=3]
+
+[ext_resource type="Resource" path="res://content/hands/main_ascension_pure.tres" id="1_jfagq"]
+[ext_resource type="Script" path="res://core/manuals/manual_definition.gd" id="2_ln7il"]
+
+[resource]
+script = ExtResource("2_ln7il")
+id = &"manuel_ascension_pure"
+hand = ExtResource("1_jfagq")
+price = 3

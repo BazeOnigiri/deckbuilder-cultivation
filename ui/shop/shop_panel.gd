@@ -36,6 +36,14 @@ func _refresh() -> void:
 		button.disabled = not _shop.can_buy(i)
 		button.pressed.connect(_on_buy_pressed.bind(i))
 		_offers.add_child(button)
+	for i: int in _shop.manual_offers.size():
+		var hand: HandDefinition = _shop.manual_offers[i].hand
+		var button := Button.new()
+		button.text = tr("UI_MANUAL_OFFER") % [tr(hand.name_key), _shop.manual_offers[i].price]
+		button.tooltip_text = tr("UI_MANUAL_DESC") % [tr(hand.name_key), hand.level_qi, hand.level_comprehension]
+		button.disabled = not _shop.can_buy_manual(i)
+		button.pressed.connect(_on_buy_manual_pressed.bind(i))
+		_offers.add_child(button)
 	_reroll.text = tr("UI_SHOP_REROLL") % _shop.reroll_cost
 	_reroll.disabled = not _shop.can_reroll()
 
@@ -48,5 +56,10 @@ func _on_buy_pressed(index: int) -> void:
 
 func _on_reroll_pressed() -> void:
 	if _shop.reroll():
+		changed.emit()
+		_refresh()
+
+func _on_buy_manual_pressed(index: int) -> void:
+	if _shop.buy_manual(index):
 		changed.emit()
 		_refresh()

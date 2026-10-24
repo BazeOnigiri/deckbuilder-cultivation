@@ -14,5 +14,7 @@ name_key = "HAND_DOUBLE_PAIRE"
 priority = 30
 base_qi = 20
 base_comprehension = 2
+level_qi = 20
+level_comprehension = 1
 detector = SubResource("detector")
 metadata/_custom_type_script = "uid://ddj28r1xbwom5"

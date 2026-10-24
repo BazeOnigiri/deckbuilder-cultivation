@@ -63,3 +63,11 @@ func test_effets_ne_modifient_pas_la_definition() -> void:
 	var effects: Array[ScoreEffect] = [_effect(ScoreEffect.Phase.MULT_COMPREHENSION, 3.0)]
 	ScoringPipeline.score(hand, effects)
 	assert_eq(hand.definition.base_comprehension, 2)
+
+func test_niveau_ajoute_les_gains_par_niveau() -> void:
+	var hand := _hand(10, 2, [[C.BOIS, 4], [C.FEU, 4]])
+	hand.definition.level_qi = 15
+	hand.definition.level_comprehension = 1
+	var context := ScoringPipeline.score(hand, _no_effects(), 3)
+	assert_eq(context.qi, 10 + 2 * 15 + 8)
+	assert_eq(context.comprehension, 4.0)

@@ -18,12 +18,13 @@ func _evaluator() -> HandEvaluator:
 	var definition := HandDefinition.new()
 	definition.id = "test"
 	definition.base_comprehension = 1
+	definition.level_qi = 10
 	definition.detector = HighCardDetector.new()
 	var definitions: Array[HandDefinition] = [definition]
 	return HandEvaluator.new(definitions)
 
 
-func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards: int = 1, artifacts: Array = []) -> RoundState:
+func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards: int = 1, artifacts: Array = [], levels: HandLevels = null) -> RoundState:
 	var definition := DeckDefinition.new()
 	for i: int in ranks.size():
 		definition.cards.append(CardData.create(StringName("c%d" % i), Element.Type.BOIS, ranks[i]))
@@ -32,7 +33,8 @@ func _round(ranks: Array, hand_size: int, target: int, hands: int = 3, discards:
 	var deck := DeckState.new(definition, rng)
 	var typed: Array[ArtifactDefinition] = []
 	typed.assign(artifacts)
-	var round_state := RoundState.new(deck, _rules(hand_size, hands, discards), _evaluator(), target, typed)
+	var round_levels: HandLevels = levels if levels != null else HandLevels.new()
+	var round_state := RoundState.new(deck, _rules(hand_size, hands, discards), _evaluator(), target, typed, round_levels)
 	round_state.start()
 	return round_state
 
@@ -135,5 +137,12 @@ func test_artefact_ajoute_son_effet_au_score() -> void:
 	var artifact := ArtifactDefinition.new()
 	artifact.effects.append(effect)
 	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100, 3, 1, [artifact])
+	r.play(_pick(r, 5))
+	assert_eq(r.score, 15)
+
+func test_niveau_de_main_augmente_le_score() -> void:
+	var levels := HandLevels.new()
+	levels.level_up("test")
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100, 3, 1, [], levels)
 	r.play(_pick(r, 5))
 	assert_eq(r.score, 15)

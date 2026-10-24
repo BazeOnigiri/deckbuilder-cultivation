@@ -6,6 +6,7 @@
 script = ExtResource("1")
 id = &"boutique_base"
 offer_count = 2
+manual_offer_count = 1
 reroll_base_cost = 5
 reroll_cost_step = 1
 max_artifacts = 5

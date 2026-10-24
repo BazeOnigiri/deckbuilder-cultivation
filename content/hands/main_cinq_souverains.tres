@@ -14,5 +14,7 @@ name_key = "HAND_CINQ_SOUVERAINS"
 priority = 120
 base_qi = 150
 base_comprehension = 12
+level_qi = 50
+level_comprehension = 3
 detector = SubResource("detector")
 metadata/_custom_type_script = "uid://ddj28r1xbwom5"

@@ -14,5 +14,7 @@ name_key = "HAND_FULL"
 priority = 70
 base_qi = 40
 base_comprehension = 4
+level_qi = 25
+level_comprehension = 2
 detector = SubResource("detector")
 metadata/_custom_type_script = "uid://ddj28r1xbwom5"

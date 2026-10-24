@@ -1,13 +1,15 @@
 class_name ScoringPipeline
 extends RefCounted
-## Score d'une main jouee. Ordre fixe : base de la main, cartes qui comptent, puis effets phase par phase.
+## Score d'une main jouee. Ordre fixe : base de la main (selon son niveau), cartes qui comptent,
+## puis effets phase par phase.
 
 
-static func score(hand: HandResult, effects: Array[ScoreEffect]) -> ScoreContext:
+static func score(hand: HandResult, effects: Array[ScoreEffect], level: int = 1) -> ScoreContext:
 	assert(hand != null, "score() demande une main reconnue")
+	var definition := hand.definition
 	var context := ScoreContext.new(hand)
-	context.qi = hand.definition.base_qi
-	context.comprehension = hand.definition.base_comprehension
+	context.qi = definition.base_qi + (level - 1) * definition.level_qi
+	context.comprehension = definition.base_comprehension + (level - 1) * definition.level_comprehension
 	for card: CardInstance in hand.scoring_cards:
 		context.qi += card.data.rank
 	# Boucle par phase plutot que sort_custom : sort_custom n'est pas stable et perdrait l'ordre d'ajout.

@@ -17,13 +17,15 @@ var _deck: DeckState
 var _rules: RoundRules
 var _evaluator: HandEvaluator
 var _artifacts: Array[ArtifactDefinition]
+var _levels: HandLevels
 
 
-func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition]) -> void:
+func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition], levels: HandLevels) -> void:
 	_deck = deck
 	_rules = rules
 	_evaluator = evaluator
 	_artifacts = artifacts
+	_levels = levels
 	target_score = p_target_score
 	hands_left = rules.hands_per_round
 	discards_left = rules.discards_per_round
@@ -48,7 +50,7 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 	if result == null or not _deck.discard(cards):
 		return null
 	var effects := ArtifactResolver.effects_for(_artifacts, result)
-	var context := ScoringPipeline.score(result, effects)
+	var context := ScoringPipeline.score(result, effects, _levels.level_of(result.definition.id))
 	score += context.total()
 	hands_left -= 1
 	hand_played.emit(result, context)

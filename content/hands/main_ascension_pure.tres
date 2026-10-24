@@ -15,5 +15,7 @@ name_key = "HAND_ASCENSION_PURE"
 priority = 100
 base_qi = 100
 base_comprehension = 8
+level_qi = 40
+level_comprehension = 4
 detector = SubResource("detector")
 metadata/_custom_type_script = "uid://ddj28r1xbwom5"

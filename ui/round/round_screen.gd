@@ -15,6 +15,7 @@ var _stage: String = ""
 var _rng: RandomNumberGenerator
 var _shop_rules: ShopRules
 var _artifact_catalog: Array[ArtifactDefinition]
+var _manual_catalog: Array[ManualDefinition]
 
 ## Debug : artefacts donnes au debut de la run (inspecteur de la scene). Ignores dans une build release.
 @export var debug_artifacts: Array[ArtifactDefinition] = []
@@ -37,6 +38,7 @@ func _ready() -> void:
 	_rng.randomize()
 	_shop_rules = load(SHOP_RULES_PATH)
 	_artifact_catalog = ArtifactCatalog.load_definitions()
+	_manual_catalog = ManualCatalog.load_definitions()
 	var deck := DeckState.new(load(DECK_PATH), _rng)
 	var evaluator := HandEvaluator.new(HandCatalog.load_definitions())
 	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()), load(ECONOMY_PATH))
@@ -123,13 +125,14 @@ func _on_continue_pressed() -> void:
 
 
 func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
-	_last_hand.text = tr("UI_LAST_HAND") % [tr(result.definition.name_key), score.qi, score.comprehension, score.total()]
+	var level: int = _run.hand_levels.level_of(result.definition.id)
+	_last_hand.text = tr("UI_LAST_HAND") % [tr(result.definition.name_key), level, score.qi, score.comprehension, score.total()]
 
 
 func _on_round_won(reward: RoundReward) -> void:
 	_last_hand.text += "\n" + tr("UI_ROUND_WON")
 	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
-	_shop_panel.open(ShopState.new(_run, _artifact_catalog, _shop_rules, _rng))
+	_shop_panel.open(ShopState.new(_run, _artifact_catalog, _manual_catalog, _shop_rules, _rng))
 	_continue_button.show()
 
 
