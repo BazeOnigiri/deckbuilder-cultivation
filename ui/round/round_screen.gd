@@ -16,6 +16,7 @@ var _rng: RandomNumberGenerator
 var _shop_rules: ShopRules
 var _artifact_catalog: Array[ArtifactDefinition]
 var _manual_catalog: Array[ManualDefinition]
+var _pill_catalog: Array[PillDefinition]
 
 ## Debug : artefacts donnes au debut de la run (inspecteur de la scene). Ignores dans une build release.
 @export var debug_artifacts: Array[ArtifactDefinition] = []
@@ -30,6 +31,7 @@ var _manual_catalog: Array[ManualDefinition]
 @onready var _credits_button: Button = %CreditsButton
 @onready var _artifacts_label: Label = %Artifacts
 @onready var _shop_panel: ShopPanel = %ShopPanel
+@onready var _pill_row: HBoxContainer = %PillRow
 
 
 func _ready() -> void:
@@ -39,6 +41,7 @@ func _ready() -> void:
 	_shop_rules = load(SHOP_RULES_PATH)
 	_artifact_catalog = ArtifactCatalog.load_definitions()
 	_manual_catalog = ManualCatalog.load_definitions()
+	_pill_catalog = PillCatalog.load_definitions()
 	var deck := DeckState.new(load(DECK_PATH), _rng)
 	var evaluator := HandEvaluator.new(HandCatalog.load_definitions())
 	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()), load(ECONOMY_PATH))
@@ -96,6 +99,27 @@ func _on_selection_changed() -> void:
 		and count > 0 and count <= _rules.max_selected_cards)
 	_play_button.disabled = not can_act
 	_discard_button.disabled = not can_act or _round.discards_left == 0
+	_refresh_pills()
+
+## Les boutons de pilules dependent de la selection : reconstruits a chaque changement.
+func _refresh_pills() -> void:
+	for child: Node in _pill_row.get_children():
+		_pill_row.remove_child(child)
+		child.queue_free()
+	var selected := _selected()
+	for i: int in _run.pills.size():
+		var pill: PillDefinition = _run.pills[i]
+		var button := Button.new()
+		button.text = tr("UI_USE_PILL") % tr(pill.name_key)
+		button.tooltip_text = tr(pill.description_key)
+		button.disabled = not _run.can_use_pill(i, selected)
+		button.pressed.connect(_on_pill_pressed.bind(i))
+		_pill_row.add_child(button)
+
+
+func _on_pill_pressed(index: int) -> void:
+	_run.use_pill(index, _selected())
+	_refresh()
 
 
 func _on_round_started(round_state: RoundState) -> void:
@@ -132,7 +156,7 @@ func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 func _on_round_won(reward: RoundReward) -> void:
 	_last_hand.text += "\n" + tr("UI_ROUND_WON")
 	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
-	_shop_panel.open(ShopState.new(_run, _artifact_catalog, _manual_catalog, _shop_rules, _rng))
+	_shop_panel.open(ShopState.new(_run, _artifact_catalog, _manual_catalog, _pill_catalog, _shop_rules, _rng))
 	_continue_button.show()
 
 

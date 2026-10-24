@@ -55,3 +55,12 @@ UI_SHOP_OFFER,%s (%d pierres),%s (%d stones)
 UI_SHOP_REROLL,Relancer (%d pierres),Reroll (%d stones)
 UI_MANUAL_OFFER,Manuel : %s (%d pierres),Manual: %s (%d stones)
 UI_MANUAL_DESC,%s gagne un niveau : +%d Qi et +%d Compréhension.,%s gains a level: +%d Qi and +%d Comprehension.
+PILL_FEU_CELESTE,Pilule du feu céleste,Celestial Fire Pill
+PILL_FEU_CELESTE_DESC,Change jusqu'à 3 cartes sélectionnées en Feu.,Turns up to 3 selected cards into Fire.
+PILL_EAU_PROFONDE,Pilule de l'eau profonde,Deep Water Pill
+PILL_EAU_PROFONDE_DESC,Change jusqu'à 3 cartes sélectionnées en Eau.,Turns up to 3 selected cards into Water.
+PILL_RAFFINEMENT,Pilule de raffinement,Refining Pill
+PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (9 maximum).,+1 rank to up to 2 selected cards (9 maximum).
+PILL_PURIFICATION,Pilule de purification,Purification Pill
+PILL_PURIFICATION_DESC,Détruit jusqu'à 2 cartes sélectionnées pour le reste de la run.,Destroys up to 2 selected cards for the rest of the run.
+UI_USE_PILL,Utiliser : %s,Use: %s

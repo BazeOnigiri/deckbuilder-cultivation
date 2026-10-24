@@ -4,19 +4,22 @@ extends RefCounted
 
 var offers: Array[ArtifactDefinition] = []
 var manual_offers: Array[ManualDefinition] = []
+var pill_offers: Array[PillDefinition] = []
 var reroll_cost: int
 
 var _run: RunState
 var _catalog: Array[ArtifactDefinition]
 var _manuals: Array[ManualDefinition]
+var _pills: Array[PillDefinition]
 var _rules: ShopRules
 var _rng: RandomNumberGenerator
 
 
-func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[ManualDefinition], rules: ShopRules, rng: RandomNumberGenerator) -> void:
+func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[ManualDefinition], pills: Array[PillDefinition], rules: ShopRules, rng: RandomNumberGenerator) -> void:
 	_run = run
 	_catalog = catalog
 	_manuals = manuals
+	_pills = pills
 	_rules = rules
 	_rng = rng
 	reroll_cost = rules.reroll_base_cost
@@ -53,6 +56,20 @@ func buy_manual(index: int) -> bool:
 	manual_offers.remove_at(index)
 	return true
 
+func can_buy_pill(index: int) -> bool:
+	return (index >= 0 and index < pill_offers.size()
+		and _run.pills.size() < _rules.max_pills
+		and _run.stones >= pill_offers[index].price)
+
+
+func buy_pill(index: int) -> bool:
+	if not can_buy_pill(index):
+		return false
+	var pill: PillDefinition = pill_offers[index]
+	_run.stones -= pill.price
+	_run.pills.append(pill)
+	pill_offers.remove_at(index)
+	return true
 
 func can_reroll() -> bool:
 	return _run.stones >= reroll_cost
@@ -82,3 +99,7 @@ func _roll_offers() -> void:
 	var manual_pool: Array[ManualDefinition] = _manuals.duplicate()
 	RngUtils.shuffle(manual_pool, _rng)
 	manual_offers.assign(manual_pool.slice(0, _rules.manual_offer_count))
+	# Pilules : comme les manuels, rachetables d'une visite a l'autre.
+	var pill_pool: Array[PillDefinition] = _pills.duplicate()
+	RngUtils.shuffle(pill_pool, _rng)
+	pill_offers.assign(pill_pool.slice(0, _rules.pill_offer_count))

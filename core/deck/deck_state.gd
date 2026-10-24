@@ -38,18 +38,33 @@ func fill_hand(target_size: int) -> Array[CardInstance]:
 	return drawn
 
 
-## Deplace des cartes de la main vers la defausse.
-## Refuse tout (et ne change rien) si une carte est absente de la main ou en double.
-func discard(cards: Array[CardInstance]) -> bool:
+## Vrai si toutes les cartes sont en main, sans doublon, et qu'il y en a au moins une.
+func all_in_hand(cards: Array[CardInstance]) -> bool:
 	if cards.is_empty():
 		return false
 	for card: CardInstance in cards:
 		if not hand.has(card) or cards.count(card) > 1:
 			return false
+	return true
+
+
+## Deplace des cartes de la main vers la defausse. Refuse tout (et ne change rien) si all_in_hand est faux.
+func discard(cards: Array[CardInstance]) -> bool:
+	if not all_in_hand(cards):
+		return false
 	for card: CardInstance in cards:
 		hand.erase(card)
 		discard_pile.append(card)
 	cards_discarded.emit(cards)
+	return true
+
+
+## Retire definitivement des cartes de la main : elles quittent le paquet pour le reste de la run.
+func destroy(cards: Array[CardInstance]) -> bool:
+	if not all_in_hand(cards):
+		return false
+	for card: CardInstance in cards:
+		hand.erase(card)
 	return true
 
 

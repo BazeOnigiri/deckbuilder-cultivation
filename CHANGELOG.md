@@ -17,6 +17,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Boutique entre deux goulots : 2 offres d'artefacts tirees au hasard, achat avec les pierres spirituelles, relance au cout croissant, 5 artefacts maximum.
 - Niveaux de main et manuels de technique : un manuel achete en boutique fait monter sa main d'un niveau (+Qi, +Comprehension).
 - Generateur tools/generate_manuals.gd : un manuel par main.
+- Pilules : consommables utilises pendant un round sur les cartes selectionnees (changer l'element, monter le rang, detruire). 4 pilules, vendues en boutique, 2 places d'inventaire.
 
 ### Modifié
 
