@@ -17,7 +17,7 @@ ELEMENT_TERRE,Terre,Earth
 ELEMENT_METAL,Métal,Metal
 ELEMENT_EAU,Eau,Water
 UI_ROUND_INFO,Score : %d / %d    Mains : %d    Défausses : %d,Score: %d / %d    Hands: %d    Discards: %d
-UI_LAST_HAND,%s : %d Qi x %.1f = %d,%s: %d Qi x %.1f = %d
+UI_LAST_HAND,%s (niv. %d) : %d Qi x %.1f = %d,%s (lv. %d): %d Qi x %.1f = %d
 UI_PLAY,Jouer,Play
 UI_DISCARD,Défausser,Discard
 UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
@@ -53,3 +53,5 @@ UI_NONE,aucun,none
 UI_SHOP,Boutique,Shop
 UI_SHOP_OFFER,%s (%d pierres),%s (%d stones)
 UI_SHOP_REROLL,Relancer (%d pierres),Reroll (%d stones)
+UI_MANUAL_OFFER,Manuel : %s (%d pierres),Manual: %s (%d stones)
+UI_MANUAL_DESC,%s gagne un niveau : +%d Qi et +%d Compréhension.,%s gains a level: +%d Qi and +%d Comprehension.

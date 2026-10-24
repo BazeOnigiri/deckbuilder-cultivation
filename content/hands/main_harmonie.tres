@@ -15,5 +15,7 @@ name_key = "HAND_HARMONIE"
 priority = 40
 base_qi = 25
 base_comprehension = 2
+level_qi = 20
+level_comprehension = 2
 detector = SubResource("detector")
 metadata/_custom_type_script = "uid://ddj28r1xbwom5"

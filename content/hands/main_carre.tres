@@ -14,5 +14,7 @@ name_key = "HAND_CARRE"
 priority = 90
 base_qi = 70
 base_comprehension = 7
+level_qi = 30
+level_comprehension = 3
 detector = SubResource("detector")
 metadata/_custom_type_script = "uid://ddj28r1xbwom5"
