@@ -213,3 +213,26 @@ func test_pilule_qui_vide_la_main_fait_repiocher() -> void:
 	assert_true(run.use_pill(0, all_cards))
 	assert_eq(run.current_round.hand().size(), 2)
 	assert_eq(run.status, RunState.Status.IN_ROUND)
+
+func test_stats_de_run_comptent_les_mains() -> void:
+	var run := _run([_realm(1, 1000, [1.0])])
+	run.start()
+	_play_one(run)
+	assert_eq(run.stats.hands.count_of("test"), 1)
+	assert_gt(run.stats.best_hand_score, 0)
+
+
+func test_stats_de_run_comptent_les_defausses() -> void:
+	var run := _run([_realm(1, 1000, [1.0])])
+	run.start()
+	var cards: Array[CardInstance] = [run.current_round.hand()[0]]
+	run.current_round.discard(cards)
+	assert_eq(run.stats.discards_used, 1)
+
+
+func test_stats_de_run_comptent_les_goulots_et_les_pierres() -> void:
+	var run := _run([_realm(1, 1, [1.0, 2.0])])
+	run.start()
+	_play_one(run)
+	assert_eq(run.stats.bottlenecks_cleared, 1)
+	assert_eq(run.stats.stones_earned, 5)

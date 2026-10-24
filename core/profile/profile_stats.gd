@@ -9,28 +9,7 @@ var runs_started: int = 0
 var runs_won: int = 0
 var best_realm: int = 0
 var best_hand_score: int = 0
-## id de main -> nombre de fois jouee.
-var hand_counts: Dictionary = {}
-
-
-func total_hands() -> int:
-	var total: int = 0
-	for count: int in hand_counts.values():
-		total += count
-	return total
-
-
-## Main la plus jouee, "" si aucune. En cas d'egalite, le plus petit id : resultat stable.
-func most_played_hand() -> String:
-	var ids: Array = hand_counts.keys()
-	ids.sort()
-	var best_id: String = ""
-	var best_count: int = 0
-	for id: String in ids:
-		if hand_counts[id] > best_count:
-			best_id = id
-			best_count = hand_counts[id]
-	return best_id
+var hands := HandTally.new()
 
 
 func to_dict() -> Dictionary:
@@ -39,7 +18,7 @@ func to_dict() -> Dictionary:
 		"runs_won": runs_won,
 		"best_realm": best_realm,
 		"best_hand_score": best_hand_score,
-		"hand_counts": hand_counts.duplicate(),
+		"hand_counts": hands.to_dict(),
 	}
 
 
@@ -50,13 +29,7 @@ static func from_dict(data: Dictionary) -> ProfileStats:
 	stats.runs_won = _count(data, "runs_won")
 	stats.best_realm = _count(data, "best_realm")
 	stats.best_hand_score = _count(data, "best_hand_score")
-	var counts: Variant = data.get("hand_counts", {})
-	if counts is Dictionary:
-		for key: Variant in counts:
-			if key is String:
-				var count: int = _count(counts, key)
-				if count > 0:
-					stats.hand_counts[key] = count
+	stats.hands = HandTally.from_dict(data.get("hand_counts", {}))
 	return stats
 
 

@@ -85,3 +85,8 @@ text = "UI_CONTINUE"
 unique_name_in_owner = true
 layout_mode = 2
 text = "UI_MENU"
+
+[node name="InfoButton" type="Button" parent="Margin/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_INFO_BUTTON"

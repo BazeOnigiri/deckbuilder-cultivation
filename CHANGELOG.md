@@ -21,11 +21,13 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Tribulations : le dernier goulot de chaque royaume impose une contrainte (sceau d'element, une main de moins, main reduite). Contraintes en donnees.
 - Socle de sauvegarde : JSON avec numero de version et migrations, ecriture via fichier temporaire pour ne jamais corrompre une sauvegarde.
 - Profil : parties lancees, victoires, meilleur royaume, meilleure main et mains jouees par type, sauvegardes et affiches dans une page Statistiques accessible depuis le menu.
+- Fenetre Infos pendant la run : niveau et valeur de chaque main, goulots du royaume en cours avec objectifs et contraintes, statistiques de la run.
 
 ### Modifié
 
 - Les cartes en jeu ont leur propre element et rang, copies de leur definition : prepare les pilules.
 - Le bouton Credits est dans le menu principal, et non plus dans l'ecran de round.
+- Comptage des mains (HandTally) et valeurs par niveau (HandDefinition.qi_at) partages au lieu d'etre dupliques.
 
 ### Corrigé
 

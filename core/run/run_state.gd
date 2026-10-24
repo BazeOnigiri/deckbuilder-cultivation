@@ -17,6 +17,7 @@ var stones: int = 0
 var artifacts: Array[ArtifactDefinition] = []
 var hand_levels := HandLevels.new()
 var pills: Array[PillDefinition] = []
+var stats := RunStats.new()
 
 var _deck: DeckState
 var _rules: RoundRules
@@ -68,6 +69,8 @@ func _start_round() -> void:
 		constraint = TribulationConstraint.new()
 	current_round = RoundState.new(_deck, _rules, _evaluator, progress.current_target(), artifacts, hand_levels, constraint)
 	current_round.finished.connect(_on_round_finished)
+	current_round.hand_played.connect(_on_hand_played)
+	current_round.discarded.connect(_on_discarded)
 	# Emis avant start() : l'UI se branche sur le round avant la premiere pioche.
 	round_started.emit(current_round)
 	current_round.start()
@@ -81,9 +84,18 @@ func _on_round_finished(won: bool) -> void:
 	# Recompense calculee avant advance() : elle depend du goulot qui vient d'etre franchi.
 	var reward := RoundReward.compute(_economy, progress.current_bottleneck().reward, current_round.hands_left, stones)
 	stones += reward.total()
+	stats.stones_earned += reward.total()
+	stats.bottlenecks_cleared += 1
 	if progress.advance():
 		status = Status.BETWEEN_ROUNDS
 		round_won.emit(reward)
 	else:
 		status = Status.WON
 		finished.emit(true)
+
+func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
+	stats.record_hand(result.definition.id, score.total())
+
+
+func _on_discarded() -> void:
+	stats.discards_used += 1
