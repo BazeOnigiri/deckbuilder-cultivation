@@ -19,10 +19,13 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Generateur tools/generate_manuals.gd : un manuel par main.
 - Pilules : consommables utilises pendant un round sur les cartes selectionnees (changer l'element, monter le rang, detruire). 4 pilules, vendues en boutique, 2 places d'inventaire.
 - Tribulations : le dernier goulot de chaque royaume impose une contrainte (sceau d'element, une main de moins, main reduite). Contraintes en donnees.
+- Socle de sauvegarde : JSON avec numero de version et migrations, ecriture via fichier temporaire pour ne jamais corrompre une sauvegarde.
+- Profil : parties lancees, victoires, meilleur royaume, meilleure main et mains jouees par type, sauvegardes et affiches dans une page Statistiques accessible depuis le menu.
 
 ### Modifié
 
 - Les cartes en jeu ont leur propre element et rang, copies de leur definition : prepare les pilules.
+- Le bouton Credits est dans le menu principal, et non plus dans l'ecran de round.
 
 ### Corrigé
 
