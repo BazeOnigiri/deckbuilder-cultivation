@@ -141,3 +141,50 @@ func test_artefacts_de_la_run_agissent_dans_le_round() -> void:
 	run.start()
 	_play_one(run)
 	assert_eq(run.status, RunState.Status.WON)
+
+func _fire_pill(max_cards: int = 2) -> PillDefinition:
+	var effect := SetElementPillEffect.new()
+	effect.element = Element.Type.FEU
+	var pill := PillDefinition.new()
+	pill.min_cards = 1
+	pill.max_cards = max_cards
+	pill.effect = effect
+	return pill
+
+
+func test_pilule_appliquee_puis_consommee() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.pills.append(_fire_pill())
+	run.start()
+	var cards: Array[CardInstance] = [run.current_round.hand()[0]]
+	assert_true(run.use_pill(0, cards))
+	assert_eq(cards[0].element, Element.Type.FEU)
+	assert_eq(run.pills.size(), 0)
+
+
+func test_pilule_refusee_avec_trop_de_cartes() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.pills.append(_fire_pill(1))
+	run.start()
+	var cards: Array[CardInstance] = [run.current_round.hand()[0], run.current_round.hand()[1]]
+	assert_false(run.use_pill(0, cards))
+	assert_eq(run.pills.size(), 1)
+
+
+func test_pilule_refusee_sur_une_carte_hors_main() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.pills.append(_fire_pill())
+	run.start()
+	var outsider: Array[CardInstance] = [CardInstance.new(99, CardData.create(&"x", Element.Type.EAU, 1))]
+	assert_false(run.use_pill(0, outsider))
+	assert_eq(outsider[0].element, Element.Type.EAU)
+
+
+func test_pilule_refusee_hors_round() -> void:
+	var run := _run([_realm(1, 1, [1.0, 2.0])])
+	run.pills.append(_fire_pill())
+	run.start()
+	_play_one(run)
+	assert_eq(run.status, RunState.Status.BETWEEN_ROUNDS)
+	var cards: Array[CardInstance] = [run.current_round.hand()[0]]
+	assert_false(run.use_pill(0, cards))

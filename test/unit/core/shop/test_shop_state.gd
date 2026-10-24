@@ -27,12 +27,22 @@ func _manuals(count: int = 3, price: int = 3) -> Array[ManualDefinition]:
 		manuals.append(manual)
 	return manuals
 
+func _pills(count: int = 3, price: int = 3) -> Array[PillDefinition]:
+	var pills: Array[PillDefinition] = []
+	for i: int in count:
+		var pill := PillDefinition.new()
+		pill.id = StringName("pilule_%d" % i)
+		pill.price = price
+		pills.append(pill)
+	return pills
 
 func _rules(offer_count: int = 2, max_artifacts: int = 5) -> ShopRules:
 	var rules := ShopRules.new()
 	rules.id = &"test"
 	rules.offer_count = offer_count
 	rules.manual_offer_count = 1
+	rules.pill_offer_count = 1
+	rules.max_pills = 2
 	rules.reroll_base_cost = 5
 	rules.reroll_cost_step = 1
 	rules.max_artifacts = max_artifacts
@@ -53,8 +63,7 @@ func _rng(seed_value: int = 1) -> RandomNumberGenerator:
 
 
 func _shop(run: RunState, catalog: Array[ArtifactDefinition], rules: ShopRules = null, seed_value: int = 1) -> ShopState:
-	return ShopState.new(run, catalog, _manuals(), rules if rules != null else _rules(), _rng(seed_value))
-
+	return ShopState.new(run, catalog, _manuals(), _pills(), rules if rules != null else _rules(), _rng(seed_value))
 
 func _ids(artifacts: Array[ArtifactDefinition]) -> Array:
 	var ids: Array = []
@@ -162,3 +171,24 @@ func test_achat_manuel_refuse_sans_assez_de_pierres() -> void:
 	var shop := _shop(run, _catalog(5))
 	assert_false(shop.buy_manual(0))
 	assert_eq(run.stones, 2)
+
+func test_une_pilule_proposee() -> void:
+	var shop := _shop(_run(10), _catalog(5))
+	assert_eq(shop.pill_offers.size(), 1)
+
+
+func test_achat_pilule_ajoute_a_l_inventaire_et_debite() -> void:
+	var run := _run(10)
+	var shop := _shop(run, _catalog(5))
+	assert_true(shop.buy_pill(0))
+	assert_eq(run.stones, 7)
+	assert_eq(run.pills.size(), 1)
+	assert_eq(shop.pill_offers.size(), 0)
+
+
+func test_achat_pilule_refuse_inventaire_plein() -> void:
+	var run := _run(10)
+	run.pills.append_array(_pills(2))
+	var shop := _shop(run, _catalog(5))
+	assert_false(shop.buy_pill(0))
+	assert_eq(run.stones, 10)
