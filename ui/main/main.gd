@@ -1,5 +1,5 @@
 extends Control
-## Racine du jeu : machine a etats MENU / RUN / STATS. Possede le profil du joueur, partage entre les ecrans.
+## Racine du jeu : machine a etats MENU / RUN / STATS. Possede le contenu et le profil, partages entre les ecrans.
 
 const MENU_SCENE := preload("res://ui/menu/menu_screen.tscn")
 const RUN_SCENE := preload("res://ui/round/round_screen.tscn")
@@ -12,9 +12,11 @@ var _screen: Node
 var _profile: ProfileStats
 var _profile_storage: SaveStorage
 var _tracker: ProfileTracker
+var _content: GameContent
 
 
 func _ready() -> void:
+	_content = GameContent.load_default()
 	_profile_storage = SaveStorage.new(profile_path)
 	_profile = ProfileStats.load_from(_profile_storage)
 	_tracker = ProfileTracker.new(_profile)
@@ -32,12 +34,14 @@ func _show_menu() -> void:
 func _show_stats() -> void:
 	var stats := STATS_SCENE.instantiate()
 	stats.profile = _profile
+	stats.content = _content
 	stats.back_requested.connect(_show_menu)
 	_swap(stats)
 
 
 func _show_run() -> void:
 	var run_screen := RUN_SCENE.instantiate()
+	run_screen.content = _content
 	# Branche avant add_child : run_created est emis pendant le _ready de l'ecran.
 	run_screen.run_created.connect(_tracker.track)
 	run_screen.menu_requested.connect(_show_menu)
