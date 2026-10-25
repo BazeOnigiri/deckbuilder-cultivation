@@ -129,3 +129,15 @@ func test_signaux_emis() -> void:
 	var to_discard: Array[CardInstance] = [deck.hand[0]]
 	deck.discard(to_discard)
 	assert_signal_emitted(deck, "cards_discarded")
+
+func test_toutes_les_cartes_puis_paquet_restaure() -> void:
+	var deck := _make_deck(1)
+	deck.fill_hand(HAND_SIZE)
+	var to_discard: Array[CardInstance] = [deck.hand[0]]
+	deck.discard(to_discard)
+	var all := deck.all_cards()
+	assert_eq(all.size(), _definition.cards.size())
+	var rng := RandomNumberGenerator.new()
+	var restored := DeckState.from_cards(all, rng)
+	assert_eq(restored.draw_pile.size(), all.size())
+	assert_true(restored.hand.is_empty())

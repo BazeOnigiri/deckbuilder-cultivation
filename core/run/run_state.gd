@@ -62,6 +62,10 @@ func use_pill(index: int, cards: Array[CardInstance]) -> bool:
 	current_round.ensure_playable()
 	return true
 
+## Toutes les cartes de la run (sauvegarde).
+func cards() -> Array[CardInstance]:
+	return _deck.all_cards()
+
 func _start_round() -> void:
 	status = Status.IN_ROUND
 	var constraint: TribulationConstraint = progress.current_bottleneck().constraint

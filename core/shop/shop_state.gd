@@ -15,7 +15,7 @@ var _rules: ShopRules
 var _rng: RandomNumberGenerator
 
 
-func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[ManualDefinition], pills: Array[PillDefinition], rules: ShopRules, rng: RandomNumberGenerator) -> void:
+func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[ManualDefinition], pills: Array[PillDefinition], rules: ShopRules, rng: RandomNumberGenerator, saved: Dictionary = {}) -> void:
 	_run = run
 	_catalog = catalog
 	_manuals = manuals
@@ -23,7 +23,11 @@ func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[Man
 	_rules = rules
 	_rng = rng
 	reroll_cost = rules.reroll_base_cost
-	_roll_offers()
+		# Boutique sauvegardee : on reprend ses offres sans tirer, la RNG ne bouge pas.
+	if saved.is_empty():
+		_roll_offers()
+	else:
+		_restore(saved)
 
 
 func can_buy(index: int) -> bool:
@@ -103,3 +107,36 @@ func _roll_offers() -> void:
 	var pill_pool: Array[PillDefinition] = _pills.duplicate()
 	RngUtils.shuffle(pill_pool, _rng)
 	pill_offers.assign(pill_pool.slice(0, _rules.pill_offer_count))
+
+func to_dict() -> Dictionary:
+	return {
+		"artifacts": _ids(offers),
+		"manuals": _ids(manual_offers),
+		"pills": _ids(pill_offers),
+		"reroll_cost": reroll_cost,
+	}
+
+
+func _restore(saved: Dictionary) -> void:
+	reroll_cost = maxi(_rules.reroll_base_cost, SaveData.int_of(saved, "reroll_cost", _rules.reroll_base_cost))
+	offers.assign(_pick(_catalog, saved.get("artifacts")))
+	manual_offers.assign(_pick(_manuals, saved.get("manuals")))
+	pill_offers.assign(_pick(_pills, saved.get("pills")))
+
+
+static func _ids(list: Array) -> Array[String]:
+	var ids: Array[String] = []
+	for item: Resource in list:
+		ids.append(String(item.id))
+	return ids
+
+
+## Contenus du catalogue dont l'id est dans la liste sauvegardee, dans l'ordre sauvegarde.
+static func _pick(list: Array, saved_ids: Variant) -> Array:
+	var result: Array = []
+	for id: String in SaveData.string_list(saved_ids):
+		for item: Resource in list:
+			if String(item.id) == id:
+				result.append(item)
+				break
+	return result

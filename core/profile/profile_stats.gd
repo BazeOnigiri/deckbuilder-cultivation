@@ -49,7 +49,4 @@ static func _migrations() -> Dictionary:
 
 
 static func _count(data: Dictionary, key: String) -> int:
-	var value: Variant = data.get(key, 0)
-	if value is int or value is float:
-		return maxi(0, int(value))
-	return 0
+	return maxi(0, SaveData.int_of(data, key))

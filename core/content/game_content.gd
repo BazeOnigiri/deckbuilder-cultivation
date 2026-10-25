@@ -37,5 +37,25 @@ func new_run(rng: RandomNumberGenerator) -> RunState:
 	return RunState.new(DeckState.new(starter_deck, rng), round_rules, HandEvaluator.new(hands), RunProgress.new(realms), economy)
 
 
-func new_shop(run: RunState, rng: RandomNumberGenerator) -> ShopState:
-	return ShopState.new(run, artifacts, manuals, pills, shop_rules, rng)
+## saved : offres d'une boutique sauvegardee. Vide : nouvelles offres tirees au hasard.
+func new_shop(run: RunState, rng: RandomNumberGenerator, saved: Dictionary = {}) -> ShopState:
+	return ShopState.new(run, artifacts, manuals, pills, shop_rules, rng, saved)
+
+## Recherches par id pour la sauvegarde. Contenu retire du jeu : null.
+func card_by_id(id: StringName) -> CardData:
+	return _find(starter_deck.cards, id) as CardData
+
+
+func artifact_by_id(id: StringName) -> ArtifactDefinition:
+	return _find(artifacts, id) as ArtifactDefinition
+
+
+func pill_by_id(id: StringName) -> PillDefinition:
+	return _find(pills, id) as PillDefinition
+
+
+static func _find(list: Array, id: StringName) -> Resource:
+	for item: Resource in list:
+		if item.id == id:
+			return item
+	return null

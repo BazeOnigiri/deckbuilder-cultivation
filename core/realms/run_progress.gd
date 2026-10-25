@@ -53,3 +53,22 @@ func advance() -> bool:
 	_bottleneck_index -= 1
 	is_finished = true
 	return false
+
+func to_dict() -> Dictionary:
+	return {"realm": _realm_index, "bottleneck": _bottleneck_index}
+
+
+## Pour la sauvegarde. Refuse (false, rien ne change) une position hors des royaumes connus.
+func restore(data: Variant) -> bool:
+	if not data is Dictionary:
+		return false
+	var realm: int = SaveData.int_of(data, "realm", -1)
+	var bottleneck: int = SaveData.int_of(data, "bottleneck", -1)
+	if realm < 0 or realm >= _realms.size():
+		return false
+	if bottleneck < 0 or bottleneck >= _realms[realm].bottlenecks.size():
+		return false
+	_realm_index = realm
+	_bottleneck_index = bottleneck
+	is_finished = false
+	return true

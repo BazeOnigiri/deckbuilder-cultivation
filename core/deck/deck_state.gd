@@ -75,3 +75,18 @@ func reset() -> void:
 	hand.clear()
 	discard_pile.clear()
 	RngUtils.shuffle(draw_pile, _rng)
+
+## Toutes les cartes de la run, toutes piles confondues (sauvegarde).
+func all_cards() -> Array[CardInstance]:
+	var cards: Array[CardInstance] = []
+	cards.append_array(draw_pile)
+	cards.append_array(hand)
+	cards.append_array(discard_pile)
+	return cards
+
+
+## Paquet restaure : tout va dans la pioche, le prochain round remelange de toute facon.
+static func from_cards(cards: Array[CardInstance], rng: RandomNumberGenerator) -> DeckState:
+	var deck := DeckState.new(DeckDefinition.new(), rng)
+	deck.draw_pile = cards.duplicate()
+	return deck
