@@ -6,6 +6,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-25
+
 ### Ajouté
 
 - Royaumes et goulots en donnees (3 royaumes x 3 goulots), objectif = score de base du royaume x multiplicateur du goulot.
