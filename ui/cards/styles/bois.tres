@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ElementStyle" format=3 uid="uid://b2x2vwkfxclng"]
+
+[ext_resource type="Texture2D" uid="uid://corthchjcl1d5" path="res://ui/cards/icons/bois.svg" id="1_28w04"]
+[ext_resource type="Script" uid="uid://ct8lsqumgmyw6" path="res://ui/cards/element_style.gd" id="1_n7j20"]
+
+[resource]
+script = ExtResource("1_n7j20")
+color = Color(0.49803922, 0.7490196, 0.47843137, 1)
+icon = ExtResource("1_28w04")
+metadata/_custom_type_script = "uid://ct8lsqumgmyw6"
