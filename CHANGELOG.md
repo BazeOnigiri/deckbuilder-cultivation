@@ -23,6 +23,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Profil : parties lancees, victoires, meilleur royaume, meilleure main et mains jouees par type, sauvegardes et affiches dans une page Statistiques accessible depuis le menu.
 - Fenetre Infos pendant la run : niveau et valeur de chaque main, goulots du royaume en cours avec objectifs et contraintes, statistiques de la run.
 - Sauvegarde de run (logique) : capture et restauration entre deux goulots, par id, avec l'etat exact de la RNG et les offres de la boutique.
+- Reprendre une run : sauvegarde automatique apres chaque action (round en cours avec ses piles exactes, ou boutique), bouton Continuer dans le menu, fenetre Nouvelle partie avec un onglet Continuer qui resume la run sauvegardee.
 
 ### Modifié
 

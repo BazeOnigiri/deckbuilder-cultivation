@@ -81,3 +81,9 @@ func test_retient_la_meilleure_main() -> void:
 	assert_eq(run.status, RunState.Status.LOST)
 	assert_eq(stats.runs_won, 0)
 	assert_eq(stats.hands.count_of("test"), 1)
+
+func test_run_reprise_pas_comptee_comme_nouvelle() -> void:
+	var stats := ProfileStats.new()
+	_tracker = ProfileTracker.new(stats)
+	_tracker.track(_run(1, 100), false)
+	assert_eq(stats.runs_started, 0)

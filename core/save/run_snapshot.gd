@@ -1,39 +1,54 @@
 class_name RunSnapshot
 extends RefCounted
-## Sauvegarde d'une run entre deux goulots : capture vers un Dictionary JSON, et restauration.
+## Sauvegarde d'une run, a tout moment jouable : pendant un round (piles exactes) ou dans la boutique.
 ## Tout est reference par id ; un contenu retire du jeu est ignore a la restauration.
 
 const VERSION := 1
 const DEFAULT_PATH := "user://run.json"
 
 
-## On ne sauvegarde qu'entre deux goulots : main et defausse n'y comptent pas, le round suivant remelange.
+## Sauvegardable pendant un round en cours, ou entre deux goulots. Pas une run terminee.
 static func can_capture(run: RunState) -> bool:
-	return run.status == RunState.Status.BETWEEN_ROUNDS
+	if run.status == RunState.Status.BETWEEN_ROUNDS:
+		return true
+	return (run.status == RunState.Status.IN_ROUND and run.current_round != null
+		and run.current_round.status == RoundState.Status.PLAYING)
 
 
+## shop : la boutique ouverte entre deux goulots. Ignoree (peut etre null) pendant un round.
 static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) -> Dictionary:
-	assert(can_capture(run), "capture() seulement entre deux goulots")
+	assert(can_capture(run), "capture() d'une run terminee")
 	var cards: Array = []
 	for card: CardInstance in run.cards():
 		cards.append({"uid": card.uid, "card": String(card.data.id), "element": card.element, "rank": card.rank})
-	return {
+	var data := {
 		"version": VERSION,
 		# En texte : un entier 64 bits perdrait sa precision en nombre JSON (float).
 		"rng_state": str(rng.state),
 		"stones": run.stones,
 		"progress": run.progress.to_dict(),
 		"cards": cards,
+		"piles": run.piles(),
 		"artifacts": _ids(run.artifacts),
 		"pills": _ids(run.pills),
 		"hand_levels": run.hand_levels.to_dict(),
 		"stats": run.stats.to_dict(),
-		"shop": shop.to_dict(),
 	}
+	if run.status == RunState.Status.IN_ROUND:
+		var round_state := run.current_round
+		data["round"] = {
+			"score": round_state.score,
+			"hands_left": round_state.hands_left,
+			"discards_left": round_state.discards_left,
+		}
+	else:
+		assert(shop != null, "capture() entre deux goulots demande la boutique")
+		data["shop"] = shop.to_dict()
+	return data
 
 
 ## Renvoie null si la sauvegarde est vide, d'une version inconnue, ou incoherente.
-## La run restauree est entre deux goulots : next_round() lance le goulot sauvegarde.
+## La run revient entre deux goulots : appeler ensuite resume_round(), apres avoir branche ses signaux.
 static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGenerator) -> RunState:
 	var save := SaveMigrator.migrate(data, VERSION, {})
 	if save.is_empty():
@@ -48,7 +63,8 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 	if not progress.restore(save.get("progress")):
 		return null
 	rng.state = rng_state.to_int()
-	var run := RunState.new(DeckState.from_cards(cards, rng), content.round_rules, HandEvaluator.new(content.hands), progress, content.economy)
+	var deck := _restore_deck(save.get("piles"), cards, rng)
+	var run := RunState.new(deck, content.round_rules, HandEvaluator.new(content.hands), progress, content.economy)
 	run.status = RunState.Status.BETWEEN_ROUNDS
 	run.stones = maxi(0, SaveData.int_of(save, "stones"))
 	for id: String in SaveData.string_list(save.get("artifacts")):
@@ -62,6 +78,16 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 	run.hand_levels = HandLevels.from_dict(save.get("hand_levels"))
 	run.stats = RunStats.from_dict(save.get("stats"))
 	return run
+
+
+## Reprend le round sauvegarde, s'il y en avait un. A appeler apres avoir branche les signaux de la run.
+## Faux : la sauvegarde etait prise dans la boutique.
+static func resume_round(data: Dictionary, run: RunState) -> bool:
+	var saved: Variant = data.get("round")
+	if not saved is Dictionary:
+		return false
+	run.resume_round(SaveData.int_of(saved, "score"), SaveData.int_of(saved, "hands_left", 1), SaveData.int_of(saved, "discards_left"))
+	return true
 
 
 ## La boutique sauvegardee de cette run, avec ses offres d'origine.
@@ -85,6 +111,35 @@ static func _restore_cards(data: Variant, content: GameContent) -> Array[CardIns
 		card.rank = maxi(1, SaveData.int_of(entry, "rank", card_data.rank))
 		cards.append(card)
 	return cards
+
+
+static func _restore_deck(piles: Variant, cards: Array[CardInstance], rng: RandomNumberGenerator) -> DeckState:
+	var by_uid: Dictionary = {}
+	for card: CardInstance in cards:
+		by_uid[card.uid] = card
+	var saved: Dictionary = piles if piles is Dictionary else {}
+	var draw := _take(saved.get("draw"), by_uid)
+	var hand := _take(saved.get("hand"), by_uid)
+	var discard := _take(saved.get("discard"), by_uid)
+	# Cartes absentes des piles (sauvegarde abimee) : remises dans la pioche, aucune carte perdue.
+	for card: CardInstance in by_uid.values():
+		draw.append(card)
+	return DeckState.from_piles(draw, hand, discard, rng)
+
+
+## Prend dans by_uid les cartes listees, dans l'ordre, et les en retire : un uid inconnu ou en double est ignore.
+static func _take(uids: Variant, by_uid: Dictionary) -> Array[CardInstance]:
+	var pile: Array[CardInstance] = []
+	if not uids is Array:
+		return pile
+	for value: Variant in uids:
+		if not (value is int or value is float):
+			continue
+		var uid: int = int(value)
+		if by_uid.has(uid):
+			pile.append(by_uid[uid])
+			by_uid.erase(uid)
+	return pile
 
 
 static func _ids(list: Array) -> Array[String]:

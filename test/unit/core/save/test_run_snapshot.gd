@@ -29,6 +29,17 @@ func _run_in_shop(rng: RandomNumberGenerator) -> RunState:
 	return run
 
 
+## Une run en plein round, apres une defausse et une main jouee.
+func _run_in_round(rng: RandomNumberGenerator) -> RunState:
+	var run := _content.new_run(rng)
+	run.start()
+	var to_discard: Array[CardInstance] = [run.current_round.hand()[0]]
+	run.current_round.discard(to_discard)
+	var to_play: Array[CardInstance] = [run.current_round.hand()[0]]
+	run.current_round.play(to_play)
+	return run
+
+
 ## Simule l'aller-retour par le disque : les nombres reviennent en float, comme dans un vrai fichier.
 func _through_json(data: Dictionary) -> Dictionary:
 	return JSON.parse_string(JSON.stringify(data))
@@ -59,6 +70,7 @@ func test_la_run_restauree_reprend_au_goulot_sauvegarde() -> void:
 	var run := _run_in_shop(rng)
 	var data := _through_json(RunSnapshot.capture(run, _content.new_shop(run, rng), rng))
 	var restored := RunSnapshot.restore(data, _content, _rng())
+	assert_false(RunSnapshot.resume_round(data, restored))
 	assert_true(restored.next_round())
 	assert_eq(restored.current_round.target_score, run.progress.current_target())
 	assert_eq(restored.current_round.hand().size(), _content.round_rules.hand_size)
@@ -91,6 +103,46 @@ func test_offres_de_boutique_conservees_sans_nouveau_tirage() -> void:
 	assert_eq(restored_shop.reroll_cost, 8)
 
 
+func test_round_en_cours_restaure_a_l_identique() -> void:
+	var rng := _rng()
+	var run := _run_in_round(rng)
+	var data := _through_json(RunSnapshot.capture(run, null, rng))
+	var restored_rng := _rng(999)
+	var restored := RunSnapshot.restore(data, _content, restored_rng)
+	assert_true(RunSnapshot.resume_round(data, restored))
+	assert_eq(restored.status, RunState.Status.IN_ROUND)
+	assert_eq(restored.current_round.score, run.current_round.score)
+	assert_eq(restored.current_round.hands_left, run.current_round.hands_left)
+	assert_eq(restored.current_round.discards_left, run.current_round.discards_left)
+	assert_eq(restored.current_round.target_score, run.current_round.target_score)
+	assert_eq(restored.piles(), run.piles())
+	assert_eq(restored_rng.randi(), rng.randi())
+
+
+func test_round_repris_se_joue_normalement() -> void:
+	var rng := _rng()
+	var run := _run_in_round(rng)
+	var data := _through_json(RunSnapshot.capture(run, null, rng))
+	var restored := RunSnapshot.restore(data, _content, _rng())
+	RunSnapshot.resume_round(data, restored)
+	var hands_before: int = restored.current_round.hands_left
+	var to_play: Array[CardInstance] = [restored.current_round.hand()[0]]
+	assert_not_null(restored.current_round.play(to_play))
+	assert_eq(restored.current_round.hands_left, hands_before - 1)
+	assert_eq(restored.stats.hands.total(), 2)
+
+
+func test_carte_hors_des_piles_remise_dans_la_pioche() -> void:
+	var rng := _rng()
+	var run := _run_in_round(rng)
+	var data := _through_json(RunSnapshot.capture(run, null, rng))
+	var draw: Array = data["piles"]["draw"]
+	draw.remove_at(0)
+	draw.append(draw[0])
+	var restored := RunSnapshot.restore(data, _content, _rng())
+	assert_eq(restored.cards().size(), run.cards().size())
+
+
 func test_sauvegardes_inutilisables_refusees() -> void:
 	var rng := _rng()
 	var run := _run_in_shop(rng)
@@ -119,7 +171,10 @@ func test_contenu_inconnu_ignore() -> void:
 	assert_eq(restored.artifacts.size(), 1)
 
 
-func test_capture_seulement_entre_deux_goulots() -> void:
+func test_capture_selon_l_etat_de_la_run() -> void:
 	var run := _content.new_run(_rng())
+	assert_false(RunSnapshot.can_capture(run))
 	run.start()
+	assert_true(RunSnapshot.can_capture(run))
+	run.status = RunState.Status.LOST
 	assert_false(RunSnapshot.can_capture(run))
