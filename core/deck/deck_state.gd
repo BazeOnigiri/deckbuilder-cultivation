@@ -38,18 +38,33 @@ func fill_hand(target_size: int) -> Array[CardInstance]:
 	return drawn
 
 
-## Deplace des cartes de la main vers la defausse.
-## Refuse tout (et ne change rien) si une carte est absente de la main ou en double.
-func discard(cards: Array[CardInstance]) -> bool:
+## Vrai si toutes les cartes sont en main, sans doublon, et qu'il y en a au moins une.
+func all_in_hand(cards: Array[CardInstance]) -> bool:
 	if cards.is_empty():
 		return false
 	for card: CardInstance in cards:
 		if not hand.has(card) or cards.count(card) > 1:
 			return false
+	return true
+
+
+## Deplace des cartes de la main vers la defausse. Refuse tout (et ne change rien) si all_in_hand est faux.
+func discard(cards: Array[CardInstance]) -> bool:
+	if not all_in_hand(cards):
+		return false
 	for card: CardInstance in cards:
 		hand.erase(card)
 		discard_pile.append(card)
 	cards_discarded.emit(cards)
+	return true
+
+
+## Retire definitivement des cartes de la main : elles quittent le paquet pour le reste de la run.
+func destroy(cards: Array[CardInstance]) -> bool:
+	if not all_in_hand(cards):
+		return false
+	for card: CardInstance in cards:
+		hand.erase(card)
 	return true
 
 
@@ -60,3 +75,32 @@ func reset() -> void:
 	hand.clear()
 	discard_pile.clear()
 	RngUtils.shuffle(draw_pile, _rng)
+
+## Toutes les cartes de la run, toutes piles confondues (sauvegarde).
+func all_cards() -> Array[CardInstance]:
+	var cards: Array[CardInstance] = []
+	cards.append_array(draw_pile)
+	cards.append_array(hand)
+	cards.append_array(discard_pile)
+	return cards
+
+
+## uid des cartes de chaque pile, dans l'ordre (sauvegarde).
+func pile_uids() -> Dictionary:
+	return {"draw": _uids(draw_pile), "hand": _uids(hand), "discard": _uids(discard_pile)}
+
+
+## Paquet restaure avec ses trois piles dans l'ordre exact : la partie reprend a l'identique.
+static func from_piles(draw: Array[CardInstance], hand_cards: Array[CardInstance], discard_cards: Array[CardInstance], rng: RandomNumberGenerator) -> DeckState:
+	var deck := DeckState.new(DeckDefinition.new(), rng)
+	deck.draw_pile = draw.duplicate()
+	deck.hand = hand_cards.duplicate()
+	deck.discard_pile = discard_cards.duplicate()
+	return deck
+
+
+static func _uids(pile: Array[CardInstance]) -> Array[int]:
+	var uids: Array[int] = []
+	for card: CardInstance in pile:
+		uids.append(card.uid)
+	return uids

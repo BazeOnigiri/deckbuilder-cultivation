@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ManualDefinition" format=3]
+
+[ext_resource type="Resource" path="res://content/hands/main_souffle.tres" id="1_ot0xx"]
+[ext_resource type="Script" path="res://core/manuals/manual_definition.gd" id="2_om75s"]
+
+[resource]
+script = ExtResource("2_om75s")
+id = &"manuel_souffle"
+hand = ExtResource("1_ot0xx")
+price = 3

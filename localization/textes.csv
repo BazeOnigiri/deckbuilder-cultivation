@@ -17,11 +17,91 @@ ELEMENT_TERRE,Terre,Earth
 ELEMENT_METAL,Métal,Metal
 ELEMENT_EAU,Eau,Water
 UI_ROUND_INFO,Score : %d / %d    Mains : %d    Défausses : %d,Score: %d / %d    Hands: %d    Discards: %d
-UI_LAST_HAND,%s : %d Qi x %.1f = %d,%s: %d Qi x %.1f = %d
+UI_LAST_HAND,%s (niv. %d) : %d Qi x %.1f = %d,%s (lv. %d): %d Qi x %.1f = %d
 UI_PLAY,Jouer,Play
 UI_DISCARD,Défausser,Discard
-UI_RESTART,Rejouer,Play again
 UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
-UI_ROUND_LOST,Échec de la percée.,Breakthrough failed.
 UI_CREDITS,Crédits,Credits
 UI_CREDITS_INTRO,Ce jeu utilise le moteur Godot (godotengine.org).,This game uses the Godot Engine (godotengine.org).
+REALM_RAFFINEMENT_QI,Raffinement du Qi,Qi Refining
+REALM_FONDATIONS,Établissement des fondations,Foundation Establishment
+REALM_NOYAU_OR,Noyau d'or,Golden Core
+BOTTLENECK_PETIT,Petit goulot,Minor Bottleneck
+BOTTLENECK_GRAND,Grand goulot,Major Bottleneck
+UI_STAGE,%s : %s,%s: %s
+UI_TITLE,Deckbuilder Cultivation,Deckbuilder Cultivation
+UI_NEW_RUN,Nouvelle partie,New run
+UI_CONTINUE,Continuer,Continue
+UI_MENU,Menu principal,Main menu
+UI_RUN_WON,Tu as atteint le sommet de la cultivation !,You reached the peak of cultivation!
+UI_RUN_LOST,Échec de la percée. La run est terminée.,Breakthrough failed. The run is over.
+UI_STONES,Pierres spirituelles : %d,Spirit stones: %d
+UI_REWARD,+%d pierres (goulot %d + mains %d + intérêts %d),+%d stones (bottleneck %d + hands %d + interest %d)
+ARTIFACT_EPEE_VOLANTE,Épée volante de jade,Flying Jade Sword
+ARTIFACT_EPEE_VOLANTE_DESC,+15 Qi à chaque main jouée.,+15 Qi on every hand played.
+ARTIFACT_GOURDE_ELIXIR,Gourde d'élixir,Elixir Gourd
+ARTIFACT_GOURDE_ELIXIR_DESC,+4 Compréhension à chaque main jouée.,+4 Comprehension on every hand played.
+ARTIFACT_LOTUS_FLAMME,Lotus de flamme,Flame Lotus
+ARTIFACT_LOTUS_FLAMME_DESC,+4 Qi pour chaque carte Feu qui compte.,+4 Qi for each scoring Fire card.
+ARTIFACT_PERLE_MAREES,Perle des marées,Tidal Pearl
+ARTIFACT_PERLE_MAREES_DESC,+1 Compréhension pour chaque carte Eau qui compte.,+1 Comprehension for each scoring Water card.
+ARTIFACT_MIROIR_JUMEAU,Miroir jumeau,Twin Mirror
+ARTIFACT_MIROIR_JUMEAU_DESC,x2 Compréhension si la main est une Paire ou une Double paire.,x2 Comprehension if the hand is a Pair or Two Pair.
+UI_ARTIFACTS,Artefacts : %s,Artifacts: %s
+UI_NONE,aucun,none
+UI_SHOP,Boutique,Shop
+UI_SHOP_OFFER,%s (%d pierres),%s (%d stones)
+UI_SHOP_REROLL,Relancer (%d pierres),Reroll (%d stones)
+UI_MANUAL_OFFER,Manuel : %s (%d pierres),Manual: %s (%d stones)
+UI_MANUAL_DESC,%s gagne un niveau : +%d Qi et +%d Compréhension.,%s gains a level: +%d Qi and +%d Comprehension.
+PILL_FEU_CELESTE,Pilule du feu céleste,Celestial Fire Pill
+PILL_FEU_CELESTE_DESC,Change jusqu'à 3 cartes sélectionnées en Feu.,Turns up to 3 selected cards into Fire.
+PILL_EAU_PROFONDE,Pilule de l'eau profonde,Deep Water Pill
+PILL_EAU_PROFONDE_DESC,Change jusqu'à 3 cartes sélectionnées en Eau.,Turns up to 3 selected cards into Water.
+PILL_RAFFINEMENT,Pilule de raffinement,Refining Pill
+PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (9 maximum).,+1 rank to up to 2 selected cards (9 maximum).
+PILL_PURIFICATION,Pilule de purification,Purification Pill
+PILL_PURIFICATION_DESC,Détruit jusqu'à 2 cartes sélectionnées pour le reste de la run.,Destroys up to 2 selected cards for the rest of the run.
+UI_USE_PILL,Utiliser : %s,Use: %s
+BOTTLENECK_TRIBULATION_FLAMMES,Tribulation des flammes célestes,Tribulation of Celestial Flames
+BOTTLENECK_TRIBULATION_VENT_NOIR,Tribulation du vent noir,Tribulation of the Black Wind
+BOTTLENECK_TRIBULATION_DEMON,Tribulation du démon intérieur,Tribulation of the Inner Demon
+TRIB_FLAMMES_DESC,Les cartes Feu ne comptent pas.,Fire cards do not score.
+TRIB_VENT_NOIR_DESC,Une main de moins pour ce goulot.,One less hand for this bottleneck.
+TRIB_DEMON_DESC,Ta main contient 2 cartes de moins.,Your hand holds 2 fewer cards.
+UI_STATS_BUTTON,Statistiques,Statistics
+UI_STATS_TITLE,Statistiques,Statistics
+UI_STATS_RUNS,Parties lancées,Runs started
+UI_STATS_WINS,Victoires,Wins
+UI_STATS_WIN_RATE,Taux de victoire,Win rate
+UI_STATS_BEST_REALM,Meilleur royaume atteint,Best realm reached
+UI_STATS_BEST_HAND_SCORE,Meilleur score d'une main,Best hand score
+UI_STATS_HANDS_PLAYED,Mains jouées,Hands played
+UI_STATS_FAVORITE_HAND,Main favorite,Favorite hand
+UI_STATS_HAND_COUNT,%s (%d fois),%s (%d times)
+UI_BACK,Retour,Back
+UI_INFO_BUTTON,Infos,Info
+UI_RUN_INFO,Infos de la run,Run info
+UI_INFO_TAB_HANDS,Mains,Hands
+UI_INFO_TAB_PATH,Parcours,Path
+UI_INFO_TAB_RUN,Run,Run
+UI_INFO_HAND,Main,Hand
+UI_INFO_LEVEL,Niveau,Level
+UI_INFO_VALUE,Qi x Compréhension,Qi x Comprehension
+UI_INFO_VALUE_FORMAT,%d x %d,%d x %d
+UI_INFO_PLAYED,Jouée,Played
+UI_INFO_TARGET,Objectif,Target
+UI_INFO_CONSTRAINT,Contrainte,Constraint
+UI_INFO_STATE,État,State
+UI_INFO_CLEARED,Franchi,Cleared
+UI_INFO_CURRENT,En cours,Current
+UI_INFO_UPCOMING,À venir,Upcoming
+UI_INFO_DISCARDS,Défausses utilisées,Discards used
+UI_INFO_STONES,Pierres gagnées,Stones earned
+UI_INFO_CLEARED_COUNT,Goulots franchis,Bottlenecks cleared
+UI_START_RUN,Commencer,Start
+UI_NEW_RUN_WARNING,Commencer une nouvelle partie effacera la partie en cours.,Starting a new run will erase the current run.
+UI_SAVED_STAGE,Prochain goulot,Next bottleneck
+UI_SAVED_STONES,Pierres spirituelles,Spirit stones
+UI_SAVED_ARTIFACTS,Artefacts,Artifacts
+UI_SAVED_PILLS,Pilules,Pills

@@ -19,6 +19,6 @@ var card: CardInstance
 func _ready() -> void:
 	toggle_mode = true
 	custom_minimum_size = SIZE
-	text = "%d\n%s" % [card.data.rank, tr("ELEMENT_" + Element.to_id(card.data.element).to_upper())]
+	text = "%d\n%s" % [card.rank, tr("ELEMENT_" + Element.to_id(card.element).to_upper())]
 	for state: String in FONT_STATES:
-		add_theme_color_override(state, ELEMENT_COLORS[card.data.element])
+		add_theme_color_override(state, ELEMENT_COLORS[card.element])

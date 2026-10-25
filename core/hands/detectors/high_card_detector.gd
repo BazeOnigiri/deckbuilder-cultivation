@@ -9,7 +9,7 @@ func detect(cards: Array[CardInstance]) -> Array[CardInstance]:
 		return result
 	var best: CardInstance = cards[0]
 	for card: CardInstance in cards:
-		if card.data.rank > best.data.rank:
+		if card.rank > best.rank:
 			best = card
 	result.append(best)
 	return result

@@ -29,14 +29,14 @@ func detect(cards: Array[CardInstance]) -> Array[CardInstance]:
 func _groups_by_rank(cards: Array[CardInstance]) -> Array[Array]:
 	var by_rank: Dictionary = {}
 	for card: CardInstance in cards:
-		if not by_rank.has(card.data.rank):
-			by_rank[card.data.rank] = []
-		by_rank[card.data.rank].append(card)
+		if not by_rank.has(card.rank):
+			by_rank[card.rank] = []
+		by_rank[card.rank].append(card)
 	var groups: Array[Array] = []
 	for rank: int in by_rank:
 		groups.append(by_rank[rank])
 	groups.sort_custom(func(a: Array, b: Array) -> bool:
 		if a.size() != b.size():
 			return a.size() > b.size()
-		return a[0].data.rank > b[0].data.rank)
+		return a[0].rank > b[0].rank)
 	return groups

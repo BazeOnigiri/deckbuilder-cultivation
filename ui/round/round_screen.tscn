@@ -1,8 +1,13 @@
-[gd_scene format=3 uid="uid://bptjp4taw6127"]
+[gd_scene format=3 uid="uid://g8680p53vlsu"]
 
-[ext_resource type="Script" path="res://ui/round/round_screen.gd" id="1"]
+[ext_resource type="Script" uid="uid://bmvbk133ax1cm" path="res://ui/round/round_screen.gd" id="1"]
+[ext_resource type="Script" uid="uid://cegjm55cl7ug1" path="res://core/artifacts/artifact_definition.gd" id="2_e6au7"]
+[ext_resource type="Resource" path="res://content/artifacts/artefact_epee_volante.tres" id="3_ogkl3"]
+[ext_resource type="Resource" path="res://content/artifacts/artefact_gourde_elixir.tres" id="4_ubaed"]
+[ext_resource type="Resource" path="res://content/artifacts/artefact_lotus_flamme.tres" id="5_1t274"]
+[ext_resource type="Script" path="res://ui/shop/shop_panel.gd" id="shop_panel"]
 
-[node name="RoundScreen" type="Control"]
+[node name="RoundScreen" type="Control" unique_id=1153754067]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,8 +15,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+debug_artifacts = Array[ExtResource("2_e6au7")]([ExtResource("3_ogkl3"), ExtResource("4_ubaed"), ExtResource("5_1t274")])
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=2021611695]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,44 +29,64 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="Layout" type="VBoxContainer" parent="Margin"]
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=393699733]
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="Info" type="Label" parent="Margin/Layout"]
+[node name="Info" type="Label" parent="Margin/Layout" unique_id=599398123]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="LastHand" type="Label" parent="Margin/Layout"]
+[node name="Artifacts" type="Label" parent="Margin/Layout" unique_id=2061178114]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+
+[node name="PillRow" type="HBoxContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="LastHand" type="Label" parent="Margin/Layout" unique_id=636644067]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HandRow" type="HBoxContainer" parent="Margin/Layout"]
+[node name="HandRow" type="HBoxContainer" parent="Margin/Layout" unique_id=1977189333]
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="Actions" type="HBoxContainer" parent="Margin/Layout"]
+[node name="ShopPanel" type="VBoxContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("shop_panel")
+
+[node name="Actions" type="HBoxContainer" parent="Margin/Layout" unique_id=198904807]
 layout_mode = 2
 alignment = 1
 
-[node name="PlayButton" type="Button" parent="Margin/Layout/Actions"]
+[node name="PlayButton" type="Button" parent="Margin/Layout/Actions" unique_id=654427460]
 unique_name_in_owner = true
 layout_mode = 2
 text = "UI_PLAY"
 
-[node name="DiscardButton" type="Button" parent="Margin/Layout/Actions"]
+[node name="DiscardButton" type="Button" parent="Margin/Layout/Actions" unique_id=200964179]
 unique_name_in_owner = true
 layout_mode = 2
 text = "UI_DISCARD"
 
-[node name="RestartButton" type="Button" parent="Margin/Layout/Actions"]
+[node name="ContinueButton" type="Button" parent="Margin/Layout/Actions" unique_id=1183620987]
 unique_name_in_owner = true
 layout_mode = 2
-text = "UI_RESTART"
+text = "UI_CONTINUE"
 
-[node name="CreditsButton" type="Button" parent="Margin/Layout/Actions"]
+[node name="MenuButton" type="Button" parent="Margin/Layout/Actions" unique_id=1479427411]
 unique_name_in_owner = true
 layout_mode = 2
-text = "UI_CREDITS"
+text = "UI_MENU"
+
+[node name="InfoButton" type="Button" parent="Margin/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_INFO_BUTTON"

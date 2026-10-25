@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BottleneckDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/realms/bottleneck_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"goulot_grand"
+name_key = "BOTTLENECK_GRAND"
+score_multiplier = 1.5
+reward = 4

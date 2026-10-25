@@ -15,7 +15,7 @@ func detect(cards: Array[CardInstance]) -> Array[CardInstance]:
 		return empty
 	var elements: Dictionary = {}
 	for card: CardInstance in cards:
-		elements[card.data.element] = true
+		elements[card.element] = true
 	var matches: bool = elements.size() == 1 if mode == Mode.SAME else elements.size() == count
 	if not matches:
 		return empty

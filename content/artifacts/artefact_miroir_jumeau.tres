@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3 uid="uid://5ee68e0wlciq"]
+
+[ext_resource type="Script" uid="uid://cegjm55cl7ug1" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" uid="uid://cvrq3heighi7n" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" uid="uid://c46kskwvtda65" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Script" uid="uid://wfjpv7j83v7t" path="res://core/artifacts/hand_is_condition.gd" id="4"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("4")
+hand_ids = Array[String](["main_paire", "main_double_paire"])
+
+[sub_resource type="Resource" id="score"]
+script = ExtResource("3")
+phase = 2
+amount = 2.0
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+condition = SubResource("condition")
+score_effect = SubResource("score")
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_miroir_jumeau"
+name_key = "ARTIFACT_MIROIR_JUMEAU"
+description_key = "ARTIFACT_MIROIR_JUMEAU_DESC"
+price = 7
+effects = Array[ExtResource("2")]([SubResource("effect")])

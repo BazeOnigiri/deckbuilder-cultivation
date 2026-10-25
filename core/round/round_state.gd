@@ -4,6 +4,7 @@ extends RefCounted
 
 signal hand_played(result: HandResult, score: ScoreContext)
 signal finished(won: bool)
+signal discarded
 
 enum Status {PLAYING, WON, LOST}
 
@@ -16,15 +17,23 @@ var discards_left: int
 var _deck: DeckState
 var _rules: RoundRules
 var _evaluator: HandEvaluator
+var _artifacts: Array[ArtifactDefinition]
+var _levels: HandLevels
+var _constraint: TribulationConstraint
+var _hand_size: int
 
 
-func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int) -> void:
+func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition], levels: HandLevels, constraint: TribulationConstraint) -> void:
 	_deck = deck
 	_rules = rules
 	_evaluator = evaluator
+	_artifacts = artifacts
+	_levels = levels
+	_constraint = constraint
 	target_score = p_target_score
-	hands_left = rules.hands_per_round
-	discards_left = rules.discards_per_round
+	hands_left = constraint.hands_per_round(rules.hands_per_round)
+	discards_left = constraint.discards_per_round(rules.discards_per_round)
+	_hand_size = constraint.hand_size(rules.hand_size)
 
 
 ## A appeler apres avoir connecte les signaux : remelange et pioche la premiere main.
@@ -45,9 +54,14 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 	var result: HandResult = _evaluator.evaluate(cards)
 	if result == null or not _deck.discard(cards):
 		return null
-	# shortcut: aucun effet tant que les artefacts n'existent pas, les injecter ici avec la feature artefacts.
-	var effects: Array[ScoreEffect] = []
-	var context := ScoringPipeline.score(result, effects)
+	# Filtrer avant les artefacts : une carte qui ne compte pas ne declenche pas non plus CARD_SCORED.
+	var counted: Array[CardInstance] = []
+	for card: CardInstance in result.scoring_cards:
+		if _constraint.counts(card):
+			counted.append(card)
+	result.scoring_cards = counted
+	var effects := ArtifactResolver.effects_for(_artifacts, result)
+	var context := ScoringPipeline.score(result, effects, _levels.level_of(result.definition.id))
 	score += context.total()
 	hands_left -= 1
 	hand_played.emit(result, context)
@@ -66,16 +80,22 @@ func discard(cards: Array[CardInstance]) -> bool:
 	if not _deck.discard(cards):
 		return false
 	discards_left -= 1
+	discarded.emit()
 	_refill()
 	return true
 
+## A appeler quand la main change hors d'un coup (pilule de destruction) :
+## main vide = repioche, et sans rien a piocher le round est perdu.
+func ensure_playable() -> void:
+	if status == Status.PLAYING and _deck.hand.is_empty():
+		_refill()
 
 func _valid_selection(cards: Array[CardInstance]) -> bool:
 	return not cards.is_empty() and cards.size() <= _rules.max_selected_cards
 
 
 func _refill() -> void:
-	_deck.fill_hand(_rules.hand_size)
+	_deck.fill_hand(_hand_size)
 	# Pioche et main vides : plus aucun coup possible.
 	if _deck.hand.is_empty():
 		_finish(Status.LOST)
