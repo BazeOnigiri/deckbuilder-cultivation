@@ -6,3 +6,5 @@
 # Builds exportees (le .gdignore est garde pour que Godot ignore le dossier)
 build/*
 !build/.gdignore
+CLAUDE.local.md
+.planning/
