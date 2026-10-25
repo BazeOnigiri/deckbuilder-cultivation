@@ -11,9 +11,10 @@ func _init(stats: ProfileStats) -> void:
 	_stats = stats
 
 
-## A appeler avant run.start() pour ne pas manquer le premier goulot.
-func track(run: RunState) -> void:
-	_stats.runs_started += 1
+## A appeler avant run.start(). is_new : faux pour une run reprise, deja comptee a son lancement.
+func track(run: RunState, is_new: bool = true) -> void:
+	if is_new:
+		_stats.runs_started += 1
 	run.round_started.connect(_on_round_started.bind(run))
 	run.finished.connect(_on_finished)
 	changed.emit()

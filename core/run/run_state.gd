@@ -46,18 +46,19 @@ func next_round() -> bool:
 	return true
 
 ## Une pilule s'utilise pendant un round, sur des cartes de la main, en nombre autorise par la pilule.
-func can_use_pill(index: int, cards: Array[CardInstance]) -> bool:
+## Une pilule s'utilise pendant un round, sur des cartes de la main, en nombre autorise par la pilule.
+func can_use_pill(index: int, selected: Array[CardInstance]) -> bool:
 	if status != Status.IN_ROUND or index < 0 or index >= pills.size():
 		return false
 	var pill: PillDefinition = pills[index]
-	return (cards.size() >= pill.min_cards and cards.size() <= pill.max_cards
-		and _deck.all_in_hand(cards))
+	return (selected.size() >= pill.min_cards and selected.size() <= pill.max_cards
+		and _deck.all_in_hand(selected))
 
 
-func use_pill(index: int, cards: Array[CardInstance]) -> bool:
-	if not can_use_pill(index, cards):
+func use_pill(index: int, selected: Array[CardInstance]) -> bool:
+	if not can_use_pill(index, selected):
 		return false
-	pills[index].effect.apply(cards, _deck)
+	pills[index].effect.apply(selected, _deck)
 	pills.remove_at(index)
 	current_round.ensure_playable()
 	return true
@@ -66,7 +67,28 @@ func use_pill(index: int, cards: Array[CardInstance]) -> bool:
 func cards() -> Array[CardInstance]:
 	return _deck.all_cards()
 
+## Piles du paquet par uid (sauvegarde).
+func piles() -> Dictionary:
+	return _deck.pile_uids()
+
+
+## Reprise d'un round sauvegarde : les piles sont deja restaurees, donc pas de start() (il remelangerait).
+func resume_round(score: int, hands_left: int, discards_left: int) -> void:
+	_create_round()
+	current_round.score = maxi(0, score)
+	current_round.hands_left = maxi(1, hands_left)
+	current_round.discards_left = maxi(0, discards_left)
+	round_started.emit(current_round)
+	current_round.ensure_playable()
+
 func _start_round() -> void:
+	_create_round()
+	# Emis avant start() : l'UI se branche sur le round avant la premiere pioche.
+	round_started.emit(current_round)
+	current_round.start()
+
+
+func _create_round() -> void:
 	status = Status.IN_ROUND
 	var constraint: TribulationConstraint = progress.current_bottleneck().constraint
 	if constraint == null:
@@ -75,9 +97,6 @@ func _start_round() -> void:
 	current_round.finished.connect(_on_round_finished)
 	current_round.hand_played.connect(_on_hand_played)
 	current_round.discarded.connect(_on_discarded)
-	# Emis avant start() : l'UI se branche sur le round avant la premiere pioche.
-	round_started.emit(current_round)
-	current_round.start()
 
 
 func _on_round_finished(won: bool) -> void:

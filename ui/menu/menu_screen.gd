@@ -1,14 +1,29 @@
 extends Control
-## Menu principal : nouvelle partie, statistiques, credits.
+## Menu principal : continuer, nouvelle partie, statistiques, credits.
 
 signal start_requested
+signal continue_requested
 signal stats_requested
+
+## Apercu de la run sauvegardee, null si aucune. Injecte par main avant add_child.
+var saved_run: RunState
 
 
 func _ready() -> void:
-	%StartButton.pressed.connect(start_requested.emit)
+	%ContinueButton.visible = saved_run != null
+	%ContinueButton.pressed.connect(continue_requested.emit)
+	%StartButton.pressed.connect(_show_play_dialog)
 	%StatsButton.pressed.connect(stats_requested.emit)
 	%CreditsButton.pressed.connect(_show_credits)
+
+
+func _show_play_dialog() -> void:
+	var dialog := PlayDialog.new()
+	dialog.setup(saved_run)
+	dialog.new_run_requested.connect(start_requested.emit)
+	dialog.continue_requested.connect(continue_requested.emit)
+	add_child(dialog)
+	dialog.popup_centered(PlayDialog.SIZE)
 
 
 ## La licence MIT de Godot exige que son texte accompagne le jeu publie.

@@ -28,6 +28,11 @@ layout_mode = 2
 text = "UI_TITLE"
 horizontal_alignment = 1
 
+[node name="ContinueButton" type="Button" parent="Center/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_CONTINUE"
+
 [node name="StartButton" type="Button" parent="Center/Layout"]
 unique_name_in_owner = true
 layout_mode = 2

@@ -99,3 +99,9 @@ UI_INFO_UPCOMING,À venir,Upcoming
 UI_INFO_DISCARDS,Défausses utilisées,Discards used
 UI_INFO_STONES,Pierres gagnées,Stones earned
 UI_INFO_CLEARED_COUNT,Goulots franchis,Bottlenecks cleared
+UI_START_RUN,Commencer,Start
+UI_NEW_RUN_WARNING,Commencer une nouvelle partie effacera la partie en cours.,Starting a new run will erase the current run.
+UI_SAVED_STAGE,Prochain goulot,Next bottleneck
+UI_SAVED_STONES,Pierres spirituelles,Spirit stones
+UI_SAVED_ARTIFACTS,Artefacts,Artifacts
+UI_SAVED_PILLS,Pilules,Pills

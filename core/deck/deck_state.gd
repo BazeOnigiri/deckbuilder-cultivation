@@ -85,8 +85,22 @@ func all_cards() -> Array[CardInstance]:
 	return cards
 
 
-## Paquet restaure : tout va dans la pioche, le prochain round remelange de toute facon.
-static func from_cards(cards: Array[CardInstance], rng: RandomNumberGenerator) -> DeckState:
+## uid des cartes de chaque pile, dans l'ordre (sauvegarde).
+func pile_uids() -> Dictionary:
+	return {"draw": _uids(draw_pile), "hand": _uids(hand), "discard": _uids(discard_pile)}
+
+
+## Paquet restaure avec ses trois piles dans l'ordre exact : la partie reprend a l'identique.
+static func from_piles(draw: Array[CardInstance], hand_cards: Array[CardInstance], discard_cards: Array[CardInstance], rng: RandomNumberGenerator) -> DeckState:
 	var deck := DeckState.new(DeckDefinition.new(), rng)
-	deck.draw_pile = cards.duplicate()
+	deck.draw_pile = draw.duplicate()
+	deck.hand = hand_cards.duplicate()
+	deck.discard_pile = discard_cards.duplicate()
 	return deck
+
+
+static func _uids(pile: Array[CardInstance]) -> Array[int]:
+	var uids: Array[int] = []
+	for card: CardInstance in pile:
+		uids.append(card.uid)
+	return uids
