@@ -6,6 +6,11 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Ajouté
+
+- Polices Noto Serif et Ma Shan Zheng (OFL) en sous-ensembles, chiffres tabulaires pour que les scores ne tremblent pas.
+- Theme de base « lavis de nuit » applique a tout le projet : palette nuit, jade et or, styles des boutons, fenetres, onglets et infobulles.
+
 ## [0.3.0] - 2026-10-25
 
 ### Ajouté
