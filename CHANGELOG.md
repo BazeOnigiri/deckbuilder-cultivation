@@ -28,6 +28,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Les cartes en jeu ont leur propre element et rang, copies de leur definition : prepare les pilules.
 - Le bouton Credits est dans le menu principal, et non plus dans l'ecran de round.
 - Comptage des mains (HandTally) et valeurs par niveau (HandDefinition.qi_at) partages au lieu d'etre dupliques.
+- Le contenu du jeu (regles, catalogues, paquet) est charge une seule fois par main et injecte dans les ecrans.
 
 ### Corrigé
 

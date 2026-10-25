@@ -1,28 +1,21 @@
 extends Control
-## Ecran de run. Racine de composition : cree la logique, l'injecte, et l'affiche.
+## Ecran de run : affiche et fait jouer la run. Le contenu du jeu est injecte par main.
 
 signal menu_requested
 ## Emis avant le debut de la run : main y branche le suivi du profil.
 signal run_created(run: RunState)
 
-const DECK_PATH := "res://content/decks/paquet_depart.tres"
-const RULES_PATH := "res://content/rules/regles_base.tres"
-const ECONOMY_PATH := "res://content/rules/economie_base.tres"
-const SHOP_RULES_PATH := "res://content/rules/boutique_base.tres"
+## Injecte par main avant add_child. Vide : contenu charge par defaut (scene lancee seule, tests).
+var content: GameContent
+
+## Debug : artefacts donnes au debut de la run (inspecteur de la scene). Ignores dans une build release.
+@export var debug_artifacts: Array[ArtifactDefinition] = []
 
 var _run: RunState
 var _round: RoundState
 var _rules: RoundRules
 var _stage: String = ""
 var _rng: RandomNumberGenerator
-var _shop_rules: ShopRules
-var _artifact_catalog: Array[ArtifactDefinition]
-var _manual_catalog: Array[ManualDefinition]
-var _pill_catalog: Array[PillDefinition]
-var _hand_catalog: Array[HandDefinition]
-
-## Debug : artefacts donnes au debut de la run (inspecteur de la scene). Ignores dans une build release.
-@export var debug_artifacts: Array[ArtifactDefinition] = []
 
 @onready var _info: Label = %Info
 @onready var _last_hand: Label = %LastHand
@@ -37,17 +30,12 @@ var _hand_catalog: Array[HandDefinition]
 
 
 func _ready() -> void:
-	_rules = load(RULES_PATH)
+	if content == null:
+		content = GameContent.load_default()
+	_rules = content.round_rules
 	_rng = RandomNumberGenerator.new()
 	_rng.randomize()
-	_shop_rules = load(SHOP_RULES_PATH)
-	_artifact_catalog = ArtifactCatalog.load_definitions()
-	_manual_catalog = ManualCatalog.load_definitions()
-	_pill_catalog = PillCatalog.load_definitions()
-	var deck := DeckState.new(load(DECK_PATH), _rng)
-	_hand_catalog = HandCatalog.load_definitions()
-	var evaluator := HandEvaluator.new(_hand_catalog)
-	_run = RunState.new(deck, _rules, evaluator, RunProgress.new(RealmCatalog.load_definitions()), load(ECONOMY_PATH))
+	_run = content.new_run(_rng)
 	if OS.is_debug_build():
 		_run.artifacts.append_array(debug_artifacts)
 	_run.round_started.connect(_on_round_started)
@@ -104,6 +92,7 @@ func _on_selection_changed() -> void:
 	_play_button.disabled = not can_act
 	_discard_button.disabled = not can_act or _round.discards_left == 0
 	_refresh_pills()
+
 
 ## Les boutons de pilules dependent de la selection : reconstruits a chaque changement.
 func _refresh_pills() -> void:
@@ -163,7 +152,7 @@ func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 func _on_round_won(reward: RoundReward) -> void:
 	_last_hand.text += "\n" + tr("UI_ROUND_WON")
 	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
-	_shop_panel.open(ShopState.new(_run, _artifact_catalog, _manual_catalog, _pill_catalog, _shop_rules, _rng))
+	_shop_panel.open(content.new_shop(_run, _rng))
 	_continue_button.show()
 
 
@@ -172,21 +161,8 @@ func _on_run_finished(won: bool) -> void:
 	_menu_button.show()
 
 
-## La licence MIT de Godot exige que son texte accompagne le jeu publie.
-func _show_credits() -> void:
-	var dialog := AcceptDialog.new()
-	dialog.title = tr("UI_CREDITS")
-	var text := RichTextLabel.new()
-	text.custom_minimum_size = Vector2(600, 400)
-	text.text = tr("UI_CREDITS_INTRO") + "\n\n" + Engine.get_license_text()
-	dialog.add_child(text)
-	dialog.confirmed.connect(dialog.queue_free)
-	dialog.canceled.connect(dialog.queue_free)
-	add_child(dialog)
-	dialog.popup_centered()
-
 func _show_run_info() -> void:
 	var dialog := RunInfoDialog.new()
-	dialog.setup(_run, _hand_catalog)
+	dialog.setup(_run, content.hands)
 	add_child(dialog)
 	dialog.popup_centered(RunInfoDialog.SIZE)
