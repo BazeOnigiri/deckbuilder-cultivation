@@ -7,3 +7,4 @@
 build/*
 !build/.gdignore
 CLAUDE.local.md
+.planning/
