@@ -26,3 +26,14 @@ func test_valeurs_d_une_main_selon_son_niveau() -> void:
 	assert_eq(hand.qi_at(1), 10)
 	assert_eq(hand.qi_at(3), 40)
 	assert_eq(hand.comprehension_at(3), 4)
+
+func test_aller_retour_et_valeurs_invalides() -> void:
+	var levels := HandLevels.new()
+	levels.level_up("main_paire")
+	levels.level_up("main_paire")
+	var restored := HandLevels.from_dict(levels.to_dict())
+	assert_eq(restored.level_of("main_paire"), 3)
+	var bad := HandLevels.from_dict({"main_full": "x", "main_brelan": - 4, "main_carre": 2.0})
+	assert_eq(bad.level_of("main_full"), 1)
+	assert_eq(bad.level_of("main_brelan"), 1)
+	assert_eq(bad.level_of("main_carre"), 2)
