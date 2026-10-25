@@ -10,6 +10,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 - Polices Noto Serif et Ma Shan Zheng (OFL) en sous-ensembles, chiffres tabulaires pour que les scores ne tremblent pas.
 - Theme de base « lavis de nuit » applique a tout le projet : palette nuit, jade et or, styles des boutons, fenetres, onglets et infobulles.
+- Cartes dessinees par le moteur : rang et symbole de l'element dans deux coins opposes, points repetes pour les rangs 1 a 6, figures Disciple, Maitre et Immortel pour les rangs 7 a 9, carte qui monte et sceau 选 quand elle est selectionnee. Styles des elements (couleur, symbole) en donnees dans ui/cards/styles/, apparence de la carte dans le Theme (type CardButton).
 
 ## [0.3.0] - 2026-10-25
 

@@ -1,6 +1,55 @@
 [gd_resource type="Theme" format=3 uid="uid://cqoir5fnb7fno"]
 
 [ext_resource type="FontVariation" uid="uid://3r71v0du2b50" path="res://ui/fonts/noto_serif_regular_tnum.tres" id="1_15t8c"]
+[ext_resource type="FontVariation" uid="uid://ccq5750jeimq6" path="res://ui/fonts/noto_serif_bold_tnum.tres" id="2_carte"]
+[ext_resource type="FontFile" uid="uid://dt82lx2lkqwjs" path="res://ui/fonts/MaShanZheng-Sceaux.ttf" id="3_sceau"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_carte"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_carte"]
+bg_color = Color(0.0941, 0.1373, 0.1725, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2431, 0.3333, 0.3765, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 1
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_carte_survol"]
+bg_color = Color(0.0941, 0.1373, 0.1725, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3725, 0.6588, 0.5412, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 1
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_carte_choisie"]
+bg_color = Color(0.0941, 0.1373, 0.1725, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7882, 0.6353, 0.3059, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 1
+shadow_offset = Vector2(0, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panneau"]
 content_margin_left = 16.0
@@ -167,6 +216,25 @@ Button/styles/hover = SubResource("StyleBoxFlat_bouton_survol")
 Button/styles/hover_pressed = SubResource("StyleBoxFlat_bouton_enfonce")
 Button/styles/normal = SubResource("StyleBoxFlat_bouton")
 Button/styles/pressed = SubResource("StyleBoxFlat_bouton_enfonce")
+CardButton/base_type = &"Button"
+CardButton/colors/frame_color = Color(0.7882, 0.6353, 0.3059, 0.45)
+CardButton/colors/rank_color = Color(0.902, 0.8784, 0.8235, 1)
+CardButton/colors/seal_color = Color(0.7882, 0.6353, 0.3059, 1)
+CardButton/colors/seal_text_color = Color(0.0471, 0.0784, 0.1098, 1)
+CardButton/constants/lift = 22
+CardButton/font_sizes/font_size = 19
+CardButton/font_sizes/seal_font_size = 17
+CardButton/fonts/font = ExtResource("2_carte")
+CardButton/fonts/seal_font = ExtResource("3_sceau")
+CardButton/styles/card = SubResource("StyleBoxFlat_carte")
+CardButton/styles/card_hover = SubResource("StyleBoxFlat_carte_survol")
+CardButton/styles/card_selected = SubResource("StyleBoxFlat_carte_choisie")
+CardButton/styles/disabled = SubResource("StyleBoxEmpty_carte")
+CardButton/styles/focus = SubResource("StyleBoxEmpty_carte")
+CardButton/styles/hover = SubResource("StyleBoxEmpty_carte")
+CardButton/styles/hover_pressed = SubResource("StyleBoxEmpty_carte")
+CardButton/styles/normal = SubResource("StyleBoxEmpty_carte")
+CardButton/styles/pressed = SubResource("StyleBoxEmpty_carte")
 Label/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
 RichTextLabel/colors/default_color = Color(0.9098, 0.8824, 0.8157, 1)
 TabContainer/colors/font_hovered_color = Color(0.9098, 0.8824, 0.8157, 1)
