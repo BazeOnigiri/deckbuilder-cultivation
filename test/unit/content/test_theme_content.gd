@@ -27,3 +27,23 @@ func _assert_tnum(font: Font) -> void:
 		return
 	var tnum: int = TextServerManager.get_primary_interface().name_to_tag("tnum")
 	assert_eq((font as FontVariation).opentype_features.get(tnum), 1, "tnum absent")
+
+
+func test_contraste_texte_suffisant() -> void:
+	var theme: Theme = load(THEME_PATH)
+	var fond: Color = ProjectSettings.get_setting("rendering/environment/defaults/default_clear_color")
+	var bouton: StyleBoxFlat = theme.get_stylebox("normal", "Button")
+	assert_gt(_contraste(theme.get_color("font_color", "Label"), fond), 4.5, "texte sur fond")
+	assert_gt(_contraste(theme.get_color("font_color", "Button"), bouton.bg_color), 4.5, "texte de bouton")
+
+
+## Ratio de contraste WCAG 2 (4.5 = minimum pour du texte normal).
+func _contraste(a: Color, b: Color) -> float:
+	var la: float = _luminance(a)
+	var lb: float = _luminance(b)
+	return (maxf(la, lb) + 0.05) / (minf(la, lb) + 0.05)
+
+
+func _luminance(c: Color) -> float:
+	var lin: Color = c.srgb_to_linear()
+	return 0.2126 * lin.r + 0.7152 * lin.g + 0.0722 * lin.b
