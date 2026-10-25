@@ -1,0 +1,10 @@
+[gd_resource type="FontVariation" format=3 uid="uid://ccq5750jeimq6"]
+
+[ext_resource type="FontFile" uid="uid://bd88vcaktv4ja" path="res://ui/fonts/NotoSerif-Bold.ttf" id="1_ugufp"]
+
+[resource]
+base_font = ExtResource("1_ugufp")
+opentype_features = {
+1819178349: 1,
+1953396077: 1
+}

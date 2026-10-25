@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://cqoir5fnb7fno"]
+
+[ext_resource type="FontVariation" uid="uid://3r71v0du2b50" path="res://ui/fonts/noto_serif_regular_tnum.tres" id="1_15t8c"]
+
+[resource]
+default_font = ExtResource("1_15t8c")
+default_font_size = 20

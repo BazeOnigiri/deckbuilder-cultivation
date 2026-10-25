@@ -28,6 +28,10 @@ project/assembly_name="deckbuilder-cultivation"
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
+[gui]
+
+theme/custom="uid://cqoir5fnb7fno"
+
 [internationalization]
 
 locale/translations=PackedStringArray("res://localization/textes.fr.translation", "res://localization/textes.en.translation")
