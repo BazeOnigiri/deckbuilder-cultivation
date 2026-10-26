@@ -1,4 +1,6 @@
 extends GutTest
+
+const Contrast := preload("res://test/helpers/contrast.gd")
 ## Boutique en emplacements : une offre par emplacement, achat au clic, message apres un manuel.
 
 
@@ -19,7 +21,7 @@ func _panel(stones: int) -> Array:
 func _slots(panel: ShopPanel) -> Array[ItemSlot]:
 	var slots: Array[ItemSlot] = []
 	for offer: Node in panel._offers.get_children():
-		slots.append(offer.get_child(0) as ItemSlot)
+		slots.append(offer.find_children("*", "ItemSlot", true, false)[0] as ItemSlot)
 	return slots
 
 
@@ -56,3 +58,36 @@ func test_manuel_montre_le_gain_de_niveau() -> void:
 	assert_eq(parts[2].hand_levels.level_of(hand.id), 2)
 	assert_eq(panel._level_up.text, tr("UI_SHOP_LEVEL_UP") % [tr(hand.name_key), 2, hand.qi_at(1),
 		hand.comprehension_at(1), hand.qi_at(2), hand.comprehension_at(2)])
+
+
+func test_pavillon_avec_enseigne_et_lanternes() -> void:
+	var panel: ShopPanel = _panel(10)[0]
+	var pavilion := panel.find_children("*", "ShopPavilion", true, false)
+	assert_eq(pavilion.size(), 1)
+	var lanterns: Array[Node] = panel.find_children("*", "TextureRect", true, false).filter(
+		func(node: Node) -> bool: return (node as TextureRect).texture == ShopPanel.LANTERN)
+	assert_eq(lanterns.size(), 2)
+
+
+func test_lanternes_immobiles_si_on_reduit_les_animations() -> void:
+	var panel := ShopPanel.new()
+	panel.settings = GameSettings.new()
+	panel.settings.reduce_motion = true
+	add_child_autofree(panel)
+	for node: Node in panel.find_children("*", "TextureRect", true, false):
+		assert_eq((node as TextureRect).rotation, 0.0)
+
+
+## L'enseigne est dessinee avec la police des sceaux : ses caracteres doivent y etre.
+func test_enseigne_dans_la_police_des_sceaux() -> void:
+	var font: FontFile = load("res://ui/fonts/MaShanZheng-Sceaux.ttf")
+	for i: int in ShopPanel.SIGN_GLYPHS.length():
+		assert_true(font.has_char(ShopPanel.SIGN_GLYPHS.unicode_at(i)), ShopPanel.SIGN_GLYPHS[i])
+
+
+func test_prix_lisible_sur_l_etiquette() -> void:
+	var theme: Theme = load("res://ui/theme/lavis_de_nuit.tres")
+	var tag: StyleBoxFlat = theme.get_stylebox("panel", "PriceTag")
+	assert_gt(Contrast.ratio(theme.get_color("font_color", "Price"), tag.bg_color), 4.5)
+	var seal: StyleBoxFlat = theme.get_stylebox("normal", "RerollSeal")
+	assert_gt(Contrast.ratio(theme.get_color("font_color", "RerollSeal"), seal.bg_color), 4.5)

@@ -9,3 +9,6 @@ extends Resource
 @export var fly_time: float = 0.45
 ## Message « la main monte de niveau » apres un manuel : apparition puis duree d'affichage.
 @export var level_up_fade: float = 0.3
+## Les lanternes de l'enseigne se balancent : angle maximal (radians) et duree d'un aller.
+@export var lantern_swing: float = 0.08
+@export var lantern_time: float = 1.6

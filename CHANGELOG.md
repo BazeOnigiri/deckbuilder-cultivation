@@ -29,6 +29,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Icones dessinees : pierre spirituelle (colonne, prix de la boutique, cristaux qui tombent a la victoire) et un dessin par artefact a la place de son caractere. Un artefact = son .tres + son SVG dans content/artifacts/icones/.
 - Vue du paquet : un clic sur la pioche montre les 45 cartes de la run, une rangee par element triee par rang, avec le compte de cartes encore a piocher. Les cartes en main, jouees ou defaussees sont grisees. Un clic ou Echap ferme la vue.
 - Ambiance par ecran : chaque tribulation a son fond et sa meteo (braise et escarbilles pour les flammes, encre grise et trainees de poussiere pour le vent noir, pourpre et vignette qui respire pour le demon interieur), la boutique a un lavis chaud, le menu et les goulots simples gardent la nuit. Fondu entre deux ambiances, meteo coupee par « Reduire les animations ». Une ambiance = un .tres dans ui/ambiances/ avec l'id du goulot.
+- Boutique en pavillon : cadre laque rouge a double filet d'or et coins ornes, enseigne calligraphiee 坊市 entre deux lanternes qui se balancent, offres posees sur des etoffes avec une etiquette de prix et l'icone de pierre, bouton Relancer en sceau rouge. Police des sceaux etendue a 17 caracteres.
 
 ## [0.3.0] - 2026-10-25
 
