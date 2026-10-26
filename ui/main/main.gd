@@ -62,7 +62,14 @@ func _show_options_over_run() -> void:
 	veil.theme_type_variation = &"Veil"
 	veil.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	var options := _options_screen()
+	options.in_run = true
 	options.back_requested.connect(veil.queue_free)
+	options.menu_requested.connect(func() -> void:
+		veil.queue_free()
+		_show_menu())
+	options.new_run_requested.connect(func() -> void:
+		veil.queue_free()
+		_start_new_run())
 	veil.add_child(options)
 	add_child(veil)
 
@@ -83,6 +90,12 @@ func _on_settings_changed() -> void:
 func _apply_settings() -> void:
 	RenderingServer.global_shader_parameter_set(MOTION_SCALE, 0.0 if _settings.reduce_motion else 1.0)
 	Ambiance.reduce_motion = _settings.reduce_motion
+	# Accelere tout ce qui suit le temps du moteur (tweens, minuteurs), pas les shaders.
+	Engine.time_scale = _settings.game_speed
+	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if _settings.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
+	# En web, le plein ecran n'est accepte qu'apres un clic : au demarrage le navigateur peut le refuser.
+	if DisplayServer.window_get_mode() != mode:
+		DisplayServer.window_set_mode(mode)
 
 
 func _show_stats() -> void:

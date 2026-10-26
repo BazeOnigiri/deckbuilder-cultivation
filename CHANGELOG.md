@@ -32,6 +32,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Boutique en pavillon : cadre laque rouge a double filet d'or et coins ornes, enseigne calligraphiee 坊市 entre deux lanternes qui se balancent, offres posees sur des etoffes avec une etiquette de prix et l'icone de pierre, bouton Relancer en sceau rouge. Police des sceaux etendue a 17 caracteres.
 - Fin de goulot plus marquee : deux ondes dorees, le ciel s'eclaire et le lavis se teinte d'or. Le passage d'une ambiance a l'autre se fait par taches d'encre qui s'etendent. Plus de texte de victoire dans la boutique (les cristaux montrent le gain).
 - Tribulations bien distinctes : chaque ambiance regle aussi la forme du lavis (taille, deformation, force) et la couleur du bord de l'ecran. Flammes : brasier en bas, braises et etincelles. Vent noir : encre grise qui tourbillonne vite, rafales sombres, trainees et debris. Demon interieur : grandes ombres, brume pourpre, bord cramoisi qui bat, braises qui tombent.
+- Options completes : vitesse de jeu (x1 a x3), plein ecran, et pendant une run : retour au menu (la run reste a continuer) et nouvelle partie (avec confirmation). Reglages sauvegardes.
 
 ## [0.3.0] - 2026-10-25
 

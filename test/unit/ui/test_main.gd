@@ -85,3 +85,50 @@ func test_options_depuis_la_run_gardent_la_run() -> void:
 	await wait_physics_frames(1)
 	assert_false(is_instance_valid(veil), "voile ferme")
 	assert_true(is_instance_valid(run_screen) and run_screen.is_inside_tree(), "la run continue")
+
+
+func after_all() -> void:
+	Engine.time_scale = 1.0
+
+
+func test_vitesse_de_jeu_appliquee_au_moteur() -> void:
+	var main := _main()
+	main.get_child(0).get_node("%OptionsButton").pressed.emit()
+	var options := _current_screen(main)
+	options.get_node("%GameSpeed").select(2)
+	options.get_node("%GameSpeed").item_selected.emit(2)
+	assert_eq(Engine.time_scale, GameSettings.GAME_SPEEDS[2])
+	assert_eq(GameSettings.load_from(SaveStorage.new(TEST_SETTINGS)).game_speed, GameSettings.GAME_SPEEDS[2])
+	Engine.time_scale = 1.0
+
+
+func test_options_du_menu_sans_boutons_de_run() -> void:
+	var main := _main()
+	main.get_child(0).get_node("%OptionsButton").pressed.emit()
+	assert_false(_current_screen(main).get_node("%RunButtons").visible)
+
+
+func test_retour_au_menu_depuis_la_run() -> void:
+	var main := _main()
+	main._show_run({})
+	main._screen.get_node("%SideColumn").options_requested.emit()
+	var options := _current_screen(main).get_child(0)
+	assert_true(options.get_node("%RunButtons").visible)
+	options.get_node("%MenuButton").pressed.emit()
+	await wait_physics_frames(1)
+	assert_not_null(main._screen.get_node_or_null("%OptionsButton"), "menu affiche")
+	assert_false(SaveStorage.new(TEST_RUN).load_data().is_empty(), "la run reste a continuer")
+
+
+func test_nouvelle_partie_depuis_la_run_apres_confirmation() -> void:
+	var main := _main()
+	main._show_run({})
+	var old_run: Node = main._screen
+	old_run.get_node("%SideColumn").options_requested.emit()
+	var options := _current_screen(main).get_child(0)
+	options.get_node("%NewRunButton").pressed.emit()
+	assert_true(old_run == main._screen, "rien ne change avant la confirmation")
+	options._confirm.confirmed.emit()
+	await wait_physics_frames(1)
+	assert_false(is_instance_valid(old_run), "ancienne run fermee")
+	assert_not_null(main._screen.get_node_or_null("%SideColumn"), "nouvelle run")
