@@ -108,3 +108,8 @@ UI_SAVED_PILLS,Pilules,Pills
 UI_OPTIONS_BUTTON,Options,Options
 UI_OPTIONS_TITLE,Options,Options
 UI_OPTIONS_REDUCE_MOTION,Réduire les animations,Reduce motion
+UI_TALLY,%d Qi x %.1f,%d Qi x %.1f
+UI_POPUP_QI,+%d Qi,+%d Qi
+UI_POPUP_COMPREHENSION_ADD,+%s Compréhension,+%s Comprehension
+UI_POPUP_COMPREHENSION_MULT,x%s Compréhension,x%s Comprehension
+UI_POPUP_TOTAL,= %d,= %d

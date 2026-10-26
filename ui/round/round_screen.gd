@@ -5,6 +5,8 @@ extends Control
 signal menu_requested
 ## Emis avant le debut de la run : main y branche le suivi du profil.
 signal run_created(run: RunState, resumed: bool)
+## Interne : la sequence de score d'un coup est terminee.
+signal _score_shown
 
 ## Injecte par main avant add_child. Vide : contenu charge par defaut (scene lancee seule, tests).
 var content: GameContent
@@ -26,6 +28,9 @@ var _shop: ShopState
 var _rules: RoundRules
 var _stage: String = ""
 var _rng: RandomNumberGenerator
+var _sequence: ScoreSequence
+## Vrai pendant que la sequence de score montre le coup : l'affichage de ses suites attend _score_shown.
+var _scoring: bool = false
 
 @onready var _info: Label = %Info
 @onready var _last_hand: Label = %LastHand
@@ -62,6 +67,10 @@ func _ready() -> void:
 	_shop_panel.changed.connect(_refresh)
 	_hand_view.settings = settings
 	_hand_view.selection_changed.connect(_on_selection_changed)
+	_sequence = ScoreSequence.new()
+	_sequence.settings = settings
+	_sequence.setup(_hand_view, $Margin)
+	add_child(_sequence)
 	%InfoButton.pressed.connect(_show_run_info)
 	_continue_button.hide()
 	_menu_button.hide()
@@ -109,7 +118,7 @@ func _selected() -> Array[CardInstance]:
 
 func _on_selection_changed() -> void:
 	var count: int = _selected().size()
-	var can_act: bool = (_round != null and _round.status == RoundState.Status.PLAYING
+	var can_act: bool = (not _scoring and _round != null and _round.status == RoundState.Status.PLAYING
 		and count > 0 and count <= _rules.max_selected_cards)
 	_play_button.disabled = not can_act
 	_discard_button.disabled = not can_act or _round.discards_left == 0
@@ -127,7 +136,7 @@ func _refresh_pills() -> void:
 		var button := Button.new()
 		button.text = tr("UI_USE_PILL") % tr(pill.name_key)
 		button.tooltip_text = tr(pill.description_key)
-		button.disabled = not _run.can_use_pill(i, selected)
+		button.disabled = _scoring or not _run.can_use_pill(i, selected)
 		button.pressed.connect(_on_pill_pressed.bind(i))
 		_pill_row.add_child(button)
 
@@ -155,8 +164,28 @@ func _stage_text() -> String:
 
 
 func _on_play_pressed() -> void:
-	_round.play(_selected())
+	var cards := _selected()
+	# Avant play() : ses signaux (main jouee, round gagne, fin de run) attendent la fin de la sequence.
+	_scoring = true
+	var context := _round.play(cards)
+	if context == null:
+		_scoring = false
+		return
+	# Sauvegarde tout de suite : quitter pendant la sequence ne doit pas permettre de rejouer le coup.
+	_save_run()
+	_hand_view.play_out(cards)
+	_on_selection_changed()
+	await _sequence.play(context, _round.target_score)
+	_hand_view.clear_played()
+	_scoring = false
+	_score_shown.emit()
 	_refresh()
+
+
+## Rend la main tout de suite, ou a la fin de la sequence de score si elle est en cours.
+func _after_score() -> void:
+	if _scoring:
+		await _score_shown
 
 
 func _on_discard_pressed() -> void:
@@ -174,23 +203,27 @@ func _on_continue_pressed() -> void:
 
 func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 	var level: int = _run.hand_levels.level_of(result.definition.id)
+	await _after_score()
 	_last_hand.text = tr("UI_LAST_HAND") % [tr(result.definition.name_key), level, score.qi, score.comprehension, score.total()]
 
 
 func _on_round_won(reward: RoundReward) -> void:
+	# Boutique creee tout de suite (meme tirage, et sauvegardee avec le coup), affichee apres la sequence.
+	_shop = content.new_shop(_run, _rng)
+	await _after_score()
 	_last_hand.text += "\n" + tr("UI_ROUND_WON")
 	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
-	_shop = content.new_shop(_run, _rng)
 	_shop_panel.open(_shop)
 	_continue_button.show()
 
 
 func _on_run_finished(won: bool) -> void:
-	_last_hand.text += "\n" + tr("UI_RUN_WON" if won else "UI_RUN_LOST")
-	_menu_button.show()
 	# Run terminee : plus rien a reprendre. _save_run() ne reecrira pas, can_capture est faux.
 	if run_storage != null:
 		run_storage.delete()
+	await _after_score()
+	_last_hand.text += "\n" + tr("UI_RUN_WON" if won else "UI_RUN_LOST")
+	_menu_button.show()
 
 
 func _save_run() -> void:

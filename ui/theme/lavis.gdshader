@@ -14,6 +14,9 @@ uniform float warp = 1.5;
 uniform float strength : hint_range(0.0, 1.0) = 0.7;
 // Reglage « reduire les animations » : 0 fige le lavis (pose par main, declare dans project.godot).
 global uniform float motion_scale;
+// Teinte passagere de l'encre a la couleur de l'element joue (posee par la sequence de score).
+global uniform vec4 pulse_color : source_color;
+global uniform float pulse_strength;
 
 void fragment() {
 	// Coordonnees en hauteurs d'ecran : meme rendu quel que soit le format de la fenetre.
@@ -23,7 +26,9 @@ void fragment() {
 	vec2 r = vec2(fbm(p + warp * q + vec2(1.7, 9.2) + t), fbm(p + warp * q + vec2(8.3, 2.8) - t));
 	float f = fbm(p + warp * r);
 	vec3 color = mix(base_color.rgb, deep_color.rgb, smoothstep(0.3, 0.7, q.y));
-	color = mix(color, ink_color.rgb, smoothstep(0.35, 0.75, f) * strength);
+	float wash = smoothstep(0.35, 0.75, f);
+	color = mix(color, ink_color.rgb, wash * strength);
+	color = mix(color, pulse_color.rgb, wash * pulse_strength);
 	// Aureole plus sombre au bord des lavis, comme l'encre qui seche sur le papier.
 	float edge = 1.0 - smoothstep(0.0, 0.03, abs(f - 0.55));
 	color = mix(color, deep_color.rgb, edge * strength * 0.6);

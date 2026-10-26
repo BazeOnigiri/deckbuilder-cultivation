@@ -57,3 +57,11 @@ motion_scale={
 "type": "float",
 "value": 1.0
 }
+pulse_color={
+"type": "color",
+"value": Color(0, 0, 0, 1)
+}
+pulse_strength={
+"type": "float",
+"value": 0.0
+}
