@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://ui/theme/papier.gdshader" id="1_papier"]
+
+[resource]
+shader = ExtResource("1_papier")
+shader_parameter/grain = 0.05
+shader_parameter/fibers = 0.04
+shader_parameter/fiber_scale = 6.0
+shader_parameter/vignette = 0.45
