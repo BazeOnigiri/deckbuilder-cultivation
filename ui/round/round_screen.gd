@@ -39,9 +39,8 @@ var _scoring: bool = false
 @onready var _discard_button: Button = %DiscardButton
 @onready var _continue_button: Button = %ContinueButton
 @onready var _menu_button: Button = %MenuButton
-@onready var _artifacts_label: Label = %Artifacts
 @onready var _shop_panel: ShopPanel = %ShopPanel
-@onready var _pill_row: HBoxContainer = %PillRow
+@onready var _items: ItemRow = %ItemRow
 @onready var _side: SideColumn = %SideColumn
 
 
@@ -72,7 +71,10 @@ func _ready() -> void:
 	_sequence.settings = settings
 	_sequence.setup(_hand_view, $Root/Margin)
 	_sequence.score_target = _side.round_qi_center
+	_sequence.artifact_hit = _items.artifact_hit
 	add_child(_sequence)
+	_items.settings = settings
+	_items.pill_pressed.connect(_on_pill_pressed)
 	_side.settings = settings
 	_side.path_requested.connect(_show_run_info)
 	_side.options_requested.connect(options_requested.emit)
@@ -99,13 +101,7 @@ func _refresh() -> void:
 	cards.sort_custom(func(a: CardInstance, b: CardInstance) -> bool: return a.rank < b.rank)
 	_hand_view.set_cards(cards)
 	_on_selection_changed()
-	var names: Array[String] = []
-	var descriptions: Array[String] = []
-	for artifact: ArtifactDefinition in _run.artifacts:
-		names.append(tr(artifact.name_key))
-		descriptions.append(tr(artifact.name_key) + " : " + tr(artifact.description_key))
-	_artifacts_label.text = tr("UI_ARTIFACTS") % (", ".join(names) if not names.is_empty() else tr("UI_NONE"))
-	_artifacts_label.tooltip_text = "\n".join(descriptions)
+	_items.show_artifacts(_run.artifacts, content.shop_rules.max_artifacts)
 	_save_run()
 
 
@@ -128,20 +124,13 @@ func _on_selection_changed() -> void:
 	_refresh_pills()
 
 
-## Les boutons de pilules dependent de la selection : reconstruits a chaque changement.
+## Les pilules utilisables dependent de la selection : emplacements refaits a chaque changement.
 func _refresh_pills() -> void:
-	for child: Node in _pill_row.get_children():
-		_pill_row.remove_child(child)
-		child.queue_free()
 	var selected := _selected()
+	var usable: Array[bool] = []
 	for i: int in _run.pills.size():
-		var pill: PillDefinition = _run.pills[i]
-		var button := Button.new()
-		button.text = tr("UI_USE_PILL") % tr(pill.name_key)
-		button.tooltip_text = tr(pill.description_key)
-		button.disabled = _scoring or not _run.can_use_pill(i, selected)
-		button.pressed.connect(_on_pill_pressed.bind(i))
-		_pill_row.add_child(button)
+		usable.append(not _scoring and _run.can_use_pill(i, selected))
+	_items.show_pills(_run.pills, content.shop_rules.max_pills, usable)
 
 
 func _on_pill_pressed(index: int) -> void:

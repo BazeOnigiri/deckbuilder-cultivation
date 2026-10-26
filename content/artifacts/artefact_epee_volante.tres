@@ -17,5 +17,6 @@ script = ExtResource("1")
 id = &"artefact_epee_volante"
 name_key = "ARTIFACT_EPEE_VOLANTE"
 description_key = "ARTIFACT_EPEE_VOLANTE_DESC"
+glyph = "剑"
 price = 5
 effects = Array[ExtResource("2")]([SubResource("effect")])

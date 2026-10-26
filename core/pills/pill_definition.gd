@@ -5,6 +5,8 @@ extends Resource
 @export var id: StringName = &""
 @export var name_key: String = ""
 @export var description_key: String = ""
+## Caractere dessine dans son emplacement (police des sceaux, ui/fonts/MaShanZheng-Sceaux.ttf).
+@export var glyph: String = ""
 @export var price: int = 0
 @export var min_cards: int = 1
 @export var max_cards: int = 1

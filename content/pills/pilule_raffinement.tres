@@ -13,6 +13,7 @@ script = ExtResource("1")
 id = &"pilule_raffinement"
 name_key = "PILL_RAFFINEMENT"
 description_key = "PILL_RAFFINEMENT_DESC"
+glyph = "炼"
 price = 3
 min_cards = 1
 max_cards = 2

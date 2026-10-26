@@ -26,3 +26,6 @@ extends Resource
 @export var particle_lifetime: float = 0.7
 ## Vitesse de depart des particules, en pixels par seconde.
 @export var particle_speed: float = 120.0
+## Bond de l'emplacement d'un artefact qui se declenche : echelle au sommet, duree aller-retour.
+@export var slot_pulse_scale: float = 1.15
+@export var slot_pulse_time: float = 0.3

@@ -12,6 +12,7 @@ script = ExtResource("1")
 id = &"pilule_eau_profonde"
 name_key = "PILL_EAU_PROFONDE"
 description_key = "PILL_EAU_PROFONDE_DESC"
+glyph = "渊"
 price = 3
 min_cards = 1
 max_cards = 3

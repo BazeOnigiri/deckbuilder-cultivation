@@ -42,3 +42,14 @@ func test_mains_referencees_existent() -> void:
 				continue
 			for hand_id: String in condition.hand_ids:
 				assert_true(hand_ids.has(hand_id), "%s : main inconnue %s" % [artifact.id, hand_id])
+
+## Le glyphe est dessine dans l'emplacement : un seul caractere, present dans la police des sceaux, distinct des autres.
+func test_glyphe_unique_et_dans_la_police() -> void:
+	var font: FontFile = load("res://ui/fonts/MaShanZheng-Sceaux.ttf")
+	var seen: Dictionary = {}
+	for item: ArtifactDefinition in _artifacts:
+		assert_eq(item.glyph.length(), 1, "glyphe d'un caractere : %s" % item.id)
+		if item.glyph.length() == 1:
+			assert_true(font.has_char(item.glyph.unicode_at(0)), "glyphe absent de la police : %s" % item.id)
+		assert_false(seen.has(item.glyph), "glyphe en double : %s" % item.id)
+		seen[item.glyph] = true

@@ -12,4 +12,4 @@
 ## Polices (incluses dans le projet)
 
 - Noto Serif, Google, SIL Open Font License 1.1, <https://fonts.google.com/specimen/Noto+Serif> (sous-ensemble latin)
-- Ma Shan Zheng, Ma Shan Zheng, SIL Open Font License 1.1, <https://fonts.google.com/specimen/Ma+Shan+Zheng> (sous-ensemble de 6 caractères)
+- Ma Shan Zheng, Ma Shan Zheng, SIL Open Font License 1.1, <https://fonts.google.com/specimen/Ma+Shan+Zheng> (sous-ensemble de 15 caractères)
