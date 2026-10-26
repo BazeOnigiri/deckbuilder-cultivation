@@ -3,6 +3,10 @@ extends PanelContainer
 ## Colonne de droite de l'ecran de round : goulot, objectif, Qi du round, apercu de la main, compteurs.
 ## Affichage seulement : round_screen lui passe l'etat. Apparence dans le Theme (types Side*, BossBanner, StatBox).
 
+## Silhouette du meditant, remplie de qi par son shader.
+const MEDITANT := preload("res://ui/round/meditant.svg")
+const MEDITANT_SHADER := preload("res://ui/round/meditant.gdshader")
+
 signal path_requested
 signal options_requested
 
@@ -13,7 +17,7 @@ var settings: GameSettings = GameSettings.new()
 var _banner := PanelContainer.new()
 var _stage := make_label(&"SideTitle")
 var _constraint := make_label(&"SideCaption")
-var _ring := GoalRing.new()
+var _meditant := TextureRect.new()
 var _target := make_label(&"SideTarget")
 var _round_qi := make_label(&"SideValue")
 var _hand_name := make_label(&"SideTitle")
@@ -25,7 +29,7 @@ var _discards := make_label(&"SideValue")
 var _stones := make_label(&"SideValue")
 var _realm := make_label(&"SideValue")
 var _bottleneck := make_label(&"SideValue")
-## Score affiche par le compteur et l'anneau, qui rattrape le vrai score.
+## Score affiche par le compteur et le meditant, qui rattrape le vrai score.
 var _shown_score: int = 0
 var _target_score: int = 0
 var _roll: Tween
@@ -50,7 +54,8 @@ func _ready() -> void:
 	layout.add_child(_banner)
 
 	var goal := HBoxContainer.new()
-	goal.add_child(_ring)
+	_setup_meditant()
+	goal.add_child(_meditant)
 	var goal_text := VBoxContainer.new()
 	goal_text.alignment = BoxContainer.ALIGNMENT_CENTER
 	goal_text.add_child(make_label(&"SideCaption", "UI_SIDE_TARGET"))
@@ -186,7 +191,7 @@ func _roll_to(score: int) -> void:
 func _set_shown_score(score: int) -> void:
 	_shown_score = score
 	_round_qi.text = str(score)
-	_ring.ratio = clampf(float(score) / maxi(_target_score, 1), 0.0, 1.0)
+	(_meditant.material as ShaderMaterial).set_shader_parameter(&"fill", clampf(float(score) / maxi(_target_score, 1), 0.0, 1.0))
 
 
 func _row(left: Control, right: Control) -> HBoxContainer:
@@ -220,28 +225,21 @@ func _button(text_key: String, pressed: Signal) -> Button:
 	return button
 
 
+## Taille et couleurs : type Meditant du Theme.
+func _setup_meditant() -> void:
+	_meditant.texture = MEDITANT
+	_meditant.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_meditant.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_meditant.custom_minimum_size = Vector2.ONE * get_theme_constant(&"size", &"Meditant")
+	var shader := ShaderMaterial.new()
+	shader.shader = MEDITANT_SHADER
+	for color: StringName in [&"empty_color", &"qi_color", &"aura_color"]:
+		shader.set_shader_parameter(color, get_theme_color(color, &"Meditant"))
+	_meditant.material = shader
+
+
 static func make_label(type: StringName, text_key: String = "") -> Label:
 	var label := Label.new()
 	label.theme_type_variation = type
 	label.text = text_key
 	return label
-
-
-## Anneau qui se remplit avec le score du round. Taille et couleurs : type GoalRing du Theme.
-class GoalRing extends Control:
-	var ratio: float = 0.0:
-		set(value):
-			ratio = value
-			queue_redraw()
-
-	func _ready() -> void:
-		custom_minimum_size = Vector2.ONE * get_theme_constant(&"size", &"GoalRing")
-
-	func _draw() -> void:
-		var width: float = get_theme_constant(&"width", &"GoalRing")
-		var radius: float = minf(size.x, size.y) / 2 - width
-		var center := size / 2
-		draw_arc(center, radius, 0.0, TAU, 64, get_theme_color(&"track", &"GoalRing"), width, true)
-		if ratio > 0.0:
-			# Part du haut, dans le sens des aiguilles d'une montre.
-			draw_arc(center, radius, -PI / 2, -PI / 2 + TAU * ratio, 64, get_theme_color(&"fill", &"GoalRing"), width, true)

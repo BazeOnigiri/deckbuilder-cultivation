@@ -288,3 +288,14 @@ func test_decompte_affiche_dans_la_colonne() -> void:
 	assert_eq(last[0], str(last[1]), "case Qi a jour")
 	assert_eq(roundi(last[1] * last[2]), screen._round.score, "derniere etape : Qi x Comprehension = score du coup")
 	assert_null(screen._sequence.get("_board"), "plus de tableau")
+
+
+func test_meditant_rempli_selon_l_objectif() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var side: SideColumn = screen.get_node("%SideColumn")
+	var shader := side._meditant.material as ShaderMaterial
+	side._target_score = 200
+	side._set_shown_score(50)
+	assert_almost_eq(shader.get_shader_parameter(&"fill"), 0.25, 0.001)
+	side._set_shown_score(500)
+	assert_eq(shader.get_shader_parameter(&"fill"), 1.0, "plafonne a l'objectif")
