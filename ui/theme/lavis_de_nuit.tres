@@ -415,6 +415,25 @@ shadow_color = Color(0, 0, 0, 0.6)
 shadow_size = 8
 shadow_offset = Vector2(0, 4)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sceau_victoire"]
+content_margin_left = 22.0
+content_margin_top = 4.0
+content_margin_right = 22.0
+content_margin_bottom = 12.0
+bg_color = Color(0.6902, 0.251, 0.2, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.7882, 0.651, 0.3529, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 16
+shadow_offset = Vector2(0, 6)
+
 [resource]
 default_font = ExtResource("1_15t8c")
 default_font_size = 20
@@ -549,5 +568,11 @@ Veil/base_type = &"PanelContainer"
 Veil/styles/panel = SubResource("StyleBoxFlat_voile")
 TooltipLabel/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
 TooltipPanel/styles/panel = SubResource("StyleBoxFlat_infobulle")
+VictoryGlyph/base_type = &"Label"
+VictoryGlyph/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
+VictoryGlyph/font_sizes/font_size = 110
+VictoryGlyph/fonts/font = ExtResource("3_sceau")
+VictorySeal/base_type = &"PanelContainer"
+VictorySeal/styles/panel = SubResource("StyleBoxFlat_sceau_victoire")
 Window/colors/title_color = Color(0.9098, 0.8824, 0.8157, 1)
 Window/styles/embedded_border = SubResource("StyleBoxFlat_fenetre")

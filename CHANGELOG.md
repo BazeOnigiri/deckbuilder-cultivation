@@ -22,6 +22,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Barre d'actions : tri de la main par rang ou par element (la selection est gardee), bouton « Jouer la main » mis en avant en or, pioche dessinee (dos de carte au sceau 道) avec le nombre de cartes restantes sur le paquet.
 - Annonce de la main : au debut de la sequence de score, son nom tombe en grand sur un sceau rouge, puis le tableau le reprend. Quand le total tombe, le ciel s'eclaire un instant, d'autant plus que le coup est fort (coupe par « Reduire les animations »).
 - Tribulations : une carte que la tribulation empeche de compter (ex. le feu scelle) brule doucement par le bas et porte le sceau 封, le rang reste lisible. Le bandeau de la tribulation scintille dans la colonne. Les noms longs de goulot passent a la ligne.
+- Fin de goulot : a la victoire, le sceau 破 tombe au centre et une onde de choc doree part, des cristaux de pierres tombent sur le compteur qui saute, puis la boutique s'ouvre. A l'echec, des fissures de feu s'ouvrent et l'encre noire envahit l'ecran, avec le message d'echec et un bouton vers le menu. Rythme dans ui/round/round_end_feel.tres.
 
 ## [0.3.0] - 2026-10-25
 

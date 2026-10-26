@@ -30,6 +30,7 @@ var _shop: ShopState
 var _rules: RoundRules
 var _rng: RandomNumberGenerator
 var _sequence: ScoreSequence
+var _round_end: RoundEnd
 ## Vrai pendant que la sequence de score montre le coup : l'affichage de ses suites attend _score_shown.
 var _scoring: bool = false
 
@@ -75,6 +76,11 @@ func _ready() -> void:
 	_sequence.artifact_hit = _items.artifact_hit
 	add_child(_sequence)
 	_items.settings = settings
+	# Par-dessus tout, sequence de score comprise.
+	_round_end = RoundEnd.new()
+	_round_end.settings = settings
+	_round_end.menu_requested.connect(menu_requested.emit)
+	add_child(_round_end)
 	_items.pill_pressed.connect(_on_pill_pressed)
 	%SortRank.toggled.connect(_on_sort_toggled)
 	%SortElement.toggled.connect(_on_sort_toggled)
@@ -231,6 +237,8 @@ func _on_round_won(reward: RoundReward) -> void:
 	await _after_score()
 	_last_hand.text = tr("UI_ROUND_WON")
 	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
+	_round_end.stones(reward.total(), _side.stones_center(), _side.bump_stones.bind(_round_end.feel.stones_bump))
+	await _round_end.victory()
 	_shop_panel.open(_shop)
 	_continue_button.show()
 
@@ -240,8 +248,12 @@ func _on_run_finished(won: bool) -> void:
 	if run_storage != null:
 		run_storage.delete()
 	await _after_score()
+	if won:
+		await _round_end.victory()
 	_last_hand.text = (_last_hand.text + "\n" + tr("UI_RUN_WON" if won else "UI_RUN_LOST")).strip_edges()
 	_menu_button.show()
+	if not won:
+		_round_end.defeat(tr("UI_RUN_LOST"))
 
 
 func _save_run() -> void:

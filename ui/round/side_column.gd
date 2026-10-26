@@ -138,6 +138,19 @@ func show_preview(result: HandResult, level: int) -> void:
 	_comprehension.text = str(result.definition.comprehension_at(level))
 
 
+## Ou tombent les cristaux des pierres gagnees.
+func stones_center() -> Vector2:
+	return _stones.get_global_rect().get_center()
+
+
+## Le compteur de pierres saute quand les cristaux arrivent.
+func bump_stones(peak: float) -> void:
+	_stones.pivot_offset = _stones.size / 2
+	var tween := _stones.create_tween()
+	tween.tween_property(_stones, "scale", Vector2.ONE * peak, 0.08)
+	tween.tween_property(_stones, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
 ## Ou le total d'un coup s'envole a la fin de la sequence.
 func round_qi_center() -> Vector2:
 	return _round_qi.get_global_rect().get_center()
