@@ -26,6 +26,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Boutique vivante : les offres sont des emplacements (artefacts, manuels 法, pilules) avec nom et prix en pierres, qui se retournent a l'ouverture et a la relance. Un achat file vers son emplacement de la rangee haute. Un manuel affiche le gain de niveau de la main. La main du round gagne laisse la place a la boutique. Une pilule utilisee fait briller la carte de la couleur de son element.
 - Sequence de score sans texte au-dessus des cartes : le nom de la main et le compteur Qi x Comprehension defilent dans la colonne, d'ou le total s'envole vers le Qi du round.
 - Meditant a la place de l'anneau d'objectif : la silhouette en tailleur se remplit de qi de bas en haut avec le score du round, une aura pulse quand l'objectif est atteint.
+- Icones dessinees : pierre spirituelle (colonne, prix de la boutique, cristaux qui tombent a la victoire) et un dessin par artefact a la place de son caractere. Un artefact = son .tres + son SVG dans content/artifacts/icones/.
 
 ## [0.3.0] - 2026-10-25
 

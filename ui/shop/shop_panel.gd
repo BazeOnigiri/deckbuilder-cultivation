@@ -46,7 +46,7 @@ func _refresh() -> void:
 	for i: int in _shop.offers.size():
 		var artifact: ArtifactDefinition = _shop.offers[i]
 		_add_offer(ItemSlot.Kind.ARTIFACT, artifact.glyph, artifact.name_key, tr(artifact.description_key),
-			artifact.price, _shop.can_buy(i), _on_buy_pressed.bind(i))
+			artifact.price, _shop.can_buy(i), _on_buy_pressed.bind(i), artifact.icon)
 	for i: int in _shop.manual_offers.size():
 		var hand: HandDefinition = _shop.manual_offers[i].hand
 		_add_offer(ItemSlot.Kind.ARTIFACT, MANUAL_GLYPH, hand.name_key,
@@ -62,11 +62,12 @@ func _refresh() -> void:
 
 ## buy(slot) : achete l'offre ; le slot sert de point de depart a l'envol.
 func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, description: String, price: int,
-		can_buy: bool, buy: Callable) -> void:
+		can_buy: bool, buy: Callable, icon: Texture2D = null) -> void:
 	var offer := VBoxContainer.new()
 	var slot := ItemSlot.new()
 	slot.kind = kind
 	slot.glyph = glyph
+	slot.picture = icon
 	slot.tooltip_text = tr(name_key) + "\n" + description
 	slot.disabled = not can_buy
 	slot.size_flags_horizontal = SIZE_SHRINK_CENTER
@@ -75,9 +76,12 @@ func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, descriptio
 	var title := SideColumn.make_label(&"SideCaption", name_key)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	offer.add_child(title)
-	var cost := SideColumn.make_label(&"Price")
-	cost.text = tr("UI_SHOP_PRICE") % price
-	cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var cost := HBoxContainer.new()
+	cost.alignment = BoxContainer.ALIGNMENT_CENTER
+	var amount := SideColumn.make_label(&"Price")
+	amount.text = str(price)
+	cost.add_child(amount)
+	cost.add_child(StoneIcon.new())
 	offer.add_child(cost)
 	_offers.add_child(offer)
 
@@ -107,6 +111,7 @@ func _fly(slot: ItemSlot) -> void:
 	var ghost := ItemSlot.new()
 	ghost.kind = slot.kind
 	ghost.glyph = slot.glyph
+	ghost.picture = slot.picture
 	ghost.mouse_filter = MOUSE_FILTER_IGNORE
 	# Hors de la mise en page de la boutique : il se deplace librement.
 	ghost.top_level = true

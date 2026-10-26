@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Pierre spirituelle : cristal taille, blanc teinte par le moteur. Facettes plus sombres pour le relief. -->
+  <path d="M16 2 L26 10 L23 27 L16 30 L9 27 L6 10 Z" fill="#ffffff"/>
+  <g fill="#000000" fill-opacity="0.3">
+    <path d="M16 2 L26 10 L16 13 Z"/>
+    <path d="M16 13 L26 10 L23 27 L16 30 Z"/>
+  </g>
+  <path d="M6 10 L16 13 L26 10 M16 13 L16 30" fill="none" stroke="#000000" stroke-opacity="0.35" stroke-width="1"/>
+</svg>

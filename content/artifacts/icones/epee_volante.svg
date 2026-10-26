@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Epee volante de jade : lame en diagonale, garde, pompon, traits de vitesse. Trait blanc teinte par le moteur. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M50 8 L56 6 L54 12 L24 42 L20 38 Z" stroke-width="2.5" fill="#ffffff" fill-opacity="0.25"/>
+    <path d="M17 33 L29 45" stroke-width="3.5"/>
+    <path d="M22 40 L13 49" stroke-width="4"/>
+    <path d="M13 49 Q8 52 9 58 M13 49 Q12 55 15 59" stroke-width="2"/>
+    <path d="M40 30 L52 18" stroke-width="1.5" stroke-opacity="0.8"/>
+    <path d="M44 40 L56 28 M32 48 L40 40" stroke-width="2" stroke-opacity="0.55"/>
+  </g>
+</svg>

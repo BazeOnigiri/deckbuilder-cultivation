@@ -23,6 +23,12 @@ func test_tous_les_artefacts_valides() -> void:
 		assert_true(artifact.is_valid(), "artefact invalide : %s" % artifact.resource_path)
 
 
+## Ajouter un artefact = son .tres + son SVG dans content/artifacts/icones/.
+func test_chaque_artefact_a_une_icone() -> void:
+	for artifact: ArtifactDefinition in _artifacts:
+		assert_not_null(artifact.icon, "artefact sans icone : %s" % artifact.id)
+
+
 func test_ids_uniques() -> void:
 	var ids: Dictionary = {}
 	for artifact: ArtifactDefinition in _artifacts:

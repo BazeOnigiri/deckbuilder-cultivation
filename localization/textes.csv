@@ -113,7 +113,6 @@ UI_SIDE_QI,Qi,Qi
 UI_SIDE_COMPREHENSION,Compréhension,Comprehension
 UI_SIDE_HANDS,Mains,Hands
 UI_SIDE_DISCARDS,Défausses,Discards
-UI_SIDE_STONES,Pierres,Stones
 UI_SIDE_REALM,Royaume,Realm
 UI_SIDE_BOTTLENECK,Goulot,Bottleneck
 UI_SIDE_OF,%d/%d,%d/%d
@@ -123,5 +122,4 @@ UI_ITEMS_PILLS,Pilules %d/%d,Pills %d/%d
 UI_SORT_RANK,Rang,Rank
 UI_SORT_ELEMENT,Élément,Element
 UI_DECK,Paquet,Deck
-UI_SHOP_PRICE,%d pierres,%d stones
 UI_SHOP_LEVEL_UP,%s passe au niveau %d : %d x %d devient %d x %d,%s reaches level %d: %d x %d becomes %d x %d

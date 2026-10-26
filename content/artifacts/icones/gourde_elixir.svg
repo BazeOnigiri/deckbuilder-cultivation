@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Gourde d'elixir : calebasse a deux renflements, bouchon, cordon noue, volute d'elixir. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+    <path d="M32 14 Q22 14 23 23 Q24 28 28 30 Q16 33 16 45 Q16 58 32 58 Q48 58 48 45 Q48 33 36 30 Q40 28 41 23 Q42 14 32 14 Z" fill="#ffffff" fill-opacity="0.25"/>
+    <path d="M28 14 L28 8 L36 8 L36 14"/>
+    <path d="M26 30 Q32 33 38 30" stroke-width="3"/>
+    <path d="M38 31 Q46 34 44 40"/>
+    <path d="M34 6 Q38 1 43 4 Q46 7 42 9" stroke-width="1.8" stroke-opacity="0.7"/>
+  </g>
+</svg>
