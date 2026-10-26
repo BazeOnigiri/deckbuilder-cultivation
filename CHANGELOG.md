@@ -19,6 +19,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Le pipeline de score note chaque etape (base, cartes, effets) avec l'artefact et la carte qui l'ont declenchee.
 - Colonne laterale dans l'ecran de round : goulot et sa contrainte (bandeau rouge pendant une tribulation), anneau d'objectif qui se remplit, Qi du round qui defile quand le total d'un coup s'y envole, apercu de la main selectionnee (nom, niveau, Qi x Comprehension), mains, defausses, pierres, royaume et goulot. Boutons Voie de cultivation (infos de la run) et Options, ouvertes par-dessus la run sans la quitter.
 - Rangee haute dans l'ecran de round : emplacements d'artefacts (3/5) et de pilules (1/2), chacun avec son caractere calligraphie et son infobulle, emplacements libres en pointilles. Un clic sur une pilule l'utilise sur la selection. Pendant la sequence de score, l'emplacement d'un artefact qui se declenche bondit et son effet s'affiche dessous. Police des sceaux etendue a 15 caracteres.
+- Barre d'actions : tri de la main par rang ou par element (la selection est gardee), bouton « Jouer la main » mis en avant en or, pioche dessinee (dos de carte au sceau 道) avec le nombre de cartes restantes sur le paquet.
 
 ## [0.3.0] - 2026-10-25
 

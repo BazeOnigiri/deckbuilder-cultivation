@@ -154,3 +154,34 @@ func test_clic_sur_une_pilule_l_utilise() -> void:
 	slot.pressed.emit()
 	assert_eq(screen._run.pills.size(), 0, "pilule consommee")
 	assert_eq(view.card.element, Element.Type.FEU)
+
+
+func _shown_cards(screen: Control) -> Array[CardInstance]:
+	var cards: Array[CardInstance] = []
+	for view: CardView in screen.get_node("%HandRow").get_children():
+		cards.append(view.card)
+	return cards
+
+
+func test_tri_par_element_regroupe_les_elements() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen.get_node("%SortElement").button_pressed = true
+	var cards := _shown_cards(screen)
+	for i: int in cards.size() - 1:
+		assert_true(cards[i].element < cards[i + 1].element
+			or (cards[i].element == cards[i + 1].element and cards[i].rank <= cards[i + 1].rank))
+
+
+func test_tri_garde_la_selection() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var view := screen.get_node("%HandRow").get_child(0) as CardView
+	view.button_pressed = true
+	screen.get_node("%SortElement").button_pressed = true
+	assert_eq(screen._selected(), [view.card] as Array[CardInstance])
+
+
+func test_pioche_affiche_les_cartes_restantes() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var pile: DeckPile = screen.get_node("%DeckPile")
+	assert_eq(pile._count.text, tr("UI_SIDE_OF") % [screen._round.draw_count(), screen._round.deck_size()])
+	assert_lt(screen._round.draw_count(), screen._round.deck_size())

@@ -336,6 +336,66 @@ shadow_color = Color(0, 0, 0, 0.6)
 shadow_size = 1
 shadow_offset = Vector2(0, 3)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dos"]
+bg_color = Color(0.0941, 0.1373, 0.1725, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.7882, 0.6353, 0.3059, 0.7)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_principal"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 20.0
+content_margin_bottom = 10.0
+bg_color = Color(0.7882, 0.651, 0.3529, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9098, 0.8, 0.5216, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_principal_survol"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 20.0
+content_margin_bottom = 10.0
+bg_color = Color(0.8706, 0.7412, 0.4471, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9608, 0.8941, 0.6588, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_principal_enfonce"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 20.0
+content_margin_bottom = 10.0
+bg_color = Color(0.6392, 0.5176, 0.2706, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.7882, 0.651, 0.3529, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [resource]
 default_font = ExtResource("1_15t8c")
 default_font_size = 20
@@ -345,10 +405,28 @@ ComprehensionValue/base_type = &"Label"
 ComprehensionValue/colors/font_color = Color(0.7882, 0.651, 0.3529, 1)
 ComprehensionValue/font_sizes/font_size = 26
 ComprehensionValue/fonts/font = ExtResource("2_carte")
+DeckPile/colors/glyph_color = Color(0.7882, 0.6353, 0.3059, 1)
+DeckPile/constants/back_height = 62
+DeckPile/constants/back_width = 44
+DeckPile/constants/offset = 3
+DeckPile/font_sizes/font_size = 26
+DeckPile/fonts/font = ExtResource("3_sceau")
+DeckPile/styles/back = SubResource("StyleBoxFlat_dos")
 GoalRing/colors/fill = Color(0.7882, 0.651, 0.3529, 1)
 GoalRing/colors/track = Color(0.1725, 0.2275, 0.2667, 1)
 GoalRing/constants/size = 96
 GoalRing/constants/width = 6
+PrimaryButton/base_type = &"Button"
+PrimaryButton/colors/font_color = Color(0.0471, 0.0784, 0.1098, 1)
+PrimaryButton/colors/font_focus_color = Color(0.0471, 0.0784, 0.1098, 1)
+PrimaryButton/colors/font_hover_color = Color(0.0471, 0.0784, 0.1098, 1)
+PrimaryButton/colors/font_hover_pressed_color = Color(0.0471, 0.0784, 0.1098, 1)
+PrimaryButton/colors/font_pressed_color = Color(0.0471, 0.0784, 0.1098, 1)
+PrimaryButton/fonts/font = ExtResource("2_carte")
+PrimaryButton/styles/hover = SubResource("StyleBoxFlat_principal_survol")
+PrimaryButton/styles/hover_pressed = SubResource("StyleBoxFlat_principal_enfonce")
+PrimaryButton/styles/normal = SubResource("StyleBoxFlat_principal")
+PrimaryButton/styles/pressed = SubResource("StyleBoxFlat_principal_enfonce")
 QiValue/base_type = &"Label"
 QiValue/colors/font_color = Color(0.372549, 0.658824, 0.541176, 1)
 QiValue/font_sizes/font_size = 26
