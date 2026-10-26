@@ -20,3 +20,5 @@ pulse_time = 1.2
 particle_amount = 18
 particle_lifetime = 0.7
 particle_speed = 120.0
+slot_pulse_scale = 1.15
+slot_pulse_time = 0.3

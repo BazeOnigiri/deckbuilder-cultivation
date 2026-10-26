@@ -12,6 +12,7 @@ script = ExtResource("1")
 id = &"pilule_feu_celeste"
 name_key = "PILL_FEU_CELESTE"
 description_key = "PILL_FEU_CELESTE_DESC"
+glyph = "炎"
 price = 3
 min_cards = 1
 max_cards = 3

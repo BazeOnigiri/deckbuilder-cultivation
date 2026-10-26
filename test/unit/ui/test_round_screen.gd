@@ -134,3 +134,23 @@ func test_bouton_options_demande_les_reglages() -> void:
 	watch_signals(screen)
 	screen.get_node("%SideColumn").options_requested.emit()
 	assert_signal_emitted(screen, "options_requested")
+
+
+func test_rangee_haute_montre_tous_les_emplacements() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var rules := GameContent.load_default().shop_rules
+	var items: ItemRow = screen.get_node("%ItemRow")
+	assert_eq(items._artifact_slots.get_child_count(), maxi(rules.max_artifacts, screen._run.artifacts.size()))
+	assert_eq(items._pill_slots.get_child_count(), rules.max_pills)
+
+
+func test_clic_sur_une_pilule_l_utilise() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen._run.pills.append(screen.content.pill_by_id(&"pilule_feu_celeste"))
+	var view := screen.get_node("%HandRow").get_child(0) as CardView
+	view.button_pressed = true
+	var slot := screen.get_node("%ItemRow")._pill_slots.get_child(0) as ItemSlot
+	assert_false(slot.disabled)
+	slot.pressed.emit()
+	assert_eq(screen._run.pills.size(), 0, "pilule consommee")
+	assert_eq(view.card.element, Element.Type.FEU)

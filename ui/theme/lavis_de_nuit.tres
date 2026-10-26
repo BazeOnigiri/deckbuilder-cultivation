@@ -276,6 +276,66 @@ corner_radius_bottom_left = 2
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_voile"]
 bg_color = Color(0.0235, 0.0353, 0.0471, 0.88)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_emplacement"]
+bg_color = Color(0.0941, 0.1373, 0.1725, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.7882, 0.6353, 0.3059, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 1
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_emplacement_survol"]
+bg_color = Color(0.0941, 0.1373, 0.1725, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.549, 0.7686, 0.698, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 1
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pilule"]
+bg_color = Color(0.0941, 0.1373, 0.1725, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3686, 0.6118, 0.5412, 0.6)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 1
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pilule_survol"]
+bg_color = Color(0.0941, 0.1373, 0.1725, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.549, 0.7686, 0.698, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 1
+shadow_offset = Vector2(0, 3)
+
 [resource]
 default_font = ExtResource("1_15t8c")
 default_font_size = 20
@@ -348,6 +408,28 @@ CardButton/styles/hover = SubResource("StyleBoxEmpty_carte")
 CardButton/styles/hover_pressed = SubResource("StyleBoxEmpty_carte")
 CardButton/styles/normal = SubResource("StyleBoxEmpty_carte")
 CardButton/styles/pressed = SubResource("StyleBoxEmpty_carte")
+ItemSlot/base_type = &"Button"
+ItemSlot/colors/artifact_color = Color(0.7882, 0.651, 0.3529, 1)
+ItemSlot/colors/disabled_color = Color(0.4196, 0.4549, 0.4784, 1)
+ItemSlot/colors/empty_color = Color(0.2431, 0.3333, 0.3765, 1)
+ItemSlot/colors/pill_color = Color(0.549, 0.7686, 0.698, 1)
+ItemSlot/constants/artifact_height = 96
+ItemSlot/constants/artifact_width = 72
+ItemSlot/constants/dash = 4
+ItemSlot/constants/pill_size = 60
+ItemSlot/font_sizes/font_size = 44
+ItemSlot/font_sizes/pill_font_size = 32
+ItemSlot/fonts/font = ExtResource("3_sceau")
+ItemSlot/styles/disabled = SubResource("StyleBoxEmpty_carte")
+ItemSlot/styles/focus = SubResource("StyleBoxEmpty_carte")
+ItemSlot/styles/hover = SubResource("StyleBoxEmpty_carte")
+ItemSlot/styles/hover_pressed = SubResource("StyleBoxEmpty_carte")
+ItemSlot/styles/normal = SubResource("StyleBoxEmpty_carte")
+ItemSlot/styles/pill_slot = SubResource("StyleBoxFlat_pilule")
+ItemSlot/styles/pill_slot_hover = SubResource("StyleBoxFlat_pilule_survol")
+ItemSlot/styles/pressed = SubResource("StyleBoxEmpty_carte")
+ItemSlot/styles/slot = SubResource("StyleBoxFlat_emplacement")
+ItemSlot/styles/slot_hover = SubResource("StyleBoxFlat_emplacement_survol")
 Label/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
 RichTextLabel/colors/default_color = Color(0.9098, 0.8824, 0.8157, 1)
 TabContainer/colors/font_hovered_color = Color(0.9098, 0.8824, 0.8157, 1)

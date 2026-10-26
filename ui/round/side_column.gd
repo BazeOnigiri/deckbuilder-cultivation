@@ -11,20 +11,20 @@ var feel: ScoreFeel = preload("res://ui/round/score_feel.tres")
 var settings: GameSettings = GameSettings.new()
 
 var _banner := PanelContainer.new()
-var _stage := _label(&"SideTitle")
-var _constraint := _label(&"SideCaption")
+var _stage := make_label(&"SideTitle")
+var _constraint := make_label(&"SideCaption")
 var _ring := GoalRing.new()
-var _target := _label(&"SideTarget")
-var _round_qi := _label(&"SideValue")
-var _hand_name := _label(&"SideTitle")
-var _hand_level := _label(&"SideCaption")
-var _qi := _label(&"QiValue")
-var _comprehension := _label(&"ComprehensionValue")
-var _hands := _label(&"SideValue")
-var _discards := _label(&"SideValue")
-var _stones := _label(&"SideValue")
-var _realm := _label(&"SideValue")
-var _bottleneck := _label(&"SideValue")
+var _target := make_label(&"SideTarget")
+var _round_qi := make_label(&"SideValue")
+var _hand_name := make_label(&"SideTitle")
+var _hand_level := make_label(&"SideCaption")
+var _qi := make_label(&"QiValue")
+var _comprehension := make_label(&"ComprehensionValue")
+var _hands := make_label(&"SideValue")
+var _discards := make_label(&"SideValue")
+var _stones := make_label(&"SideValue")
+var _realm := make_label(&"SideValue")
+var _bottleneck := make_label(&"SideValue")
 ## Score affiche par le compteur et l'anneau, qui rattrape le vrai score.
 var _shown_score: int = 0
 var _target_score: int = 0
@@ -47,19 +47,19 @@ func _ready() -> void:
 	goal.add_child(_ring)
 	var goal_text := VBoxContainer.new()
 	goal_text.alignment = BoxContainer.ALIGNMENT_CENTER
-	goal_text.add_child(_label(&"SideCaption", "UI_SIDE_TARGET"))
+	goal_text.add_child(make_label(&"SideCaption", "UI_SIDE_TARGET"))
 	goal_text.add_child(_target)
-	goal_text.add_child(_label(&"SideCaption", "UI_SIDE_TO_WIN"))
+	goal_text.add_child(make_label(&"SideCaption", "UI_SIDE_TO_WIN"))
 	goal.add_child(goal_text)
 	layout.add_child(goal)
 
-	layout.add_child(_row(_label(&"SideCaption", "UI_SIDE_ROUND_QI"), _round_qi))
+	layout.add_child(_row(make_label(&"SideCaption", "UI_SIDE_ROUND_QI"), _round_qi))
 
 	var preview := VBoxContainer.new()
 	preview.add_child(_row(_hand_name, _hand_level))
 	var values := HBoxContainer.new()
 	values.add_child(_stat_box(_qi, "UI_SIDE_QI"))
-	values.add_child(_label(&"SideTitle", "x"))
+	values.add_child(make_label(&"SideTitle", "x"))
 	values.add_child(_stat_box(_comprehension, "UI_SIDE_COMPREHENSION"))
 	preview.add_child(values)
 	layout.add_child(preview)
@@ -162,7 +162,7 @@ func _stat_box(value: Label, caption_key: String) -> PanelContainer:
 	var column := VBoxContainer.new()
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(value)
-	var caption := _label(&"SideCaption", caption_key)
+	var caption := make_label(&"SideCaption", caption_key)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(caption)
 	box.add_child(column)
@@ -177,7 +177,7 @@ func _button(text_key: String, pressed: Signal) -> Button:
 	return button
 
 
-static func _label(type: StringName, text_key: String = "") -> Label:
+static func make_label(type: StringName, text_key: String = "") -> Label:
 	var label := Label.new()
 	label.theme_type_variation = type
 	label.text = text_key

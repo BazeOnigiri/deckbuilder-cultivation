@@ -24,6 +24,9 @@ var settings: GameSettings = GameSettings.new()
 var running: bool = false
 ## Renvoie le point (global) ou le total s'envole a la fin : le Qi du round de la colonne. Vide : pas d'envol.
 var score_target: Callable
+## (artefact) -> Vector2 : fait bondir l'emplacement de l'artefact et renvoie ou poser sa popup (INF s'il n'est pas affiche).
+## Vide : popup au-dessus du tableau.
+var artifact_hit: Callable
 
 var _hand_view: HandView
 var _shake_target: Control
@@ -105,9 +108,13 @@ func _show_effect(step: ScoreStep) -> void:
 			text = tr("UI_POPUP_COMPREHENSION_MULT") % amount
 	# Le nom de l'artefact : le joueur voit d'ou viennent ses points.
 	var artifact := step.source as ArtifactDefinition
+	var at := _above_board()
 	if artifact != null:
 		text = tr(artifact.name_key) + "\n" + text
-	var at := _above_board()
+		if artifact_hit.is_valid():
+			var slot: Vector2 = artifact_hit.call(artifact)
+			if slot.is_finite():
+				at = slot
 	if step.card != null:
 		_hand_view.pulse(step.card)
 		at = _hand_view.card_center(step.card)
@@ -143,6 +150,8 @@ func _popup(text: String, at: Vector2, color: Color) -> void:
 	add_child(label)
 	label.reset_size()
 	label.global_position = at - label.size / 2
+	# Le nom d'un artefact du bord ne doit pas sortir de l'ecran.
+	label.global_position.x = clampf(label.global_position.x, 0.0, maxf(0.0, get_viewport_rect().size.x - label.size.x))
 	var tween := label.create_tween().set_parallel()
 	if not settings.reduce_motion:
 		tween.tween_property(label, "position:y", label.position.y - feel.popup_rise, feel.popup_time)

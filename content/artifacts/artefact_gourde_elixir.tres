@@ -18,5 +18,6 @@ script = ExtResource("1")
 id = &"artefact_gourde_elixir"
 name_key = "ARTIFACT_GOURDE_ELIXIR"
 description_key = "ARTIFACT_GOURDE_ELIXIR_DESC"
+glyph = "葫"
 price = 6
 effects = Array[ExtResource("2")]([SubResource("effect")])

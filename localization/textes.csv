@@ -45,7 +45,6 @@ ARTIFACT_PERLE_MAREES,Perle des marées,Tidal Pearl
 ARTIFACT_PERLE_MAREES_DESC,+1 Compréhension pour chaque carte Eau qui compte.,+1 Comprehension for each scoring Water card.
 ARTIFACT_MIROIR_JUMEAU,Miroir jumeau,Twin Mirror
 ARTIFACT_MIROIR_JUMEAU_DESC,x2 Compréhension si la main est une Paire ou une Double paire.,x2 Comprehension if the hand is a Pair or Two Pair.
-UI_ARTIFACTS,Artefacts : %s,Artifacts: %s
 UI_NONE,aucun,none
 UI_SHOP,Boutique,Shop
 UI_SHOP_OFFER,%s (%d pierres),%s (%d stones)
@@ -60,7 +59,6 @@ PILL_RAFFINEMENT,Pilule de raffinement,Refining Pill
 PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (9 maximum).,+1 rank to up to 2 selected cards (9 maximum).
 PILL_PURIFICATION,Pilule de purification,Purification Pill
 PILL_PURIFICATION_DESC,Détruit jusqu'à 2 cartes sélectionnées pour le reste de la run.,Destroys up to 2 selected cards for the rest of the run.
-UI_USE_PILL,Utiliser : %s,Use: %s
 BOTTLENECK_TRIBULATION_FLAMMES,Tribulation des flammes célestes,Tribulation of Celestial Flames
 BOTTLENECK_TRIBULATION_VENT_NOIR,Tribulation du vent noir,Tribulation of the Black Wind
 BOTTLENECK_TRIBULATION_DEMON,Tribulation du démon intérieur,Tribulation of the Inner Demon
@@ -124,3 +122,5 @@ UI_SIDE_REALM,Royaume,Realm
 UI_SIDE_BOTTLENECK,Goulot,Bottleneck
 UI_SIDE_OF,%d/%d,%d/%d
 UI_SIDE_PATH,Voie de cultivation,Cultivation path
+UI_ITEMS_ARTIFACTS,Artefacts %d/%d,Artifacts %d/%d
+UI_ITEMS_PILLS,Pilules %d/%d,Pills %d/%d
