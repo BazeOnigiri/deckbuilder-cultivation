@@ -55,8 +55,9 @@ func apply(id: StringName) -> void:
 		_lavis.set_shader_parameter(parameter, ambiance.get(parameter))
 	_lavis.set_shader_parameter(&"blend", 0.0 if time > 0.0 else 1.0)
 	var targets := {
-		_lavis: {&"speed": ambiance.speed, &"blend": 1.0},
-		_papier: {&"vignette": ambiance.vignette},
+		_lavis: {&"speed": ambiance.speed, &"scale": ambiance.scale, &"warp": ambiance.warp,
+			&"strength": ambiance.strength, &"blend": 1.0},
+		_papier: {&"vignette": ambiance.vignette, &"vignette_color": ambiance.vignette_color},
 	}
 	if time > 0.0:
 		_fade = create_tween().set_parallel()

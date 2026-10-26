@@ -6,9 +6,13 @@
 [resource]
 script = ExtResource("1")
 id = &"tribulation_vent_noir"
-base_color = Color(0.07, 0.07, 0.09, 1)
-deep_color = Color(0.03, 0.03, 0.04, 1)
-ink_color = Color(0.15, 0.13, 0.19, 1)
-speed = 0.07
-vignette = 0.5
+base_color = Color(0.085, 0.085, 0.1, 1)
+deep_color = Color(0.025, 0.025, 0.035, 1)
+ink_color = Color(0.17, 0.16, 0.2, 1)
+speed = 0.14
+scale = 3.6
+warp = 3.2
+strength = 0.9
+vignette = 0.55
+vignette_color = Color(0.06, 0.06, 0.09, 1)
 weather = ExtResource("2")

@@ -9,6 +9,8 @@ uniform float fibers : hint_range(0.0, 0.2) = 0.04;
 // Nombre de fibres sur la hauteur de l'ecran.
 uniform float fiber_scale = 6.0;
 uniform float vignette : hint_range(0.0, 1.0) = 0.45;
+// Teinte du bord (posee par l'autoload Ambiance) : braise, pourpre...
+uniform vec4 vignette_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
 
 void fragment() {
 	// Grain au pixel physique, net quelle que soit la resolution.
@@ -21,7 +23,7 @@ void fragment() {
 	float paper = g + (strands - 0.5) * noise(p * 0.7) * 2.0 * fibers;
 	float shade = smoothstep(0.4, 1.0, length(SCREEN_UV - 0.5) * 1.4) * vignette;
 	float light = max(paper, 0.0);
-	float dark = max(-paper, 0.0) + shade;
-	float alpha = clamp(light + dark, 0.0, 1.0);
-	COLOR = vec4(vec3(light / max(alpha, 0.0001)), alpha);
+	float dark = max(-paper, 0.0);
+	float alpha = clamp(light + dark + shade, 0.0, 1.0);
+	COLOR = vec4((vec3(light) + vignette_color.rgb * shade) / max(alpha, 0.0001), alpha);
 }
