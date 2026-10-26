@@ -11,25 +11,78 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
+[sub_resource type="GradientTexture2D" id="lueur"]
+gradient = SubResource("fondu")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [sub_resource type="Gradient" id="vie"]
 offsets = PackedFloat32Array(0, 0.15, 1)
 colors = PackedColorArray(1, 0.75, 0.35, 0, 1, 0.65, 0.3, 1, 0.9, 0.25, 0.1, 0)
 
-[node name="Escarbilles" type="CPUParticles2D"]
+[sub_resource type="Gradient" id="vie_lueur"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 0.35, 0.08, 0, 1, 0.35, 0.08, 0.28, 1, 0.35, 0.08, 0)
+
+[sub_resource type="Gradient" id="vie_etincelle"]
+offsets = PackedFloat32Array(0, 0.1, 1)
+colors = PackedColorArray(1, 0.9, 0.6, 0, 1, 0.85, 0.5, 1, 1, 0.5, 0.2, 0)
+
+[node name="Escarbilles" type="Node2D"]
+
+[node name="Brasier" type="CPUParticles2D" parent="."]
+position = Vector2(576, 700)
+amount = 10
+lifetime = 3.0
+preprocess = 3.0
+texture = SubResource("lueur")
+emission_shape = 3
+emission_rect_extents = Vector2(700, 20)
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 30.0
+scale_amount_min = 3.0
+scale_amount_max = 5.0
+color_ramp = SubResource("vie_lueur")
+
+[node name="Braises" type="CPUParticles2D" parent="."]
 position = Vector2(576, 670)
-amount = 70
-lifetime = 8.0
-preprocess = 8.0
+amount = 110
+lifetime = 7.0
+preprocess = 7.0
 texture = SubResource("tache")
 emission_shape = 3
 emission_rect_extents = Vector2(760, 10)
 direction = Vector2(0, -1)
 spread = 15.0
-gravity = Vector2(0, -6)
-initial_velocity_min = 40.0
-initial_velocity_max = 90.0
-tangential_accel_min = -12.0
-tangential_accel_max = 12.0
+gravity = Vector2(0, -8)
+initial_velocity_min = 50.0
+initial_velocity_max = 110.0
+tangential_accel_min = -15.0
+tangential_accel_max = 15.0
 scale_amount_min = 0.35
-scale_amount_max = 0.8
+scale_amount_max = 0.9
 color_ramp = SubResource("vie")
+
+[node name="Etincelles" type="CPUParticles2D" parent="."]
+position = Vector2(576, 670)
+amount = 25
+lifetime = 1.6
+preprocess = 1.6
+texture = SubResource("tache")
+emission_shape = 3
+emission_rect_extents = Vector2(760, 10)
+direction = Vector2(0, -1)
+spread = 25.0
+gravity = Vector2(0, 60)
+initial_velocity_min = 250.0
+initial_velocity_max = 420.0
+scale_amount_min = 0.15
+scale_amount_max = 0.3
+color_ramp = SubResource("vie_etincelle")
+

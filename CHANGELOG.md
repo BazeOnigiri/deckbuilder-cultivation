@@ -31,6 +31,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Ambiance par ecran : chaque tribulation a son fond et sa meteo (braise et escarbilles pour les flammes, encre grise et trainees de poussiere pour le vent noir, pourpre et vignette qui respire pour le demon interieur), la boutique a un lavis chaud, le menu et les goulots simples gardent la nuit. Fondu entre deux ambiances, meteo coupee par « Reduire les animations ». Une ambiance = un .tres dans ui/ambiances/ avec l'id du goulot.
 - Boutique en pavillon : cadre laque rouge a double filet d'or et coins ornes, enseigne calligraphiee 坊市 entre deux lanternes qui se balancent, offres posees sur des etoffes avec une etiquette de prix et l'icone de pierre, bouton Relancer en sceau rouge. Police des sceaux etendue a 17 caracteres.
 - Fin de goulot plus marquee : deux ondes dorees, le ciel s'eclaire et le lavis se teinte d'or. Le passage d'une ambiance a l'autre se fait par taches d'encre qui s'etendent. Plus de texte de victoire dans la boutique (les cristaux montrent le gain).
+- Tribulations bien distinctes : chaque ambiance regle aussi la forme du lavis (taille, deformation, force) et la couleur du bord de l'ecran. Flammes : brasier en bas, braises et etincelles. Vent noir : encre grise qui tourbillonne vite, rafales sombres, trainees et debris. Demon interieur : grandes ombres, brume pourpre, bord cramoisi qui bat, braises qui tombent.
 
 ## [0.3.0] - 2026-10-25
 

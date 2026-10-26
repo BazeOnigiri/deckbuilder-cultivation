@@ -6,11 +6,15 @@
 [resource]
 script = ExtResource("1")
 id = &"tribulation_demon"
-base_color = Color(0.08, 0.04, 0.1, 1)
-deep_color = Color(0.04, 0.02, 0.05, 1)
-ink_color = Color(0.17, 0.065, 0.19, 1)
-speed = 0.025
-vignette = 0.55
-vignette_breath = 0.12
-breath_speed = 0.8
+base_color = Color(0.1, 0.03, 0.12, 1)
+deep_color = Color(0.045, 0.01, 0.06, 1)
+ink_color = Color(0.2, 0.04, 0.16, 1)
+speed = 0.03
+scale = 1.1
+warp = 1.0
+strength = 0.95
+vignette = 0.7
+vignette_color = Color(0.22, 0.0, 0.12, 1)
+vignette_breath = 0.2
+breath_speed = 1.3
 weather = ExtResource("2")
