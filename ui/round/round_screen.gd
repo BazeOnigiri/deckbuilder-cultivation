@@ -257,8 +257,6 @@ func _on_round_won(reward: RoundReward) -> void:
 	# Boutique creee tout de suite (meme tirage, et sauvegardee avec le coup), affichee apres la sequence.
 	_shop = content.new_shop(_run, _rng)
 	await _after_score()
-	_last_hand.text = tr("UI_ROUND_WON")
-	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
 	_round_end.stones(reward.total(), _side.stones_center(), _side.bump_stones.bind(_round_end.feel.stones_bump))
 	await _round_end.victory()
 	_open_shop()

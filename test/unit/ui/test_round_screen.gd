@@ -288,6 +288,7 @@ func test_victoire_puis_boutique() -> void:
 	assert_true(screen.get_node("%ContinueButton").visible)
 	assert_false(screen.get_node("%HandRow").visible, "la main laisse la place a la boutique")
 	assert_eq(ids.back(), &"boutique")
+	assert_eq(screen._last_hand.text, "", "pas de texte de victoire dans la boutique : les cristaux montrent le gain")
 	screen.get_node("%ContinueButton").pressed.emit()
 	assert_eq(ids.back(), screen._run.progress.current_bottleneck().id, "ambiance du goulot suivant")
 	assert_true(screen.get_node("%HandRow").visible, "main revenue au round suivant")
@@ -344,3 +345,10 @@ func test_meditant_rempli_selon_l_objectif() -> void:
 	assert_almost_eq(shader.get_shader_parameter(&"fill"), 0.25, 0.001)
 	side._set_shown_score(500)
 	assert_eq(shader.get_shader_parameter(&"fill"), 1.0, "plafonne a l'objectif")
+
+
+func test_victoire_double_onde_et_ciel_dore() -> void:
+	var end := RoundEnd.new()
+	add_child_autofree(end)
+	end._wave()
+	assert_eq(end.find_children("*", "ColorRect", false, false).size(), 3, "deux ondes et l'eclair du ciel")

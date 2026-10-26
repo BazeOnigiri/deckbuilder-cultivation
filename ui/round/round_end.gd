@@ -10,6 +10,9 @@ const WAVE_SHADER := preload("res://ui/round/onde.gdshader")
 const INK_SHADER := preload("res://ui/round/encre_noire.gdshader")
 ## Sceau decoratif, identique dans toutes les langues.
 const VICTORY_GLYPH := "破"
+## Parametres globaux du lavis (project.godot), partages avec la sequence de score.
+const PULSE_COLOR := &"pulse_color"
+const PULSE_STRENGTH := &"pulse_strength"
 
 var feel: RoundEndFeel = preload("res://ui/round/round_end_feel.tres")
 var settings: GameSettings = GameSettings.new()
@@ -115,14 +118,43 @@ func defeat(text: String) -> void:
 func _wave() -> void:
 	if feel.wave_time <= 0.0:
 		return
+	_ring(0.0)
+	_ring(feel.wave_echo)
+	_flash_sky()
+	_pulse_background()
+
+
+func _ring(delay: float) -> void:
 	var ring := ColorRect.new()
 	ring.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	ring.mouse_filter = MOUSE_FILTER_IGNORE
 	var shader := ShaderMaterial.new()
 	shader.shader = WAVE_SHADER
+	shader.set_shader_parameter(&"width", feel.wave_width)
+	shader.set_shader_parameter(&"ring_color", feel.victory_color)
 	ring.material = shader
 	add_child(ring)
 	move_child(ring, 0)
 	var tween := ring.create_tween()
+	tween.tween_interval(delay)
 	tween.tween_method(func(value: float) -> void: shader.set_shader_parameter(&"progress", value), 0.0, 1.0, feel.wave_time)
 	tween.tween_callback(ring.queue_free)
+
+
+func _flash_sky() -> void:
+	var sky := ColorRect.new()
+	sky.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	sky.mouse_filter = MOUSE_FILTER_IGNORE
+	sky.color = Color(feel.victory_color, feel.victory_flash)
+	add_child(sky)
+	move_child(sky, 0)
+	var tween := sky.create_tween()
+	tween.tween_property(sky, "color:a", 0.0, feel.victory_flash_time)
+	tween.tween_callback(sky.queue_free)
+
+
+## Le lavis se teinte d'or puis revient : meme parametre que la teinte d'element de la sequence.
+func _pulse_background() -> void:
+	RenderingServer.global_shader_parameter_set(PULSE_COLOR, feel.victory_color)
+	create_tween().tween_method(func(value: float) -> void:
+		RenderingServer.global_shader_parameter_set(PULSE_STRENGTH, value), feel.victory_pulse, 0.0, feel.victory_pulse_time)
