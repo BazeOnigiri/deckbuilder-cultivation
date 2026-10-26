@@ -48,6 +48,15 @@ func show_pills(pills: Array[PillDefinition], max_count: int, usable: Array[bool
 			slot.pressed.connect(pill_pressed.emit.bind(i))
 
 
+## Centre du premier emplacement libre (ou un achat de la boutique va se poser), Vector2.INF si tout est pris.
+func next_free_center(kind: ItemSlot.Kind) -> Vector2:
+	var slots := _pill_slots if kind == ItemSlot.Kind.PILL else _artifact_slots
+	for slot: ItemSlot in slots.get_children():
+		if slot.glyph.is_empty():
+			return slot.get_global_rect().get_center()
+	return Vector2.INF
+
+
 ## Fait bondir l'emplacement de l'artefact et renvoie ou poser sa popup (sous l'emplacement).
 ## Vector2.INF si l'artefact n'est pas affiche.
 func artifact_hit(artifact: ArtifactDefinition) -> Vector2:

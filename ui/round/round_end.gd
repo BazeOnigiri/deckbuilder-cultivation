@@ -42,15 +42,16 @@ func victory() -> void:
 		seal.position = rest - Vector2(0, feel.seal_drop)
 		seal.scale = Vector2.ONE * 2.0
 		seal.modulate.a = 0.0
-		tween.set_parallel()
+		# parallel() par etape, pas set_parallel() : celui-ci rendrait aussi paralleles les etapes suivantes.
 		tween.tween_property(seal, "position", rest, fall).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		tween.tween_property(seal, "scale", Vector2.ONE, fall).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		tween.tween_property(seal, "modulate:a", 1.0, fall)
-		tween.chain().tween_callback(_wave)
-	tween.chain().tween_interval(feel.seal_time * 0.4)
+		tween.parallel().tween_property(seal, "scale", Vector2.ONE, fall).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tween.parallel().tween_property(seal, "modulate:a", 1.0, fall)
+		tween.tween_callback(_wave)
+	tween.tween_interval(feel.seal_time * 0.4)
 	tween.tween_property(seal, "modulate:a", 0.0, feel.seal_time * 0.3)
-	tween.tween_callback(seal.queue_free)
 	await tween.finished
+	# Libere apres l'attente : un noeud libere tue son tween, qui n'emettrait jamais finished.
+	seal.queue_free()
 
 
 ## count pierres gagnees : des cristaux tombent sur `to` (coordonnees globales), puis bump est appele.
@@ -74,9 +75,10 @@ func stones(count: int, to: Vector2, bump: Callable) -> void:
 		tween.tween_interval(i * feel.crystal_stagger)
 		tween.tween_property(crystal, "modulate:a", 1.0, 0.0)
 		tween.tween_property(crystal, "global_position", landing, feel.crystal_time).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-		tween.tween_callback(crystal.queue_free)
+		# Le compteur saute avant la liberation : un noeud libere arrete son tween.
 		if i == crystals - 1:
 			tween.tween_callback(bump)
+		tween.tween_callback(crystal.queue_free)
 
 
 ## Fissures puis encre, le texte d'echec et un bouton vers le menu. Reste a l'ecran.

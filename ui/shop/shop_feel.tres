@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ShopFeel" format=3]
+
+[ext_resource type="Script" path="res://ui/shop/shop_feel.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+flip_time = 0.3
+flip_stagger = 0.08
+fly_time = 0.45
+level_up_fade = 0.3

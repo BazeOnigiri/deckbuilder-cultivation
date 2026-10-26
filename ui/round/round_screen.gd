@@ -67,6 +67,9 @@ func _ready() -> void:
 	_continue_button.pressed.connect(_on_continue_pressed)
 	_menu_button.pressed.connect(menu_requested.emit)
 	_shop_panel.changed.connect(_refresh)
+	_shop_panel.settings = settings
+	_shop_panel.levels = _run.hand_levels
+	_shop_panel.fly_target = _items.next_free_center
 	_hand_view.settings = settings
 	_hand_view.selection_changed.connect(_on_selection_changed)
 	_sequence = ScoreSequence.new()
@@ -96,7 +99,7 @@ func _ready() -> void:
 		# Sauvegarde prise dans la boutique : on la rouvre avec ses offres d'origine.
 		_shop = RunSnapshot.restore_shop(resume_data, _run, content, _rng)
 		_show_stage()
-		_shop_panel.open(_shop)
+		_open_shop()
 		_continue_button.show()
 	_refresh()
 
@@ -178,8 +181,12 @@ func _refresh_pills() -> void:
 
 
 func _on_pill_pressed(index: int) -> void:
-	_run.use_pill(index, _selected())
+	var selected := _selected()
+	if not _run.use_pill(index, selected):
+		return
 	_refresh()
+	for card: CardInstance in selected:
+		_hand_view.transmute(card)
 
 
 func _on_round_started(round_state: RoundState) -> void:
@@ -225,6 +232,7 @@ func _on_discard_pressed() -> void:
 
 func _on_continue_pressed() -> void:
 	_shop_panel.hide()
+	_hand_view.show()
 	_continue_button.hide()
 	_shop = null
 	_run.next_round()
@@ -239,7 +247,7 @@ func _on_round_won(reward: RoundReward) -> void:
 	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
 	_round_end.stones(reward.total(), _side.stones_center(), _side.bump_stones.bind(_round_end.feel.stones_bump))
 	await _round_end.victory()
-	_shop_panel.open(_shop)
+	_open_shop()
 	_continue_button.show()
 
 
@@ -254,6 +262,12 @@ func _on_run_finished(won: bool) -> void:
 	_menu_button.show()
 	if not won:
 		_round_end.defeat(tr("UI_RUN_LOST"))
+
+
+## La main du round gagne laisse la place a la boutique : l'ecran ne deborde pas en hauteur.
+func _open_shop() -> void:
+	_hand_view.hide()
+	_shop_panel.open(_shop)
 
 
 func _save_run() -> void:

@@ -90,6 +90,16 @@ func mark_sealed(sealed: Callable) -> void:
 		view.set_sealed(sealed.call(view.card))
 
 
+## Une pilule vient de fondre dans la carte : elle s'eclaire de la couleur de son (nouvel) element.
+func transmute(card: CardInstance) -> void:
+	var view := _view_of(card)
+	if view == null or settings.reduce_motion or feel.transmute_time <= 0.0:
+		return
+	var color := ElementStyles.of(card.element).color
+	view.self_modulate = Color(color.r * feel.transmute_glow, color.g * feel.transmute_glow, color.b * feel.transmute_glow)
+	view.create_tween().tween_property(view, "self_modulate", Color.WHITE, feel.transmute_time)
+
+
 ## Centre de la carte a l'ecran, ou Vector2.INF si elle n'est pas affichee.
 func card_center(card: CardInstance) -> Vector2:
 	var view := _view_of(card)

@@ -19,3 +19,5 @@ play_rise = 190.0
 pulse_kick = 6.0
 dissolve_time = 0.6
 dissolve_drift = 30.0
+transmute_time = 0.6
+transmute_glow = 1.8
