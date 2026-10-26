@@ -8,3 +8,5 @@ flip_time = 0.3
 flip_stagger = 0.08
 fly_time = 0.45
 level_up_fade = 0.3
+lantern_swing = 0.08
+lantern_time = 1.6

@@ -47,7 +47,7 @@ ARTIFACT_MIROIR_JUMEAU,Miroir jumeau,Twin Mirror
 ARTIFACT_MIROIR_JUMEAU_DESC,x2 Compréhension si la main est une Paire ou une Double paire.,x2 Comprehension if the hand is a Pair or Two Pair.
 UI_NONE,aucun,none
 UI_SHOP,Boutique,Shop
-UI_SHOP_REROLL,Relancer (%d pierres),Reroll (%d stones)
+UI_SHOP_REROLL,Relancer %d,Reroll %d
 UI_MANUAL_DESC,%s gagne un niveau : +%d Qi et +%d Compréhension.,%s gains a level: +%d Qi and +%d Comprehension.
 PILL_FEU_CELESTE,Pilule du feu céleste,Celestial Fire Pill
 PILL_FEU_CELESTE_DESC,Change jusqu'à 3 cartes sélectionnées en Feu.,Turns up to 3 selected cards into Fire.

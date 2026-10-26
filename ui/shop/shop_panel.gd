@@ -1,12 +1,16 @@
 class_name ShopPanel
 extends VBoxContainer
-## Boutique affichee entre deux goulots, en emplacements comme la rangee haute. Construite en code : pas de .tscn.
+## Boutique affichee entre deux goulots, dans un pavillon laque : enseigne 坊市 entre deux lanternes,
+## offres posees sur des etoffes avec leur etiquette de prix. Construite en code : pas de .tscn.
 ## A l'ouverture les offres se retournent ; un achat file vers la rangee haute ; un manuel montre le gain de niveau.
 
 signal changed
 
 ## Glyphe des manuels de technique : 法, la methode.
 const MANUAL_GLYPH := "法"
+## Enseigne du marche, decorative : identique dans toutes les langues.
+const SIGN_GLYPHS := "坊市"
+const LANTERN := preload("res://ui/shop/lanterne.svg")
 
 var feel: ShopFeel = preload("res://ui/shop/shop_feel.tres")
 var settings: GameSettings = GameSettings.new()
@@ -23,17 +27,65 @@ var _reroll := Button.new()
 
 
 func _ready() -> void:
+	var pavilion := ShopPavilion.new()
+	pavilion.size_flags_horizontal = SIZE_SHRINK_CENTER
+	add_child(pavilion)
+	var layout := VBoxContainer.new()
+	pavilion.add_child(layout)
+	var header := HBoxContainer.new()
+	header.alignment = BoxContainer.ALIGNMENT_CENTER
+	header.add_child(_lantern(1.0))
+	var sign := VBoxContainer.new()
+	var glyphs := SideColumn.make_label(&"ShopSign")
+	glyphs.auto_translate_mode = AUTO_TRANSLATE_MODE_DISABLED
+	glyphs.text = SIGN_GLYPHS
+	glyphs.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sign.add_child(glyphs)
+	_title.theme_type_variation = &"SideCaption"
 	_title.text = "UI_SHOP"
-	add_child(_title)
-	add_child(_offers)
-	add_child(_level_up)
-	add_child(_reroll)
+	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sign.add_child(_title)
+	header.add_child(sign)
+	header.add_child(_lantern(-1.0))
+	layout.add_child(header)
+	# Le sceau Relancer est pose a droite des offres : la boutique tient dans la hauteur de l'ecran.
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_child(_offers)
+	layout.add_child(row)
+	_level_up.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	layout.add_child(_level_up)
+	_reroll.theme_type_variation = &"RerollSeal"
+	_reroll.icon = get_theme_icon(&"icon", &"StoneIcon")
+	_reroll.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_reroll.size_flags_vertical = SIZE_SHRINK_CENTER
+	row.add_child(_reroll)
 	_reroll.pressed.connect(_on_reroll_pressed)
+
+
+## side : 1 ou -1, les deux lanternes partent en sens oppose.
+func _lantern(side: float) -> TextureRect:
+	var lantern := TextureRect.new()
+	lantern.texture = LANTERN
+	var height: float = get_theme_constant(&"lantern_height", &"ShopPavilion")
+	lantern.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	lantern.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	lantern.custom_minimum_size = Vector2(height * LANTERN.get_width() / LANTERN.get_height(), height)
+	lantern.size_flags_vertical = SIZE_SHRINK_BEGIN
+	# Accrochee par le haut du cordon.
+	lantern.pivot_offset = Vector2(lantern.custom_minimum_size.x / 2.0, 0.0)
+	if not settings.reduce_motion and feel.lantern_time > 0.0:
+		lantern.rotation = -feel.lantern_swing * side
+		var tween := lantern.create_tween().set_loops()
+		tween.tween_property(lantern, "rotation", feel.lantern_swing * side, feel.lantern_time).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(lantern, "rotation", -feel.lantern_swing * side, feel.lantern_time).set_trans(Tween.TRANS_SINE)
+	return lantern
 
 
 func open(shop: ShopState) -> void:
 	_shop = shop
 	_level_up.text = ""
+	_level_up.hide()
 	show()
 	_refresh()
 	_reveal()
@@ -63,7 +115,10 @@ func _refresh() -> void:
 ## buy(slot) : achete l'offre ; le slot sert de point de depart a l'envol.
 func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, description: String, price: int,
 		can_buy: bool, buy: Callable, icon: Texture2D = null) -> void:
+	var cloth := PanelContainer.new()
+	cloth.theme_type_variation = &"ShopCloth"
 	var offer := VBoxContainer.new()
+	cloth.add_child(offer)
 	var slot := ItemSlot.new()
 	slot.kind = kind
 	slot.glyph = glyph
@@ -76,14 +131,18 @@ func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, descriptio
 	var title := SideColumn.make_label(&"SideCaption", name_key)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	offer.add_child(title)
+	var tag := PanelContainer.new()
+	tag.theme_type_variation = &"PriceTag"
+	tag.size_flags_horizontal = SIZE_SHRINK_CENTER
 	var cost := HBoxContainer.new()
 	cost.alignment = BoxContainer.ALIGNMENT_CENTER
 	var amount := SideColumn.make_label(&"Price")
 	amount.text = str(price)
 	cost.add_child(amount)
 	cost.add_child(StoneIcon.new())
-	offer.add_child(cost)
-	_offers.add_child(offer)
+	tag.add_child(cost)
+	offer.add_child(tag)
+	_offers.add_child(cloth)
 
 
 ## Les offres se retournent l'une apres l'autre, comme des cartes posees face cachee.
@@ -124,6 +183,7 @@ func _fly(slot: ItemSlot) -> void:
 
 func _show_level_up(hand: HandDefinition) -> void:
 	var level := levels.level_of(hand.id)
+	_level_up.show()
 	_level_up.text = tr("UI_SHOP_LEVEL_UP") % [tr(hand.name_key), level, hand.qi_at(level - 1),
 		hand.comprehension_at(level - 1), hand.qi_at(level), hand.comprehension_at(level)]
 	if settings.reduce_motion or feel.level_up_fade <= 0.0:
