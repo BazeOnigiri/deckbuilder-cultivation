@@ -138,6 +138,23 @@ func show_preview(result: HandResult, level: int) -> void:
 	_comprehension.text = str(result.definition.comprehension_at(level))
 
 
+## Pendant la sequence de score : la main jouee a la place de l'apercu.
+func show_hand(definition: HandDefinition, level: int) -> void:
+	_hand_name.text = tr(definition.name_key)
+	_hand_level.text = tr("UI_SIDE_LEVEL") % level
+
+
+## Pendant la sequence de score : le compteur qui defile, dans les cases de l'apercu.
+func show_tally(qi: int, comprehension: float) -> void:
+	_qi.text = str(qi)
+	_comprehension.text = String.num(comprehension, 1)
+
+
+## D'ou part le total a la fin de la sequence : entre les cases Qi et Comprehension.
+func tally_center() -> Vector2:
+	return (_qi.get_global_rect().get_center() + _comprehension.get_global_rect().get_center()) / 2
+
+
 ## Ou tombent les cristaux des pierres gagnees.
 func stones_center() -> Vector2:
 	return _stones.get_global_rect().get_center()

@@ -1,19 +1,22 @@
 class_name ScoreSequence
 extends Control
 ## Rejoue le calcul d'une main jouee, etape par etape : la carte qui compte bondit, lache du qi et son montant s'envole,
-## le compteur Qi x Comprehension defile, puis l'ecran tremble et le fond se teinte selon le score.
+## le compteur Qi x Comprehension defile (dans la colonne, par signaux), puis l'ecran tremble et le fond se teinte.
 ## Affichage seulement : le score est deja calcule et compte quand la sequence commence.
 
 signal finished
+## La main jouee : la colonne affiche son nom a la place de l'apercu.
+signal hand_named(definition: HandDefinition)
+## Chaque etape du compteur qui defile.
+signal tally_changed(qi: int, comprehension: float)
 
 ## Parametres globaux de shader declares dans project.godot, lus par le fond lavis.
 const PULSE_COLOR := &"pulse_color"
 const PULSE_STRENGTH := &"pulse_strength"
 const POPUP_OUTLINE_SIZE := 6
 const POPUP_OUTLINE_COLOR := Color(0.03, 0.05, 0.07, 0.85)
-## Ecart entre le tableau du score et le haut des cartes jouees.
-const BOARD_MARGIN := 12.0
-const BOARD_WIDTH := 320.0
+## Ecart entre le sceau d'annonce et le haut des cartes jouees.
+const ANNOUNCE_MARGIN := 12.0
 ## Allers-retours du tremblement.
 const SHAKES := 6
 ## Diametre d'une particule de qi, en pixels.
@@ -24,15 +27,14 @@ var settings: GameSettings = GameSettings.new()
 var running: bool = false
 ## Renvoie le point (global) ou le total s'envole a la fin : le Qi du round de la colonne. Vide : pas d'envol.
 var score_target: Callable
+## Renvoie le point (global) d'ou part le total : les cases Qi x Comprehension de la colonne. Vide : pas d'envol.
+var tally_origin: Callable
 ## (artefact) -> Vector2 : fait bondir l'emplacement de l'artefact et renvoie ou poser sa popup (INF s'il n'est pas affiche).
-## Vide : popup au-dessus du tableau.
+## Vide : popup au-dessus des cartes jouees.
 var artifact_hit: Callable
 
 var _hand_view: HandView
 var _shake_target: Control
-var _board: VBoxContainer
-var _hand_name: Label
-var _tally: Label
 var _rng := RandomNumberGenerator.new()
 var _shown := Vector2.ZERO
 ## Point lumineux flou, partage par toutes les particules.
@@ -48,12 +50,6 @@ func setup(hand_view: HandView, shake_target: Control) -> void:
 func _ready() -> void:
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	mouse_filter = MOUSE_FILTER_IGNORE
-	_board = VBoxContainer.new()
-	_board.mouse_filter = MOUSE_FILTER_IGNORE
-	_hand_name = _board_label()
-	_tally = _board_label()
-	_tally.add_theme_color_override(&"font_color", feel.comprehension_color)
-	add_child(_board)
 	_qi_texture = GradientTexture2D.new()
 	_qi_texture.width = QI_DOT_SIZE
 	_qi_texture.height = QI_DOT_SIZE
@@ -69,11 +65,9 @@ func _exit_tree() -> void:
 
 func play(context: ScoreContext, target_score: int) -> void:
 	running = true
-	_hand_name.text = tr(context.hand.definition.name_key)
-	# Texte en place avant de mesurer le tableau, sinon il grandit par-dessus les cartes.
+	hand_named.emit(context.hand.definition)
 	_roll_to(context.steps[0])
-	_place_board()
-	_announce(_hand_name.text)
+	_announce(tr(context.hand.definition.name_key))
 	await _wait(feel.start_delay + feel.announce_time)
 	for step: ScoreStep in context.steps:
 		match step.kind:
@@ -86,14 +80,11 @@ func play(context: ScoreContext, target_score: int) -> void:
 		_roll_to(step)
 		await _wait(feel.step_delay)
 	var total := context.total()
-	_tally.text += " " + tr("UI_POPUP_TOTAL") % total
 	_shake(clampf(float(total) / maxi(target_score, 1), 0.0, 1.0))
 	_pulse_background(context.hand.scoring_cards)
 	_flash(clampf(float(total) / maxi(target_score, 1), 0.0, 1.0))
 	_fly_total(total)
 	await _wait(feel.end_delay)
-	_hand_name.text = ""
-	_tally.text = ""
 	running = false
 	finished.emit()
 
@@ -110,7 +101,7 @@ func _show_effect(step: ScoreStep) -> void:
 			text = tr("UI_POPUP_COMPREHENSION_MULT") % amount
 	# Le nom de l'artefact : le joueur voit d'ou viennent ses points.
 	var artifact := step.source as ArtifactDefinition
-	var at := _above_board()
+	var at := _above_row()
 	if artifact != null:
 		text = tr(artifact.name_key) + "\n" + text
 		if artifact_hit.is_valid():
@@ -135,12 +126,12 @@ func _roll_to(step: ScoreStep) -> void:
 
 func _set_tally(values: Vector2) -> void:
 	_shown = values
-	_tally.text = tr("UI_TALLY") % [roundi(values.x), values.y]
+	tally_changed.emit(roundi(values.x), values.y)
 
 
 func _popup(text: String, at: Vector2, color: Color) -> void:
 	if not at.is_finite():
-		at = _above_board()
+		at = _above_row()
 	var label := Label.new()
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -161,7 +152,7 @@ func _popup(text: String, at: Vector2, color: Color) -> void:
 	tween.chain().tween_callback(label.queue_free)
 
 
-## Le nom de la main tombe en grand sur un sceau rouge a la place du tableau, puis s'efface et le tableau le reprend.
+## Le nom de la main tombe en grand sur un sceau rouge au-dessus des cartes jouees, puis s'efface.
 func _announce(text: String) -> void:
 	if feel.announce_time <= 0.0:
 		return
@@ -175,9 +166,9 @@ func _announce(text: String) -> void:
 	add_child(seal)
 	seal.reset_size()
 	seal.pivot_offset = seal.size / 2
-	seal.global_position = _board.get_global_rect().get_center() - seal.size / 2
+	var top := _hand_view.played_row_top()
+	seal.global_position = top - Vector2(seal.size.x / 2, seal.size.y + ANNOUNCE_MARGIN)
 	seal.rotation_degrees = feel.announce_tilt
-	_hand_name.modulate.a = 0.0
 	var appear: float = feel.announce_time * 0.3
 	var fade: float = feel.announce_time * 0.3
 	var tween := seal.create_tween()
@@ -188,7 +179,6 @@ func _announce(text: String) -> void:
 		tween.tween_interval(appear)
 	tween.tween_interval(feel.announce_time - appear - fade)
 	tween.tween_property(seal, "modulate:a", 0.0, fade)
-	tween.parallel().tween_property(_hand_name, "modulate:a", 1.0, fade)
 	tween.tween_callback(seal.queue_free)
 
 
@@ -201,16 +191,16 @@ func _flash(ratio: float) -> void:
 	sky.mouse_filter = MOUSE_FILTER_IGNORE
 	sky.color = Color(feel.flash_color, feel.flash_max * ratio)
 	add_child(sky)
-	# Derriere les popups et le tableau.
+	# Derriere les popups.
 	move_child(sky, 0)
 	var tween := sky.create_tween()
 	tween.tween_property(sky, "color:a", 0.0, feel.flash_time)
 	tween.tween_callback(sky.queue_free)
 
 
-## Le total quitte le tableau et file vers le Qi du round, qui defile ensuite.
+## Le total quitte les cases Qi x Comprehension et file vers le Qi du round, qui defile ensuite.
 func _fly_total(total: int) -> void:
-	if settings.reduce_motion or not score_target.is_valid() or feel.end_delay <= 0.0:
+	if settings.reduce_motion or not score_target.is_valid() or not tally_origin.is_valid() or feel.end_delay <= 0.0:
 		return
 	var label := Label.new()
 	label.text = str(total)
@@ -221,7 +211,7 @@ func _fly_total(total: int) -> void:
 	label.add_theme_color_override(&"font_outline_color", POPUP_OUTLINE_COLOR)
 	add_child(label)
 	label.reset_size()
-	label.global_position = _board.get_global_rect().get_center() - label.size / 2
+	label.global_position = tally_origin.call() - label.size / 2
 	var target: Vector2 = score_target.call() - label.size / 2
 	var tween := label.create_tween()
 	tween.tween_property(label, "global_position", target, feel.end_delay).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
@@ -298,25 +288,9 @@ func _set_pulse(strength: float) -> void:
 	RenderingServer.global_shader_parameter_set(PULSE_STRENGTH, strength)
 
 
-## Le tableau du score se place juste au-dessus de la rangee des cartes jouees.
-func _place_board() -> void:
-	_board.reset_size()
-	var top := _hand_view.played_row_top()
-	_board.global_position = Vector2(top.x - _board.size.x / 2, top.y - _board.size.y - BOARD_MARGIN)
-
-
-## Ou montrer un effet qui ne vient pas d'une carte : au-dessus du tableau, sans cacher le compteur.
-func _above_board() -> Vector2:
-	var rect := _board.get_global_rect()
-	return Vector2(rect.get_center().x, rect.position.y - feel.popup_font_size)
-
-
-func _board_label() -> Label:
-	var label := Label.new()
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.custom_minimum_size.x = BOARD_WIDTH
-	_board.add_child(label)
-	return label
+## Ou montrer un effet qui ne vient ni d'une carte ni d'un artefact affiche : au-dessus des cartes jouees.
+func _above_row() -> Vector2:
+	return _hand_view.played_row_top() - Vector2(0, feel.popup_font_size)
 
 
 func _wait(seconds: float) -> void:

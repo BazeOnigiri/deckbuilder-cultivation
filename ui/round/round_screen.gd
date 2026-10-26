@@ -76,6 +76,10 @@ func _ready() -> void:
 	_sequence.settings = settings
 	_sequence.setup(_hand_view, $Root/Margin)
 	_sequence.score_target = _side.round_qi_center
+	_sequence.tally_origin = _side.tally_center
+	_sequence.tally_changed.connect(_side.show_tally)
+	_sequence.hand_named.connect(func(definition: HandDefinition) -> void:
+		_side.show_hand(definition, _run.hand_levels.level_of(definition.id)))
 	_sequence.artifact_hit = _items.artifact_hit
 	add_child(_sequence)
 	_items.settings = settings
@@ -166,8 +170,10 @@ func _on_selection_changed() -> void:
 	# Pendant la sequence, la main du round est deja repiochee : la retrier montrerait les nouvelles cartes trop tot.
 	%SortRank.disabled = _scoring
 	%SortElement.disabled = _scoring
-	var preview: HandResult = _round.preview(_selected()) if _round != null and not _scoring else null
-	_side.show_preview(preview, _run.hand_levels.level_of(preview.definition.id) if preview != null else 1)
+	# Pendant la sequence, la colonne montre le decompte du coup, pas l'apercu de la selection.
+	if not _scoring:
+		var preview: HandResult = _round.preview(_selected()) if _round != null else null
+		_side.show_preview(preview, _run.hand_levels.level_of(preview.definition.id) if preview != null else 1)
 	_refresh_pills()
 
 
