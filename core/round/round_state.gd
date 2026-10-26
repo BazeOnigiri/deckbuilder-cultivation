@@ -46,6 +46,15 @@ func hand() -> Array[CardInstance]:
 	return _deck.hand
 
 
+## Cartes encore dans la pioche (compteur de la pioche a l'ecran).
+func draw_count() -> int:
+	return _deck.draw_pile.size()
+
+
+func deck_size() -> int:
+	return _deck.total_count()
+
+
 ## Main que formeraient ces cartes, sans rien jouer (apercu de la selection). null si la selection est refusee.
 func preview(cards: Array[CardInstance]) -> HandResult:
 	if not _valid_selection(cards):

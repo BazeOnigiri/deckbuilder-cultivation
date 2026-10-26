@@ -41,6 +41,7 @@ var _scoring: bool = false
 @onready var _menu_button: Button = %MenuButton
 @onready var _shop_panel: ShopPanel = %ShopPanel
 @onready var _items: ItemRow = %ItemRow
+@onready var _deck_pile: DeckPile = %DeckPile
 @onready var _side: SideColumn = %SideColumn
 
 
@@ -75,6 +76,8 @@ func _ready() -> void:
 	add_child(_sequence)
 	_items.settings = settings
 	_items.pill_pressed.connect(_on_pill_pressed)
+	%SortRank.toggled.connect(_on_sort_toggled)
+	%SortElement.toggled.connect(_on_sort_toggled)
 	_side.settings = settings
 	_side.path_requested.connect(_show_run_info)
 	_side.options_requested.connect(options_requested.emit)
@@ -98,11 +101,37 @@ func _refresh() -> void:
 	var cards: Array[CardInstance] = []
 	if _round != null:
 		cards.assign(_round.hand())
-	cards.sort_custom(func(a: CardInstance, b: CardInstance) -> bool: return a.rank < b.rank)
-	_hand_view.set_cards(cards)
+	_hand_view.set_cards(_sorted(cards))
+	if _round != null:
+		_deck_pile.show_count(_round.draw_count(), _round.deck_size())
 	_on_selection_changed()
 	_items.show_artifacts(_run.artifacts, content.shop_rules.max_artifacts)
 	_save_run()
+
+
+## Par rang puis element, ou par element puis rang (bouton Element). Etat de l'ecran, pas sauvegarde.
+func _sorted(cards: Array[CardInstance]) -> Array[CardInstance]:
+	var by_element: bool = %SortElement.button_pressed
+	cards.sort_custom(func(a: CardInstance, b: CardInstance) -> bool:
+		if by_element and a.element != b.element:
+			return a.element < b.element
+		if a.rank != b.rank:
+			return a.rank < b.rank
+		return a.element < b.element)
+	return cards
+
+
+## Retrie la main sans perdre la selection (set_cards deselectionne).
+func _on_sort_toggled(on: bool) -> void:
+	if not on or _round == null:
+		return
+	var selected := _selected()
+	var cards: Array[CardInstance] = []
+	cards.assign(_round.hand())
+	_hand_view.set_cards(_sorted(cards))
+	for view: CardView in _hand_view.get_children():
+		if selected.has(view.card):
+			view.button_pressed = true
 
 
 func _selected() -> Array[CardInstance]:
@@ -119,6 +148,9 @@ func _on_selection_changed() -> void:
 		and count > 0 and count <= _rules.max_selected_cards)
 	_play_button.disabled = not can_act
 	_discard_button.disabled = not can_act or _round.discards_left == 0
+	# Pendant la sequence, la main du round est deja repiochee : la retrier montrerait les nouvelles cartes trop tot.
+	%SortRank.disabled = _scoring
+	%SortElement.disabled = _scoring
 	var preview: HandResult = _round.preview(_selected()) if _round != null and not _scoring else null
 	_side.show_preview(preview, _run.hand_levels.level_of(preview.definition.id) if preview != null else 1)
 	_refresh_pills()

@@ -214,3 +214,11 @@ func test_apercu_d_une_selection_invalide_est_nul() -> void:
 	var empty: Array[CardInstance] = []
 	assert_null(r.preview(empty))
 	assert_null(r.preview(_first(r, MAX_SELECTED + 1)))
+
+
+func test_pioche_diminue_quand_on_pioche() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8, 9, 1], 8, 100)
+	assert_eq(r.deck_size(), 10)
+	assert_eq(r.draw_count(), 2)
+	r.discard(_first(r, 2))
+	assert_eq(r.draw_count(), 0, "deux cartes repiochees")

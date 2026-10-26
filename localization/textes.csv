@@ -16,7 +16,7 @@ ELEMENT_FEU,Feu,Fire
 ELEMENT_TERRE,Terre,Earth
 ELEMENT_METAL,Métal,Metal
 ELEMENT_EAU,Eau,Water
-UI_PLAY,Jouer,Play
+UI_PLAY,Jouer la main,Play hand
 UI_DISCARD,Défausser,Discard
 UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
 UI_CREDITS,Crédits,Credits
@@ -124,3 +124,6 @@ UI_SIDE_OF,%d/%d,%d/%d
 UI_SIDE_PATH,Voie de cultivation,Cultivation path
 UI_ITEMS_ARTIFACTS,Artefacts %d/%d,Artifacts %d/%d
 UI_ITEMS_PILLS,Pilules %d/%d,Pills %d/%d
+UI_SORT_RANK,Rang,Rank
+UI_SORT_ELEMENT,Élément,Element
+UI_DECK,Paquet,Deck
