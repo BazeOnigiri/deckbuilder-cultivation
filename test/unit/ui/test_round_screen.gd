@@ -243,6 +243,9 @@ func test_victoire_puis_boutique() -> void:
 	await wait_until(func() -> bool: return screen.get_node("%ShopPanel").visible, 2.0)
 	assert_true(screen.get_node("%ShopPanel").visible, "boutique ouverte apres le sceau")
 	assert_true(screen.get_node("%ContinueButton").visible)
+	assert_false(screen.get_node("%HandRow").visible, "la main laisse la place a la boutique")
+	screen.get_node("%ContinueButton").pressed.emit()
+	assert_true(screen.get_node("%HandRow").visible, "main revenue au round suivant")
 
 
 func test_echec_recouvre_l_ecran_et_mene_au_menu() -> void:
@@ -257,3 +260,14 @@ func test_echec_recouvre_l_ecran_et_mene_au_menu() -> void:
 	assert_eq(screen._round_end.mouse_filter, Control.MOUSE_FILTER_STOP, "l'encre prend les clics")
 	(buttons[0] as Button).pressed.emit()
 	assert_signal_emitted(screen, "menu_requested")
+
+
+## Rythme reel de round_end_feel.tres : la victoire doit rendre la main (bug : le sceau libere tuait son tween).
+func test_victoire_animee_puis_boutique() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen._sequence.feel = _instant_feel()
+	screen._side.feel = _instant_feel()
+	screen._round.target_score = 1
+	_play_first_card(screen)
+	await wait_until(func() -> bool: return screen.get_node("%ShopPanel").visible, 4.0)
+	assert_true(screen.get_node("%ShopPanel").visible)

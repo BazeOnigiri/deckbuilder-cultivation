@@ -95,3 +95,19 @@ func test_cartes_scellees_marquees() -> void:
 		sealed.append(view._sealed)
 		assert_eq((view.material as ShaderMaterial).get_shader_parameter(&"sealed"), 1.0 if view._sealed else 0.0)
 	assert_eq(sealed, [true, false, true] as Array[bool])
+
+
+func test_pilule_qui_fond_eclaire_la_carte() -> void:
+	var hand := _hand(false)
+	var cards := Cards.hand([[Cards.FEU, 1]])
+	hand.set_cards(cards)
+	hand.transmute(cards[0])
+	assert_ne((hand.get_child(0) as CardView).self_modulate, Color.WHITE)
+
+
+func test_pas_d_eclat_si_on_reduit_les_animations() -> void:
+	var hand := _hand(true)
+	var cards := Cards.hand([[Cards.FEU, 1]])
+	hand.set_cards(cards)
+	hand.transmute(cards[0])
+	assert_eq((hand.get_child(0) as CardView).self_modulate, Color.WHITE)

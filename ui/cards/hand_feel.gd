@@ -28,3 +28,7 @@ extends Resource
 @export var dissolve_time: float = 0.6
 ## Une carte qui se dissout monte doucement, comme de la fumee, en pixels par seconde.
 @export var dissolve_drift: float = 30.0
+## Une pilule fond dans la carte : la carte s'eclaire de la couleur de son element puis revient, en secondes.
+@export var transmute_time: float = 0.6
+## Intensite de l'eclat au debut (multiplie la couleur de l'element).
+@export var transmute_glow: float = 1.8
