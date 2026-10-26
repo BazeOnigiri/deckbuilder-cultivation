@@ -90,3 +90,14 @@ func test_restauration_hors_limites_refusee() -> void:
 	assert_false(progress.restore({"realm": - 1, "bottleneck": 0}))
 	assert_false(progress.restore("pas un dictionnaire"))
 	assert_eq(progress.current_target(), 100)
+
+func test_numeros_du_royaume_et_du_goulot() -> void:
+	var progress := _progress([_realm(1, 100, [1.0, 2.0]), _realm(2, 500, [1.0])])
+	assert_eq(progress.realm_count(), 2)
+	assert_eq(progress.realm_number(), 1)
+	assert_eq(progress.bottleneck_number(), 1)
+	progress.advance()
+	assert_eq(progress.bottleneck_number(), 2)
+	progress.advance()
+	assert_eq(progress.realm_number(), 2)
+	assert_eq(progress.bottleneck_number(), 1)

@@ -48,11 +48,27 @@ func _show_menu() -> void:
 
 
 func _show_options() -> void:
+	var options := _options_screen()
+	options.back_requested.connect(_show_menu)
+	_swap(options)
+
+
+## Depuis la run : les reglages sur un voile par-dessus l'ecran de run, qui reste tel quel dessous.
+func _show_options_over_run() -> void:
+	var veil := PanelContainer.new()
+	veil.theme_type_variation = &"Veil"
+	veil.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	var options := _options_screen()
+	options.back_requested.connect(veil.queue_free)
+	veil.add_child(options)
+	add_child(veil)
+
+
+func _options_screen() -> Node:
 	var options := OPTIONS_SCENE.instantiate()
 	options.settings = _settings
 	options.settings_changed.connect(_on_settings_changed)
-	options.back_requested.connect(_show_menu)
-	_swap(options)
+	return options
 
 
 func _on_settings_changed() -> void:
@@ -91,6 +107,7 @@ func _show_run(resume_data: Dictionary) -> void:
 	# Branche avant add_child : run_created est emis pendant le _ready de l'ecran.
 	run_screen.run_created.connect(func(run: RunState, resumed: bool) -> void: _tracker.track(run, not resumed))
 	run_screen.menu_requested.connect(_show_menu)
+	run_screen.options_requested.connect(_show_options_over_run)
 	_swap(run_screen)
 
 

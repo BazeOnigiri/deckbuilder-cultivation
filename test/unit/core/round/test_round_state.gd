@@ -197,3 +197,20 @@ func test_main_et_pioche_vides_hors_coup_font_perdre() -> void:
 func _destroy(r: RoundState, cards: Array[CardInstance]) -> void:
 	var deck: DeckState = r.get("_deck")
 	DestroyPillEffect.new().apply(cards, deck)
+
+func test_apercu_reconnait_la_main_sans_jouer() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100)
+	var hand_before: Array[CardInstance] = r.hand().duplicate()
+	var result := r.preview(_pick(r, 5))
+	assert_not_null(result)
+	assert_eq(result.definition.id, "test")
+	assert_eq(r.score, 0)
+	assert_eq(r.hands_left, 3)
+	assert_eq(r.hand(), hand_before)
+
+
+func test_apercu_d_une_selection_invalide_est_nul() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100)
+	var empty: Array[CardInstance] = []
+	assert_null(r.preview(empty))
+	assert_null(r.preview(_first(r, MAX_SELECTED + 1)))

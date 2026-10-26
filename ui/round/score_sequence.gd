@@ -22,6 +22,8 @@ const QI_DOT_SIZE := 12
 var feel: ScoreFeel = preload("res://ui/round/score_feel.tres")
 var settings: GameSettings = GameSettings.new()
 var running: bool = false
+## Renvoie le point (global) ou le total s'envole a la fin : le Qi du round de la colonne. Vide : pas d'envol.
+var score_target: Callable
 
 var _hand_view: HandView
 var _shake_target: Control
@@ -83,6 +85,7 @@ func play(context: ScoreContext, target_score: int) -> void:
 	_tally.text += " " + tr("UI_POPUP_TOTAL") % total
 	_shake(clampf(float(total) / maxi(target_score, 1), 0.0, 1.0))
 	_pulse_background(context.hand.scoring_cards)
+	_fly_total(total)
 	await _wait(feel.end_delay)
 	_hand_name.text = ""
 	_tally.text = ""
@@ -145,6 +148,26 @@ func _popup(text: String, at: Vector2, color: Color) -> void:
 		tween.tween_property(label, "position:y", label.position.y - feel.popup_rise, feel.popup_time)
 	tween.tween_property(label, "modulate:a", 0.0, feel.popup_time / 2).set_delay(feel.popup_time / 2)
 	tween.chain().tween_callback(label.queue_free)
+
+
+## Le total quitte le tableau et file vers le Qi du round, qui defile ensuite.
+func _fly_total(total: int) -> void:
+	if settings.reduce_motion or not score_target.is_valid() or feel.end_delay <= 0.0:
+		return
+	var label := Label.new()
+	label.text = str(total)
+	label.mouse_filter = MOUSE_FILTER_IGNORE
+	label.add_theme_color_override(&"font_color", feel.comprehension_color)
+	label.add_theme_font_size_override(&"font_size", feel.popup_font_size)
+	label.add_theme_constant_override(&"outline_size", POPUP_OUTLINE_SIZE)
+	label.add_theme_color_override(&"font_outline_color", POPUP_OUTLINE_COLOR)
+	add_child(label)
+	label.reset_size()
+	label.global_position = _board.get_global_rect().get_center() - label.size / 2
+	var target: Vector2 = score_target.call() - label.size / 2
+	var tween := label.create_tween()
+	tween.tween_property(label, "global_position", target, feel.end_delay).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_callback(label.queue_free)
 
 
 ## Gerbe de qi de la couleur de l'element, qui monte et s'eteint.

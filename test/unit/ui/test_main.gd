@@ -70,3 +70,18 @@ func test_options_affichent_le_reglage_sauvegarde() -> void:
 	var main := _main()
 	main.get_child(0).get_node("%OptionsButton").pressed.emit()
 	assert_true(_current_screen(main).get_node("%ReduceMotion").button_pressed)
+
+
+
+func test_options_depuis_la_run_gardent_la_run() -> void:
+	var main := _main()
+	main._show_run({})
+	var run_screen: Node = main._screen
+	run_screen.get_node("%SideColumn").options_requested.emit()
+	var veil := _current_screen(main)
+	var options := veil.get_child(0)
+	assert_not_null(options.get_node_or_null("%ReduceMotion"))
+	options.get_node("%BackButton").pressed.emit()
+	await wait_physics_frames(1)
+	assert_false(is_instance_valid(veil), "voile ferme")
+	assert_true(is_instance_valid(run_screen) and run_screen.is_inside_tree(), "la run continue")
