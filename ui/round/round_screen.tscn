@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://content/artifacts/artefact_gourde_elixir.tres" id="4_ubaed"]
 [ext_resource type="Resource" path="res://content/artifacts/artefact_lotus_flamme.tres" id="5_1t274"]
 [ext_resource type="Script" path="res://ui/shop/shop_panel.gd" id="shop_panel"]
+[ext_resource type="Script" path="res://ui/cards/hand_view.gd" id="hand_view"]
 
 [node name="RoundScreen" type="Control" unique_id=1153754067]
 layout_mode = 3
@@ -51,11 +52,10 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HandRow" type="HBoxContainer" parent="Margin/Layout" unique_id=1977189333]
+[node name="HandRow" type="Control" parent="Margin/Layout" unique_id=1977189333]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = -8
-alignment = 1
+script = ExtResource("hand_view")
 
 [node name="ShopPanel" type="VBoxContainer" parent="Margin/Layout"]
 unique_name_in_owner = true
