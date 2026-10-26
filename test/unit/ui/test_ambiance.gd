@@ -127,3 +127,14 @@ func test_fondu_a_l_encre_garde_l_ancienne_palette() -> void:
 	ambiance.apply(&"tribulation_demon")
 	assert_eq(lavis.get_shader_parameter("old_base_color"), night, "l'ancienne encre reste sous la nouvelle")
 	assert_eq(lavis.get_shader_parameter("blend"), 0.0, "le fondu commence")
+
+
+## Chaque tribulation doit se reconnaitre au premier coup d'oeil : palette differente de la nuit.
+func test_tribulations_differentes_de_la_nuit() -> void:
+	var night: AmbianceTheme = load(AMBIANCES_DIR.path_join("nuit.tres"))
+	for ambiance: AmbianceTheme in _ambiances():
+		if ambiance.id in SPECIAL_IDS:
+			continue
+		assert_ne(ambiance.base_color, night.base_color, ambiance.id)
+		assert_ne(ambiance.vignette_color, night.vignette_color, "bord teinte : %s" % ambiance.id)
+		assert_not_null(ambiance.weather, "meteo : %s" % ambiance.id)

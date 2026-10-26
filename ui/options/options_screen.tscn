@@ -33,6 +33,38 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "UI_OPTIONS_REDUCE_MOTION"
 
+[node name="Speed" type="HBoxContainer" parent="Center/Layout"]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="Center/Layout/Speed"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "UI_OPTIONS_GAME_SPEED"
+
+[node name="GameSpeed" type="OptionButton" parent="Center/Layout/Speed"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Fullscreen" type="CheckButton" parent="Center/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_OPTIONS_FULLSCREEN"
+
+[node name="RunButtons" type="VBoxContainer" parent="Center/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="MenuButton" type="Button" parent="Center/Layout/RunButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_OPTIONS_MENU"
+
+[node name="NewRunButton" type="Button" parent="Center/Layout/RunButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_OPTIONS_NEW_RUN"
+
 [node name="BackButton" type="Button" parent="Center/Layout"]
 unique_name_in_owner = true
 layout_mode = 2

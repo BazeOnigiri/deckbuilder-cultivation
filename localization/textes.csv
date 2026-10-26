@@ -99,6 +99,13 @@ UI_SAVED_PILLS,Pilules,Pills
 UI_OPTIONS_BUTTON,Options,Options
 UI_OPTIONS_TITLE,Options,Options
 UI_OPTIONS_REDUCE_MOTION,Réduire les animations,Reduce motion
+UI_OPTIONS_GAME_SPEED,Vitesse de jeu,Game speed
+UI_OPTIONS_SPEED_ITEM,x%s,x%s
+UI_OPTIONS_FULLSCREEN,Plein écran,Fullscreen
+UI_OPTIONS_MENU,Retour au menu,Back to menu
+UI_OPTIONS_NEW_RUN,Nouvelle partie,New run
+UI_OPTIONS_NEW_RUN_CONFIRM,Abandonner la partie en cours et en commencer une nouvelle ?,Abandon the current run and start a new one?
+UI_CANCEL,Annuler,Cancel
 UI_POPUP_QI,+%d Qi,+%d Qi
 UI_POPUP_COMPREHENSION_ADD,+%s Compréhension,+%s Comprehension
 UI_POPUP_COMPREHENSION_MULT,x%s Compréhension,x%s Comprehension
