@@ -28,6 +28,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Meditant a la place de l'anneau d'objectif : la silhouette en tailleur se remplit de qi de bas en haut avec le score du round, une aura pulse quand l'objectif est atteint.
 - Icones dessinees : pierre spirituelle (colonne, prix de la boutique, cristaux qui tombent a la victoire) et un dessin par artefact a la place de son caractere. Un artefact = son .tres + son SVG dans content/artifacts/icones/.
 - Vue du paquet : un clic sur la pioche montre les 45 cartes de la run, une rangee par element triee par rang, avec le compte de cartes encore a piocher. Les cartes en main, jouees ou defaussees sont grisees. Un clic ou Echap ferme la vue.
+- Ambiance par ecran : chaque tribulation a son fond et sa meteo (braise et escarbilles pour les flammes, encre grise et trainees de poussiere pour le vent noir, pourpre et vignette qui respire pour le demon interieur), la boutique a un lavis chaud, le menu et les goulots simples gardent la nuit. Fondu entre deux ambiances, meteo coupee par « Reduire les animations ». Une ambiance = un .tres dans ui/ambiances/ avec l'id du goulot.
 
 ## [0.3.0] - 2026-10-25
 

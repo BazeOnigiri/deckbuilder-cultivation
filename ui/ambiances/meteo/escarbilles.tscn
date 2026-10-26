@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[sub_resource type="Gradient" id="fondu"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="tache"]
+gradient = SubResource("fondu")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="vie"]
+offsets = PackedFloat32Array(0, 0.15, 1)
+colors = PackedColorArray(1, 0.75, 0.35, 0, 1, 0.65, 0.3, 1, 0.9, 0.25, 0.1, 0)
+
+[node name="Escarbilles" type="CPUParticles2D"]
+position = Vector2(576, 670)
+amount = 70
+lifetime = 8.0
+preprocess = 8.0
+texture = SubResource("tache")
+emission_shape = 3
+emission_rect_extents = Vector2(760, 10)
+direction = Vector2(0, -1)
+spread = 15.0
+gravity = Vector2(0, -6)
+initial_velocity_min = 40.0
+initial_velocity_max = 90.0
+tangential_accel_min = -12.0
+tangential_accel_max = 12.0
+scale_amount_min = 0.35
+scale_amount_max = 0.8
+color_ramp = SubResource("vie")

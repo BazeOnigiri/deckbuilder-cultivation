@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AmbianceTheme" format=3]
+
+[ext_resource type="Script" path="res://ui/ambiances/ambiance_theme.gd" id="1"]
+[ext_resource type="PackedScene" path="res://ui/ambiances/meteo/poussiere.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"tribulation_vent_noir"
+base_color = Color(0.07, 0.07, 0.09, 1)
+deep_color = Color(0.03, 0.03, 0.04, 1)
+ink_color = Color(0.15, 0.13, 0.19, 1)
+speed = 0.07
+vignette = 0.5
+weather = ExtResource("2")

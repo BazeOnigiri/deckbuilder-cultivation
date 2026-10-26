@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AmbianceTheme" format=3]
+
+[ext_resource type="Script" path="res://ui/ambiances/ambiance_theme.gd" id="1"]
+[ext_resource type="PackedScene" path="res://ui/ambiances/meteo/volutes.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"tribulation_demon"
+base_color = Color(0.08, 0.04, 0.1, 1)
+deep_color = Color(0.04, 0.02, 0.05, 1)
+ink_color = Color(0.17, 0.065, 0.19, 1)
+speed = 0.025
+vignette = 0.55
+vignette_breath = 0.12
+breath_speed = 0.8
+weather = ExtResource("2")
