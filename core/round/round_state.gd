@@ -55,6 +55,11 @@ func deck_size() -> int:
 	return _deck.total_count()
 
 
+## Faux si la tribulation scelle cette carte : jouee, elle ne compte pas.
+func counts(card: CardInstance) -> bool:
+	return _constraint.counts(card)
+
+
 ## Main que formeraient ces cartes, sans rien jouer (apercu de la selection). null si la selection est refusee.
 func preview(cards: Array[CardInstance]) -> HandResult:
 	if not _valid_selection(cards):
@@ -73,7 +78,7 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 	# Filtrer avant les artefacts : une carte qui ne compte pas ne declenche pas non plus CARD_SCORED.
 	var counted: Array[CardInstance] = []
 	for card: CardInstance in result.scoring_cards:
-		if _constraint.counts(card):
+		if counts(card):
 			counted.append(card)
 	result.scoring_cards = counted
 	var effects := ArtifactResolver.triggered_for(_artifacts, result)

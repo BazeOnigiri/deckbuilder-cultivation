@@ -36,3 +36,6 @@ extends Resource
 @export var flash_max: float = 0.18
 @export var flash_time: float = 0.4
 @export var flash_color: Color = Color(0.9098, 0.8824, 0.8157, 1)
+## Bandeau d'une tribulation qui scintille (colonne) : teinte au creux, duree d'un demi-cycle.
+@export var banner_flicker_color: Color = Color(1.25, 0.85, 0.75, 1)
+@export var banner_flicker_time: float = 0.9

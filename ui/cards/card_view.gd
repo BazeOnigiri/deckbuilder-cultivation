@@ -34,11 +34,13 @@ const FIGURES := {
 const SEAL_SIZE := 24.0
 ## Le sceau deborde de la carte en haut et a droite.
 const SEAL_OVERFLOW := 7.0
-## Sceau decoratif, identique dans toutes les langues.
+## Sceaux decoratifs, identiques dans toutes les langues : selectionnee, scellee par la tribulation.
 const SEAL_GLYPH := "选"
+const SEALED_GLYPH := "封"
 
 var card: CardInstance
 var _glow: StyleBoxFlat
+var _sealed: bool = false
 
 
 func _ready() -> void:
@@ -68,6 +70,15 @@ func set_tilt(tilt: Vector2) -> void:
 	(material as ShaderMaterial).set_shader_parameter(&"tilt", tilt)
 
 
+## Scellee : la tribulation l'empeche de compter. Flammes (shader) et sceau 封.
+func set_sealed(on: bool) -> void:
+	_sealed = on
+	var shader := material as ShaderMaterial
+	shader.set_shader_parameter(&"sealed", 1.0 if on else 0.0)
+	shader.set_shader_parameter(&"flame_color", get_theme_color(&"flame_color"))
+	queue_redraw()
+
+
 ## 0 = carte entiere, 1 = disparue.
 func set_dissolve(amount: float) -> void:
 	(material as ShaderMaterial).set_shader_parameter(&"dissolve", amount)
@@ -87,6 +98,10 @@ func _draw() -> void:
 	_draw_center(style)
 	if button_pressed:
 		_draw_seal()
+	if _sealed:
+		# Coin bas gauche : libre, le coin bas droit porte le rang retourne.
+		var stamp := Rect2(-SEAL_OVERFLOW, CARD_SIZE.y - SEAL_SIZE + SEAL_OVERFLOW, SEAL_SIZE, SEAL_SIZE)
+		_draw_stamp(stamp, SEALED_GLYPH, get_theme_color(&"sealed_color"), get_theme_color(&"sealed_text_color"))
 	# Coin bas droit : le meme coin, tourne d'un demi-tour autour du coin oppose.
 	draw_set_transform(CARD_SIZE, PI)
 	_draw_corner(style)
@@ -115,10 +130,14 @@ func _draw_icon(style: ElementStyle, center: Vector2, side: float) -> void:
 
 func _draw_seal() -> void:
 	var seal := Rect2(CARD_SIZE.x - SEAL_SIZE + SEAL_OVERFLOW, -SEAL_OVERFLOW, SEAL_SIZE, SEAL_SIZE)
-	draw_rect(seal, get_theme_color(&"seal_color"))
+	_draw_stamp(seal, SEAL_GLYPH, get_theme_color(&"seal_color"), get_theme_color(&"seal_text_color"))
+
+
+func _draw_stamp(seal: Rect2, glyph: String, color: Color, text_color: Color) -> void:
+	draw_rect(seal, color)
 	var font := get_theme_font(&"seal_font")
 	var font_size := get_theme_font_size(&"seal_font_size")
 	# Ligne de base qui centre le caractere en hauteur dans le sceau.
 	var baseline: float = seal.position.y + (SEAL_SIZE + font.get_ascent(font_size) - font.get_descent(font_size)) / 2
-	draw_string(font, Vector2(seal.position.x, baseline), SEAL_GLYPH, HORIZONTAL_ALIGNMENT_CENTER,
-		SEAL_SIZE, font_size, get_theme_color(&"seal_text_color"))
+	draw_string(font, Vector2(seal.position.x, baseline), glyph, HORIZONTAL_ALIGNMENT_CENTER,
+		SEAL_SIZE, font_size, text_color)

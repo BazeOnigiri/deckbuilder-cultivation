@@ -81,3 +81,17 @@ func test_carte_qui_part_se_dissout_puis_disparait() -> void:
 	assert_eq(leaving.mouse_filter, Control.MOUSE_FILTER_IGNORE, "plus cliquable")
 	hand._process(hand.feel.dissolve_time + 0.1)
 	assert_true(leaving.is_queued_for_deletion(), "liberee une fois dissoute")
+
+
+func test_cartes_scellees_marquees() -> void:
+	var hand := _hand(false)
+	var cards := Cards.hand([[Cards.FEU, 1], [Cards.EAU, 2], [Cards.FEU, 3]])
+	hand.set_cards(cards)
+	var seal := ElementSealConstraint.new()
+	seal.element = Element.Type.FEU
+	hand.mark_sealed(func(card: CardInstance) -> bool: return not seal.counts(card))
+	var sealed: Array[bool] = []
+	for view: CardView in hand.get_children():
+		sealed.append(view._sealed)
+		assert_eq((view.material as ShaderMaterial).get_shader_parameter(&"sealed"), 1.0 if view._sealed else 0.0)
+	assert_eq(sealed, [true, false, true] as Array[bool])

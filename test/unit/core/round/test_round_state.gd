@@ -222,3 +222,13 @@ func test_pioche_diminue_quand_on_pioche() -> void:
 	assert_eq(r.draw_count(), 2)
 	r.discard(_first(r, 2))
 	assert_eq(r.draw_count(), 0, "deux cartes repiochees")
+
+
+func test_carte_scellee_reconnue_avant_de_jouer() -> void:
+	var seal := ElementSealConstraint.new()
+	seal.element = Element.Type.FEU
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100, 3, 1, [], null, seal)
+	var card: CardInstance = r.hand()[0]
+	assert_true(r.counts(card), "carte de bois : pas scellee")
+	card.element = Element.Type.FEU
+	assert_false(r.counts(card))

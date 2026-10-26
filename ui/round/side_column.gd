@@ -29,6 +29,8 @@ var _bottleneck := make_label(&"SideValue")
 var _shown_score: int = 0
 var _target_score: int = 0
 var _roll: Tween
+## Le bandeau scintille pendant une tribulation.
+var _flicker: Tween
 
 
 func _ready() -> void:
@@ -37,6 +39,10 @@ func _ready() -> void:
 	layout.add_theme_constant_override(&"separation", get_theme_constant(&"separation", &"SidePanel"))
 	add_child(layout)
 
+	# Noms longs (tribulations) : retour a la ligne plutot qu'une colonne qui deborde de l'ecran.
+	_stage.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_constraint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hand_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var banner_text := VBoxContainer.new()
 	banner_text.add_child(_stage)
 	banner_text.add_child(_constraint)
@@ -91,6 +97,13 @@ func show_stage(realm: RealmDefinition, bottleneck: BottleneckDefinition) -> voi
 	_constraint.text = tr(constraint.description_key) if constraint != null else ""
 	_constraint.visible = constraint != null
 	_banner.theme_type_variation = &"BossBanner" if constraint != null else &"StageBanner"
+	if _flicker != null:
+		_flicker.kill()
+	_banner.modulate = Color.WHITE
+	if constraint != null and not settings.reduce_motion and feel.banner_flicker_time > 0.0:
+		_flicker = create_tween().set_loops()
+		_flicker.tween_property(_banner, "modulate", feel.banner_flicker_color, feel.banner_flicker_time).set_trans(Tween.TRANS_SINE)
+		_flicker.tween_property(_banner, "modulate", Color.WHITE, feel.banner_flicker_time).set_trans(Tween.TRANS_SINE)
 
 
 ## round null : boutique, pas de round en cours.

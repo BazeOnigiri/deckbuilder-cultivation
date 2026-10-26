@@ -84,6 +84,12 @@ func pulse(card: CardInstance) -> void:
 		_tilts[view].velocity.z += feel.pulse_kick
 
 
+## sealed(card) -> bool : vrai si la tribulation scelle la carte. Appele par round_screen apres set_cards.
+func mark_sealed(sealed: Callable) -> void:
+	for view: CardView in _order:
+		view.set_sealed(sealed.call(view.card))
+
+
 ## Centre de la carte a l'ecran, ou Vector2.INF si elle n'est pas affichee.
 func card_center(card: CardInstance) -> Vector2:
 	var view := _view_of(card)
