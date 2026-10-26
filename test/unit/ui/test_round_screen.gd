@@ -49,6 +49,7 @@ func _instant_feel() -> ScoreFeel:
 	feel.step_delay = 0.0
 	feel.end_delay = 0.0
 	feel.roll_time = 0.0
+	feel.announce_time = 0.0
 	return feel
 
 
@@ -185,3 +186,34 @@ func test_pioche_affiche_les_cartes_restantes() -> void:
 	var pile: DeckPile = screen.get_node("%DeckPile")
 	assert_eq(pile._count.text, tr("UI_SIDE_OF") % [screen._round.draw_count(), screen._round.deck_size()])
 	assert_lt(screen._round.draw_count(), screen._round.deck_size())
+
+
+## Annonce du nom de la main : la sequence se termine, avec ou sans animations, et le tableau redevient visible.
+func _short_announce_feel() -> ScoreFeel:
+	var feel := _instant_feel()
+	feel.announce_time = 0.05
+	return feel
+
+
+func _play_with_announce(reduce_motion: bool) -> Control:
+	var instance := SCREEN.instantiate()
+	instance.settings = GameSettings.new()
+	instance.settings.reduce_motion = reduce_motion
+	var screen: Control = add_child_autofree(instance)
+	screen._sequence.feel = _short_announce_feel()
+	_play_first_card(screen)
+	return screen
+
+
+func test_annonce_puis_fin_de_sequence() -> void:
+	var screen := _play_with_announce(false)
+	assert_true(screen._scoring, "l'annonce retient la sequence")
+	await wait_until(func() -> bool: return not screen._scoring, 2.0)
+	assert_false(screen._scoring)
+	assert_eq(screen._sequence._hand_name.modulate.a, 1.0)
+
+
+func test_annonce_sans_animations() -> void:
+	var screen := _play_with_announce(true)
+	await wait_until(func() -> bool: return not screen._scoring, 2.0)
+	assert_false(screen._scoring)

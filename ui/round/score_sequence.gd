@@ -73,7 +73,8 @@ func play(context: ScoreContext, target_score: int) -> void:
 	# Texte en place avant de mesurer le tableau, sinon il grandit par-dessus les cartes.
 	_roll_to(context.steps[0])
 	_place_board()
-	await _wait(feel.start_delay)
+	_announce(_hand_name.text)
+	await _wait(feel.start_delay + feel.announce_time)
 	for step: ScoreStep in context.steps:
 		match step.kind:
 			ScoreStep.Kind.CARD:
@@ -88,6 +89,7 @@ func play(context: ScoreContext, target_score: int) -> void:
 	_tally.text += " " + tr("UI_POPUP_TOTAL") % total
 	_shake(clampf(float(total) / maxi(target_score, 1), 0.0, 1.0))
 	_pulse_background(context.hand.scoring_cards)
+	_flash(clampf(float(total) / maxi(target_score, 1), 0.0, 1.0))
 	_fly_total(total)
 	await _wait(feel.end_delay)
 	_hand_name.text = ""
@@ -157,6 +159,53 @@ func _popup(text: String, at: Vector2, color: Color) -> void:
 		tween.tween_property(label, "position:y", label.position.y - feel.popup_rise, feel.popup_time)
 	tween.tween_property(label, "modulate:a", 0.0, feel.popup_time / 2).set_delay(feel.popup_time / 2)
 	tween.chain().tween_callback(label.queue_free)
+
+
+## Le nom de la main tombe en grand sur un sceau rouge a la place du tableau, puis s'efface et le tableau le reprend.
+func _announce(text: String) -> void:
+	if feel.announce_time <= 0.0:
+		return
+	var seal := PanelContainer.new()
+	seal.theme_type_variation = &"HandSeal"
+	seal.mouse_filter = MOUSE_FILTER_IGNORE
+	var label := Label.new()
+	label.theme_type_variation = &"HandAnnounce"
+	label.text = text
+	seal.add_child(label)
+	add_child(seal)
+	seal.reset_size()
+	seal.pivot_offset = seal.size / 2
+	seal.global_position = _board.get_global_rect().get_center() - seal.size / 2
+	seal.rotation_degrees = feel.announce_tilt
+	_hand_name.modulate.a = 0.0
+	var appear: float = feel.announce_time * 0.3
+	var fade: float = feel.announce_time * 0.3
+	var tween := seal.create_tween()
+	if not settings.reduce_motion:
+		seal.scale = Vector2.ZERO
+		tween.tween_property(seal, "scale", Vector2.ONE, appear).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	else:
+		tween.tween_interval(appear)
+	tween.tween_interval(feel.announce_time - appear - fade)
+	tween.tween_property(seal, "modulate:a", 0.0, fade)
+	tween.parallel().tween_property(_hand_name, "modulate:a", 1.0, fade)
+	tween.tween_callback(seal.queue_free)
+
+
+## Le ciel s'eclaire un instant, d'autant plus que le coup est fort. ratio : part de l'objectif atteinte par ce coup.
+func _flash(ratio: float) -> void:
+	if settings.reduce_motion or feel.flash_max * ratio <= 0.0:
+		return
+	var sky := ColorRect.new()
+	sky.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	sky.mouse_filter = MOUSE_FILTER_IGNORE
+	sky.color = Color(feel.flash_color, feel.flash_max * ratio)
+	add_child(sky)
+	# Derriere les popups et le tableau.
+	move_child(sky, 0)
+	var tween := sky.create_tween()
+	tween.tween_property(sky, "color:a", 0.0, feel.flash_time)
+	tween.tween_callback(sky.queue_free)
 
 
 ## Le total quitte le tableau et file vers le Qi du round, qui defile ensuite.
