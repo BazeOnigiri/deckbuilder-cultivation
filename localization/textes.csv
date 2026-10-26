@@ -122,4 +122,6 @@ UI_ITEMS_PILLS,Pilules %d/%d,Pills %d/%d
 UI_SORT_RANK,Rang,Rank
 UI_SORT_ELEMENT,Élément,Element
 UI_DECK,Paquet,Deck
+UI_DECK_VIEW,Tout le paquet,Full deck
+UI_DECK_VIEW_CLOSE,Cliquer ou Échap pour fermer,Click or Esc to close
 UI_SHOP_LEVEL_UP,%s passe au niveau %d : %d x %d devient %d x %d,%s reaches level %d: %d x %d becomes %d x %d

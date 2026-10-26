@@ -55,6 +55,15 @@ func deck_size() -> int:
 	return _deck.total_count()
 
 
+## Toutes les cartes de la run, toutes piles confondues (vue du paquet).
+func deck_cards() -> Array[CardInstance]:
+	return _deck.all_cards()
+
+
+func in_draw_pile(card: CardInstance) -> bool:
+	return _deck.draw_pile.has(card)
+
+
 ## Faux si la tribulation scelle cette carte : jouee, elle ne compte pas.
 func counts(card: CardInstance) -> bool:
 	return _constraint.counts(card)

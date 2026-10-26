@@ -224,6 +224,16 @@ func test_pioche_diminue_quand_on_pioche() -> void:
 	assert_eq(r.draw_count(), 0, "deux cartes repiochees")
 
 
+func test_paquet_complet_et_cartes_dans_la_pioche() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8, 9, 1], 8, 100)
+	r.discard(_first(r, 1))
+	var cards := r.deck_cards()
+	assert_eq(cards.size(), r.deck_size())
+	var in_pile: int = cards.filter(r.in_draw_pile).size()
+	assert_eq(in_pile, r.draw_count())
+	assert_false(r.in_draw_pile(r.hand()[0]), "carte en main : hors de la pioche")
+
+
 func test_carte_scellee_reconnue_avant_de_jouer() -> void:
 	var seal := ElementSealConstraint.new()
 	seal.element = Element.Type.FEU

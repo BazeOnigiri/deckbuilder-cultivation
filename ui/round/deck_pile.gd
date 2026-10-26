@@ -1,22 +1,36 @@
 class_name DeckPile
 extends HBoxContainer
 ## Pioche de l'ecran de round : trois dos de carte empiles, marques du sceau 道, et le compteur pioche/paquet.
-## Apparence dans le Theme (type DeckPile).
+## Apparence dans le Theme (type DeckPile). Un clic emet pressed (vue du paquet).
+
+signal pressed
 
 ## Sceau decoratif, identique dans toutes les langues.
 const BACK_GLYPH := "道"
 
 var _backs := Backs.new()
 var _count := SideColumn.make_label(&"SideValue")
+## Faux pendant la sequence de score : le clic ne fait rien.
+var enabled: bool = true
 
 
 func _ready() -> void:
+	mouse_filter = MOUSE_FILTER_STOP
+	mouse_default_cursor_shape = CURSOR_POINTING_HAND
+	tooltip_text = "UI_DECK_VIEW"
 	add_child(_backs)
 	var text := VBoxContainer.new()
 	text.alignment = BoxContainer.ALIGNMENT_CENTER
 	text.add_child(SideColumn.make_label(&"SideCaption", "UI_DECK"))
 	text.add_child(_count)
 	add_child(text)
+
+
+func _gui_input(event: InputEvent) -> void:
+	var click := event as InputEventMouseButton
+	if enabled and click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+		accept_event()
+		pressed.emit()
 
 
 func show_count(draw_count: int, deck_size: int) -> void:

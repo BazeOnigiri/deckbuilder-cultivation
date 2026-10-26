@@ -93,6 +93,7 @@ func _ready() -> void:
 	%SortElement.toggled.connect(_on_sort_toggled)
 	_side.settings = settings
 	_side.path_requested.connect(_show_run_info)
+	_deck_pile.pressed.connect(_show_deck)
 	_side.options_requested.connect(options_requested.emit)
 	_continue_button.hide()
 	_menu_button.hide()
@@ -169,6 +170,7 @@ func _on_selection_changed() -> void:
 	_discard_button.disabled = not can_act or _round.discards_left == 0
 	# Pendant la sequence, la main du round est deja repiochee : la retrier montrerait les nouvelles cartes trop tot.
 	%SortRank.disabled = _scoring
+	_deck_pile.enabled = not _scoring
 	%SortElement.disabled = _scoring
 	# Pendant la sequence, la colonne montre le decompte du coup, pas l'apercu de la selection.
 	if not _scoring:
@@ -283,6 +285,15 @@ func _save_run() -> void:
 		return
 	if not run_storage.save(RunSnapshot.capture(_run, _shop, _rng)):
 		push_warning("Run non sauvegardee : %s" % run_storage.last_error)
+
+
+## Tout le paquet par-dessus l'ecran, cartes hors de la pioche grisees.
+func _show_deck() -> void:
+	if _scoring or _round == null:
+		return
+	var viewer := DeckViewer.new()
+	add_child(viewer)
+	viewer.show_deck(_round.deck_cards(), _round.in_draw_pile)
 
 
 func _show_run_info() -> void:
