@@ -396,6 +396,25 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sceau_main"]
+content_margin_left = 24.0
+content_margin_top = 6.0
+content_margin_right = 24.0
+content_margin_bottom = 8.0
+bg_color = Color(0.6902, 0.251, 0.2, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7882, 0.651, 0.3529, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 8
+shadow_offset = Vector2(0, 4)
+
 [resource]
 default_font = ExtResource("1_15t8c")
 default_font_size = 20
@@ -486,6 +505,12 @@ CardButton/styles/hover = SubResource("StyleBoxEmpty_carte")
 CardButton/styles/hover_pressed = SubResource("StyleBoxEmpty_carte")
 CardButton/styles/normal = SubResource("StyleBoxEmpty_carte")
 CardButton/styles/pressed = SubResource("StyleBoxEmpty_carte")
+HandAnnounce/base_type = &"Label"
+HandAnnounce/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
+HandAnnounce/font_sizes/font_size = 44
+HandAnnounce/fonts/font = ExtResource("2_carte")
+HandSeal/base_type = &"PanelContainer"
+HandSeal/styles/panel = SubResource("StyleBoxFlat_sceau_main")
 ItemSlot/base_type = &"Button"
 ItemSlot/colors/artifact_color = Color(0.7882, 0.651, 0.3529, 1)
 ItemSlot/colors/disabled_color = Color(0.4196, 0.4549, 0.4784, 1)

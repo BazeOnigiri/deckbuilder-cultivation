@@ -29,3 +29,10 @@ extends Resource
 ## Bond de l'emplacement d'un artefact qui se declenche : echelle au sommet, duree aller-retour.
 @export var slot_pulse_scale: float = 1.15
 @export var slot_pulse_time: float = 0.3
+## Nom de la main annonce en grand sur un sceau avant le calcul : duree totale (apparition, pause, fondu), inclinaison en degres.
+@export var announce_time: float = 0.8
+@export var announce_tilt: float = -4.0
+## Eclair du ciel quand le total tombe : opacite maximale quand la main atteint a elle seule l'objectif.
+@export var flash_max: float = 0.18
+@export var flash_time: float = 0.4
+@export var flash_color: Color = Color(0.9098, 0.8824, 0.8157, 1)
