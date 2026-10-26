@@ -5,6 +5,9 @@ const Contrast := preload("res://test/helpers/contrast.gd")
 const SCENE := preload("res://ui/theme/ambiance.tscn")
 const THEME_PATH := "res://ui/theme/lavis_de_nuit.tres"
 const LAVIS_COLORS := ["base_color", "deep_color", "ink_color"]
+const AMBIANCES_DIR := "res://ui/ambiances"
+## Ambiances qui ne correspondent a aucun goulot.
+const SPECIAL_IDS: Array[StringName] = [&"nuit", &"boutique"]
 
 
 func test_ambiance_chargee_pour_tout_le_jeu() -> void:
@@ -40,3 +43,75 @@ func test_texte_lisible_quand_le_fond_prend_la_couleur_d_un_element() -> void:
 		# Pire cas du shader : la zone d'encre la plus dense, au plus fort de la teinte.
 		var fond := ink.lerp(ElementStyles.of(element).color, strength)
 		assert_gt(Contrast.ratio(texte, fond), 4.5, "texte sur le lavis teinte %s" % Element.to_id(element))
+
+
+func _ambiances() -> Array[AmbianceTheme]:
+	var result: Array[AmbianceTheme] = []
+	for resource: Resource in ContentLoader.load_all(AMBIANCES_DIR):
+		result.append(resource as AmbianceTheme)
+	return result
+
+
+func _bottleneck_ids() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for resource: Resource in ContentLoader.load_all("res://content/bottlenecks"):
+		ids.append((resource as BottleneckDefinition).id)
+	return ids
+
+
+## Ajouter une tribulation = son goulot + une ambiance de meme id : un oubli est detecte ici.
+func test_chaque_tribulation_a_son_ambiance() -> void:
+	var ids: Array[StringName] = []
+	for ambiance: AmbianceTheme in _ambiances():
+		ids.append(ambiance.id)
+	for resource: Resource in ContentLoader.load_all("res://content/bottlenecks"):
+		var bottleneck := resource as BottleneckDefinition
+		if bottleneck.constraint != null:
+			assert_has(ids, bottleneck.id, "tribulation sans ambiance : %s" % bottleneck.id)
+
+
+func test_chaque_ambiance_correspond_a_un_goulot_ou_un_id_special() -> void:
+	var known := _bottleneck_ids()
+	known.append_array(SPECIAL_IDS)
+	for ambiance: AmbianceTheme in _ambiances():
+		assert_has(known, ambiance.id, "ambiance orpheline : %s" % ambiance.resource_path)
+
+
+func test_texte_lisible_sur_chaque_ambiance() -> void:
+	var theme: Theme = load(THEME_PATH)
+	var texte: Color = theme.get_color("font_color", "Label")
+	var strength: float = (load("res://ui/round/score_feel.tres") as ScoreFeel).pulse_strength
+	for ambiance: AmbianceTheme in _ambiances():
+		for fond: Color in [ambiance.base_color, ambiance.deep_color, ambiance.ink_color]:
+			assert_gt(Contrast.ratio(texte, fond), 4.5, "texte sur %s" % ambiance.id)
+		for element: Element.Type in Element.Type.values():
+			var teinte := ambiance.ink_color.lerp(ElementStyles.of(element).color, strength)
+			assert_gt(Contrast.ratio(texte, teinte), 4.5, "%s teinte %s" % [ambiance.id, Element.to_id(element)])
+
+
+func test_apply_change_le_fond_et_la_meteo() -> void:
+	var ambiance: Node = add_child_autofree(SCENE.instantiate())
+	ambiance.fade_time = 0.0
+	ambiance.apply(&"tribulation_flammes")
+	var lavis: ShaderMaterial = (ambiance.get_node("Fond/Lavis") as ColorRect).material
+	assert_eq(lavis.get_shader_parameter("base_color"), ambiance.current.base_color)
+	assert_eq(ambiance.current.id, &"tribulation_flammes")
+	assert_eq(ambiance.get_node("Fond/Meteo").get_child_count(), 1, "escarbilles")
+	assert_ne(load("res://ui/theme/lavis.tres").get_shader_parameter("base_color"), ambiance.current.base_color,
+		"le .tres partage n'est pas modifie")
+
+
+func test_id_inconnu_donne_la_nuit() -> void:
+	var ambiance: Node = add_child_autofree(SCENE.instantiate())
+	ambiance.apply(&"goulot_petit")
+	assert_eq(ambiance.current.id, &"nuit")
+
+
+func test_reduire_les_animations_coupe_la_meteo() -> void:
+	var ambiance: Node = add_child_autofree(SCENE.instantiate())
+	ambiance.apply(&"tribulation_vent_noir")
+	ambiance.reduce_motion = true
+	await wait_process_frames(1)
+	assert_eq(ambiance.get_node("Fond/Meteo").get_child_count(), 0)
+	ambiance.reduce_motion = false
+	assert_eq(ambiance.get_node("Fond/Meteo").get_child_count(), 1, "meteo revenue")

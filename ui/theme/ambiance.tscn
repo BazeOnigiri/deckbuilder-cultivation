@@ -2,8 +2,10 @@
 
 [ext_resource type="ShaderMaterial" path="res://ui/theme/lavis.tres" id="1_lavis"]
 [ext_resource type="ShaderMaterial" path="res://ui/theme/papier.tres" id="2_papier"]
+[ext_resource type="Script" path="res://ui/theme/ambiance.gd" id="3_script"]
 
 [node name="Ambiance" type="Node"]
+script = ExtResource("3_script")
 
 [node name="Fond" type="CanvasLayer" parent="."]
 layer = -1
@@ -16,6 +18,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="Meteo" type="Node2D" parent="Fond"]
 
 [node name="Dessus" type="CanvasLayer" parent="."]
 layer = 100

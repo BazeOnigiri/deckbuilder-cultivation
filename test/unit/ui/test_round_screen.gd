@@ -269,15 +269,27 @@ func _instant_screen() -> Control:
 	return screen
 
 
+func test_ambiance_du_goulot_au_debut_du_round() -> void:
+	var screen: Control = SCREEN.instantiate()
+	var ids: Array[StringName] = []
+	screen.ambiance_changed.connect(ids.append)
+	add_child_autofree(screen)
+	assert_eq(ids.back(), screen._run.progress.current_bottleneck().id)
+
+
 func test_victoire_puis_boutique() -> void:
 	var screen := _instant_screen()
+	var ids: Array[StringName] = []
+	screen.ambiance_changed.connect(ids.append)
 	screen._round.target_score = 1
 	_play_first_card(screen)
 	await wait_until(func() -> bool: return screen.get_node("%ShopPanel").visible, 2.0)
 	assert_true(screen.get_node("%ShopPanel").visible, "boutique ouverte apres le sceau")
 	assert_true(screen.get_node("%ContinueButton").visible)
 	assert_false(screen.get_node("%HandRow").visible, "la main laisse la place a la boutique")
+	assert_eq(ids.back(), &"boutique")
 	screen.get_node("%ContinueButton").pressed.emit()
+	assert_eq(ids.back(), screen._run.progress.current_bottleneck().id, "ambiance du goulot suivant")
 	assert_true(screen.get_node("%HandRow").visible, "main revenue au round suivant")
 
 

@@ -7,8 +7,13 @@ signal menu_requested
 signal options_requested
 ## Emis avant le debut de la run : main y branche le suivi du profil.
 signal run_created(run: RunState, resumed: bool)
+## id du goulot en cours, ou boutique : main fait changer le fond (autoload Ambiance).
+signal ambiance_changed(id: StringName)
 ## Interne : la sequence de score d'un coup est terminee.
 signal _score_shown
+
+## Ambiance de la boutique (ui/ambiances/boutique.tres).
+const SHOP_AMBIANCE := &"boutique"
 
 ## Injecte par main avant add_child. Vide : contenu charge par defaut (scene lancee seule, tests).
 var content: GameContent
@@ -206,6 +211,7 @@ func _on_round_started(round_state: RoundState) -> void:
 
 func _show_stage() -> void:
 	_side.show_stage(_run.progress.current_realm(), _run.progress.current_bottleneck())
+	ambiance_changed.emit(_run.progress.current_bottleneck().id)
 
 
 func _on_play_pressed() -> void:
@@ -274,6 +280,7 @@ func _on_run_finished(won: bool) -> void:
 
 ## La main du round gagne laisse la place a la boutique : l'ecran ne deborde pas en hauteur.
 func _open_shop() -> void:
+	ambiance_changed.emit(SHOP_AMBIANCE)
 	_hand_view.hide()
 	_shop_panel.open(_shop)
 
