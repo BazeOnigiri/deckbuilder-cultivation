@@ -27,6 +27,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Sequence de score sans texte au-dessus des cartes : le nom de la main et le compteur Qi x Comprehension defilent dans la colonne, d'ou le total s'envole vers le Qi du round.
 - Meditant a la place de l'anneau d'objectif : la silhouette en tailleur se remplit de qi de bas en haut avec le score du round, une aura pulse quand l'objectif est atteint.
 - Icones dessinees : pierre spirituelle (colonne, prix de la boutique, cristaux qui tombent a la victoire) et un dessin par artefact a la place de son caractere. Un artefact = son .tres + son SVG dans content/artifacts/icones/.
+- Vue du paquet : un clic sur la pioche montre les 45 cartes de la run, une rangee par element triee par rang, avec le compte de cartes encore a piocher. Les cartes en main, jouees ou defaussees sont grisees. Un clic ou Echap ferme la vue.
 
 ## [0.3.0] - 2026-10-25
 

@@ -188,6 +188,39 @@ func test_pioche_affiche_les_cartes_restantes() -> void:
 	assert_lt(screen._round.draw_count(), screen._round.deck_size())
 
 
+func test_clic_sur_la_pioche_montre_tout_le_paquet() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen.get_node("%DeckPile").pressed.emit()
+	var viewer: DeckViewer = _viewer(screen)
+	assert_not_null(viewer)
+	var views: Array[CardView] = []
+	var greyed: int = 0
+	for view: Node in viewer.find_children("*", "CardView", true, false):
+		views.append(view)
+		if (view as CardView).modulate != Color.WHITE:
+			greyed += 1
+	assert_eq(views.size(), screen._round.deck_size())
+	assert_eq(greyed, screen._round.deck_size() - screen._round.draw_count())
+	viewer.close()
+	await wait_process_frames(1)
+	assert_null(_viewer(screen), "ferme au clic")
+
+
+func test_pioche_inactive_pendant_la_sequence() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	_play_first_card(screen)
+	assert_false(screen.get_node("%DeckPile").enabled)
+	screen._show_deck()
+	assert_null(_viewer(screen))
+
+
+func _viewer(screen: Node) -> DeckViewer:
+	for child: Node in screen.get_children():
+		if child is DeckViewer and not child.is_queued_for_deletion():
+			return child
+	return null
+
+
 ## Annonce du nom de la main : la sequence se termine, avec ou sans animations, et le tableau redevient visible.
 func _short_announce_feel() -> ScoreFeel:
 	var feel := _instant_feel()
