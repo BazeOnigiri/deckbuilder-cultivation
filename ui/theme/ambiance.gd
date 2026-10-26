@@ -1,12 +1,12 @@
 extends Node
 ## Autoload Ambiance : fond lavis et papier de tout le jeu, change selon l'ecran (goulot, boutique, menu).
-## apply(id) fait un fondu vers l'AmbianceTheme de cet id (ui/ambiances/), ou vers DEFAULT_ID s'il n'y en a pas.
+## apply(id) fait un fondu a l'encre vers l'AmbianceTheme de cet id (ui/ambiances/), ou vers DEFAULT_ID s'il n'y en a pas.
 
 const AMBIANCES_DIR := "res://ui/ambiances"
 const DEFAULT_ID := &"nuit"
 
 ## Duree du fondu entre deux ambiances.
-@export var fade_time: float = 1.2
+@export var fade_time: float = 1.6
 
 ## Coupe la meteo, la respiration et le fondu.
 var reduce_motion: bool = false:
@@ -48,12 +48,16 @@ func apply(id: StringName) -> void:
 	current = ambiance
 	if _fade != null:
 		_fade.kill()
+	var time: float = 0.0 if reduce_motion else fade_time
+	# Palette posee tout de suite ; l'ancienne reste visible et recule par taches pendant le fondu.
+	for parameter: StringName in [&"base_color", &"deep_color", &"ink_color"]:
+		_lavis.set_shader_parameter(StringName("old_" + parameter), _lavis.get_shader_parameter(parameter))
+		_lavis.set_shader_parameter(parameter, ambiance.get(parameter))
+	_lavis.set_shader_parameter(&"blend", 0.0 if time > 0.0 else 1.0)
 	var targets := {
-		_lavis: {&"base_color": ambiance.base_color, &"deep_color": ambiance.deep_color,
-			&"ink_color": ambiance.ink_color, &"speed": ambiance.speed},
+		_lavis: {&"speed": ambiance.speed, &"blend": 1.0},
 		_papier: {&"vignette": ambiance.vignette},
 	}
-	var time: float = 0.0 if reduce_motion else fade_time
 	if time > 0.0:
 		_fade = create_tween().set_parallel()
 	for material: ShaderMaterial in targets:

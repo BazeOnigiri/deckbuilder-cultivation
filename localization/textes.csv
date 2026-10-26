@@ -18,7 +18,6 @@ ELEMENT_METAL,Métal,Metal
 ELEMENT_EAU,Eau,Water
 UI_PLAY,Jouer la main,Play hand
 UI_DISCARD,Défausser,Discard
-UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
 UI_CREDITS,Crédits,Credits
 UI_CREDITS_INTRO,Ce jeu utilise le moteur Godot (godotengine.org).,This game uses the Godot Engine (godotengine.org).
 REALM_RAFFINEMENT_QI,Raffinement du Qi,Qi Refining
@@ -34,7 +33,6 @@ UI_MENU,Menu principal,Main menu
 UI_RUN_WON,Tu as atteint le sommet de la cultivation !,You reached the peak of cultivation!
 UI_RUN_LOST,Échec de la percée. La run est terminée.,Breakthrough failed. The run is over.
 UI_STONES,Pierres spirituelles : %d,Spirit stones: %d
-UI_REWARD,+%d pierres (goulot %d + mains %d + intérêts %d),+%d stones (bottleneck %d + hands %d + interest %d)
 ARTIFACT_EPEE_VOLANTE,Épée volante de jade,Flying Jade Sword
 ARTIFACT_EPEE_VOLANTE_DESC,+15 Qi à chaque main jouée.,+15 Qi on every hand played.
 ARTIFACT_GOURDE_ELIXIR,Gourde d'élixir,Elixir Gourd

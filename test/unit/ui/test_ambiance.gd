@@ -115,3 +115,15 @@ func test_reduire_les_animations_coupe_la_meteo() -> void:
 	assert_eq(ambiance.get_node("Fond/Meteo").get_child_count(), 0)
 	ambiance.reduce_motion = false
 	assert_eq(ambiance.get_node("Fond/Meteo").get_child_count(), 1, "meteo revenue")
+
+
+func test_fondu_a_l_encre_garde_l_ancienne_palette() -> void:
+	var ambiance: Node = add_child_autofree(SCENE.instantiate())
+	ambiance.fade_time = 0.0
+	ambiance.apply(&"nuit")
+	var lavis: ShaderMaterial = (ambiance.get_node("Fond/Lavis") as ColorRect).material
+	var night: Color = lavis.get_shader_parameter("base_color")
+	ambiance.fade_time = 1.0
+	ambiance.apply(&"tribulation_demon")
+	assert_eq(lavis.get_shader_parameter("old_base_color"), night, "l'ancienne encre reste sous la nouvelle")
+	assert_eq(lavis.get_shader_parameter("blend"), 0.0, "le fondu commence")
