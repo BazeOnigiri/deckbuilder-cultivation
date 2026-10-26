@@ -217,3 +217,43 @@ func test_annonce_sans_animations() -> void:
 	var screen := _play_with_announce(true)
 	await wait_until(func() -> bool: return not screen._scoring, 2.0)
 	assert_false(screen._scoring)
+
+
+func _instant_end() -> RoundEndFeel:
+	var feel := RoundEndFeel.new()
+	feel.seal_time = 0.0
+	feel.wave_time = 0.0
+	feel.crystal_time = 0.0
+	feel.defeat_time = 0.0
+	return feel
+
+
+func _instant_screen() -> Control:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen._sequence.feel = _instant_feel()
+	screen._side.feel = _instant_feel()
+	screen._round_end.feel = _instant_end()
+	return screen
+
+
+func test_victoire_puis_boutique() -> void:
+	var screen := _instant_screen()
+	screen._round.target_score = 1
+	_play_first_card(screen)
+	await wait_until(func() -> bool: return screen.get_node("%ShopPanel").visible, 2.0)
+	assert_true(screen.get_node("%ShopPanel").visible, "boutique ouverte apres le sceau")
+	assert_true(screen.get_node("%ContinueButton").visible)
+
+
+func test_echec_recouvre_l_ecran_et_mene_au_menu() -> void:
+	var screen := _instant_screen()
+	screen._round.target_score = 1000000
+	screen._round.hands_left = 1
+	watch_signals(screen)
+	_play_first_card(screen)
+	await wait_physics_frames(2)
+	var buttons: Array[Node] = screen._round_end.find_children("*", "Button", true, false)
+	assert_eq(buttons.size(), 1, "bouton du menu sur l'encre")
+	assert_eq(screen._round_end.mouse_filter, Control.MOUSE_FILTER_STOP, "l'encre prend les clics")
+	(buttons[0] as Button).pressed.emit()
+	assert_signal_emitted(screen, "menu_requested")

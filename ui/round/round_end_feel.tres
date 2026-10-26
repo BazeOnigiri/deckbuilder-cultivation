@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RoundEndFeel" format=3]
+
+[ext_resource type="Script" path="res://ui/round/round_end_feel.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+seal_time = 1.1
+seal_drop = 120.0
+wave_time = 0.9
+crystal_max = 10
+crystal_time = 0.5
+crystal_stagger = 0.05
+crystal_size = 10.0
+crystal_fall = 160.0
+crystal_color = Color(0.549, 0.7686, 0.698, 1)
+stones_bump = 1.25
+defeat_time = 2.4
