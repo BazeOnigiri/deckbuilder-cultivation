@@ -16,8 +16,6 @@ ELEMENT_FEU,Feu,Fire
 ELEMENT_TERRE,Terre,Earth
 ELEMENT_METAL,Métal,Metal
 ELEMENT_EAU,Eau,Water
-UI_ROUND_INFO,Score : %d / %d    Mains : %d    Défausses : %d,Score: %d / %d    Hands: %d    Discards: %d
-UI_LAST_HAND,%s (niv. %d) : %d Qi x %.1f = %d,%s (lv. %d): %d Qi x %.1f = %d
 UI_PLAY,Jouer,Play
 UI_DISCARD,Défausser,Discard
 UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
@@ -80,7 +78,6 @@ UI_STATS_HANDS_PLAYED,Mains jouées,Hands played
 UI_STATS_FAVORITE_HAND,Main favorite,Favorite hand
 UI_STATS_HAND_COUNT,%s (%d fois),%s (%d times)
 UI_BACK,Retour,Back
-UI_INFO_BUTTON,Infos,Info
 UI_RUN_INFO,Infos de la run,Run info
 UI_INFO_TAB_HANDS,Mains,Hands
 UI_INFO_TAB_PATH,Parcours,Path
@@ -113,3 +110,17 @@ UI_POPUP_QI,+%d Qi,+%d Qi
 UI_POPUP_COMPREHENSION_ADD,+%s Compréhension,+%s Comprehension
 UI_POPUP_COMPREHENSION_MULT,x%s Compréhension,x%s Comprehension
 UI_POPUP_TOTAL,= %d,= %d
+UI_SIDE_TARGET,Atteindre,Reach
+UI_SIDE_TO_WIN,pour gagner,to win
+UI_SIDE_ROUND_QI,Qi du round,Round Qi
+UI_SIDE_NO_HAND,Choisis des cartes,Choose cards
+UI_SIDE_LEVEL,niv. %d,lv. %d
+UI_SIDE_QI,Qi,Qi
+UI_SIDE_COMPREHENSION,Compréhension,Comprehension
+UI_SIDE_HANDS,Mains,Hands
+UI_SIDE_DISCARDS,Défausses,Discards
+UI_SIDE_STONES,Pierres,Stones
+UI_SIDE_REALM,Royaume,Realm
+UI_SIDE_BOTTLENECK,Goulot,Bottleneck
+UI_SIDE_OF,%d/%d,%d/%d
+UI_SIDE_PATH,Voie de cultivation,Cultivation path

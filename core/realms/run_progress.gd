@@ -28,6 +28,19 @@ func current_target() -> int:
 	return target_for(current_realm(), current_bottleneck())
 
 
+## Numeros affiches, a partir de 1.
+func realm_number() -> int:
+	return _realm_index + 1
+
+
+func realm_count() -> int:
+	return _realms.size()
+
+
+func bottleneck_number() -> int:
+	return _bottleneck_index + 1
+
+
 static func target_for(realm: RealmDefinition, bottleneck: BottleneckDefinition) -> int:
 	return roundi(realm.base_score * bottleneck.score_multiplier)
 

@@ -46,6 +46,13 @@ func hand() -> Array[CardInstance]:
 	return _deck.hand
 
 
+## Main que formeraient ces cartes, sans rien jouer (apercu de la selection). null si la selection est refusee.
+func preview(cards: Array[CardInstance]) -> HandResult:
+	if not _valid_selection(cards):
+		return null
+	return _evaluator.evaluate(cards)
+
+
 ## Renvoie le score du coup, ou null si le coup est refuse (rien ne change alors).
 func play(cards: Array[CardInstance]) -> ScoreContext:
 	if status != Status.PLAYING or hands_left <= 0 or not _valid_selection(cards):

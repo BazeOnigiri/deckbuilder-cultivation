@@ -17,6 +17,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Sequence de score : les cartes jouees montent au-dessus de la main, chaque carte qui compte bondit avec son +Qi, chaque artefact declenche montre son nom et son effet, le compteur Qi x Comprehension defile, puis l'ecran tremble selon le score et le fond se teinte de l'element dominant. Le coup est sauvegarde des qu'il est joue. Rythme dans ui/round/score_feel.tres.
 - Effets de cartes : une carte qui quitte la main (jouee, defaussee, detruite par une pilule) se dissout comme du papier qui brule, bord de la couleur de son element. Chaque carte qui compte lache une gerbe de qi. Une carte modifiee par une pilule luit de la couleur de son element.
 - Le pipeline de score note chaque etape (base, cartes, effets) avec l'artefact et la carte qui l'ont declenchee.
+- Colonne laterale dans l'ecran de round : goulot et sa contrainte (bandeau rouge pendant une tribulation), anneau d'objectif qui se remplit, Qi du round qui defile quand le total d'un coup s'y envole, apercu de la main selectionnee (nom, niveau, Qi x Comprehension), mains, defausses, pierres, royaume et goulot. Boutons Voie de cultivation (infos de la run) et Options, ouvertes par-dessus la run sans la quitter.
 
 ## [0.3.0] - 2026-10-25
 

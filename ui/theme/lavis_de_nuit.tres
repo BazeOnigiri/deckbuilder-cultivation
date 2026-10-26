@@ -209,9 +209,112 @@ expand_margin_top = 32.0
 expand_margin_right = 8.0
 expand_margin_bottom = 8.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_colonne"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.0471, 0.0706, 0.098, 0.92)
+border_width_left = 1
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color(0.2431, 0.3333, 0.3765, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bandeau"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.0902, 0.1294, 0.1725, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3686, 0.6118, 0.5412, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bandeau_tribulation"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.1647, 0.0706, 0.0627, 1)
+border_width_left = 3
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.6902, 0.2510, 0.2, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_case"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.0471, 0.0706, 0.098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1725, 0.2275, 0.2667, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_voile"]
+bg_color = Color(0.0235, 0.0353, 0.0471, 0.88)
+
 [resource]
 default_font = ExtResource("1_15t8c")
 default_font_size = 20
+BossBanner/base_type = &"PanelContainer"
+BossBanner/styles/panel = SubResource("StyleBoxFlat_bandeau_tribulation")
+ComprehensionValue/base_type = &"Label"
+ComprehensionValue/colors/font_color = Color(0.7882, 0.651, 0.3529, 1)
+ComprehensionValue/font_sizes/font_size = 26
+ComprehensionValue/fonts/font = ExtResource("2_carte")
+GoalRing/colors/fill = Color(0.7882, 0.651, 0.3529, 1)
+GoalRing/colors/track = Color(0.1725, 0.2275, 0.2667, 1)
+GoalRing/constants/size = 96
+GoalRing/constants/width = 6
+QiValue/base_type = &"Label"
+QiValue/colors/font_color = Color(0.372549, 0.658824, 0.541176, 1)
+QiValue/font_sizes/font_size = 26
+QiValue/fonts/font = ExtResource("2_carte")
+SideCaption/base_type = &"Label"
+SideCaption/colors/font_color = Color(0.6039, 0.6392, 0.6588, 1)
+SideCaption/font_sizes/font_size = 14
+SidePanel/base_type = &"PanelContainer"
+SidePanel/constants/separation = 10
+SidePanel/styles/panel = SubResource("StyleBoxFlat_colonne")
+SideTarget/base_type = &"Label"
+SideTarget/colors/font_color = Color(0.7882, 0.651, 0.3529, 1)
+SideTarget/font_sizes/font_size = 34
+SideTarget/fonts/font = ExtResource("2_carte")
+SideTitle/base_type = &"Label"
+SideTitle/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
+SideTitle/font_sizes/font_size = 20
+SideTitle/fonts/font = ExtResource("2_carte")
+SideValue/base_type = &"Label"
+SideValue/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
+SideValue/font_sizes/font_size = 22
+SideValue/fonts/font = ExtResource("2_carte")
+StageBanner/base_type = &"PanelContainer"
+StageBanner/styles/panel = SubResource("StyleBoxFlat_bandeau")
+StatBox/base_type = &"PanelContainer"
+StatBox/styles/panel = SubResource("StyleBoxFlat_case")
 AcceptDialog/styles/panel = SubResource("StyleBoxFlat_panneau")
 Button/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
 Button/colors/font_disabled_color = Color(0.4196, 0.4549, 0.4784, 1)
@@ -254,6 +357,8 @@ TabContainer/styles/panel = SubResource("StyleBoxFlat_panneau")
 TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_onglet_survol")
 TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_onglet_actif")
 TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_onglet_inactif")
+Veil/base_type = &"PanelContainer"
+Veil/styles/panel = SubResource("StyleBoxFlat_voile")
 TooltipLabel/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
 TooltipPanel/styles/panel = SubResource("StyleBoxFlat_infobulle")
 Window/colors/title_color = Color(0.9098, 0.8824, 0.8157, 1)

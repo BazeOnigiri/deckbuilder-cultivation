@@ -3,6 +3,8 @@ extends Control
 ## Contenu, stockage et run a reprendre sont injectes par main.
 
 signal menu_requested
+## main ouvre les reglages par-dessus la run, sans la quitter.
+signal options_requested
 ## Emis avant le debut de la run : main y branche le suivi du profil.
 signal run_created(run: RunState, resumed: bool)
 ## Interne : la sequence de score d'un coup est terminee.
@@ -26,13 +28,11 @@ var _round: RoundState
 ## La boutique ouverte entre deux goulots, null pendant un round.
 var _shop: ShopState
 var _rules: RoundRules
-var _stage: String = ""
 var _rng: RandomNumberGenerator
 var _sequence: ScoreSequence
 ## Vrai pendant que la sequence de score montre le coup : l'affichage de ses suites attend _score_shown.
 var _scoring: bool = false
 
-@onready var _info: Label = %Info
 @onready var _last_hand: Label = %LastHand
 @onready var _hand_view: HandView = %HandRow
 @onready var _play_button: Button = %PlayButton
@@ -42,6 +42,7 @@ var _scoring: bool = false
 @onready var _artifacts_label: Label = %Artifacts
 @onready var _shop_panel: ShopPanel = %ShopPanel
 @onready var _pill_row: HBoxContainer = %PillRow
+@onready var _side: SideColumn = %SideColumn
 
 
 func _ready() -> void:
@@ -69,9 +70,12 @@ func _ready() -> void:
 	_hand_view.selection_changed.connect(_on_selection_changed)
 	_sequence = ScoreSequence.new()
 	_sequence.settings = settings
-	_sequence.setup(_hand_view, $Margin)
+	_sequence.setup(_hand_view, $Root/Margin)
+	_sequence.score_target = _side.round_qi_center
 	add_child(_sequence)
-	%InfoButton.pressed.connect(_show_run_info)
+	_side.settings = settings
+	_side.path_requested.connect(_show_run_info)
+	_side.options_requested.connect(options_requested.emit)
 	_continue_button.hide()
 	_menu_button.hide()
 	run_created.emit(_run, resumed)
@@ -80,7 +84,7 @@ func _ready() -> void:
 	elif not RunSnapshot.resume_round(resume_data, _run):
 		# Sauvegarde prise dans la boutique : on la rouvre avec ses offres d'origine.
 		_shop = RunSnapshot.restore_shop(resume_data, _run, content, _rng)
-		_stage = _stage_text()
+		_show_stage()
 		_shop_panel.open(_shop)
 		_continue_button.show()
 	_refresh()
@@ -88,10 +92,7 @@ func _ready() -> void:
 
 ## Appele apres chaque action : redessine, puis sauvegarde (comme Balatro).
 func _refresh() -> void:
-	var round_info: String = ""
-	if _round != null:
-		round_info = "\n" + tr("UI_ROUND_INFO") % [_round.score, _round.target_score, _round.hands_left, _round.discards_left]
-	_info.text = _stage + "    " + tr("UI_STONES") % _run.stones + round_info
+	_side.show_run(_run, _round)
 	var cards: Array[CardInstance] = []
 	if _round != null:
 		cards.assign(_round.hand())
@@ -122,6 +123,8 @@ func _on_selection_changed() -> void:
 		and count > 0 and count <= _rules.max_selected_cards)
 	_play_button.disabled = not can_act
 	_discard_button.disabled = not can_act or _round.discards_left == 0
+	var preview: HandResult = _round.preview(_selected()) if _round != null and not _scoring else null
+	_side.show_preview(preview, _run.hand_levels.level_of(preview.definition.id) if preview != null else 1)
 	_refresh_pills()
 
 
@@ -148,19 +151,13 @@ func _on_pill_pressed(index: int) -> void:
 
 func _on_round_started(round_state: RoundState) -> void:
 	_round = round_state
-	_round.hand_played.connect(_on_hand_played)
 	# Nom du goulot fige au debut du round : progress avance des la victoire.
-	_stage = _stage_text()
+	_show_stage()
 	_last_hand.text = ""
 
 
-func _stage_text() -> String:
-	var progress := _run.progress
-	var text: String = tr("UI_STAGE") % [tr(progress.current_realm().name_key), tr(progress.current_bottleneck().name_key)]
-	var constraint: TribulationConstraint = progress.current_bottleneck().constraint
-	if constraint != null:
-		text += "\n" + tr(constraint.description_key)
-	return text
+func _show_stage() -> void:
+	_side.show_stage(_run.progress.current_realm(), _run.progress.current_bottleneck())
 
 
 func _on_play_pressed() -> void:
@@ -201,17 +198,11 @@ func _on_continue_pressed() -> void:
 	_refresh()
 
 
-func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
-	var level: int = _run.hand_levels.level_of(result.definition.id)
-	await _after_score()
-	_last_hand.text = tr("UI_LAST_HAND") % [tr(result.definition.name_key), level, score.qi, score.comprehension, score.total()]
-
-
 func _on_round_won(reward: RoundReward) -> void:
 	# Boutique creee tout de suite (meme tirage, et sauvegardee avec le coup), affichee apres la sequence.
 	_shop = content.new_shop(_run, _rng)
 	await _after_score()
-	_last_hand.text += "\n" + tr("UI_ROUND_WON")
+	_last_hand.text = tr("UI_ROUND_WON")
 	_last_hand.text += "\n" + tr("UI_REWARD") % [reward.total(), reward.base, reward.hands, reward.interest]
 	_shop_panel.open(_shop)
 	_continue_button.show()
@@ -222,7 +213,7 @@ func _on_run_finished(won: bool) -> void:
 	if run_storage != null:
 		run_storage.delete()
 	await _after_score()
-	_last_hand.text += "\n" + tr("UI_RUN_WON" if won else "UI_RUN_LOST")
+	_last_hand.text = (_last_hand.text + "\n" + tr("UI_RUN_WON" if won else "UI_RUN_LOST")).strip_edges()
 	_menu_button.show()
 
 
