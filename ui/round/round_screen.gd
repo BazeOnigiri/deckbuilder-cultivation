@@ -12,6 +12,8 @@ var content: GameContent
 var run_storage: SaveStorage
 ## Sauvegarde a reprendre. Vide : nouvelle run.
 var resume_data: Dictionary = {}
+## Injecte par main. Par defaut des reglages neufs (scene lancee seule, tests).
+var settings: GameSettings = GameSettings.new()
 
 ## Debug : artefacts donnes au debut d'une nouvelle run (inspecteur). Ignores dans une build release.
 @export var debug_artifacts: Array[ArtifactDefinition] = []
@@ -27,7 +29,7 @@ var _rng: RandomNumberGenerator
 
 @onready var _info: Label = %Info
 @onready var _last_hand: Label = %LastHand
-@onready var _hand_row: HBoxContainer = %HandRow
+@onready var _hand_view: HandView = %HandRow
 @onready var _play_button: Button = %PlayButton
 @onready var _discard_button: Button = %DiscardButton
 @onready var _continue_button: Button = %ContinueButton
@@ -58,6 +60,8 @@ func _ready() -> void:
 	_continue_button.pressed.connect(_on_continue_pressed)
 	_menu_button.pressed.connect(menu_requested.emit)
 	_shop_panel.changed.connect(_refresh)
+	_hand_view.settings = settings
+	_hand_view.selection_changed.connect(_on_selection_changed)
 	%InfoButton.pressed.connect(_show_run_info)
 	_continue_button.hide()
 	_menu_button.hide()
@@ -79,19 +83,11 @@ func _refresh() -> void:
 	if _round != null:
 		round_info = "\n" + tr("UI_ROUND_INFO") % [_round.score, _round.target_score, _round.hands_left, _round.discards_left]
 	_info.text = _stage + "    " + tr("UI_STONES") % _run.stones + round_info
-	for child: Node in _hand_row.get_children():
-		# remove_child tout de suite : queue_free seul laisse l'enfant compte jusqu'a la frame suivante.
-		_hand_row.remove_child(child)
-		child.queue_free()
 	var cards: Array[CardInstance] = []
 	if _round != null:
 		cards.assign(_round.hand())
 	cards.sort_custom(func(a: CardInstance, b: CardInstance) -> bool: return a.rank < b.rank)
-	for card: CardInstance in cards:
-		var view := CardView.new()
-		view.card = card
-		view.toggled.connect(_on_selection_changed.unbind(1))
-		_hand_row.add_child(view)
+	_hand_view.set_cards(cards)
 	_on_selection_changed()
 	var names: Array[String] = []
 	var descriptions: Array[String] = []
@@ -105,7 +101,7 @@ func _refresh() -> void:
 
 func _selected() -> Array[CardInstance]:
 	var cards: Array[CardInstance] = []
-	for view: CardView in _hand_row.get_children():
+	for view: CardView in _hand_view.get_children():
 		if view.button_pressed:
 			cards.append(view.card)
 	return cards

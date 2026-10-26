@@ -2,8 +2,11 @@ class_name CardView
 extends Button
 ## Une carte de la main, selectionnable, dessinee dans _draw(). Apparence dans le Theme (type CardButton).
 ## Couleur ET forme du symbole : lisible sans distinguer les couleurs.
+## Placee, levee et inclinee par HandView.
 
 const CARD_SIZE := Vector2(92, 132)
+## Chaque carte a son inclinaison : une copie du materiau par carte.
+const TILT_MATERIAL := preload("res://ui/cards/carte_inclinee.tres")
 const FRAME_INSET := 5.0
 ## Coin : colonne centree en CORNER_X, ligne de base du rang, centre du symbole.
 const CORNER_X := 15.0
@@ -42,24 +45,25 @@ func _ready() -> void:
 	toggle_mode = true
 	# shortcut: pas de focus (souris seule), a revoir avec la navigation clavier/manette via InputMap
 	focus_mode = FOCUS_NONE
-	# Bande vide au-dessus de la carte : la place qu'elle prend quand elle monte.
-	custom_minimum_size = CARD_SIZE + Vector2(0, get_theme_constant(&"lift"))
+	size = CARD_SIZE
+	pivot_offset = CARD_SIZE / 2
+	material = TILT_MATERIAL.duplicate()
+	refresh()
+
+
+## A rappeler quand une pilule change l'element ou le rang de la carte.
+func refresh() -> void:
 	tooltip_text = tr("ELEMENT_" + Element.to_id(card.element).to_upper())
+	queue_redraw()
 
 
-## Seule la carte est cliquable, pas la bande laissee pour la levee.
-func _has_point(point: Vector2) -> bool:
-	return Rect2(_card_origin(), CARD_SIZE).has_point(point)
-
-
-func _card_origin() -> Vector2:
-	return Vector2(0, 0 if button_pressed else get_theme_constant(&"lift"))
+## Inclinaison en radians autour des axes x et y.
+func set_tilt(tilt: Vector2) -> void:
+	(material as ShaderMaterial).set_shader_parameter(&"tilt", tilt)
 
 
 func _draw() -> void:
 	var style := ElementStyles.of(card.element)
-	var origin := _card_origin()
-	draw_set_transform(origin)
 	var box: StringName = &"card_selected" if button_pressed else (&"card_hover" if is_hovered() else &"card")
 	draw_style_box(get_theme_stylebox(box), Rect2(Vector2.ZERO, CARD_SIZE))
 	# +0.5 : le trait de 1 px est centre sur le bord du rectangle, on le cale sur une colonne de pixels.
@@ -70,7 +74,7 @@ func _draw() -> void:
 	if button_pressed:
 		_draw_seal()
 	# Coin bas droit : le meme coin, tourne d'un demi-tour autour du coin oppose.
-	draw_set_transform(origin + CARD_SIZE, PI)
+	draw_set_transform(CARD_SIZE, PI)
 	_draw_corner(style)
 	draw_set_transform(Vector2.ZERO)
 

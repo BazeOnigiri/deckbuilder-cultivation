@@ -87,6 +87,7 @@ func _show_run(resume_data: Dictionary) -> void:
 	run_screen.content = _content
 	run_screen.run_storage = _run_storage
 	run_screen.resume_data = resume_data
+	run_screen.settings = _settings
 	# Branche avant add_child : run_created est emis pendant le _ready de l'ecran.
 	run_screen.run_created.connect(func(run: RunState, resumed: bool) -> void: _tracker.track(run, not resumed))
 	run_screen.menu_requested.connect(_show_menu)

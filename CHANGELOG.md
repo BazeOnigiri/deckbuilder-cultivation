@@ -13,6 +13,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Cartes dessinees par le moteur : rang et symbole de l'element dans deux coins opposes, points repetes pour les rangs 1 a 6, figures Disciple, Maitre et Immortel pour les rangs 7 a 9, carte qui monte et sceau 选 quand elle est selectionnee. Styles des elements (couleur, symbole) en donnees dans ui/cards/styles/, apparence de la carte dans le Theme (type CardButton).
 - Fond anime « lavis » derriere tous les ecrans : encre qui se diffuse lentement sur le bleu nuit. Papier de riz pose sur tout le jeu (grain, fibres, vignette). Reglages dans ui/theme/lavis.tres et papier.tres.
 - Ecran Options accessible depuis le menu, avec le reglage « Reduire les animations » (fige le fond anime). Reglages sauvegardes dans un fichier versionne, a part du profil.
+- Main vivante : cartes en eventail qui rejoignent leur place avec un ressort, arrivent depuis la pioche, flottent doucement, grossissent au survol et s'inclinent en fausse 3D vers la souris. La carte selectionnee monte en douceur. « Reduire les animations » coupe le flottement et l'inclinaison. Reglages du mouvement dans ui/cards/hand_feel.tres.
 
 ## [0.3.0] - 2026-10-25
 

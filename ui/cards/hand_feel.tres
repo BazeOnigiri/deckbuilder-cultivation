@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HandFeel" format=3]
+
+[ext_resource type="Script" path="res://ui/cards/hand_feel.gd" id="1_feel"]
+
+[resource]
+script = ExtResource("1_feel")
+gap = -8.0
+fan_angle = 6.0
+arc_height = 12.0
+hover_scale = 1.06
+tilt_max = 12.0
+stiffness = 300.0
+damping = 24.0
+idle_amplitude = 2.0
+idle_rotation = 0.6
+idle_speed = 1.5
+deal_offset = Vector2(480, 80)
