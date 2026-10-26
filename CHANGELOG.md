@@ -24,6 +24,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Tribulations : une carte que la tribulation empeche de compter (ex. le feu scelle) brule doucement par le bas et porte le sceau 封, le rang reste lisible. Le bandeau de la tribulation scintille dans la colonne. Les noms longs de goulot passent a la ligne.
 - Fin de goulot : a la victoire, le sceau 破 tombe au centre et une onde de choc doree part, des cristaux de pierres tombent sur le compteur qui saute, puis la boutique s'ouvre. A l'echec, des fissures de feu s'ouvrent et l'encre noire envahit l'ecran, avec le message d'echec et un bouton vers le menu. Rythme dans ui/round/round_end_feel.tres.
 - Boutique vivante : les offres sont des emplacements (artefacts, manuels 法, pilules) avec nom et prix en pierres, qui se retournent a l'ouverture et a la relance. Un achat file vers son emplacement de la rangee haute. Un manuel affiche le gain de niveau de la main. La main du round gagne laisse la place a la boutique. Une pilule utilisee fait briller la carte de la couleur de son element.
+- Sequence de score sans texte au-dessus des cartes : le nom de la main et le compteur Qi x Comprehension defilent dans la colonne, d'ou le total s'envole vers le Qi du round.
 
 ## [0.3.0] - 2026-10-25
 

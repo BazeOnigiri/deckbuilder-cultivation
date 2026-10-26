@@ -210,7 +210,7 @@ func test_annonce_puis_fin_de_sequence() -> void:
 	assert_true(screen._scoring, "l'annonce retient la sequence")
 	await wait_until(func() -> bool: return not screen._scoring, 2.0)
 	assert_false(screen._scoring)
-	assert_eq(screen._sequence._hand_name.modulate.a, 1.0)
+	assert_eq(screen._sequence.find_children("*", "PanelContainer", false, false).size(), 0, "sceau d'annonce parti")
 
 
 func test_annonce_sans_animations() -> void:
@@ -271,3 +271,20 @@ func test_victoire_animee_puis_boutique() -> void:
 	_play_first_card(screen)
 	await wait_until(func() -> bool: return screen.get_node("%ShopPanel").visible, 4.0)
 	assert_true(screen.get_node("%ShopPanel").visible)
+
+
+## Plus de tableau au-dessus des cartes : le decompte passe par la colonne.
+func test_decompte_affiche_dans_la_colonne() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen._sequence.feel = _instant_feel()
+	var side: SideColumn = screen.get_node("%SideColumn")
+	var last: Array = []
+	screen._sequence.tally_changed.connect(func(qi: int, comprehension: float) -> void:
+		last.assign([side._qi.text, qi, comprehension]))
+	watch_signals(screen._sequence)
+	_play_first_card(screen)
+	assert_signal_emitted(screen._sequence, "hand_named")
+	assert_false(last.is_empty(), "la colonne a recu le compteur")
+	assert_eq(last[0], str(last[1]), "case Qi a jour")
+	assert_eq(roundi(last[1] * last[2]), screen._round.score, "derniere etape : Qi x Comprehension = score du coup")
+	assert_null(screen._sequence.get("_board"), "plus de tableau")
