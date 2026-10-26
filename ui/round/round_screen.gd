@@ -101,12 +101,18 @@ func _refresh() -> void:
 	var cards: Array[CardInstance] = []
 	if _round != null:
 		cards.assign(_round.hand())
-	_hand_view.set_cards(_sorted(cards))
+	_show_hand(cards)
 	if _round != null:
 		_deck_pile.show_count(_round.draw_count(), _round.deck_size())
 	_on_selection_changed()
 	_items.show_artifacts(_run.artifacts, content.shop_rules.max_artifacts)
 	_save_run()
+
+
+func _show_hand(cards: Array[CardInstance]) -> void:
+	_hand_view.set_cards(_sorted(cards))
+	if _round != null:
+		_hand_view.mark_sealed(func(card: CardInstance) -> bool: return not _round.counts(card))
 
 
 ## Par rang puis element, ou par element puis rang (bouton Element). Etat de l'ecran, pas sauvegarde.
@@ -128,7 +134,7 @@ func _on_sort_toggled(on: bool) -> void:
 	var selected := _selected()
 	var cards: Array[CardInstance] = []
 	cards.assign(_round.hand())
-	_hand_view.set_cards(_sorted(cards))
+	_show_hand(cards)
 	for view: CardView in _hand_view.get_children():
 		if selected.has(view.card):
 			view.button_pressed = true

@@ -27,3 +27,5 @@ announce_tilt = -4.0
 flash_max = 0.18
 flash_time = 0.4
 flash_color = Color(0.9098, 0.8824, 0.8157, 1)
+banner_flicker_color = Color(1.25, 0.85, 0.75, 1)
+banner_flicker_time = 0.9

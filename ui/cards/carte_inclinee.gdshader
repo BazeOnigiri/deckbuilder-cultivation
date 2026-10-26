@@ -18,6 +18,17 @@ uniform float edge_width = 0.08;
 // Taille des trous : nombre de motifs de bruit sur la largeur de la carte.
 uniform float noise_scale = 5.0;
 
+// Tribulation : 0 = carte normale, 1 = scellee. La carte brule par le bas, flammes en boucle. Pose par CardView.
+uniform float sealed : hint_range(0.0, 1.0) = 0.0;
+uniform vec4 flame_color : source_color = vec4(0.9, 0.45, 0.2, 1.0);
+// Hauteur des flammes, en part de la carte.
+uniform float flame_height = 0.35;
+uniform float flame_speed = 0.6;
+// Opacite des flammes au plus fort.
+uniform float flame_strength = 0.5;
+// 0 fige les flammes (reduire les animations). Declare dans project.godot.
+global uniform float motion_scale;
+
 // Position sur la carte avant la perspective : les trous restent attaches a la carte quand elle s'incline.
 varying vec2 local;
 
@@ -36,6 +47,16 @@ void vertex() {
 }
 
 void fragment() {
+	if (sealed > 0.0) {
+		float t = TIME * flame_speed * motion_scale;
+		// Le bruit monte avec le temps : les langues de feu s'elevent.
+		float n = fbm(vec2(local.x * 4.0, local.y * 3.0 + t));
+		float above = (1.0 - local.y) - n * flame_height;
+		float flame = (1.0 - smoothstep(0.0, flame_height * 0.5, above)) * sealed;
+		// Seulement sur la carte : ni la lueur ni le sceau qui debordent. Assez leger pour lire le rang dessous.
+		float inside = step(0.0, local.x) * step(local.x, 1.0) * step(0.0, local.y) * step(local.y, 1.0);
+		COLOR.rgb = mix(COLOR.rgb, flame_color.rgb, flame * inside * flame_strength);
+	}
 	if (dissolve > 0.0) {
 		float n = fbm(local * noise_scale);
 		// Seuil etire pour qu'a dissolve = 1 il ne reste plus rien (le bruit reste sous 1).
