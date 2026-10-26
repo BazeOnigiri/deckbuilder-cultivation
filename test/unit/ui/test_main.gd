@@ -4,18 +4,26 @@ extends GutTest
 const MAIN := preload("res://ui/main/main.tscn")
 const TEST_PROFILE := "user://test_profil_main.json"
 const TEST_RUN := "user://test_run_main.json"
+const TEST_SETTINGS := "user://test_reglages_main.json"
 
 
 func after_each() -> void:
 	SaveStorage.new(TEST_PROFILE).delete()
 	SaveStorage.new(TEST_RUN).delete()
+	SaveStorage.new(TEST_SETTINGS).delete()
 
 
 func _main() -> Control:
 	var instance := MAIN.instantiate()
 	instance.profile_path = TEST_PROFILE
 	instance.run_path = TEST_RUN
+	instance.settings_path = TEST_SETTINGS
 	return add_child_autofree(instance)
+
+
+## L'ecran affiche : _swap ajoute le nouveau a la fin, l'ancien n'est libere qu'a la frame suivante.
+func _current_screen(main: Node) -> Node:
+	return main.get_child(main.get_child_count() - 1)
 
 
 func _write_saved_run() -> void:
@@ -30,6 +38,7 @@ func test_demarre_sur_le_menu() -> void:
 	var menu := _main().get_child(0)
 	assert_not_null(menu.get_node_or_null("%StartButton"))
 	assert_not_null(menu.get_node_or_null("%StatsButton"))
+	assert_not_null(menu.get_node_or_null("%OptionsButton"))
 	assert_not_null(menu.get_node_or_null("%CreditsButton"))
 
 
@@ -42,3 +51,22 @@ func test_continuer_visible_avec_une_sauvegarde() -> void:
 	_write_saved_run()
 	var menu := _main().get_child(0)
 	assert_true(menu.get_node("%ContinueButton").visible)
+
+
+func test_options_sauvegarde_reduire_les_animations() -> void:
+	var main := _main()
+	main.get_child(0).get_node("%OptionsButton").pressed.emit()
+	var options := _current_screen(main)
+	options.get_node("%ReduceMotion").button_pressed = true
+	assert_true(GameSettings.load_from(SaveStorage.new(TEST_SETTINGS)).reduce_motion)
+	options.get_node("%BackButton").pressed.emit()
+	assert_not_null(_current_screen(main).get_node_or_null("%OptionsButton"), "retour au menu")
+
+
+func test_options_affichent_le_reglage_sauvegarde() -> void:
+	var saved := GameSettings.new()
+	saved.reduce_motion = true
+	saved.save_to(SaveStorage.new(TEST_SETTINGS))
+	var main := _main()
+	main.get_child(0).get_node("%OptionsButton").pressed.emit()
+	assert_true(_current_screen(main).get_node("%ReduceMotion").button_pressed)
