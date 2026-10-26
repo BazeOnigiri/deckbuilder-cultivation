@@ -7,3 +7,7 @@ shader = ExtResource("1_incl")
 shader_parameter/card_size = Vector2(92, 132)
 shader_parameter/tilt = Vector2(0, 0)
 shader_parameter/eye_distance = 400.0
+shader_parameter/dissolve = 0.0
+shader_parameter/edge_color = Color(1, 1, 1, 1)
+shader_parameter/edge_width = 0.08
+shader_parameter/noise_scale = 5.0

@@ -68,3 +68,16 @@ func test_carte_piochee_arrive_de_loin() -> void:
 	hand.set_cards(Cards.hand([[Cards.FEU, 1]]))
 	hand._process(1.0 / 60.0)
 	assert_gt(_centers(hand)[0].x, WIDTH / 2 + 100.0, "encore en chemin depuis la pioche")
+
+
+func test_carte_qui_part_se_dissout_puis_disparait() -> void:
+	var hand := _hand(false)
+	var cards := Cards.hand([[Cards.FEU, 1], [Cards.EAU, 2]])
+	hand.set_cards(cards)
+	var leaving: CardView = hand.get_child(1)
+	hand.set_cards([cards[0]] as Array[CardInstance])
+	assert_eq(hand.get_child_count(), 1, "plus comptee dans la main")
+	assert_false(leaving.is_queued_for_deletion(), "encore visible pendant la dissolution")
+	assert_eq(leaving.mouse_filter, Control.MOUSE_FILTER_IGNORE, "plus cliquable")
+	hand._process(hand.feel.dissolve_time + 0.1)
+	assert_true(leaving.is_queued_for_deletion(), "liberee une fois dissoute")

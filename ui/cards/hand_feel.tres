@@ -17,3 +17,5 @@ idle_speed = 1.5
 deal_offset = Vector2(480, 80)
 play_rise = 190.0
 pulse_kick = 6.0
+dissolve_time = 0.6
+dissolve_drift = 30.0

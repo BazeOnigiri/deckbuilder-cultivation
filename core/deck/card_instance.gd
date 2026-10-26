@@ -14,3 +14,8 @@ func _init(p_uid: int, p_data: CardData) -> void:
 	data = p_data
 	element = p_data.element
 	rank = p_data.rank
+
+
+## Vrai si une pilule ou un effet a change l'element ou le rang depuis la definition.
+func is_altered() -> bool:
+	return element != data.element or rank != data.rank

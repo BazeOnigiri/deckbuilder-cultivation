@@ -36,6 +36,15 @@ shadow_color = Color(0, 0, 0, 0.6)
 shadow_size = 1
 shadow_offset = Vector2(0, 3)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_carte_lueur"]
+draw_center = false
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(1, 1, 1, 0.55)
+shadow_size = 10
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_carte_choisie"]
 bg_color = Color(0.0941, 0.1373, 0.1725, 1)
 border_width_left = 2
@@ -227,7 +236,8 @@ CardButton/font_sizes/seal_font_size = 17
 CardButton/fonts/font = ExtResource("2_carte")
 CardButton/fonts/seal_font = ExtResource("3_sceau")
 CardButton/styles/card = SubResource("StyleBoxFlat_carte")
-CardButton/styles/card_hover = SubResource("StyleBoxFlat_carte_survol")
+CardButton/styles/card_glow = SubResource("StyleBoxFlat_carte_lueur")
+CardButton/styles/card_hover =SubResource("StyleBoxFlat_carte_survol")
 CardButton/styles/card_selected = SubResource("StyleBoxFlat_carte_choisie")
 CardButton/styles/disabled = SubResource("StyleBoxEmpty_carte")
 CardButton/styles/focus = SubResource("StyleBoxEmpty_carte")
