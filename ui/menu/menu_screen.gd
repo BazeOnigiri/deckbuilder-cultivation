@@ -1,9 +1,10 @@
 extends Control
-## Menu principal : continuer, nouvelle partie, statistiques, credits.
+## Menu principal : continuer, nouvelle partie, statistiques, options, credits.
 
 signal start_requested
 signal continue_requested
 signal stats_requested
+signal options_requested
 
 ## Apercu de la run sauvegardee, null si aucune. Injecte par main avant add_child.
 var saved_run: RunState
@@ -14,6 +15,7 @@ func _ready() -> void:
 	%ContinueButton.pressed.connect(continue_requested.emit)
 	%StartButton.pressed.connect(_show_play_dialog)
 	%StatsButton.pressed.connect(stats_requested.emit)
+	%OptionsButton.pressed.connect(options_requested.emit)
 	%CreditsButton.pressed.connect(_show_credits)
 
 

@@ -12,11 +12,13 @@ uniform float scale = 2.5;
 uniform float speed = 0.02;
 uniform float warp = 1.5;
 uniform float strength : hint_range(0.0, 1.0) = 0.7;
+// Reglage « reduire les animations » : 0 fige le lavis (pose par main, declare dans project.godot).
+global uniform float motion_scale;
 
 void fragment() {
 	// Coordonnees en hauteurs d'ecran : meme rendu quel que soit le format de la fenetre.
 	vec2 p = FRAGCOORD.xy * SCREEN_PIXEL_SIZE.y * scale;
-	float t = TIME * speed;
+	float t = TIME * speed * motion_scale;
 	vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t));
 	vec2 r = vec2(fbm(p + warp * q + vec2(1.7, 9.2) + t), fbm(p + warp * q + vec2(8.3, 2.8) - t));
 	float f = fbm(p + warp * r);

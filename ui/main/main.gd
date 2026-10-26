@@ -1,14 +1,18 @@
 extends Control
-## Racine du jeu : machine a etats MENU / RUN / STATS.
-## Possede le contenu, le profil et la sauvegarde de run, partages entre les ecrans.
+## Racine du jeu : machine a etats MENU / RUN / STATS / OPTIONS.
+## Possede le contenu, le profil, les reglages et la sauvegarde de run, partages entre les ecrans.
 
 const MENU_SCENE := preload("res://ui/menu/menu_screen.tscn")
 const RUN_SCENE := preload("res://ui/round/round_screen.tscn")
 const STATS_SCENE := preload("res://ui/stats/stats_screen.tscn")
+const OPTIONS_SCENE := preload("res://ui/options/options_screen.tscn")
+## Parametre global de shader (declare dans project.godot) : 0 fige les shaders animes.
+const MOTION_SCALE := &"motion_scale"
 
 ## Les tests les remplacent pour ne pas toucher aux vraies sauvegardes.
 @export var profile_path: String = ProfileStats.DEFAULT_PATH
 @export var run_path: String = RunSnapshot.DEFAULT_PATH
+@export var settings_path: String = GameSettings.DEFAULT_PATH
 
 var _screen: Node
 var _content: GameContent
@@ -16,9 +20,14 @@ var _profile: ProfileStats
 var _profile_storage: SaveStorage
 var _tracker: ProfileTracker
 var _run_storage: SaveStorage
+var _settings: GameSettings
+var _settings_storage: SaveStorage
 
 
 func _ready() -> void:
+	_settings_storage = SaveStorage.new(settings_path)
+	_settings = GameSettings.load_from(_settings_storage)
+	_apply_settings()
 	_content = GameContent.load_default()
 	_profile_storage = SaveStorage.new(profile_path)
 	_profile = ProfileStats.load_from(_profile_storage)
@@ -34,7 +43,26 @@ func _show_menu() -> void:
 	menu.start_requested.connect(_start_new_run)
 	menu.continue_requested.connect(_continue_run)
 	menu.stats_requested.connect(_show_stats)
+	menu.options_requested.connect(_show_options)
 	_swap(menu)
+
+
+func _show_options() -> void:
+	var options := OPTIONS_SCENE.instantiate()
+	options.settings = _settings
+	options.settings_changed.connect(_on_settings_changed)
+	options.back_requested.connect(_show_menu)
+	_swap(options)
+
+
+func _on_settings_changed() -> void:
+	_apply_settings()
+	if not _settings.save_to(_settings_storage):
+		push_warning("Reglages non sauvegardes : %s" % _settings_storage.last_error)
+
+
+func _apply_settings() -> void:
+	RenderingServer.global_shader_parameter_set(MOTION_SCALE, 0.0 if _settings.reduce_motion else 1.0)
 
 
 func _show_stats() -> void:
