@@ -71,3 +71,36 @@ func test_niveau_ajoute_les_gains_par_niveau() -> void:
 	var context := ScoringPipeline.score(hand, _no_effects(), 3)
 	assert_eq(context.qi, 10 + 2 * 15 + 8)
 	assert_eq(context.comprehension, 4.0)
+
+func test_etapes_dans_l_ordre_du_calcul() -> void:
+	var hand := _hand(10, 2, [[C.BOIS, 4], [C.FEU, 3]])
+	var effects: Array[ScoreEffect] = [
+		_effect(ScoreEffect.Phase.MULT_COMPREHENSION, 2.0),
+		_effect(ScoreEffect.Phase.ADD_QI, 5.0),
+	]
+	var steps := ScoringPipeline.score(hand, effects).steps
+	var kinds: Array = steps.map(func(step: ScoreStep) -> ScoreStep.Kind: return step.kind)
+	assert_eq(kinds, [ScoreStep.Kind.BASE, ScoreStep.Kind.CARD, ScoreStep.Kind.CARD, ScoreStep.Kind.EFFECT, ScoreStep.Kind.EFFECT])
+	assert_eq(steps[0].qi, 10, "base")
+	assert_eq(steps[1].card, hand.scoring_cards[0])
+	assert_eq(steps[2].qi, 17, "apres les deux cartes")
+	assert_eq(steps[3].effect, effects[1], "l'addition avant la multiplication")
+	assert_eq(steps[4].comprehension, 4.0)
+
+
+func test_derniere_etape_egale_le_score() -> void:
+	var effects: Array[ScoreEffect] = [_effect(ScoreEffect.Phase.ADD_COMPREHENSION, 1.5)]
+	var context := ScoringPipeline.score(_hand(10, 2, [[C.BOIS, 4]]), effects)
+	assert_eq(context.steps[-1].qi, context.qi)
+	assert_eq(context.steps[-1].comprehension, context.comprehension)
+
+
+func test_etapes_gardent_la_source_et_la_carte() -> void:
+	var hand := _hand(10, 2, [[C.BOIS, 4]])
+	var artifact := ArtifactDefinition.new()
+	var triggered: Array[TriggeredEffect] = [
+		TriggeredEffect.new(_effect(ScoreEffect.Phase.ADD_QI, 2.0), artifact, hand.scoring_cards[0]),
+	]
+	var step: ScoreStep = ScoringPipeline.score_triggered(hand, triggered).steps[-1]
+	assert_eq(step.source, artifact)
+	assert_eq(step.card, hand.scoring_cards[0])

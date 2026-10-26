@@ -20,3 +20,7 @@ extends Resource
 @export var idle_speed: float = 1.5
 ## Point de depart d'une carte piochee, par rapport a sa place.
 @export var deal_offset: Vector2 = Vector2(480, 80)
+## Hauteur de la rangee des cartes jouees au-dessus de la main, en pixels.
+@export var play_rise: float = 190.0
+## Elan donne a l'echelle quand une carte compte : le ressort la fait rebondir.
+@export var pulse_kick: float = 6.0

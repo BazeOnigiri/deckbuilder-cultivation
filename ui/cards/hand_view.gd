@@ -2,6 +2,7 @@ class_name HandView
 extends Control
 ## La main : cartes en eventail qui rejoignent leur place avec un ressort, flottent, et s'inclinent vers la souris.
 ## Garde les vues d'une action a l'autre : une carte qui reste bouge au lieu de reapparaitre.
+## Les cartes jouees montent dans une rangee au-dessus le temps que le score soit montre.
 
 ## Une carte a ete selectionnee ou deselectionnee.
 signal selection_changed
@@ -11,6 +12,10 @@ var feel: HandFeel = preload("res://ui/cards/hand_feel.tres")
 var settings: GameSettings = GameSettings.new()
 
 var _views: Dictionary[CardInstance, CardView] = {}
+## Cartes de la main, dans l'ordre affiche.
+var _order: Array[CardView] = []
+## Cartes jouees, en attendant clear_played().
+var _played: Array[CardView] = []
 ## Position et angle de chaque vue. Cree a sa premiere frame, quand la taille de la main est connue.
 var _poses: Dictionary[CardView, CardSpring] = {}
 ## Inclinaison x, inclinaison y, echelle.
@@ -27,35 +32,76 @@ func _ready() -> void:
 func set_cards(cards: Array[CardInstance]) -> void:
 	for card: CardInstance in _views.keys():
 		if not cards.has(card):
-			var old: CardView = _views[card]
+			_free_view(_views[card])
 			_views.erase(card)
-			_poses.erase(old)
-			_tilts.erase(old)
-			# remove_child tout de suite : queue_free seul laisse l'enfant compte jusqu'a la frame suivante.
-			remove_child(old)
-			old.queue_free()
-	for i: int in cards.size():
-		var view: CardView = _views.get(cards[i])
+	_order.clear()
+	for card: CardInstance in cards:
+		var view: CardView = _views.get(card)
 		if view == null:
 			view = CardView.new()
-			view.card = cards[i]
+			view.card = card
 			view.toggled.connect(selection_changed.emit.unbind(1))
-			_views[cards[i]] = view
+			_views[card] = view
 			add_child(view)
 		else:
 			view.set_pressed_no_signal(false)
 			view.refresh()
-		move_child(view, i)
+		_order.append(view)
+		move_child(view, -1)
+
+
+## Sort ces cartes de la main : elles montent dans la rangee du score et ne reagissent plus a la souris.
+func play_out(cards: Array[CardInstance]) -> void:
+	for card: CardInstance in cards:
+		var view: CardView = _views.get(card)
+		if view == null:
+			continue
+		_views.erase(card)
+		_order.erase(view)
+		view.set_pressed_no_signal(false)
+		view.mouse_filter = MOUSE_FILTER_IGNORE
+		_played.append(view)
+
+
+func clear_played() -> void:
+	for view: CardView in _played:
+		_free_view(view)
+	_played.clear()
+
+
+## Petit bond de la carte, quand elle compte.
+func pulse(card: CardInstance) -> void:
+	var view := _view_of(card)
+	if view != null and _tilts.has(view) and not settings.reduce_motion:
+		_tilts[view].velocity.z += feel.pulse_kick
+
+
+## Centre de la carte a l'ecran, ou Vector2.INF si elle n'est pas affichee.
+func card_center(card: CardInstance) -> Vector2:
+	var view := _view_of(card)
+	return Vector2.INF if view == null else view.get_global_transform() * (CardView.CARD_SIZE / 2)
+
+
+## Milieu du bord haut de la rangee des cartes jouees, a l'ecran.
+func played_row_top() -> Vector2:
+	return get_global_transform() * (_base() - Vector2(0, feel.play_rise + CardView.CARD_SIZE.y / 2))
 
 
 func _process(delta: float) -> void:
 	_time += delta
-	var count: int = get_child_count()
-	var slots := HandLayout.slots(count, size.x, CardView.CARD_SIZE.x, feel)
-	# Centre d'une carte posee au milieu de l'eventail ; les bouts descendent de arc_height.
-	var base := Vector2(size.x / 2, size.y - CardView.CARD_SIZE.y / 2 - feel.arc_height)
-	for i: int in count:
-		var view := get_child(i) as CardView
+	_layout(_order, _base(), delta)
+	_layout(_played, _base() - Vector2(0, feel.play_rise), delta)
+
+
+## Centre d'une carte posee au milieu de l'eventail ; les bouts descendent de arc_height.
+func _base() -> Vector2:
+	return Vector2(size.x / 2, size.y - CardView.CARD_SIZE.y / 2 - feel.arc_height)
+
+
+func _layout(views: Array[CardView], base: Vector2, delta: float) -> void:
+	var slots := HandLayout.slots(views.size(), size.x, CardView.CARD_SIZE.x, feel)
+	for i: int in views.size():
+		var view := views[i]
 		var pose := Vector3(base.x + slots[i].x, base.y + slots[i].y, slots[i].z)
 		if view.button_pressed:
 			pose.y -= _lift()
@@ -90,6 +136,24 @@ func _move(view: CardView, pose: Vector3, tilt: Vector3, delta: float) -> void:
 	view.rotation = pose_spring.value.z
 	view.scale = Vector2.ONE * tilt_spring.value.z
 	view.set_tilt(Vector2(tilt_spring.value.x, tilt_spring.value.y))
+
+
+func _view_of(card: CardInstance) -> CardView:
+	var view: CardView = _views.get(card)
+	if view != null:
+		return view
+	for played: CardView in _played:
+		if played.card == card:
+			return played
+	return null
+
+
+func _free_view(view: CardView) -> void:
+	_poses.erase(view)
+	_tilts.erase(view)
+	# remove_child tout de suite : queue_free seul laisse l'enfant compte jusqu'a la frame suivante.
+	remove_child(view)
+	view.queue_free()
 
 
 func _lift() -> float:

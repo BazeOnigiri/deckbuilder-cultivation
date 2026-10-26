@@ -60,8 +60,8 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 		if _constraint.counts(card):
 			counted.append(card)
 	result.scoring_cards = counted
-	var effects := ArtifactResolver.effects_for(_artifacts, result)
-	var context := ScoringPipeline.score(result, effects, _levels.level_of(result.definition.id))
+	var effects := ArtifactResolver.triggered_for(_artifacts, result)
+	var context := ScoringPipeline.score_triggered(result, effects, _levels.level_of(result.definition.id))
 	score += context.total()
 	hands_left -= 1
 	hand_played.emit(result, context)

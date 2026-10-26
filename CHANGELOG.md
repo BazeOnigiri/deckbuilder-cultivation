@@ -14,6 +14,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Fond anime « lavis » derriere tous les ecrans : encre qui se diffuse lentement sur le bleu nuit. Papier de riz pose sur tout le jeu (grain, fibres, vignette). Reglages dans ui/theme/lavis.tres et papier.tres.
 - Ecran Options accessible depuis le menu, avec le reglage « Reduire les animations » (fige le fond anime). Reglages sauvegardes dans un fichier versionne, a part du profil.
 - Main vivante : cartes en eventail qui rejoignent leur place avec un ressort, arrivent depuis la pioche, flottent doucement, grossissent au survol et s'inclinent en fausse 3D vers la souris. La carte selectionnee monte en douceur. « Reduire les animations » coupe le flottement et l'inclinaison. Reglages du mouvement dans ui/cards/hand_feel.tres.
+- Sequence de score : les cartes jouees montent au-dessus de la main, chaque carte qui compte bondit avec son +Qi, chaque artefact declenche montre son nom et son effet, le compteur Qi x Comprehension defile, puis l'ecran tremble selon le score et le fond se teinte de l'element dominant. Le coup est sauvegarde des qu'il est joue. Rythme dans ui/round/score_feel.tres.
+- Le pipeline de score note chaque etape (base, cartes, effets) avec l'artefact et la carte qui l'ont declenchee.
 
 ## [0.3.0] - 2026-10-25
 
