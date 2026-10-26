@@ -38,6 +38,7 @@ const SEAL_OVERFLOW := 7.0
 const SEAL_GLYPH := "选"
 
 var card: CardInstance
+var _glow: StyleBoxFlat
 
 
 func _ready() -> void:
@@ -53,7 +54,12 @@ func _ready() -> void:
 
 ## A rappeler quand une pilule change l'element ou le rang de la carte.
 func refresh() -> void:
+	var style := ElementStyles.of(card.element)
 	tooltip_text = tr("ELEMENT_" + Element.to_id(card.element).to_upper())
+	(material as ShaderMaterial).set_shader_parameter(&"edge_color", style.color)
+	# Lueur de la couleur de l'element, gardee par carte : le Theme ne donne que sa forme.
+	_glow = (get_theme_stylebox(&"card_glow") as StyleBoxFlat).duplicate()
+	_glow.shadow_color = Color(style.color, _glow.shadow_color.a)
 	queue_redraw()
 
 
@@ -62,8 +68,16 @@ func set_tilt(tilt: Vector2) -> void:
 	(material as ShaderMaterial).set_shader_parameter(&"tilt", tilt)
 
 
+## 0 = carte entiere, 1 = disparue.
+func set_dissolve(amount: float) -> void:
+	(material as ShaderMaterial).set_shader_parameter(&"dissolve", amount)
+
+
 func _draw() -> void:
 	var style := ElementStyles.of(card.element)
+	# Une carte modifiee par une pilule luit : le joueur la reconnait dans sa main.
+	if card.is_altered():
+		draw_style_box(_glow, Rect2(Vector2.ZERO, CARD_SIZE))
 	var box: StringName = &"card_selected" if button_pressed else (&"card_hover" if is_hovered() else &"card")
 	draw_style_box(get_theme_stylebox(box), Rect2(Vector2.ZERO, CARD_SIZE))
 	# +0.5 : le trait de 1 px est centre sur le bord du rectangle, on le cale sur une colonne de pixels.

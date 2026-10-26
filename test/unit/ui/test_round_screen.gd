@@ -86,3 +86,24 @@ func test_coup_sauvegarde_avant_la_fin_de_la_sequence() -> void:
 	assert_true(screen._scoring, "sequence en cours")
 	assert_ne(storage.load_data(), before, "le coup est deja sauvegarde")
 	storage.delete()
+
+
+func _particles(screen: Control) -> int:
+	return screen._sequence.find_children("*", "CPUParticles2D", false, false).size()
+
+
+func test_cartes_qui_comptent_lachent_du_qi() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen._sequence.feel = _instant_feel()
+	_play_first_card(screen)
+	assert_gt(_particles(screen), 0)
+
+
+func test_pas_de_particules_si_on_reduit_les_animations() -> void:
+	var instance := SCREEN.instantiate()
+	instance.settings = GameSettings.new()
+	instance.settings.reduce_motion = true
+	var screen: Control = add_child_autofree(instance)
+	screen._sequence.feel = _instant_feel()
+	_play_first_card(screen)
+	assert_eq(_particles(screen), 0)

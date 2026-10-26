@@ -1,6 +1,6 @@
 class_name ScoreSequence
 extends Control
-## Rejoue le calcul d'une main jouee, etape par etape : la carte qui compte bondit et son montant s'envole,
+## Rejoue le calcul d'une main jouee, etape par etape : la carte qui compte bondit, lache du qi et son montant s'envole,
 ## le compteur Qi x Comprehension defile, puis l'ecran tremble et le fond se teinte selon le score.
 ## Affichage seulement : le score est deja calcule et compte quand la sequence commence.
 
@@ -16,6 +16,8 @@ const BOARD_MARGIN := 12.0
 const BOARD_WIDTH := 320.0
 ## Allers-retours du tremblement.
 const SHAKES := 6
+## Diametre d'une particule de qi, en pixels.
+const QI_DOT_SIZE := 12
 
 var feel: ScoreFeel = preload("res://ui/round/score_feel.tres")
 var settings: GameSettings = GameSettings.new()
@@ -28,6 +30,8 @@ var _hand_name: Label
 var _tally: Label
 var _rng := RandomNumberGenerator.new()
 var _shown := Vector2.ZERO
+## Point lumineux flou, partage par toutes les particules.
+var _qi_texture: GradientTexture2D
 
 
 ## hand_view : la main, dont les cartes jouees bondissent. shake_target : ce qui tremble (le contenu de l'ecran).
@@ -45,6 +49,13 @@ func _ready() -> void:
 	_tally = _board_label()
 	_tally.add_theme_color_override(&"font_color", feel.comprehension_color)
 	add_child(_board)
+	_qi_texture = GradientTexture2D.new()
+	_qi_texture.width = QI_DOT_SIZE
+	_qi_texture.height = QI_DOT_SIZE
+	_qi_texture.fill = GradientTexture2D.FILL_RADIAL
+	_qi_texture.fill_from = Vector2(0.5, 0.5)
+	_qi_texture.fill_to = Vector2(0.5, 0.0)
+	_qi_texture.gradient = _fade_out()
 
 
 func _exit_tree() -> void:
@@ -62,6 +73,7 @@ func play(context: ScoreContext, target_score: int) -> void:
 		match step.kind:
 			ScoreStep.Kind.CARD:
 				_hand_view.pulse(step.card)
+				_burst(_hand_view.card_center(step.card), ElementStyles.of(step.card.element).color)
 				_popup(tr("UI_POPUP_QI") % step.card.rank, _hand_view.card_center(step.card), feel.qi_color)
 			ScoreStep.Kind.EFFECT:
 				_show_effect(step)
@@ -96,6 +108,7 @@ func _show_effect(step: ScoreStep) -> void:
 	if step.card != null:
 		_hand_view.pulse(step.card)
 		at = _hand_view.card_center(step.card)
+		_burst(at, ElementStyles.of(step.card.element).color)
 	var color := feel.qi_color if step.effect.phase == ScoreEffect.Phase.ADD_QI else feel.comprehension_color
 	_popup(text, at, color)
 
@@ -132,6 +145,42 @@ func _popup(text: String, at: Vector2, color: Color) -> void:
 		tween.tween_property(label, "position:y", label.position.y - feel.popup_rise, feel.popup_time)
 	tween.tween_property(label, "modulate:a", 0.0, feel.popup_time / 2).set_delay(feel.popup_time / 2)
 	tween.chain().tween_callback(label.queue_free)
+
+
+## Gerbe de qi de la couleur de l'element, qui monte et s'eteint.
+func _burst(at: Vector2, color: Color) -> void:
+	if settings.reduce_motion or not at.is_finite() or feel.particle_amount <= 0:
+		return
+	var particles := CPUParticles2D.new()
+	particles.one_shot = true
+	particles.explosiveness = 1.0
+	particles.amount = feel.particle_amount
+	particles.lifetime = feel.particle_lifetime
+	particles.texture = _qi_texture
+	particles.spread = 180.0
+	particles.direction = Vector2.UP
+	particles.initial_velocity_min = feel.particle_speed * 0.4
+	particles.initial_velocity_max = feel.particle_speed
+	# Le qi s'eleve : gravite vers le haut, freinee.
+	particles.gravity = Vector2(0, -feel.particle_speed)
+	particles.damping_min = feel.particle_speed
+	particles.damping_max = feel.particle_speed
+	particles.scale_amount_min = 0.5
+	particles.scale_amount_max = 1.0
+	particles.color = color
+	particles.color_ramp = _fade_out()
+	add_child(particles)
+	particles.global_position = at
+	particles.emitting = true
+	get_tree().create_timer(feel.particle_lifetime + 0.1).timeout.connect(particles.queue_free)
+
+
+## Blanc opaque vers transparent : multiplie la couleur, la particule s'efface en vieillissant.
+static func _fade_out() -> Gradient:
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color.WHITE)
+	gradient.set_color(1, Color(1, 1, 1, 0))
+	return gradient
 
 
 ## ratio : part de l'objectif du goulot atteinte par cette main seule.

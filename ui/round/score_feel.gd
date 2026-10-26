@@ -21,3 +21,8 @@ extends Resource
 ## Le fond se teinte de la couleur de l'element dominant de la main, puis revient.
 @export var pulse_strength: float = 0.25
 @export var pulse_time: float = 1.2
+## Gerbe de qi lachee par chaque carte qui compte.
+@export var particle_amount: int = 18
+@export var particle_lifetime: float = 0.7
+## Vitesse de depart des particules, en pixels par seconde.
+@export var particle_speed: float = 120.0

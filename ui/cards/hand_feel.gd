@@ -24,3 +24,7 @@ extends Resource
 @export var play_rise: float = 190.0
 ## Elan donne a l'echelle quand une carte compte : le ressort la fait rebondir.
 @export var pulse_kick: float = 6.0
+## Duree de la dissolution d'une carte qui quitte la main, en secondes.
+@export var dissolve_time: float = 0.6
+## Une carte qui se dissout monte doucement, comme de la fumee, en pixels par seconde.
+@export var dissolve_drift: float = 30.0

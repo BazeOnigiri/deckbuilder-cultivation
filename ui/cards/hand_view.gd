@@ -3,6 +3,7 @@ extends Control
 ## La main : cartes en eventail qui rejoignent leur place avec un ressort, flottent, et s'inclinent vers la souris.
 ## Garde les vues d'une action a l'autre : une carte qui reste bouge au lieu de reapparaitre.
 ## Les cartes jouees montent dans une rangee au-dessus le temps que le score soit montre.
+## Une carte qui quitte la main (jouee, defaussee, detruite) se dissout au lieu de disparaitre d'un coup.
 
 ## Une carte a ete selectionnee ou deselectionnee.
 signal selection_changed
@@ -20,19 +21,26 @@ var _played: Array[CardView] = []
 var _poses: Dictionary[CardView, CardSpring] = {}
 ## Inclinaison x, inclinaison y, echelle.
 var _tilts: Dictionary[CardView, CardSpring] = {}
+## Cartes qui se dissolvent, et ou en est leur dissolution (0 a 1).
+var _leaving: Dictionary[CardView, float] = {}
+## Enfant interne : les cartes qui partent n'apparaissent plus dans get_children(), qui ne liste que la main.
+var _leaving_layer := Control.new()
 var _time: float = 0.0
 
 
 func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_IGNORE
 	custom_minimum_size.y = CardView.CARD_SIZE.y + _lift() + feel.arc_height
+	_leaving_layer.mouse_filter = MOUSE_FILTER_IGNORE
+	# INTERNAL_MODE_FRONT : dessinees avant la main, donc derriere les cartes qui restent.
+	add_child(_leaving_layer, false, INTERNAL_MODE_FRONT)
 
 
 ## Affiche ces cartes, dans cet ordre. Les vues des cartes deja la sont gardees et deselectionnees.
 func set_cards(cards: Array[CardInstance]) -> void:
 	for card: CardInstance in _views.keys():
 		if not cards.has(card):
-			_free_view(_views[card])
+			_depart(_views[card])
 			_views.erase(card)
 	_order.clear()
 	for card: CardInstance in cards:
@@ -65,7 +73,7 @@ func play_out(cards: Array[CardInstance]) -> void:
 
 func clear_played() -> void:
 	for view: CardView in _played:
-		_free_view(view)
+		_depart(view)
 	_played.clear()
 
 
@@ -91,6 +99,7 @@ func _process(delta: float) -> void:
 	_time += delta
 	_layout(_order, _base(), delta)
 	_layout(_played, _base() - Vector2(0, feel.play_rise), delta)
+	_dissolve(delta)
 
 
 ## Centre d'une carte posee au milieu de l'eventail ; les bouts descendent de arc_height.
@@ -148,12 +157,27 @@ func _view_of(card: CardInstance) -> CardView:
 	return null
 
 
-func _free_view(view: CardView) -> void:
+## La carte quitte la main tout de suite (plus comptee, plus cliquable) et se dissout la ou elle est.
+func _depart(view: CardView) -> void:
 	_poses.erase(view)
 	_tilts.erase(view)
-	# remove_child tout de suite : queue_free seul laisse l'enfant compte jusqu'a la frame suivante.
-	remove_child(view)
-	view.queue_free()
+	view.set_pressed_no_signal(false)
+	view.mouse_filter = MOUSE_FILTER_IGNORE
+	view.reparent(_leaving_layer)
+	_leaving[view] = 0.0
+
+
+func _dissolve(delta: float) -> void:
+	for view: CardView in _leaving.keys():
+		var amount: float = 1.0 if feel.dissolve_time <= 0.0 else _leaving[view] + delta / feel.dissolve_time
+		if amount >= 1.0:
+			_leaving.erase(view)
+			view.queue_free()
+			continue
+		_leaving[view] = amount
+		view.set_dissolve(amount)
+		if not settings.reduce_motion:
+			view.position.y -= feel.dissolve_drift * delta
 
 
 func _lift() -> float:

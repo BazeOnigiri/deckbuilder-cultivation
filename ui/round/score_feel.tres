@@ -17,3 +17,6 @@ shake_max = 8.0
 shake_time = 0.35
 pulse_strength = 0.25
 pulse_time = 1.2
+particle_amount = 18
+particle_lifetime = 0.7
+particle_speed = 120.0
