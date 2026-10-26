@@ -32,6 +32,7 @@ func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int) -> voi
 	for i: int in maxi(max_count, artifacts.size()):
 		var slot := _slot(ItemSlot.Kind.ARTIFACT, _artifact_slots)
 		if i < artifacts.size():
+			slot.picture = artifacts[i].icon
 			_fill(slot, artifacts[i].glyph, artifacts[i].name_key, artifacts[i].description_key)
 			_slot_of[artifacts[i]] = slot
 
@@ -52,7 +53,7 @@ func show_pills(pills: Array[PillDefinition], max_count: int, usable: Array[bool
 func next_free_center(kind: ItemSlot.Kind) -> Vector2:
 	var slots := _pill_slots if kind == ItemSlot.Kind.PILL else _artifact_slots
 	for slot: ItemSlot in slots.get_children():
-		if slot.glyph.is_empty():
+		if slot.is_empty():
 			return slot.get_global_rect().get_center()
 	return Vector2.INF
 

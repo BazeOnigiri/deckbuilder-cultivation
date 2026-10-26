@@ -3,6 +3,7 @@
 [ext_resource type="FontVariation" uid="uid://3r71v0du2b50" path="res://ui/fonts/noto_serif_regular_tnum.tres" id="1_15t8c"]
 [ext_resource type="FontVariation" uid="uid://ccq5750jeimq6" path="res://ui/fonts/noto_serif_bold_tnum.tres" id="2_carte"]
 [ext_resource type="FontFile" uid="uid://dt82lx2lkqwjs" path="res://ui/fonts/MaShanZheng-Sceaux.ttf" id="3_sceau"]
+[ext_resource type="Texture2D" path="res://ui/icons/pierre.svg" id="4_pierre"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_carte"]
 
@@ -458,6 +459,9 @@ Meditant/colors/aura_color = Color(0.7882, 0.651, 0.3529, 0.8)
 Meditant/colors/empty_color = Color(0.1725, 0.2275, 0.2667, 1)
 Meditant/colors/qi_color = Color(0.7882, 0.651, 0.3529, 1)
 Meditant/constants/size = 104
+StoneIcon/colors/color = Color(0.549, 0.7686, 0.698, 1)
+StoneIcon/constants/size = 22
+StoneIcon/icons/icon = ExtResource("4_pierre")
 PrimaryButton/base_type = &"Button"
 PrimaryButton/colors/font_color = Color(0.0471, 0.0784, 0.1098, 1)
 PrimaryButton/colors/font_focus_color = Color(0.0471, 0.0784, 0.1098, 1)
@@ -545,6 +549,7 @@ ItemSlot/colors/pill_color = Color(0.549, 0.7686, 0.698, 1)
 ItemSlot/constants/artifact_height = 96
 ItemSlot/constants/artifact_width = 72
 ItemSlot/constants/dash = 4
+ItemSlot/constants/icon_size = 56
 ItemSlot/constants/pill_size = 60
 ItemSlot/font_sizes/font_size = 44
 ItemSlot/font_sizes/pill_font_size = 32

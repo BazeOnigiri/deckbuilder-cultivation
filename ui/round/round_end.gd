@@ -60,13 +60,8 @@ func stones(count: int, to: Vector2, bump: Callable) -> void:
 		return
 	var crystals: int = mini(count, feel.crystal_max)
 	for i: int in crystals:
-		var crystal := ColorRect.new()
-		crystal.mouse_filter = MOUSE_FILTER_IGNORE
-		crystal.color = feel.crystal_color
-		crystal.size = Vector2.ONE * feel.crystal_size
-		crystal.pivot_offset = crystal.size / 2
-		# Carre tourne d'un quart : un losange, comme une pierre taillee.
-		crystal.rotation = PI / 4
+		var crystal := StoneIcon.new()
+		crystal.side = feel.crystal_size
 		add_child(crystal)
 		var landing := to - crystal.size / 2 + Vector2((i - crystals / 2.0) * feel.crystal_size * 0.6, 0)
 		crystal.global_position = landing - Vector2(0, feel.crystal_fall)

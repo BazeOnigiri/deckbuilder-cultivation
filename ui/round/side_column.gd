@@ -78,7 +78,7 @@ func _ready() -> void:
 	var round_counters := HBoxContainer.new()
 	round_counters.add_child(_stat_box(_hands, "UI_SIDE_HANDS"))
 	round_counters.add_child(_stat_box(_discards, "UI_SIDE_DISCARDS"))
-	round_counters.add_child(_stat_box(_stones, "UI_SIDE_STONES"))
+	round_counters.add_child(_stat_box(_stones, "", StoneIcon.new()))
 	layout.add_child(round_counters)
 	var path_counters := HBoxContainer.new()
 	path_counters.add_child(_stat_box(_realm, "UI_SIDE_REALM"))
@@ -203,16 +203,21 @@ func _row(left: Control, right: Control) -> HBoxContainer:
 
 
 ## Une valeur dans un encadre, avec sa legende dessous.
-func _stat_box(value: Label, caption_key: String) -> PanelContainer:
+## icon : remplace la legende (pierres).
+func _stat_box(value: Label, caption_key: String, icon: Control = null) -> PanelContainer:
 	var box := PanelContainer.new()
 	box.theme_type_variation = &"StatBox"
 	box.size_flags_horizontal = SIZE_EXPAND_FILL
 	var column := VBoxContainer.new()
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(value)
-	var caption := make_label(&"SideCaption", caption_key)
-	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	column.add_child(caption)
+	if icon != null:
+		icon.size_flags_horizontal = SIZE_SHRINK_CENTER
+		column.add_child(icon)
+	else:
+		var caption := make_label(&"SideCaption", caption_key)
+		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		column.add_child(caption)
 	box.add_child(column)
 	return box
 

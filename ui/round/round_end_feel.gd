@@ -13,7 +13,6 @@ extends Resource
 @export var crystal_size: float = 10.0
 ## Hauteur de depart des cristaux au-dessus du compteur, en pixels.
 @export var crystal_fall: float = 160.0
-@export var crystal_color: Color = Color(0.549, 0.7686, 0.698, 1)
 ## Bond du compteur de pierres quand les cristaux arrivent.
 @export var stones_bump: float = 1.25
 @export var defeat_time: float = 2.4
