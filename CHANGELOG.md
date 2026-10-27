@@ -8,11 +8,12 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Ajouté
 
-- Equilibrage par formules (docs/equilibrage.md) : un joueur de reference simule (Monte-Carlo, graine fixe) mesure le score d'un round et le gain moyen de chaque artefact et manuel. Prix = gain / valeur d'une pierre (courbe de cout, ancree sur le gain median), recompenses et multiplicateurs des goulots par formule, objectifs = score atteint par 90 % des joueurs au depart, puis croissance exponentielle par royaume (puissance achetee par le joueur x pression). Un nouveau royaume n'a besoin que de son ordre. Parametres dans content/rules/equilibrage.tres, outil tools/equilibrage.gd, rapport docs/equilibrage-rapport.md, et un test qui detecte toute valeur qui ne suit plus les formules.
+- Equilibrage par formules (docs/equilibrage.md) : un joueur de reference simule (Monte-Carlo, graine fixe) mesure le score d'un round et le gain moyen de chaque artefact et manuel. Prix = gain / valeur d'une pierre (courbe de cout ; la pierre se deduit de l'economie : les pierres d'un royaume doublent la puissance du joueur, donc ajouter des objets ne change pas la difficulte), recompenses et multiplicateurs des goulots par formule, objectifs = score atteint par 90 % des joueurs au depart, puis croissance exponentielle par royaume (puissance achetee par le joueur x pression). Un nouveau royaume n'a besoin que de son ordre. Parametres dans content/rules/equilibrage.tres, outil tools/equilibrage.gd, rapport docs/equilibrage-rapport.md, et un test qui detecte toute valeur qui ne suit plus les formules.
 
 ### Modifié
 
-- Objectifs recalcules : 460 / 690 / 920 au premier royaume (avant 200 / 300 / 400), 1300 au deuxieme, 3500 au troisieme. Prix des artefacts et des manuels selon leur gain mesure (manuels de 1 a 10 pierres).
+- Objectifs recalcules : 460 / 690 / 920 au premier royaume (avant 200 / 300 / 400), 1100 au deuxieme, 2900 au troisieme. Prix des artefacts et des manuels selon leur gain mesure (manuels de 1 a 10 pierres).
+- Treize nouveaux artefacts (18 au total) avec leur icone SVG et leur sceau : les quatre betes celestes et le qilin (un par element : Dragon azur, Oiseau vermillon, Qilin, Tigre blanc, Tortue noire), Pagode des trois sages, Echelle celeste, Banniere des cinq vents, Bassin de purete, Grain de riz spirituel, Couronne d'immortel, Ermite et Chaudron alchimique. Deux nouvelles conditions en donnees : rang de la carte et nombre de cartes qui comptent. Prix mesures par l'equilibrage (1 a 8 pierres).
 - Gourde d'elixir : +1 Comprehension au lieu de +4 (la mesure donnait +120 % de score, quatre fois les autres artefacts).
 
 ## [0.4.0] - 2026-10-27

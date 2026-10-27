@@ -131,3 +131,29 @@ UI_STATS_TOP_HANDS,Mains les plus jouées,Most played hands
 UI_OPTIONS_MASTER_VOLUME,Volume général,Master volume
 UI_OPTIONS_MUSIC_VOLUME,Musique,Music
 UI_OPTIONS_EFFECTS_VOLUME,Effets sonores,Sound effects
+ARTIFACT_DRAGON_AZUR,Dragon azur,Azure Dragon
+ARTIFACT_DRAGON_AZUR_DESC,+5 Qi pour chaque carte Bois qui compte.,+5 Qi for each scoring Wood card.
+ARTIFACT_OISEAU_VERMILLON,Oiseau vermillon,Vermilion Bird
+ARTIFACT_OISEAU_VERMILLON_DESC,+1 Compréhension pour chaque carte Feu qui compte.,+1 Comprehension for each scoring Fire card.
+ARTIFACT_QILIN,Qilin,Qilin
+ARTIFACT_QILIN_DESC,+6 Qi pour chaque carte Terre qui compte.,+6 Qi for each scoring Earth card.
+ARTIFACT_TIGRE_BLANC,Tigre blanc,White Tiger
+ARTIFACT_TIGRE_BLANC_DESC,"x1,2 Compréhension pour chaque carte Métal qui compte.",x1.2 Comprehension for each scoring Metal card.
+ARTIFACT_TORTUE_NOIRE,Tortue noire,Black Tortoise
+ARTIFACT_TORTUE_NOIRE_DESC,+6 Qi pour chaque carte Eau qui compte.,+6 Qi for each scoring Water card.
+ARTIFACT_PAGODE,Pagode des trois sages,Pagoda of the Three Sages
+ARTIFACT_PAGODE_DESC,"+3 Compréhension si la main est un Brelan, un Full ou un Carré.","+3 Comprehension if the hand is a Three of a Kind, a Full House or a Four of a Kind."
+ARTIFACT_ECHELLE_CELESTE,Échelle céleste,Celestial Ladder
+ARTIFACT_ECHELLE_CELESTE_DESC,+30 Qi si la main est une Ascension ou une Ascension pure.,+30 Qi if the hand is an Ascension or a Pure Ascension.
+ARTIFACT_BANNIERE_CINQ_VENTS,Bannière des cinq vents,Banner of the Five Winds
+ARTIFACT_BANNIERE_CINQ_VENTS_DESC,x2 Compréhension si la main est une Harmonie ou un Cycle d'engendrement.,x2 Comprehension if the hand is a Harmony or a Generating Cycle.
+ARTIFACT_BASSIN_PURETE,Bassin de pureté,Basin of Purity
+ARTIFACT_BASSIN_PURETE_DESC,"x2,5 Compréhension si la main est une Pureté ou une Ascension pure.",x2.5 Comprehension if the hand is a Purity or a Pure Ascension.
+ARTIFACT_GRAIN_RIZ,Grain de riz spirituel,Spirit Rice Grain
+ARTIFACT_GRAIN_RIZ_DESC,+6 Qi pour chaque carte de rang 1 à 3 qui compte.,+6 Qi for each scoring card of rank 1 to 3.
+ARTIFACT_COURONNE_IMMORTEL,Couronne d'immortel,Immortal's Crown
+ARTIFACT_COURONNE_IMMORTEL_DESC,"+0,5 Compréhension pour chaque carte de rang 7 à 9 qui compte.",+0.5 Comprehension for each scoring card of rank 7 to 9.
+ARTIFACT_ERMITE,Ermite,Hermit
+ARTIFACT_ERMITE_DESC,"x1,8 Compréhension si 3 cartes ou moins comptent.",x1.8 Comprehension if 3 cards or fewer score.
+ARTIFACT_CHAUDRON_ALCHIMIQUE,Chaudron alchimique,Alchemical Cauldron
+ARTIFACT_CHAUDRON_ALCHIMIQUE_DESC,"+5 Qi et +0,5 Compréhension à chaque main jouée.",+5 Qi and +0.5 Comprehension on every hand played.
