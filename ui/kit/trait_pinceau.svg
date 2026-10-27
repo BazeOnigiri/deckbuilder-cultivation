@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 24" width="240" height="24">
+  <!-- Trait de pinceau au vermillon : attaque appuyee a gauche, fin effilee a droite, poils qui s'ecartent. -->
+  <path d="M4 13 Q10 5 30 7 Q90 9 150 8 Q205 7 236 11 Q206 14 150 16 Q90 18 32 18 Q10 19 4 13 Z" fill="#b0402f"/>
+  <path d="M40 10 Q120 9 210 10" stroke="#d0604a" stroke-width="1.2" fill="none" stroke-opacity="0.6"/>
+  <path d="M60 16 Q130 17 190 14" stroke="#7a2418" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+  <path d="M200 9 L232 8 M196 15 L228 16" stroke="#b0402f" stroke-width="1" stroke-linecap="round"/>
+</svg>

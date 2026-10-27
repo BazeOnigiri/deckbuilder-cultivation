@@ -106,6 +106,7 @@ UI_OPTIONS_MENU,Retour au menu,Back to menu
 UI_OPTIONS_NEW_RUN,Nouvelle partie,New run
 UI_OPTIONS_NEW_RUN_CONFIRM,Abandonner la partie en cours et en commencer une nouvelle ?,Abandon the current run and start a new one?
 UI_CANCEL,Annuler,Cancel
+UI_CLOSE,Fermer,Close
 UI_SIDE_TARGET,Atteindre,Reach
 UI_SIDE_TO_WIN,pour gagner,to win
 UI_SIDE_ROUND_QI,Qi du round,Round Qi

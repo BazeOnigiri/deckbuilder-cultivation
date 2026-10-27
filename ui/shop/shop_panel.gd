@@ -55,7 +55,7 @@ func _ready() -> void:
 	layout.add_child(row)
 	_level_up.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	layout.add_child(_level_up)
-	_reroll.theme_type_variation = &"RerollSeal"
+	_reroll.theme_type_variation = &"SealButton"
 	_reroll.icon = get_theme_icon(&"icon", &"StoneIcon")
 	_reroll.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_reroll.size_flags_vertical = SIZE_SHRINK_CENTER
