@@ -13,8 +13,34 @@
 			"gain": 0.6,
 			"cue": {
 				"volume_db": -6,
-				"pitch_variance": 0.05
-			}
+				"pitch_variance": 0.05,
+				"volume_variance": 1.5
+			},
+			"variantes": [
+				{},
+				{
+					"pitch": 1
+				},
+				{
+					"file": "vcsl/Idiophones/Struck Idiophones/Woodblock/wood_click_mp.wav",
+					"pitch": 2
+				},
+				{
+					"file": "wav/kenney_impact/impactWood_light_000.wav",
+					"pitch": 5,
+					"length": 0.07
+				},
+				{
+					"file": "wav/kenney_impact/impactWood_light_001.wav",
+					"pitch": 5,
+					"length": 0.07
+				},
+				{
+					"file": "wav/kenney_impact/impactWood_light_002.wav",
+					"pitch": 4,
+					"length": 0.07
+				}
+			]
 		},
 		{
 			"id": "ui_survol",
@@ -26,9 +52,79 @@
 			"gain": 0.5,
 			"cue": {
 				"volume_db": -16,
-				"pitch_variance": 0.1
+				"pitch_variance": 0.1,
+				"volume_variance": 2.0
 			},
-			"pitch": 5
+			"pitch": 5,
+			"variantes": [
+				{
+					"file": "wav/kenney_casino/card-slide-1.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-slide-2.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-slide-3.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-slide-4.wav"
+				}
+			]
+		},
+		{
+			"id": "carte_selection",
+			"kind": "sample",
+			"file": "wav/kenney_casino/card-place-1.wav",
+			"length": 0.12,
+			"pitch": 2,
+			"fade_out": 0.05,
+			"highpass": 400,
+			"gain": 0.55,
+			"variantes": [
+				{
+					"file": "wav/kenney_casino/card-place-1.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-place-2.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-place-3.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-place-4.wav"
+				}
+			],
+			"cue": {
+				"volume_db": -8,
+				"pitch_variance": 0.04,
+				"volume_variance": 1.5
+			}
+		},
+		{
+			"id": "carte_deselection",
+			"kind": "sample",
+			"file": "wav/kenney_casino/card-slide-2.wav",
+			"length": 0.1,
+			"pitch": -2,
+			"fade_out": 0.06,
+			"lowpass": 5000,
+			"gain": 0.5,
+			"variantes": [
+				{
+					"file": "wav/kenney_casino/card-slide-2.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-slide-3.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-slide-4.wav"
+				}
+			],
+			"cue": {
+				"volume_db": -10,
+				"pitch_variance": 0.04,
+				"volume_variance": 1.5
+			}
 		},
 		{
 			"id": "carte_pioche",
@@ -40,8 +136,23 @@
 			"gain": 0.6,
 			"cue": {
 				"volume_db": -6,
-				"pitch_variance": 0.06
-			}
+				"pitch_variance": 0.06,
+				"volume_variance": 1.5
+			},
+			"variantes": [
+				{
+					"file": "wav/kenney_casino/card-slide-2.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-slide-1.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-slide-3.wav"
+				},
+				{
+					"file": "wav/kenney_casino/card-slide-4.wav"
+				}
+			]
 		},
 		{
 			"id": "carte_jouee_glisse",
@@ -51,9 +162,37 @@
 			"export": false
 		},
 		{
+			"id": "carte_jouee_glisse_2",
+			"kind": "sample",
+			"file": "wav/kenney_casino/card-shove-2.wav",
+			"length": 0.2,
+			"export": false
+		},
+		{
 			"id": "carte_jouee_pose",
 			"kind": "sample",
 			"file": "wav/kenney_casino/card-place-1.wav",
+			"length": 0.2,
+			"export": false
+		},
+		{
+			"id": "carte_jouee_pose_4",
+			"kind": "sample",
+			"file": "wav/kenney_casino/card-place-4.wav",
+			"length": 0.2,
+			"export": false
+		},
+		{
+			"id": "carte_jouee_pose_3",
+			"kind": "sample",
+			"file": "wav/kenney_casino/card-place-3.wav",
+			"length": 0.2,
+			"export": false
+		},
+		{
+			"id": "carte_jouee_pose_2",
+			"kind": "sample",
+			"file": "wav/kenney_casino/card-place-2.wav",
 			"length": 0.2,
 			"export": false
 		},
@@ -73,8 +212,59 @@
 			"gain": 0.7,
 			"cue": {
 				"volume_db": -4,
-				"pitch_variance": 0.05
-			}
+				"pitch_variance": 0.05,
+				"volume_variance": 1.0
+			},
+			"variantes": [
+				{
+					"layers": [
+						{
+							"use": "carte_jouee_glisse",
+							"gain": 0.6
+						},
+						{
+							"use": "carte_jouee_pose",
+							"at": 0.06
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "carte_jouee_glisse_2",
+							"gain": 0.6
+						},
+						{
+							"use": "carte_jouee_pose_2",
+							"at": 0.06
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "carte_jouee_glisse",
+							"gain": 0.6
+						},
+						{
+							"use": "carte_jouee_pose_3",
+							"at": 0.06
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "carte_jouee_glisse_2",
+							"gain": 0.6
+						},
+						{
+							"use": "carte_jouee_pose_4",
+							"at": 0.06
+						}
+					]
+				}
+			]
 		},
 		{
 			"id": "carte_defausse",
@@ -87,13 +277,55 @@
 			"gain": 0.6,
 			"cue": {
 				"volume_db": -6,
-				"pitch_variance": 0.05
-			}
+				"pitch_variance": 0.05,
+				"volume_variance": 1.0
+			},
+			"variantes": [
+				{},
+				{
+					"pitch": -1
+				},
+				{
+					"pitch": -3
+				},
+				{
+					"file": "wav/kenney_casino/card-shove-2.wav",
+					"length": 0.35,
+					"pitch": -3
+				}
+			]
 		},
 		{
 			"id": "note_carte_jade",
 			"kind": "sample",
 			"file": "wav/kenney_casino/chips-collide-1.wav",
+			"length": 0.12,
+			"pitch": 4,
+			"fade_out": 0.06,
+			"export": false
+		},
+		{
+			"id": "note_carte_jade_4",
+			"kind": "sample",
+			"file": "wav/kenney_casino/chips-collide-4.wav",
+			"length": 0.12,
+			"pitch": 4,
+			"fade_out": 0.06,
+			"export": false
+		},
+		{
+			"id": "note_carte_jade_3",
+			"kind": "sample",
+			"file": "wav/kenney_casino/chips-collide-3.wav",
+			"length": 0.12,
+			"pitch": 4,
+			"fade_out": 0.06,
+			"export": false
+		},
+		{
+			"id": "note_carte_jade_2",
+			"kind": "sample",
+			"file": "wav/kenney_casino/chips-collide-2.wav",
 			"length": 0.12,
 			"pitch": 4,
 			"fade_out": 0.06,
@@ -106,6 +338,24 @@
 			"length": 0.7,
 			"fade_out": 0.3,
 			"export": false
+		},
+		{
+			"id": "note_carte_corde_3",
+			"kind": "sample",
+			"file": "vcsl/Chordophones/Zithers/Dan Tranh/Normal/B4_mf_1.wav",
+			"length": 0.7,
+			"fade_out": 0.3,
+			"export": false,
+			"pitch": -0.06
+		},
+		{
+			"id": "note_carte_corde_4",
+			"kind": "sample",
+			"file": "vcsl/Chordophones/Zithers/Dan Tranh/Normal/b2_mf_1.wav",
+			"length": 0.7,
+			"fade_out": 0.3,
+			"export": false,
+			"pitch": 12
 		},
 		{
 			"id": "note_carte",
@@ -133,8 +383,59 @@
 					4,
 					7,
 					9
-				]
-			}
+				],
+				"volume_variance": 1.0
+			},
+			"variantes": [
+				{
+					"layers": [
+						{
+							"use": "note_carte_jade",
+							"gain": 0.7
+						},
+						{
+							"use": "note_carte_corde",
+							"gain": 0.8
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "note_carte_jade_2",
+							"gain": 0.7
+						},
+						{
+							"use": "note_carte_corde_3",
+							"gain": 0.8
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "note_carte_jade_3",
+							"gain": 0.7
+						},
+						{
+							"use": "note_carte_corde_4",
+							"gain": 0.8
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "note_carte_jade_4",
+							"gain": 0.7
+						},
+						{
+							"use": "note_carte_corde",
+							"gain": 0.8
+						}
+					]
+				}
+			]
 		},
 		{
 			"id": "orbe_depart",
@@ -149,8 +450,23 @@
 			"gain": 0.5,
 			"cue": {
 				"volume_db": -14,
-				"pitch_variance": 0.04
-			}
+				"pitch_variance": 0.04,
+				"volume_variance": 1.0
+			},
+			"variantes": [
+				{
+					"start": 0.1
+				},
+				{
+					"start": 0.05
+				},
+				{
+					"start": 0.2
+				},
+				{
+					"start": 0.3
+				}
+			]
 		},
 		{
 			"id": "orbe_impact",
@@ -173,13 +489,41 @@
 					4,
 					7,
 					9
-				]
-			}
+				],
+				"volume_variance": 1.0
+			},
+			"variantes": [
+				{
+					"file": "wav/kenney_impact/impactGlass_light_000.wav"
+				},
+				{
+					"file": "wav/kenney_impact/impactGlass_light_001.wav"
+				},
+				{
+					"file": "wav/kenney_impact/impactGlass_light_002.wav"
+				}
+			]
 		},
 		{
 			"id": "mult_tambour",
 			"kind": "sample",
 			"file": "vcsl/Membranophones/Struck Membranophones/Frame Drum/HDrumL_Hit_v2_rr1_Sum.wav",
+			"length": 0.35,
+			"fade_out": 0.2,
+			"export": false
+		},
+		{
+			"id": "mult_tambour_3",
+			"kind": "sample",
+			"file": "vcsl/Idiophones/Struck Idiophones/Slit Drum/LogDrumLo_MedM_v2_rr1_Sum.wav",
+			"length": 0.35,
+			"fade_out": 0.2,
+			"export": false
+		},
+		{
+			"id": "mult_tambour_2",
+			"kind": "sample",
+			"file": "vcsl/Membranophones/Struck Membranophones/Frame Drum/HDrumL_HitMuted_v2_rr1_Sum.wav",
 			"length": 0.35,
 			"fade_out": 0.2,
 			"export": false
@@ -220,7 +564,42 @@
 					7,
 					9
 				]
-			}
+			},
+			"variantes": [
+				{
+					"layers": [
+						{
+							"use": "mult_tambour"
+						},
+						{
+							"use": "mult_gong",
+							"gain": 0.55
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "mult_tambour_2"
+						},
+						{
+							"use": "mult_gong",
+							"gain": 0.55
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "mult_tambour_3"
+						},
+						{
+							"use": "mult_gong",
+							"gain": 0.55
+						}
+					]
+				}
+			]
 		},
 		{
 			"id": "annonce_main",
@@ -242,6 +621,14 @@
 			"id": "sceau_coup",
 			"kind": "sample",
 			"file": "wav/kenney_impact/impactSoft_heavy_000.wav",
+			"length": 0.3,
+			"pitch": -3,
+			"export": false
+		},
+		{
+			"id": "sceau_coup_2",
+			"kind": "sample",
+			"file": "wav/kenney_impact/impactSoft_medium_000.wav",
 			"length": 0.3,
 			"pitch": -3,
 			"export": false
@@ -273,7 +660,31 @@
 			"gain": 0.8,
 			"cue": {
 				"pitch_variance": 0.04
-			}
+			},
+			"variantes": [
+				{
+					"layers": [
+						{
+							"use": "sceau_coup"
+						},
+						{
+							"use": "sceau_bois",
+							"gain": 0.6
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "sceau_coup_2"
+						},
+						{
+							"use": "sceau_bois",
+							"gain": 0.6
+						}
+					]
+				}
+			]
 		},
 		{
 			"id": "victoire_gong",
@@ -363,6 +774,14 @@
 			"export": false
 		},
 		{
+			"id": "achat_pions_2",
+			"kind": "sample",
+			"file": "wav/kenney_casino/chips-stack-2.wav",
+			"length": 0.4,
+			"fade_out": 0.15,
+			"export": false
+		},
+		{
 			"id": "achat_tinte",
 			"kind": "sample",
 			"file": "wav/kenney_impact/impactGlass_light_001.wav",
@@ -392,7 +811,33 @@
 			"cue": {
 				"volume_db": -4,
 				"pitch_variance": 0.04
-			}
+			},
+			"variantes": [
+				{
+					"layers": [
+						{
+							"use": "achat_pions"
+						},
+						{
+							"use": "achat_tinte",
+							"at": 0.05,
+							"gain": 0.5
+						}
+					]
+				},
+				{
+					"layers": [
+						{
+							"use": "achat_pions_2"
+						},
+						{
+							"use": "achat_tinte",
+							"at": 0.05,
+							"gain": 0.5
+						}
+					]
+				}
+			]
 		},
 		{
 			"id": "pilule_verre",

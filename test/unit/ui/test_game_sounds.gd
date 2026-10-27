@@ -49,6 +49,25 @@ func _play_cards(screen: Control, count: int) -> void:
 	screen.get_node("%PlayButton").pressed.emit()
 
 
+## Une carte n'est pas un bouton d'interface : papier pose ou repris, pas le clic en bois.
+func test_selection_de_carte_a_son_propre_son() -> void:
+	var screen := _screen()
+	var card := screen.get_node("%HandRow").get_child(0) as CardView
+	_played.clear()
+	card.button_pressed = true
+	card.pressed.emit()
+	card.button_pressed = false
+	card.pressed.emit()
+	assert_eq(_ids(), [&"carte_selection", &"carte_deselection"])
+
+
+func test_selection_par_le_code_silencieuse() -> void:
+	var screen := _screen()
+	_played.clear()
+	(screen.get_node("%HandRow").get_child(0) as CardView).button_pressed = true
+	assert_false(_ids().has(&"carte_selection"), "trier ou vider la main ne fait pas de bruit")
+
+
 func test_clic_et_survol_des_boutons() -> void:
 	var button: Button = add_child_autofree(Button.new())
 	button.pressed.emit()

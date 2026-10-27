@@ -1,13 +1,19 @@
 [gd_resource type="Resource" script_class="SoundCue" format=3]
 
 [ext_resource type="Script" path="res://ui/audio/sound_cue.gd" id="1_cue"]
-[ext_resource type="AudioStream" path="res://audio/sfx/ui_clic.wav" id="2_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ui_clic_1.wav" id="2_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ui_clic_2.wav" id="3_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ui_clic_3.wav" id="4_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ui_clic_4.wav" id="5_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ui_clic_5.wav" id="6_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ui_clic_6.wav" id="7_son"]
 
 [resource]
 script = ExtResource("1_cue")
 id = &"ui_clic"
-stream = ExtResource("2_son")
+streams = Array[AudioStream]([ExtResource("2_son"), ExtResource("3_son"), ExtResource("4_son"), ExtResource("5_son"), ExtResource("6_son"), ExtResource("7_son")])
 volume_db = -6.0
 bus = &"Effets"
 pitch_variance = 0.05
+volume_variance = 1.5
 scale = PackedInt32Array()
