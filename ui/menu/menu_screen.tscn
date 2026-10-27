@@ -98,6 +98,12 @@ layout_mode = 2
 text = "UI_CREDITS"
 script = ExtResource("3")
 
+[node name="QuitButton" type="Button" parent="Margin/Layout/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_QUIT"
+script = ExtResource("3")
+
 [node name="Scene" type="Control" parent="Margin/Layout"]
 layout_mode = 2
 size_flags_horizontal = 3

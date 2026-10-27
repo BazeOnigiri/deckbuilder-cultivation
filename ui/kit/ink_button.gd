@@ -42,10 +42,15 @@ func _draw() -> void:
 	if ink <= 0.0 or disabled:
 		return
 	var height: float = get_theme_constant(&"stroke_height", &"InkButton")
-	var font := get_theme_font(&"font")
-	var text_width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, get_theme_font_size(&"font_size")).x
-	var width := minf(size.x, text_width * 1.15)
+	var width := stroke_width()
 	var left := (size.x - width) / 2 if alignment == HORIZONTAL_ALIGNMENT_CENTER else 0.0
 	var rect := Rect2(left, size.y - height, width * ink, height)
 	var source := Rect2(0, 0, STROKE.get_width() * ink, STROKE.get_height())
 	draw_texture_rect_region(STROKE, rect, source)
+
+
+## Largeur du trait complet : un peu plus que le texte affiche (traduit, pas la cle), jamais plus que le bouton.
+func stroke_width() -> float:
+	var font := get_theme_font(&"font")
+	var text_width := font.get_string_size(atr(text), HORIZONTAL_ALIGNMENT_LEFT, -1, get_theme_font_size(&"font_size")).x
+	return minf(size.x, text_width * get_theme_constant(&"stroke_overhang_pct", &"InkButton") / 100.0)

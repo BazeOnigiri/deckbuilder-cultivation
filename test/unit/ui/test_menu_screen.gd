@@ -31,6 +31,14 @@ func test_nouvelle_partie_directe_sans_sauvegarde() -> void:
 	assert_null(_overlay(menu))
 
 
+func test_quitter_le_jeu() -> void:
+	var menu := _menu(false)
+	watch_signals(menu)
+	assert_true(menu.get_node("%QuitButton").visible, "visible hors export web")
+	menu.get_node("%QuitButton").pressed.emit()
+	assert_signal_emitted(menu, "quit_requested")
+
+
 func test_rouleau_de_confirmation_avec_une_sauvegarde() -> void:
 	var menu := _menu(true)
 	watch_signals(menu)

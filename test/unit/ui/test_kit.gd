@@ -60,6 +60,18 @@ func test_trait_de_pinceau_au_survol() -> void:
 	assert_eq(button.ink, 0.0)
 
 
+## Bug : le trait etait mesure sur la cle (UI_STATS_TITLE) et non sur le texte traduit, donc trop long.
+func test_trait_mesure_sur_le_texte_traduit() -> void:
+	var button: InkButton = add_child_autofree(InkButton.new())
+	button.text = "UI_OPTIONS_BUTTON"
+	button.size.x = 1000
+	var font := button.get_theme_font(&"font")
+	var font_size := button.get_theme_font_size(&"font_size")
+	var shown := font.get_string_size(button.atr(button.text), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+	assert_ne(button.atr(button.text), button.text, "la cle est traduite")
+	assert_almost_eq(button.stroke_width(), shown * button.get_theme_constant(&"stroke_overhang_pct", &"InkButton") / 100.0, 0.5)
+
+
 func test_textes_lisibles_sur_le_papier() -> void:
 	var theme: Theme = load(THEME_PATH)
 	for type: String in ["ScrollTitle", "ScrollText", "ScrollCaption"]:

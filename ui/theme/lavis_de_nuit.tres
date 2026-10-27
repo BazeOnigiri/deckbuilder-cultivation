@@ -573,6 +573,60 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.7882, 0.651, 0.3529, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tuile"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.13, 0.1, 0.08, 0.05)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6902, 0.251, 0.2, 0.75)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tablette"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.76, 0.8, 0.7, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.24, 0.48, 0.4, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pilule_qi"]
+content_margin_left = 8.0
+content_margin_top = 1.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
+bg_color = Color(0.2, 0.45, 0.38, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pilule_comprehension"]
+content_margin_left = 8.0
+content_margin_top = 1.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
+bg_color = Color(0.5, 0.35, 0.08, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [resource]
 default_font = ExtResource("1_15t8c")
 default_font_size = 20
@@ -660,6 +714,7 @@ InkButton/colors/font_hover_pressed_color = Color(0.45, 0.13, 0.09, 1)
 InkButton/colors/font_pressed_color = Color(0.45, 0.13, 0.09, 1)
 InkButton/constants/stroke_height = 12
 InkButton/constants/stroke_ms = 220
+InkButton/constants/stroke_overhang_pct = 115
 InkButton/font_sizes/font_size = 24
 InkButton/fonts/font = ExtResource("2_carte")
 InkButton/styles/disabled = SubResource("StyleBoxEmpty_carte")
@@ -868,3 +923,38 @@ VictorySeal/base_type = &"PanelContainer"
 VictorySeal/styles/panel = SubResource("StyleBoxFlat_sceau_victoire")
 Window/colors/title_color = Color(0.9098, 0.8824, 0.8157, 1)
 Window/styles/embedded_border = SubResource("StyleBoxFlat_fenetre")
+ComprehensionPill/base_type = &"Label"
+ComprehensionPill/colors/font_color = Color(0.96, 0.93, 0.85, 1)
+ComprehensionPill/font_sizes/font_size = 16
+ComprehensionPill/fonts/font = ExtResource("2_carte")
+ComprehensionPill/styles/normal = SubResource("StyleBoxFlat_pilule_comprehension")
+HandTablet/base_type = &"PanelContainer"
+HandTablet/colors/pip_off = Color(0.36, 0.27, 0.19, 0.35)
+HandTablet/colors/pip_on = Color(0.2, 0.45, 0.38, 1)
+HandTablet/constants/pip_gap = 4
+HandTablet/constants/pip_max = 9
+HandTablet/constants/pip_radius = 4
+HandTablet/constants/width = 190
+HandTablet/styles/panel = SubResource("StyleBoxFlat_tablette")
+InkBar/colors/fill = Color(0.16, 0.12, 0.09, 0.85)
+InkBar/colors/track = Color(0.36, 0.27, 0.19, 0.18)
+InkBar/constants/height = 10
+InkBar/constants/name_width = 200
+PathNode/colors/cleared = Color(0.6902, 0.251, 0.2, 1)
+PathNode/colors/current = Color(0.2, 0.45, 0.38, 1)
+PathNode/colors/line = Color(0.36, 0.27, 0.19, 0.6)
+PathNode/colors/upcoming = Color(0.36, 0.27, 0.19, 1)
+PathNode/constants/line_width = 2
+PathNode/constants/marker_size = 36
+QiPill/base_type = &"Label"
+QiPill/colors/font_color = Color(0.96, 0.93, 0.85, 1)
+QiPill/font_sizes/font_size = 16
+QiPill/fonts/font = ExtResource("2_carte")
+QiPill/styles/normal = SubResource("StyleBoxFlat_pilule_qi")
+StatNumber/base_type = &"Label"
+StatNumber/colors/font_color = Color(0.13, 0.1, 0.08, 1)
+StatNumber/font_sizes/font_size = 32
+StatNumber/fonts/font = ExtResource("2_carte")
+StatTile/base_type = &"PanelContainer"
+StatTile/constants/width = 120
+StatTile/styles/panel = SubResource("StyleBoxFlat_tuile")

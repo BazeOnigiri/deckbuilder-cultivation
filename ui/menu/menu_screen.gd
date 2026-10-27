@@ -6,6 +6,7 @@ signal start_requested
 signal continue_requested
 signal stats_requested
 signal options_requested
+signal quit_requested
 
 ## Apercu de la run sauvegardee, null si aucune. Injecte par main avant add_child.
 var saved_run: RunState
@@ -20,7 +21,10 @@ func _ready() -> void:
 	%StatsButton.pressed.connect(stats_requested.emit)
 	%OptionsButton.pressed.connect(options_requested.emit)
 	%CreditsButton.pressed.connect(_show_credits)
-	for button: InkButton in [%ContinueButton, %StartButton, %StatsButton, %OptionsButton, %CreditsButton]:
+	# Dans un navigateur, quitter n'a pas de sens : on ferme l'onglet.
+	%QuitButton.visible = not OS.has_feature("web")
+	%QuitButton.pressed.connect(quit_requested.emit)
+	for button: InkButton in [%ContinueButton, %StartButton, %StatsButton, %OptionsButton, %CreditsButton, %QuitButton]:
 		button.reduce_motion = settings.reduce_motion
 	%Orbit.reduce_motion = settings.reduce_motion
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
