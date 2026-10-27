@@ -56,8 +56,9 @@ func close() -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	# Le rouleau prend ses propres clics : ce qui arrive ici est tombe a cote.
+	# La molette est aussi un bouton de souris : seuls les vrais clics ferment.
 	var click := event as InputEventMouseButton
-	if click != null and click.pressed:
+	if click != null and click.pressed and click.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
 		accept_event()
 		close()
 

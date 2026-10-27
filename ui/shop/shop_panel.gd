@@ -54,6 +54,8 @@ func _ready() -> void:
 	row.add_child(_offers)
 	layout.add_child(row)
 	_level_up.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# Retour a la ligne : le message prend la largeur des offres au lieu d'elargir la boutique.
+	_level_up.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	layout.add_child(_level_up)
 	_reroll.theme_type_variation = &"SealButton"
 	_reroll.icon = get_theme_icon(&"icon", &"StoneIcon")
@@ -130,6 +132,9 @@ func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, descriptio
 	offer.add_child(slot)
 	var title := SideColumn.make_label(&"SideCaption", name_key)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# Largeur fixe et retour a la ligne : un nom long ne pousse pas la boutique hors de l'ecran.
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title.custom_minimum_size.x = get_theme_constant(&"title_width", &"ShopCloth")
 	offer.add_child(title)
 	var tag := PanelContainer.new()
 	tag.theme_type_variation = &"PriceTag"
