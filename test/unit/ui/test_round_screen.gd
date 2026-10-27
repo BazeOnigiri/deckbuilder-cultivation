@@ -50,6 +50,7 @@ func _instant_feel() -> ScoreFeel:
 	feel.end_delay = 0.0
 	feel.roll_time = 0.0
 	feel.announce_time = 0.0
+	feel.orb_time = 0.0
 	return feel
 
 
@@ -352,3 +353,50 @@ func test_victoire_double_onde_et_ciel_dore() -> void:
 	add_child_autofree(end)
 	end._wave()
 	assert_eq(end.find_children("*", "ColorRect", false, false).size(), 3, "deux ondes et l'eclair du ciel")
+
+
+func _labels(screen: Control) -> int:
+	return screen._sequence.find_children("*", "Label", true, false).size()
+
+
+## Sans texte : ni montant au-dessus des cartes, ni nom d'artefact. Le sceau d'annonce est coupe par _instant_feel.
+func test_sequence_sans_popup_de_texte() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var feel := _instant_feel()
+	feel.end_delay = 0.0
+	screen._sequence.feel = feel
+	var labels: Array[int] = []
+	screen._sequence.tally_changed.connect(func(_qi: int, _c: float) -> void: labels.append(_labels(screen)))
+	_play_first_card(screen)
+	assert_false(labels.is_empty())
+	assert_eq(labels.max(), 0, "aucun texte pendant le decompte")
+
+
+func test_le_decompte_change_a_l_arrivee_de_l_orbe() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var feel := _instant_feel()
+	feel.orb_time = 0.2
+	screen._sequence.feel = feel
+	var hits: Array[ScoreEffect.Phase] = []
+	screen._sequence.value_hit.connect(hits.append)
+	_play_first_card(screen)
+	await wait_physics_frames(2)
+	assert_true(hits.is_empty(), "l'orbe est en vol")
+	assert_eq(screen._sequence.find_children("*", "Sprite2D", false, false).size(), 1, "une orbe en vol")
+	await wait_until(func() -> bool: return not hits.is_empty(), 1.0)
+	assert_eq(hits[0], ScoreEffect.Phase.ADD_QI, "une carte nourrit la case Qi")
+
+
+func test_orbes_instantanees_si_on_reduit_les_animations() -> void:
+	var instance := SCREEN.instantiate()
+	instance.settings = GameSettings.new()
+	instance.settings.reduce_motion = true
+	var screen: Control = add_child_autofree(instance)
+	var feel := _instant_feel()
+	feel.orb_time = 0.5
+	screen._sequence.feel = feel
+	var hits: Array[ScoreEffect.Phase] = []
+	screen._sequence.value_hit.connect(hits.append)
+	_play_first_card(screen)
+	assert_false(hits.is_empty(), "case eclairee tout de suite")
+	assert_eq(screen._sequence.find_children("*", "Sprite2D", false, false).size(), 0, "pas d'orbe")

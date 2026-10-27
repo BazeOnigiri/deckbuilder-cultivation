@@ -24,6 +24,9 @@ var _hand_name := make_label(&"SideTitle")
 var _hand_level := make_label(&"SideCaption")
 var _qi := make_label(&"QiValue")
 var _comprehension := make_label(&"ComprehensionValue")
+## Cases ou atterrissent les orbes de qi.
+var _qi_box: PanelContainer
+var _comprehension_box: PanelContainer
 var _hands := make_label(&"SideValue")
 var _discards := make_label(&"SideValue")
 var _stones := make_label(&"SideValue")
@@ -69,9 +72,11 @@ func _ready() -> void:
 	var preview := VBoxContainer.new()
 	preview.add_child(_row(_hand_name, _hand_level))
 	var values := HBoxContainer.new()
-	values.add_child(_stat_box(_qi, "UI_SIDE_QI"))
+	_qi_box = _stat_box(_qi, "UI_SIDE_QI")
+	values.add_child(_qi_box)
 	values.add_child(make_label(&"SideTitle", "x"))
-	values.add_child(_stat_box(_comprehension, "UI_SIDE_COMPREHENSION"))
+	_comprehension_box = _stat_box(_comprehension, "UI_SIDE_COMPREHENSION")
+	values.add_child(_comprehension_box)
 	preview.add_child(values)
 	layout.add_child(preview)
 
@@ -158,6 +163,41 @@ func show_tally(qi: int, comprehension: float) -> void:
 ## D'ou part le total a la fin de la sequence : entre les cases Qi et Comprehension.
 func tally_center() -> Vector2:
 	return (_qi.get_global_rect().get_center() + _comprehension.get_global_rect().get_center()) / 2
+
+
+func qi_center() -> Vector2:
+	return _qi_box.get_global_rect().get_center()
+
+
+func comprehension_center() -> Vector2:
+	return _comprehension_box.get_global_rect().get_center()
+
+
+## Une orbe arrive : sa case s'eclaire et bondit ; une multiplication lache en plus un anneau qui s'elargit.
+func flash_value(phase: ScoreEffect.Phase) -> void:
+	var box := _qi_box if phase == ScoreEffect.Phase.ADD_QI else _comprehension_box
+	var value := _qi if phase == ScoreEffect.Phase.ADD_QI else _comprehension
+	if settings.reduce_motion or feel.hit_time <= 0.0:
+		return
+	box.modulate = feel.hit_flash
+	box.create_tween().tween_property(box, "modulate", Color.WHITE, feel.hit_time)
+	value.pivot_offset = value.size / 2
+	var bump := value.create_tween()
+	bump.tween_property(value, "scale", Vector2.ONE * feel.hit_scale, feel.hit_time / 3)
+	bump.tween_property(value, "scale", Vector2.ONE, feel.hit_time * 2 / 3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	if phase == ScoreEffect.Phase.MULT_COMPREHENSION:
+		var ring := Panel.new()
+		ring.theme_type_variation = &"HitRing"
+		ring.mouse_filter = MOUSE_FILTER_IGNORE
+		ring.top_level = true
+		add_child(ring)
+		ring.global_position = box.global_position
+		ring.size = box.size
+		ring.pivot_offset = box.size / 2
+		var tween := ring.create_tween().set_parallel()
+		tween.tween_property(ring, "scale", Vector2.ONE * feel.hit_scale * feel.hit_scale, feel.hit_time * 2)
+		tween.tween_property(ring, "modulate:a", 0.0, feel.hit_time * 2)
+		tween.chain().tween_callback(ring.queue_free)
 
 
 ## Ou tombent les cristaux des pierres gagnees.

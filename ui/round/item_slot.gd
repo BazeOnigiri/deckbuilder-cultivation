@@ -9,6 +9,8 @@ var kind: Kind = Kind.ARTIFACT
 ## Vide : emplacement libre.
 var glyph: String = ""
 var picture: Texture2D
+## Aura d'un artefact qui se declenche : 1 au moment ou il se declenche, s'eteint jusqu'a 0.
+var glow_amount: float = 0.0
 
 
 func _ready() -> void:
@@ -31,6 +33,16 @@ func pulse(peak: float, time: float) -> void:
 	tween.tween_property(self, "scale", Vector2.ONE, time / 2)
 
 
+## L'emplacement s'entoure d'une aura qui s'eteint en time secondes (0 : un seul eclat, sans fondu).
+func glow(time: float) -> void:
+	glow_amount = 1.0
+	queue_redraw()
+	var tween := create_tween()
+	tween.tween_method(func(value: float) -> void:
+		glow_amount = value
+		queue_redraw(), 1.0, 0.0, maxf(time, 0.0))
+
+
 func is_empty() -> bool:
 	return glyph.is_empty() and picture == null
 
@@ -43,6 +55,11 @@ func _draw() -> void:
 	var box: String = "pill_slot" if kind == Kind.PILL else "slot"
 	if is_hovered() and not disabled:
 		box += "_hover"
+	if glow_amount > 0.0:
+		var spread: float = get_theme_constant(&"glow_spread")
+		var aura := get_theme_color(&"glow_color")
+		for i: int in range(3, 0, -1):
+			draw_rect(rect.grow(spread * i / 3.0), Color(aura, aura.a * glow_amount / i), false, spread / 3.0)
 	draw_style_box(get_theme_stylebox(StringName(box)), rect)
 	var font := get_theme_font(&"font")
 	var font_size := get_theme_font_size(&"pill_font_size" if kind == Kind.PILL else &"font_size")

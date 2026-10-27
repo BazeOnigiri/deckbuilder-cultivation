@@ -58,7 +58,7 @@ func next_free_center(kind: ItemSlot.Kind) -> Vector2:
 	return Vector2.INF
 
 
-## Fait bondir l'emplacement de l'artefact et renvoie ou poser sa popup (sous l'emplacement).
+## Fait bondir et luire l'emplacement de l'artefact et renvoie son centre, d'ou part l'orbe de qi.
 ## Vector2.INF si l'artefact n'est pas affiche.
 func artifact_hit(artifact: ArtifactDefinition) -> Vector2:
 	var slot: ItemSlot = _slot_of.get(artifact)
@@ -66,8 +66,8 @@ func artifact_hit(artifact: ArtifactDefinition) -> Vector2:
 		return Vector2.INF
 	if not settings.reduce_motion:
 		slot.pulse(feel.slot_pulse_scale, feel.slot_pulse_time)
-	var rect := slot.get_global_rect()
-	return Vector2(rect.get_center().x, rect.end.y + feel.popup_font_size)
+	slot.glow(0.0 if settings.reduce_motion else feel.glow_time)
+	return slot.get_global_rect().get_center()
 
 
 func _group(caption: Label, slots: HBoxContainer) -> VBoxContainer:
