@@ -1,0 +1,238 @@
+{
+	"note": "Echantillons CC0 telecharges par fetch_sources.py dans tools/sons/sources/ (ignore par git).",
+	"archives": [
+		{
+			"source": "kenney_casino",
+			"url": "https://kenney.nl/media/pages/assets/casino-audio/2472606a04-1721639069/kenney_casino-audio.zip",
+			"licence": "CC0 1.0",
+			"page": "https://kenney.nl/assets/casino-audio"
+		},
+		{
+			"source": "kenney_impact",
+			"url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+			"licence": "CC0 1.0",
+			"page": "https://kenney.nl/assets/impact-sounds"
+		}
+	],
+	"vcsl": {
+		"base": "https://raw.githubusercontent.com/sgossner/VCSL/master/",
+		"licence": "CC0 1.0",
+		"page": "https://github.com/sgossner/VCSL",
+		"files": [
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/B1_mf_1.wav",
+				"size": 889304
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/C#2_mf_1.wav",
+				"size": 882350
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/D#2_mf_1.wav",
+				"size": 798830
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/F#2_mf_1.wav",
+				"size": 839318
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/G#2_mf_1.wav",
+				"size": 795671
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/b2_mf_1.wav",
+				"size": 788564
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/C#3_mf_1.wav",
+				"size": 799406
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/D#3_mf_1.wav",
+				"size": 781172
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/F#3_mf_1.wav",
+				"size": 757769
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/G#3_mf_1.wav",
+				"size": 787553
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/B3_mf_1.wav",
+				"size": 840533
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/C#4_mf_1.wav",
+				"size": 777002
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/D#4_mf_1.wav",
+				"size": 780944
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/F#4_mf_1.wav",
+				"size": 541823
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/G#4_mf_1.wav",
+				"size": 476969
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Normal/B4_mf_1.wav",
+				"size": 290825
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Vibrato/B3_vib_mf_1.wav",
+				"size": 473258
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Vibrato/F#3_vib_mf_1.wav",
+				"size": 579971
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Vibrato/B4_vib_mf_1.wav",
+				"size": 432236
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Gliss/Gliss_Up_Med_mf_1.wav",
+				"size": 1105964
+			},
+			{
+				"source": "vcsl",
+				"path": "Chordophones/Zithers/Dan Tranh/Gliss/Gliss_Dwn_Med_mf_1.wav",
+				"size": 1102532
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Struck Idiophones/Woodblock/wood_click_mp.wav",
+				"size": 134674
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Struck Idiophones/Woodblock/wood_click_pp_rr1.wav",
+				"size": 107200
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Struck Idiophones/Slit Drum/LogDrumHi_MedM_v2_rr1_Sum.wav",
+				"size": 272684
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Struck Idiophones/Slit Drum/LogDrumLo_MedM_v2_rr1_Sum.wav",
+				"size": 249240
+			},
+			{
+				"source": "vcsl",
+				"path": "Membranophones/Struck Membranophones/Frame Drum/HDrumL_Hit_v2_rr1_Sum.wav",
+				"size": 659856
+			},
+			{
+				"source": "vcsl",
+				"path": "Membranophones/Struck Membranophones/Frame Drum/HDrumL_HitMuted_v2_rr1_Sum.wav",
+				"size": 305388
+			},
+			{
+				"source": "vcsl",
+				"path": "Membranophones/Struck Membranophones/Frame Drum/HDrumS_HitMuted_v2_rr1_Sum.wav",
+				"size": 180420
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Struck Idiophones/Hand Bells, Nepalese/HB_2.wav",
+				"size": 335938
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Struck Idiophones/Finger Cymbals/Fing_Cymb.wav",
+				"size": 1678354
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Struck Idiophones/Mark Trees/Legacy/windchimes_asc1.wav",
+				"size": 2054074
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Friction Idiophones/Wine Glasses/Releases/Fast/glass1_D#4_Fast_1_Decay.wav",
+				"size": 815702
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Friction Idiophones/Wine Glasses/Releases/Fast/glass4_D5_Fast_1_Decay.wav",
+				"size": 349436
+			},
+			{
+				"source": "vcsl",
+				"path": "Idiophones/Struck Idiophones/Gong 1/gong_2_mp.wav",
+				"size": 3436622
+			}
+		]
+	},
+	"ogg": {
+		"kenney_casino": [
+			"card-slide-1",
+			"card-slide-2",
+			"card-slide-3",
+			"card-slide-4",
+			"card-place-1",
+			"card-place-2",
+			"card-place-3",
+			"card-place-4",
+			"card-shove-1",
+			"card-shove-2",
+			"card-fan-1",
+			"cards-pack-open-1",
+			"chip-lay-1",
+			"chip-lay-2",
+			"chip-lay-3",
+			"chips-collide-1",
+			"chips-collide-2",
+			"chips-collide-3",
+			"chips-collide-4",
+			"chips-stack-1",
+			"chips-stack-2",
+			"chips-handle-1"
+		],
+		"kenney_impact": [
+			"impactGlass_light_000",
+			"impactGlass_light_001",
+			"impactGlass_light_002",
+			"impactWood_light_000",
+			"impactWood_light_001",
+			"impactWood_light_002",
+			"impactWood_medium_000",
+			"impactPlank_medium_000",
+			"impactSoft_medium_000",
+			"impactSoft_heavy_000",
+			"impactPunch_medium_000",
+			"impactBell_heavy_000",
+			"impactBell_heavy_001",
+			"impactTin_medium_000",
+			"impactPlate_light_000",
+			"impactMetal_light_000"
+		]
+	}
+}
