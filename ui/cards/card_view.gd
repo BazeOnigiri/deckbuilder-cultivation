@@ -15,7 +15,7 @@ const CORNER_ICON_Y := 33.0
 const CORNER_ICON_SIZE := 14.0
 const PIP_SIZE := 17.0
 const PIP_AREA := Rect2(24, 22, 44, 88)
-## Points des rangs 1 a 6, en pourcentage de PIP_AREA.
+## Points des rangs 1 a 9, en pourcentage de PIP_AREA.
 const PIPS := {
 	1: [Vector2(50, 50)],
 	2: [Vector2(50, 28), Vector2(50, 72)],
@@ -23,14 +23,23 @@ const PIPS := {
 	4: [Vector2(25, 26), Vector2(75, 26), Vector2(25, 74), Vector2(75, 74)],
 	5: [Vector2(25, 22), Vector2(75, 22), Vector2(50, 50), Vector2(25, 78), Vector2(75, 78)],
 	6: [Vector2(25, 20), Vector2(75, 20), Vector2(25, 50), Vector2(75, 50), Vector2(25, 80), Vector2(75, 80)],
+	7: [Vector2(25, 20), Vector2(75, 20), Vector2(50, 35), Vector2(25, 50), Vector2(75, 50), Vector2(25, 80),
+		Vector2(75, 80)],
+	8: [Vector2(25, 14), Vector2(75, 14), Vector2(25, 38), Vector2(75, 38), Vector2(25, 62), Vector2(75, 62),
+		Vector2(25, 86), Vector2(75, 86)],
+	9: [Vector2(25, 14), Vector2(75, 14), Vector2(25, 38), Vector2(75, 38), Vector2(50, 50), Vector2(25, 62),
+		Vector2(75, 62), Vector2(25, 86), Vector2(75, 86)],
 }
 const FIGURE_AREA := Rect2(20, 31, 52, 70)
-## Figures des rangs 7 a 9 : [fond blanc teinte par l'element, trait couleur papier].
+## Figures des rangs 10 a 13 : [fond blanc teinte par l'element, trait couleur papier].
 const FIGURES := {
-	7: [preload("res://ui/cards/figures/disciple_fond.svg"), preload("res://ui/cards/figures/disciple_trait.svg")],
-	8: [preload("res://ui/cards/figures/maitre_fond.svg"), preload("res://ui/cards/figures/maitre_trait.svg")],
-	9: [preload("res://ui/cards/figures/immortel_fond.svg"), preload("res://ui/cards/figures/immortel_trait.svg")],
+	10: [preload("res://ui/cards/figures/disciple_fond.svg"), preload("res://ui/cards/figures/disciple_trait.svg")],
+	11: [preload("res://ui/cards/figures/maitre_fond.svg"), preload("res://ui/cards/figures/maitre_trait.svg")],
+	12: [preload("res://ui/cards/figures/immortel_fond.svg"), preload("res://ui/cards/figures/immortel_trait.svg")],
+	13: [preload("res://ui/cards/figures/souverain_fond.svg"), preload("res://ui/cards/figures/souverain_trait.svg")],
 }
+## Coin des figures : un sinogramme au lieu du chiffre (徒 disciple, 师 maitre, 仙 immortel, 尊 souverain).
+const FIGURE_GLYPHS := {10: "徒", 11: "师", 12: "仙", 13: "尊"}
 const SEAL_SIZE := 24.0
 ## Le sceau deborde de la carte en haut et a droite.
 const SEAL_OVERFLOW := 7.0
@@ -113,7 +122,9 @@ func _draw() -> void:
 
 
 func _draw_corner(style: ElementStyle) -> void:
-	draw_string(get_theme_font(&"font"), Vector2(0, RANK_BASELINE), str(card.rank), HORIZONTAL_ALIGNMENT_CENTER,
+	var figure: bool = FIGURE_GLYPHS.has(card.rank)
+	draw_string(get_theme_font(&"seal_font" if figure else &"font"), Vector2(0, RANK_BASELINE),
+		FIGURE_GLYPHS[card.rank] if figure else str(card.rank), HORIZONTAL_ALIGNMENT_CENTER,
 		CORNER_X * 2, get_theme_font_size(&"font_size"), get_theme_color(&"rank_color"))
 	_draw_icon(style, Vector2(CORNER_X, CORNER_ICON_Y), CORNER_ICON_SIZE)
 

@@ -20,7 +20,7 @@ static func score_triggered(hand: HandResult, effects: Array[TriggeredEffect], l
 	context.comprehension = definition.comprehension_at(level)
 	context.record(ScoreStep.Kind.BASE)
 	for card: CardInstance in hand.scoring_cards:
-		context.qi += card.rank
+		context.qi += card.qi()
 		context.record(ScoreStep.Kind.CARD, card)
 	# Boucle par phase plutot que sort_custom : sort_custom n'est pas stable et perdrait l'ordre d'ajout.
 	for phase: int in ScoreEffect.Phase.values():

@@ -8,8 +8,8 @@
 
 [sub_resource type="Resource" id="condition_1"]
 script = ExtResource("4")
-min_rank = 7
-max_rank = 9
+min_rank = 10
+max_rank = 13
 
 [sub_resource type="Resource" id="score_1"]
 script = ExtResource("3")
@@ -29,5 +29,5 @@ name_key = "ARTIFACT_COURONNE_IMMORTEL"
 description_key = "ARTIFACT_COURONNE_IMMORTEL_DESC"
 glyph = "冠"
 icon = ExtResource("icon")
-price = 7
+price = 8
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

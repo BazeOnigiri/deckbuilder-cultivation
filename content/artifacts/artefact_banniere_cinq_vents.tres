@@ -27,5 +27,5 @@ name_key = "ARTIFACT_BANNIERE_CINQ_VENTS"
 description_key = "ARTIFACT_BANNIERE_CINQ_VENTS_DESC"
 glyph = "旗"
 icon = ExtResource("icon")
-price = 3
+price = 7
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

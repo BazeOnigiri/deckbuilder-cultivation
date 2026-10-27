@@ -5,6 +5,8 @@ extends Resource
 
 @export var id: StringName = &""
 @export var cards: Array[CardData] = []
+## Rangs du paquet et Qi de chaque rang. Absent : une carte rapporte son rang en Qi.
+@export var ranks: RankRules
 
 
 ## Vrai si le paquet contient au moins une carte, aucune carte nulle,
