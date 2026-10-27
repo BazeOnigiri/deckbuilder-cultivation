@@ -10,7 +10,8 @@ func _owner() -> Control:
 
 func test_valeurs_de_qi_et_comprehension_colorees() -> void:
 	var owner := _owner()
-	var text := InfoBubble.colorize(tr("ARTIFACT_CHAUDRON_ALCHIMIQUE_DESC"), owner)
+	# Texte construit ici : le test ne depend pas de la langue (la CI tourne en anglais).
+	var text := InfoBubble.colorize("+5 %s et +0,5 %s." % [tr("UI_SIDE_QI"), tr("UI_SIDE_COMPREHENSION")], owner)
 	var qi := owner.get_theme_color(&"qi_color", &"InfoBubble").to_html(false)
 	var comprehension := owner.get_theme_color(&"comprehension_color", &"InfoBubble").to_html(false)
 	assert_string_contains(text, "[color=#%s]+5 %s[/color]" % [qi, tr("UI_SIDE_QI")])
@@ -18,8 +19,8 @@ func test_valeurs_de_qi_et_comprehension_colorees() -> void:
 
 
 func test_multiplicateur_et_element_colores() -> void:
-	var text := InfoBubble.colorize(tr("ARTIFACT_TIGRE_BLANC_DESC"), _owner())
-	assert_string_contains(text, "x1,2 %s[/color]" % tr("UI_SIDE_COMPREHENSION"))
+	var text := InfoBubble.colorize("x1.2 %s, %s." % [tr("UI_SIDE_COMPREHENSION"), tr("ELEMENT_METAL")], _owner())
+	assert_string_contains(text, "x1.2 %s[/color]" % tr("UI_SIDE_COMPREHENSION"))
 	assert_string_contains(text, "]%s[/color]" % tr("ELEMENT_METAL"))
 
 
