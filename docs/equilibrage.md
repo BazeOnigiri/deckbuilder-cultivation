@@ -101,6 +101,42 @@ suivent la même courbe sans qu'on écrive un seul nombre.
 
 `arrondi_2_chiffres` sert la lisibilité : 1 117 devient 1 100.
 
+## 5 bis. Les mains : plus rare, plus fort
+
+Une main rare doit rapporter plus, mais de combien ? On mesure d'abord sa **rareté exacte** `q` : la part des
+tirages de 5 cartes du paquet qui la contiennent. L'outil énumère les 8 259 888 tirages possibles (5 cartes parmi
+65) avec les vrais détecteurs du jeu : pas de hasard, pas d'estimation. Une main ajoutée ou un paquet changé est
+remesuré tel quel.
+
+La rareté devient une **surprise** (la quantité d'information de la théorie de Shannon, en nats) :
+
+    s = -ln(q)
+
+Une main toujours là (Souffle) a s = 0 ; chaque fois qu'une main est 10 fois plus rare, s monte de 2,3. La surprise
+transforme des probabilités qui vont de 1 à 0,000 002 en une échelle de 0 à 13, lisible.
+
+La **force** d'une main (Qi × Compréhension de base) suit la surprise :
+
+    force = force_min × (1 + s)^δ,   avec δ = ln(force_max / force_min) / ln(1 + s_max)
+
+- `force_min` (5) est la force de la main la plus commune, `force_max` (1 800) celle de la plus rare : ce sont les deux
+  seuls choix de design, les autres mains s'étalent entre les deux.
+- δ est calculé pour que la main la plus rare tombe pile sur `force_max`.
+- Pourquoi pas `force ∝ 1 / q` ? Les Cinq Souverains sont 600 000 fois plus rares que le Souffle : une force
+  proportionnelle écraserait toutes les mains du milieu. La puissance de la surprise garde l'ordre exact des raretés
+  avec des écarts jouables.
+
+La force se partage entre Qi et Compréhension :
+
+    Compréhension = arrondi((force / force_min)^β),   Qi = arrondi(force / Compréhension)
+
+β (`comprehension_exponent`, 0,4) dit quelle part de la force passe dans le multiplicateur : les mains rares ont plus
+de Compréhension, comme dans Balatro. Un **niveau** ajoute `level_fraction` (30 %) de la base, en Qi et en
+Compréhension. La **priorité** (quelle main gagne quand une combinaison en remplit plusieurs) suit l'ordre des forces ;
+à rareté égale (Ascension pure et Cycle d'engendrement : 50 tirages chacune), l'ancienne priorité départage.
+
+Le tableau des mains du rapport (`docs/equilibrage-rapport.md`) donne rareté, surprise et valeurs écrites.
+
 ## 6. Régler le jeu après des parties
 
 | Ressenti | Paramètre (`equilibrage.tres`) | Effet |
@@ -109,6 +145,8 @@ suivent la même courbe sans qu'on écrive un seul nombre.
 | La fin est trop dure ou trop facile | `pressure` (1,25) | 1,15 : plus doux, 1,4 : plus raide |
 | Tout coûte trop cher ou pas assez | `power_per_realm` (2) | 2,5 : pierres plus précieuses, prix plus bas, mais objectifs plus raides |
 | Pas assez de pierres | `reward_base`, `reward_per_difficulty` | récompenses des goulots |
+| Les mains rares ne valent pas l'effort | `strongest_hand_strength` (1 800) | plus haut : toutes les mains rares montent |
+| Les manuels sont trop ou pas assez forts | `level_fraction` (0,3) | part de la base ajoutée par niveau |
 
 Après tout changement de paramètre, de main, de paquet ou d'objet : relancer l'outil, relire le rapport, lancer les tests.
 
@@ -117,7 +155,8 @@ Après tout changement de paramètre, de main, de paquet ou d'objet : relancer l
 - **Un royaume** : un `.tres` dans `content/realms/` avec son `order` et ses goulots. `base_score` peut rester à 0 ou être faux :
   l'outil l'écrit, le garde-fou vérifie.
 - **Un artefact** : son `.tres` (effets, icône, textes). L'outil mesure son gain et écrit son prix.
-- **Une main** : la change de valeur ? L'outil remesure tout : objectifs, prix des manuels et des artefacts qui en dépendent.
+- **Une main** : son `.tres` avec son détecteur. L'outil mesure sa rareté et écrit son Qi, sa Compréhension, ses gains
+  de niveau et sa priorité, puis remesure objectifs et prix.
 
 ## 8. Limites connues (dites, pas cachées)
 
@@ -125,12 +164,14 @@ Après tout changement de paramètre, de main, de paquet ou d'objet : relancer l
 - Le joueur de référence ne défausse pas et n'achète rien pendant la mesure. La croissance du joueur entre les royaumes
   vient de la formule de G, pas d'une run simulée.
 - Les pilules modifient le paquet : leur prix reste une donnée de `content/pills/`, hors modèle.
-- Les valeurs de Qi et de Compréhension des mains restent des choix de design (l'identité du jeu). Le rapport donne la
-  fréquence de chaque main pour guider leur réglage.
+- La rareté des mains est mesurée sur 5 cartes tirées au hasard, pas sur la main de 8 avec défausses : l'ordre des
+  mains est le même, mais une main qu'on peut « chasser » en défaussant (Pureté) est un peu plus facile en jeu.
+- Les cartes ajoutent leur Qi à la main : il pèse plus dans une main commune que dans une main rare.
 
 ## Sources
 
 - Ian Schreiber et Brenda Romero, *Game Balance* (CRC Press) : courbes de coût, mécaniques transitives.
 - Anthony Pecorella, *The Math of Idle Games* (Kongregate, Game Developer) : croissance exponentielle contre polynomiale.
+- Claude Shannon, *A Mathematical Theory of Communication* (1948) : l'information (surprise) d'un événement, -log(p).
 - Blizzard, *Arena Balance Through Science* : équilibrer par simulation vers un taux de victoire visé.
 - Balatro : objectifs ×1 / ×1,5 / ×2 dans une ante, croissance exponentielle d'une ante à l'autre.

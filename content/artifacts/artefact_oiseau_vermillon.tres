@@ -28,5 +28,5 @@ name_key = "ARTIFACT_OISEAU_VERMILLON"
 description_key = "ARTIFACT_OISEAU_VERMILLON_DESC"
 glyph = "雀"
 icon = ExtResource("icon")
-price = 9
+price = 6
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

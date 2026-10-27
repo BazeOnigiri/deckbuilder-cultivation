@@ -29,5 +29,5 @@ name_key = "ARTIFACT_COURONNE_IMMORTEL"
 description_key = "ARTIFACT_COURONNE_IMMORTEL_DESC"
 glyph = "冠"
 icon = ExtResource("icon")
-price = 8
+price = 5
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

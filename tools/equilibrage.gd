@@ -1,7 +1,8 @@
 extends SceneTree
-## Equilibrage : mesure le joueur de reference, applique les formules de BalanceModel et ecrit les valeurs
-## dans le contenu (prix des artefacts et manuels, goulots, scores de base des royaumes), plus un rapport.
-## Lancer apres tout changement de mains, de paquet, d'objets ou de royaumes (quelques minutes) :
+## Equilibrage : mesure la rarete exacte des mains et le joueur de reference, applique les formules de
+## BalanceModel et ecrit les valeurs dans le contenu (Qi, Comprehension, niveaux et priorite des mains, prix des
+## artefacts et manuels, goulots, scores de base des royaumes), plus un rapport.
+## Lancer apres tout changement de mains, de paquet, d'objets ou de royaumes (une quinzaine de minutes) :
 ##   godot --headless --path . -s tools/equilibrage.gd
 ## Parametres : content/rules/equilibrage.tres. Explications : docs/equilibrage.md.
 
@@ -14,11 +15,26 @@ func _initialize() -> void:
 	var start := Time.get_ticks_msec()
 	var rules: BalanceRules = load(RULES_PATH)
 	var content := GameContent.load_default()
+	var measures := BalanceMeasures.new()
+	# Les mains d'abord : le joueur de reference est mesure avec leurs nouvelles valeurs.
+	measures.hand_rarities.assign(HandRarity.exact(content.starter_deck, content.hands, rules.hand_draw_size))
+	print("Rarete des mains mesuree en %.1f s" % ((Time.get_ticks_msec() - start) / 1000.0))
+	var hand_values := BalanceModel.solve_hands(rules, measures, content.hands)
+	for hand: HandDefinition in content.hands:
+		if not hand_values.has(hand.id):
+			continue
+		var values: Dictionary = hand_values[hand.id]
+		hand.priority = values["priority"]
+		hand.base_qi = values["qi"]
+		hand.base_comprehension = values["comprehension"]
+		hand.level_qi = values["level_qi"]
+		hand.level_comprehension = values["level_comprehension"]
+		for key: String in ["priority", "base_qi", "base_comprehension", "level_qi", "level_comprehension"]:
+			_set_value(hand.resource_path, key, str(hand.get(key)))
 	var player := ReferencePlayer.new(content.starter_deck, content.round_rules, content.hands)
 	@warning_ignore("integer_division")
 	var rounds: int = maxi(1, rules.samples / content.round_rules.hands_per_round)
 
-	var measures := BalanceMeasures.new()
 	var counts := {}
 	var base := player.round_scores(rounds, rules.random_seed, [], HandLevels.new(), counts)
 	var base_mean := _mean(base)
@@ -51,7 +67,7 @@ func _initialize() -> void:
 			_set_value(path, "score_multiplier", str(float(solved["bottlenecks"][r][b][0])))
 			_set_value(path, "reward", str(solved["bottlenecks"][r][b][1]))
 		_set_value(realms[r].resource_path, "base_score", str(solved["realms"][r]))
-	_write_report(rules, measures, solved, content, realms)
+	_write_report(rules, measures, solved, content, realms, hand_values)
 	print("Equilibrage ecrit en %.1f s" % ((Time.get_ticks_msec() - start) / 1000.0))
 	quit()
 
@@ -84,7 +100,7 @@ func _save(resource: Resource, path: String) -> void:
 
 ## Rapport en Markdown pour relire les resultats sans ouvrir les .tres.
 func _write_report(rules: BalanceRules, measures: BalanceMeasures, solved: Dictionary, content: GameContent,
-		realms: Array) -> void:
+		realms: Array, hand_values: Dictionary) -> void:
 	var lines: PackedStringArray = ["# Rapport d'equilibrage", "",
 		"Genere par tools/equilibrage.gd ; ne pas modifier a la main. Explications : equilibrage.md.", "",
 		"## Joueur de reference au depart (%d mains, graine %d)" % [measures.round_scores.size() * content.round_rules.hands_per_round, rules.random_seed], "",
@@ -104,6 +120,16 @@ func _write_report(rules: BalanceRules, measures: BalanceMeasures, solved: Dicti
 		lines.append("| %s | %+.1f %% | %d |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
 	for item: Resource in content.manuals:
 		lines.append("| %s | %+.1f %% | %d |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
+	lines.append_array(["", "## Mains (rarete exacte sur %d cartes, valeurs ecrites)" % rules.hand_draw_size, "",
+		"| Main | Rarete | Surprise | Qi x Comprehension | Niveau | Priorite |", "| --- | --- | --- | --- | --- | --- |"])
+	var by_priority := content.hands.duplicate()
+	by_priority.sort_custom(func(a: HandDefinition, b: HandDefinition) -> bool: return a.priority < b.priority)
+	for hand: HandDefinition in by_priority:
+		if hand_values.has(hand.id):
+			var rarity: float = measures.hand_rarities[hand.id]
+			lines.append("| %s | %s %% | %.2f | %d x %d | +%d / +%d | %d |" % [hand.id, String.num(rarity * 100.0, 6),
+				BalanceModel.surprise(rarity), hand.base_qi, hand.base_comprehension, hand.level_qi,
+				hand.level_comprehension, hand.priority])
 	lines.append_array(["", "## Mains jouees par le joueur de reference", "", "| Main | Part des mains jouees |", "| --- | --- |"])
 	var hands := measures.hand_frequencies.keys()
 	hands.sort_custom(func(a: String, b: String) -> bool: return measures.hand_frequencies[a] > measures.hand_frequencies[b])

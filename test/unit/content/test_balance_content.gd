@@ -50,6 +50,27 @@ func test_goulots_et_royaumes_issus_des_formules() -> void:
 			assert_eq(bottleneck.reward, _solved["bottlenecks"][r][b][1], "recompense de %s%s" % [bottleneck.id, HINT])
 
 
+func test_mains_issues_de_leur_rarete() -> void:
+	var values := BalanceModel.solve_hands(_rules, _measures, _content.hands)
+	for hand: HandDefinition in _content.hands:
+		assert_true(values.has(hand.id), "main non mesuree : %s%s" % [hand.id, HINT])
+		if not values.has(hand.id):
+			continue
+		var expected: Dictionary = values[hand.id]
+		assert_eq([hand.priority, hand.base_qi, hand.base_comprehension, hand.level_qi, hand.level_comprehension],
+			[expected["priority"], expected["qi"], expected["comprehension"], expected["level_qi"],
+			expected["level_comprehension"]], "valeurs de %s%s" % [hand.id, HINT])
+
+
+## Une main plus rare a une priorite plus haute et une base au moins aussi forte.
+func test_mains_ordonnees_par_rarete() -> void:
+	for a: HandDefinition in _content.hands:
+		for b: HandDefinition in _content.hands:
+			if _measures.hand_rarities.get(a.id, 0.0) < _measures.hand_rarities.get(b.id, 0.0):
+				assert_gt(a.priority, b.priority, "%s plus rare que %s" % [a.id, b.id])
+				assert_gte(a.base_qi * a.base_comprehension, b.base_qi * b.base_comprehension)
+
+
 ## Chaque royaume est plus dur que le precedent, meme son premier goulot face au dernier du royaume d'avant.
 func test_progression_croissante() -> void:
 	for r: int in range(1, _realms.size()):
