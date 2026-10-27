@@ -26,7 +26,8 @@ REALM_NOYAU_OR,Noyau d'or,Golden Core
 BOTTLENECK_PETIT,Petit goulot,Minor Bottleneck
 BOTTLENECK_GRAND,Grand goulot,Major Bottleneck
 UI_STAGE,%s : %s,%s: %s
-UI_TITLE,Deckbuilder Cultivation,Deckbuilder Cultivation
+UI_TITLE,Wu Xing,Wu Xing
+UI_TAGLINE,Le cycle des cinq phases,The cycle of the five phases
 UI_NEW_RUN,Nouvelle partie,New run
 UI_CONTINUE,Continuer,Continue
 UI_MENU,Menu principal,Main menu
@@ -90,7 +91,7 @@ UI_INFO_UPCOMING,À venir,Upcoming
 UI_INFO_DISCARDS,Défausses utilisées,Discards used
 UI_INFO_STONES,Pierres gagnées,Stones earned
 UI_INFO_CLEARED_COUNT,Goulots franchis,Bottlenecks cleared
-UI_START_RUN,Commencer,Start
+UI_ABANDON_RESTART,Abandonner et recommencer,Abandon and restart
 UI_NEW_RUN_WARNING,Commencer une nouvelle partie effacera la partie en cours.,Starting a new run will erase the current run.
 UI_SAVED_STAGE,Prochain goulot,Next bottleneck
 UI_SAVED_STONES,Pierres spirituelles,Spirit stones

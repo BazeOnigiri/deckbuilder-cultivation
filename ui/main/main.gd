@@ -42,6 +42,7 @@ func _ready() -> void:
 func _show_menu() -> void:
 	var menu := MENU_SCENE.instantiate()
 	menu.saved_run = _saved_run_preview()
+	menu.settings = _settings
 	menu.start_requested.connect(_start_new_run)
 	menu.continue_requested.connect(_continue_run)
 	menu.stats_requested.connect(_show_stats)
