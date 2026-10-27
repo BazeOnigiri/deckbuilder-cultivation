@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" width="22" height="22">
+  <!-- Poignee de curseur : perle de jade cerclee d'encre, avec son reflet (meme perle que l'interrupteur). -->
+  <circle cx="11" cy="11" r="8.5" fill="#2f6f5c" stroke="#2a211a" stroke-width="1.6"/>
+  <ellipse cx="9" cy="8.5" rx="2.6" ry="1.7" fill="#ffffff" fill-opacity="0.55"/>
+</svg>

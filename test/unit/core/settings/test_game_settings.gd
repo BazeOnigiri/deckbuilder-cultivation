@@ -45,3 +45,23 @@ func test_vitesse_inconnue_revient_a_1() -> void:
 	assert_eq(GameSettings.from_dict({"game_speed": 7.0}).game_speed, 1.0)
 	assert_eq(GameSettings.from_dict({"game_speed": "vite"}).game_speed, 1.0)
 	assert_eq(GameSettings.from_dict({"game_speed": 3}).game_speed, 3.0)
+
+
+func test_volumes_sur_disque() -> void:
+	var storage := SaveStorage.new(PATH)
+	var settings := GameSettings.new()
+	settings.master_volume = 0.5
+	settings.music_volume = 0.0
+	settings.effects_volume = 1.0
+	settings.save_to(storage)
+	var loaded := GameSettings.load_from(storage)
+	assert_eq([loaded.master_volume, loaded.music_volume, loaded.effects_volume], [0.5, 0.0, 1.0])
+
+
+func test_volume_hors_bornes_ou_absent() -> void:
+	var defaults := GameSettings.new()
+	var settings := GameSettings.from_dict({"master_volume": 3, "music_volume": "fort"})
+	assert_eq(settings.master_volume, 1.0, "borne a 1")
+	assert_eq(settings.music_volume, defaults.music_volume, "mauvais type : valeur par defaut")
+	assert_eq(settings.effects_volume, defaults.effects_volume, "ancien fichier sans volume")
+

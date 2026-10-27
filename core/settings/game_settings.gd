@@ -11,10 +11,15 @@ const GAME_SPEEDS: Array[float] = [1.0, 1.5, 2.0, 3.0]
 var reduce_motion: bool = false
 var game_speed: float = 1.0
 var fullscreen: bool = false
+## Volumes de 0 (muet) a 1, un par bus audio. Nouveaux champs : un ancien fichier garde ces valeurs par defaut.
+var master_volume: float = 0.8
+var music_volume: float = 0.6
+var effects_volume: float = 0.8
 
 
 func to_dict() -> Dictionary:
-	return {"reduce_motion": reduce_motion, "game_speed": game_speed, "fullscreen": fullscreen}
+	return {"reduce_motion": reduce_motion, "game_speed": game_speed, "fullscreen": fullscreen,
+		"master_volume": master_volume, "music_volume": music_volume, "effects_volume": effects_volume}
 
 
 ## Le fichier vient du disque du joueur : une valeur absente ou de mauvais type garde sa valeur par defaut.
@@ -27,7 +32,15 @@ static func from_dict(data: Dictionary) -> GameSettings:
 	settings.game_speed = speed if (speed is float or speed is int) and GAME_SPEEDS.has(float(speed)) else 1.0
 	var full: Variant = data.get("fullscreen", false)
 	settings.fullscreen = full if full is bool else false
+	settings.master_volume = _volume(data, "master_volume", settings.master_volume)
+	settings.music_volume = _volume(data, "music_volume", settings.music_volume)
+	settings.effects_volume = _volume(data, "effects_volume", settings.effects_volume)
 	return settings
+
+
+static func _volume(data: Dictionary, key: String, fallback: float) -> float:
+	var value: Variant = data.get(key, fallback)
+	return clampf(float(value), 0.0, 1.0) if value is float or value is int else fallback
 
 
 static func load_from(storage: SaveStorage) -> GameSettings:
