@@ -43,6 +43,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 ### Corrigé
 
 - Trait de pinceau des choix du menu trop long : il etait mesure sur la cle de traduction et non sur le texte affiche.
+- Fond lavis : l'encre restait toujours du meme cote de l'ecran. Les volutes derivent maintenant lentement a travers tout l'ecran (parametre drift de ui/theme/lavis.tres).
 
 ## [0.3.0] - 2026-10-25
 
