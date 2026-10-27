@@ -1,7 +1,12 @@
 extends Control
-## Page des statistiques du profil, sur un rouleau : une ligne « nom ..... valeur » par statistique.
+## Page des statistiques du profil, sur un rouleau : tuiles des grands chiffres, meilleur royaume en calligraphie,
+## barres d'encre des mains les plus jouees.
 
 signal back_requested
+
+## Nombre de mains montrees en barres.
+const TOP_HANDS := 5
+const WIN_GLYPH := "破"
 
 ## Injecte par main avant l'ajout a l'arbre. Par defaut un profil vide (scene lancee seule, tests).
 var profile: ProfileStats = ProfileStats.new()
@@ -14,17 +19,12 @@ func _ready() -> void:
 		content = GameContent.load_default()
 	%BackButton.pressed.connect(back_requested.emit)
 	%Scroll.unroll(get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
-	_add_row("UI_STATS_RUNS", str(profile.runs_started))
-	_add_row("UI_STATS_WINS", str(profile.runs_won))
-	_add_row("UI_STATS_WIN_RATE", "%d %%" % _win_rate())
-	_add_row("UI_STATS_BEST_REALM", _realm_name(profile.best_realm))
-	_add_row("UI_STATS_BEST_HAND_SCORE", str(profile.best_hand_score))
-	_add_row("UI_STATS_HANDS_PLAYED", str(profile.hands.total()))
-	_add_row("UI_STATS_FAVORITE_HAND", _favorite_hand())
-
-
-func _add_row(name_key: String, value: String) -> void:
-	%Grid.add_child(ScrollRows.row(name_key, value))
+	%Grid.add_child(ScrollTiles.stat(str(profile.runs_started), "UI_STATS_RUNS"))
+	%Grid.add_child(ScrollTiles.stat(str(profile.runs_won), "UI_STATS_WINS", WIN_GLYPH))
+	%Grid.add_child(ScrollTiles.stat("%d %%" % _win_rate(), "UI_STATS_WIN_RATE"))
+	%Grid.add_child(ScrollTiles.stat(str(profile.best_hand_score), "UI_STATS_BEST_HAND_SCORE"))
+	%BestRealm.text = _realm_name(profile.best_realm)
+	_add_bars()
 
 
 func _win_rate() -> int:
@@ -41,11 +41,15 @@ func _realm_name(order: int) -> String:
 	return tr("UI_NONE")
 
 
-func _favorite_hand() -> String:
-	var id: String = profile.hands.most_played()
-	if id.is_empty():
-		return tr("UI_NONE")
-	for hand: HandDefinition in content.hands:
-		if hand.id == id:
-			return tr("UI_STATS_HAND_COUNT") % [tr(hand.name_key), profile.hands.count_of(id)]
-	return id
+## Les mains les plus jouees, la plus jouee en barre pleine. Aucune main jouee : une ligne « aucune ».
+func _add_bars() -> void:
+	var played: Array[HandDefinition] = content.hands.filter(
+		func(hand: HandDefinition) -> bool: return profile.hands.count_of(hand.id) > 0)
+	played.sort_custom(func(a: HandDefinition, b: HandDefinition) -> bool:
+		return profile.hands.count_of(a.id) > profile.hands.count_of(b.id))
+	if played.is_empty():
+		%Bars.add_child(SideColumn.make_label(&"ScrollCaption", "UI_NONE"))
+		return
+	var most: int = profile.hands.count_of(played[0].id)
+	for hand: HandDefinition in played.slice(0, TOP_HANDS):
+		%Bars.add_child(ScrollTiles.bar(tr(hand.name_key), profile.hands.count_of(hand.id), most))

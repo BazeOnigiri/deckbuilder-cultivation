@@ -73,20 +73,13 @@ UI_STATS_BEST_REALM,Meilleur royaume atteint,Best realm reached
 UI_STATS_BEST_HAND_SCORE,Meilleur score d'une main,Best hand score
 UI_STATS_HANDS_PLAYED,Mains jouées,Hands played
 UI_STATS_FAVORITE_HAND,Main favorite,Favorite hand
-UI_STATS_HAND_COUNT,%s (%d fois),%s (%d times)
 UI_BACK,Retour,Back
 UI_RUN_INFO,Infos de la run,Run info
 UI_INFO_TAB_HANDS,Mains,Hands
 UI_INFO_TAB_PATH,Parcours,Path
 UI_INFO_TAB_RUN,Run,Run
-UI_INFO_HAND,Main,Hand
 UI_INFO_LEVEL,Niveau,Level
-UI_INFO_VALUE,Qi x Compréhension,Qi x Comprehension
-UI_INFO_VALUE_FORMAT,%d x %d,%d x %d
-UI_INFO_PLAYED,Jouée,Played
 UI_INFO_TARGET,Objectif,Target
-UI_INFO_CONSTRAINT,Contrainte,Constraint
-UI_INFO_STATE,État,State
 UI_INFO_CLEARED,Franchi,Cleared
 UI_INFO_CURRENT,En cours,Current
 UI_INFO_UPCOMING,À venir,Upcoming
@@ -131,3 +124,7 @@ UI_DECK,Paquet,Deck
 UI_DECK_VIEW,Tout le paquet,Full deck
 UI_DECK_VIEW_CLOSE,Cliquer ou Échap pour fermer,Click or Esc to close
 UI_SHOP_LEVEL_UP,%s passe au niveau %d : %d x %d devient %d x %d,%s reaches level %d: %d x %d becomes %d x %d
+UI_QUIT,Quitter le jeu,Quit game
+UI_INFO_TIMES,x,x
+UI_INFO_PLAYED_COUNT,Jouée %d fois,Played %d times
+UI_STATS_TOP_HANDS,Mains les plus jouées,Most played hands

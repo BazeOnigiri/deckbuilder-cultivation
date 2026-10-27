@@ -37,6 +37,12 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Kit des menus « rouleaux et sceaux » : rouleau de papier de riz entre deux baguettes qui se deroule, rouleau ouvert par-dessus l'ecran (ferme au clic a cote, avec Echap ou par le sceau Fermer), choix a l'encre souligne d'un trait de pinceau au survol, boutons sceaux, interrupteurs de jade, listes et onglets en signets.
 - Menu principal « 五行 Wu Xing » : rouleau suspendu avec le titre calligraphie et les choix a l'encre, lune aux nuages qui passent, meditant entoure des cinq phases qui tournent dans l'ordre du cycle d'engendrement. Nouvelle partie avec une run sauvegardee : un rouleau la resume (goulot, pierres, dessins des artefacts) et propose Continuer ou Abandonner et recommencer ; sans sauvegarde, la partie commence directement.
 - Statistiques, options, credits, Voie de cultivation et fin de run en rouleaux : lignes a points de suite, interrupteurs et liste a l'encre, boutons de run et confirmation en sceaux, credits avec la licence de Godot, onglets en signets (mains, parcours avec le sceau 破 et les contraintes, run), bilan de la run sous le titre de victoire ou d'echec.
+- Bouton « Quitter le jeu » dans le menu principal (cache dans l'export web).
+- Voie de cultivation plus visuelle : une tablette de jade par main (pastilles de niveau, Qi et Comprehension en pilules), parcours en chemin vertical (meditant sur le goulot en cours, sceau 破 sur les goulots franchis), chiffres de la run en tuiles. Statistiques en tuiles, meilleur royaume en grand, barres d'encre des mains les plus jouees.
+
+### Corrigé
+
+- Trait de pinceau des choix du menu trop long : il etait mesure sur la cle de traduction et non sur le texte affiche.
 
 ## [0.3.0] - 2026-10-25
 

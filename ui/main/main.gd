@@ -47,6 +47,7 @@ func _show_menu() -> void:
 	menu.continue_requested.connect(_continue_run)
 	menu.stats_requested.connect(_show_stats)
 	menu.options_requested.connect(_show_options)
+	menu.quit_requested.connect(get_tree().quit)
 	_swap(menu)
 	Ambiance.apply(MENU_AMBIANCE)
 
