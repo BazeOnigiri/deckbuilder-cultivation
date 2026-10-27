@@ -36,6 +36,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Score sans texte : la carte ou l'artefact qui se declenche s'allume (aura doree autour de l'artefact), une orbe de qi file vers la case Qi (jade) ou Comprehension (or) de la colonne, qui defile et s'eclaire a l'arrivee. Une multiplication envoie une orbe plus grosse et lache un anneau autour de la case. Plus de « +2 Qi » ni de nom d'artefact a l'ecran.
 - Kit des menus « rouleaux et sceaux » : rouleau de papier de riz entre deux baguettes qui se deroule, rouleau ouvert par-dessus l'ecran (ferme au clic a cote, avec Echap ou par le sceau Fermer), choix a l'encre souligne d'un trait de pinceau au survol, boutons sceaux, interrupteurs de jade, listes et onglets en signets.
 - Menu principal « 五行 Wu Xing » : rouleau suspendu avec le titre calligraphie et les choix a l'encre, lune aux nuages qui passent, meditant entoure des cinq phases qui tournent dans l'ordre du cycle d'engendrement. Nouvelle partie avec une run sauvegardee : un rouleau la resume (goulot, pierres, dessins des artefacts) et propose Continuer ou Abandonner et recommencer ; sans sauvegarde, la partie commence directement.
+- Statistiques, options, credits, Voie de cultivation et fin de run en rouleaux : lignes a points de suite, interrupteurs et liste a l'encre, boutons de run et confirmation en sceaux, credits avec la licence de Godot, onglets en signets (mains, parcours avec le sceau 破 et les contraintes, run), bilan de la run sous le titre de victoire ou d'echec.
 
 ## [0.3.0] - 2026-10-25
 

@@ -74,3 +74,10 @@ func test_sceau_lisible() -> void:
 	var theme: Theme = load(THEME_PATH)
 	var seal: StyleBoxFlat = theme.get_stylebox("normal", "SealButton")
 	assert_gt(Contrast.ratio(theme.get_color("font_color", "SealButton"), seal.bg_color), 4.5)
+
+
+func test_ligne_nom_points_valeur() -> void:
+	var icons: Array[Control] = [StoneIcon.new()]
+	var line: HBoxContainer = add_child_autofree(ScrollRows.row("UI_INFO_STONES", "12", icons))
+	assert_eq(line.get_child_count(), 4, "nom, points, valeur, icone")
+	assert_eq((line.get_child(2) as Label).text, "12")

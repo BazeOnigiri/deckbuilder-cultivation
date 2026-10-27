@@ -128,7 +128,7 @@ func test_nouvelle_partie_depuis_la_run_apres_confirmation() -> void:
 	var options := _current_screen(main).get_child(0)
 	options.get_node("%NewRunButton").pressed.emit()
 	assert_true(old_run == main._screen, "rien ne change avant la confirmation")
-	options._confirm.confirmed.emit()
+	options._confirm_button.pressed.emit()
 	await wait_physics_frames(1)
 	assert_false(is_instance_valid(old_run), "ancienne run fermee")
 	assert_not_null(main._screen.get_node_or_null("%SideColumn"), "nouvelle run")

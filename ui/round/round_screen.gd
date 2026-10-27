@@ -273,10 +273,20 @@ func _on_run_finished(won: bool) -> void:
 	await _after_score()
 	if won:
 		await _round_end.victory()
-	_last_hand.text = (_last_hand.text + "\n" + tr("UI_RUN_WON" if won else "UI_RUN_LOST")).strip_edges()
-	_menu_button.show()
-	if not won:
-		_round_end.defeat(tr("UI_RUN_LOST"))
+	_round_end.run_over(won, _run_summary())
+
+
+## Bilan de la run pour le rouleau de fin.
+func _run_summary() -> VBoxContainer:
+	var rows := VBoxContainer.new()
+	rows.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
+	var stats := _run.stats
+	rows.add_child(ScrollRows.row("UI_INFO_CLEARED_COUNT", str(stats.bottlenecks_cleared)))
+	rows.add_child(ScrollRows.row("UI_STATS_HANDS_PLAYED", str(stats.hands.total())))
+	rows.add_child(ScrollRows.row("UI_STATS_BEST_HAND_SCORE", str(stats.best_hand_score)))
+	rows.add_child(ScrollRows.row("UI_STATS_FAVORITE_HAND", RunInfo.hand_name(stats.hands.most_played(), content.hands)))
+	rows.add_child(ScrollRows.row("UI_INFO_STONES", str(stats.stones_earned)))
+	return rows
 
 
 ## La main du round gagne laisse la place a la boutique : l'ecran ne deborde pas en hauteur.
@@ -305,7 +315,4 @@ func _show_deck() -> void:
 
 
 func _show_run_info() -> void:
-	var dialog := RunInfoDialog.new()
-	dialog.setup(_run, content.hands)
-	add_child(dialog)
-	dialog.popup_centered(RunInfoDialog.SIZE)
+	ScrollOverlay.open(self, "UI_RUN_INFO", RunInfo.build(_run, content.hands), not settings.reduce_motion)

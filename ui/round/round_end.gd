@@ -1,7 +1,7 @@
 class_name RoundEnd
 extends Control
 ## Fin d'un goulot, par-dessus l'ecran de round. Victoire : le sceau 破 tombe, une onde de choc part, des cristaux
-## de pierres tombent sur le compteur. Echec : des fissures de feu s'ouvrent, l'encre noire envahit l'ecran.
+## de pierres tombent sur le compteur. Fin de run : rouleau du bilan, apres l'encre noire en cas d'echec.
 ## Affichage seulement : la run a deja note la victoire ou la defaite.
 
 signal menu_requested
@@ -79,40 +79,62 @@ func stones(count: int, to: Vector2, bump: Callable) -> void:
 		tween.tween_callback(crystal.queue_free)
 
 
-## Fissures puis encre, le texte d'echec et un bouton vers le menu. Reste a l'ecran.
-func defeat(text: String) -> void:
-	# L'encre recouvre l'ecran : elle prend les clics, son propre bouton mene au menu.
+## Fin de la run : victoire, un voile puis le rouleau du bilan ; echec, les fissures et l'encre noire d'abord.
+## Le rouleau porte le titre, le bilan (summary) et le sceau du menu. Reste a l'ecran.
+func run_over(won: bool, summary: Control) -> void:
+	# Le rouleau couvre l'ecran : il prend les clics, son propre sceau mene au menu.
 	mouse_filter = MOUSE_FILTER_STOP
-	var ink := ColorRect.new()
-	ink.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	ink.mouse_filter = MOUSE_FILTER_IGNORE
-	var shader := ShaderMaterial.new()
-	shader.shader = INK_SHADER
-	ink.material = shader
-	add_child(ink)
+	var animated := not settings.reduce_motion and feel.defeat_time > 0.0
+	var backdrop: ColorRect = null
+	if not won:
+		backdrop = ColorRect.new()
+		var shader := ShaderMaterial.new()
+		shader.shader = INK_SHADER
+		backdrop.material = shader
+	var veil := PanelContainer.new()
+	veil.theme_type_variation = &"Veil"
+	veil.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	veil.mouse_filter = MOUSE_FILTER_IGNORE
+	if backdrop != null:
+		backdrop.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+		backdrop.mouse_filter = MOUSE_FILTER_IGNORE
+		add_child(backdrop)
+	else:
+		add_child(veil)
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	var scroll := ScrollPanel.new()
 	var column := VBoxContainer.new()
-	var label := Label.new()
-	label.theme_type_variation = &"HandAnnounce"
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	column.add_child(label)
+	column.add_theme_constant_override(&"separation", get_theme_constant(&"separation", &"ScrollPanel"))
+	var title := SideColumn.make_label(&"ScrollTitle", "UI_RUN_WON" if won else "UI_RUN_LOST")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
+	column.add_child(title)
+	column.add_child(summary)
 	var button := Button.new()
+	button.theme_type_variation = &"SealButton"
 	button.text = "UI_MENU"
 	button.size_flags_horizontal = SIZE_SHRINK_CENTER
 	button.pressed.connect(menu_requested.emit)
 	column.add_child(button)
-	center.add_child(column)
+	scroll.add_child(column)
+	center.add_child(scroll)
 	add_child(center)
-	if settings.reduce_motion or feel.defeat_time <= 0.0:
-		shader.set_shader_parameter(&"progress", 1.0)
+	if not animated:
+		if backdrop != null:
+			(backdrop.material as ShaderMaterial).set_shader_parameter(&"progress", 1.0)
 		return
-	center.modulate.a = 0.0
-	var tween := create_tween()
-	tween.tween_method(func(value: float) -> void: shader.set_shader_parameter(&"progress", value), 0.0, 1.0, feel.defeat_time)
-	tween.tween_property(center, "modulate:a", 1.0, feel.defeat_time * 0.2)
-	await tween.finished
+	if backdrop != null:
+		center.modulate.a = 0.0
+		var tween := create_tween()
+		tween.tween_method(func(value: float) -> void: (backdrop.material as ShaderMaterial).set_shader_parameter(&"progress", value),
+			0.0, 1.0, feel.defeat_time)
+		tween.tween_callback(scroll.unroll.bind(get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0))
+		tween.tween_property(center, "modulate:a", 1.0, feel.defeat_time * 0.1)
+		await tween.finished
+	else:
+		scroll.unroll(get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 
 
 func _wave() -> void:

@@ -1,5 +1,5 @@
 extends Control
-## Page des statistiques du profil.
+## Page des statistiques du profil, sur un rouleau : une ligne « nom ..... valeur » par statistique.
 
 signal back_requested
 
@@ -13,6 +13,7 @@ func _ready() -> void:
 	if content == null:
 		content = GameContent.load_default()
 	%BackButton.pressed.connect(back_requested.emit)
+	%Scroll.unroll(get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 	_add_row("UI_STATS_RUNS", str(profile.runs_started))
 	_add_row("UI_STATS_WINS", str(profile.runs_won))
 	_add_row("UI_STATS_WIN_RATE", "%d %%" % _win_rate())
@@ -23,12 +24,7 @@ func _ready() -> void:
 
 
 func _add_row(name_key: String, value: String) -> void:
-	var name_label := Label.new()
-	name_label.text = tr(name_key)
-	var value_label := Label.new()
-	value_label.text = value
-	%Grid.add_child(name_label)
-	%Grid.add_child(value_label)
+	%Grid.add_child(ScrollRows.row(name_key, value))
 
 
 func _win_rate() -> int:

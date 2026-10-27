@@ -303,7 +303,8 @@ func test_echec_recouvre_l_ecran_et_mene_au_menu() -> void:
 	_play_first_card(screen)
 	await wait_physics_frames(2)
 	var buttons: Array[Node] = screen._round_end.find_children("*", "Button", true, false)
-	assert_eq(buttons.size(), 1, "bouton du menu sur l'encre")
+	assert_eq(buttons.size(), 1, "sceau du menu sur le rouleau du bilan")
+	assert_eq(screen._round_end.find_children("*", "ScrollPanel", true, false).size(), 1, "rouleau du bilan")
 	assert_eq(screen._round_end.mouse_filter, Control.MOUSE_FILTER_STOP, "l'encre prend les clics")
 	(buttons[0] as Button).pressed.emit()
 	assert_signal_emitted(screen, "menu_requested")
@@ -400,3 +401,21 @@ func test_orbes_instantanees_si_on_reduit_les_animations() -> void:
 	_play_first_card(screen)
 	assert_false(hits.is_empty(), "case eclairee tout de suite")
 	assert_eq(screen._sequence.find_children("*", "Sprite2D", false, false).size(), 0, "pas d'orbe")
+
+
+func test_victoire_de_la_run_en_rouleau() -> void:
+	var end := RoundEnd.new()
+	end.feel = _instant_end()
+	add_child_autofree(end)
+	watch_signals(end)
+	end.run_over(true, Label.new())
+	assert_eq(end.find_children("*", "ColorRect", true, false).size(), 0, "pas d'encre noire a la victoire")
+	(end.find_children("*", "Button", true, false)[0] as Button).pressed.emit()
+	assert_signal_emitted(end, "menu_requested")
+
+
+func test_voie_de_cultivation_en_rouleau() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen.get_node("%SideColumn").path_requested.emit()
+	var overlays := screen.get_children().filter(func(node: Node) -> bool: return node is ScrollOverlay)
+	assert_eq(overlays.size(), 1)
