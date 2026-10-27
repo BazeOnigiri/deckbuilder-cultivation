@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Perle des marees : perle lumineuse posee sur trois vagues. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="32" cy="24" r="13" stroke-width="2.5" fill="#ffffff" fill-opacity="0.35"/>
+    <path d="M25 18 Q28 13 34 13" stroke-width="2.2"/>
+    <path d="M8 44 Q14 38 20 44 Q26 50 32 44 Q38 38 44 44 Q50 50 56 44" stroke-width="2.5"/>
+    <path d="M12 52 Q17 47 22 52 Q27 57 32 52 Q37 47 42 52 Q47 57 52 52" stroke-width="2" stroke-opacity="0.75"/>
+    <path d="M18 59 Q25 55 32 59 Q39 55 46 59" stroke-width="1.6" stroke-opacity="0.5"/>
+  </g>
+</svg>

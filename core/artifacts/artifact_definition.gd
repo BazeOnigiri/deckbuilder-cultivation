@@ -5,6 +5,10 @@ extends Resource
 @export var id: StringName = &""
 @export var name_key: String = ""
 @export var description_key: String = ""
+## Caractere dessine dans son emplacement (police des sceaux, ui/fonts/MaShanZheng-Sceaux.ttf).
+@export var glyph: String = ""
+## Dessin de l'emplacement (SVG blanc teinte par l'interface). Vide : le glyphe sert de repli.
+@export var icon: Texture2D
 ## Prix en pierres spirituelles (utilise par la boutique).
 @export var price: int = 0
 @export var effects: Array[ArtifactEffect] = []

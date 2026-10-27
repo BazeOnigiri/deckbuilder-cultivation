@@ -16,27 +16,26 @@ ELEMENT_FEU,Feu,Fire
 ELEMENT_TERRE,Terre,Earth
 ELEMENT_METAL,Métal,Metal
 ELEMENT_EAU,Eau,Water
-UI_ROUND_INFO,Score : %d / %d    Mains : %d    Défausses : %d,Score: %d / %d    Hands: %d    Discards: %d
-UI_LAST_HAND,%s (niv. %d) : %d Qi x %.1f = %d,%s (lv. %d): %d Qi x %.1f = %d
-UI_PLAY,Jouer,Play
+UI_PLAY,Jouer la main,Play hand
 UI_DISCARD,Défausser,Discard
-UI_ROUND_WON,Goulot franchi !,Bottleneck broken!
 UI_CREDITS,Crédits,Credits
 UI_CREDITS_INTRO,Ce jeu utilise le moteur Godot (godotengine.org).,This game uses the Godot Engine (godotengine.org).
+UI_CREDITS_GAME,Wu Xing : conception et code par BazeOnigiri. Dessins SVG et shaders écrits à la main.,Wu Xing: design and code by BazeOnigiri. Hand-written SVG drawings and shaders.
+UI_CREDITS_FONTS,Polices : Noto Serif et Ma Shan Zheng (SIL Open Font License 1.1).,Fonts: Noto Serif and Ma Shan Zheng (SIL Open Font License 1.1).
 REALM_RAFFINEMENT_QI,Raffinement du Qi,Qi Refining
 REALM_FONDATIONS,Établissement des fondations,Foundation Establishment
 REALM_NOYAU_OR,Noyau d'or,Golden Core
 BOTTLENECK_PETIT,Petit goulot,Minor Bottleneck
 BOTTLENECK_GRAND,Grand goulot,Major Bottleneck
 UI_STAGE,%s : %s,%s: %s
-UI_TITLE,Deckbuilder Cultivation,Deckbuilder Cultivation
+UI_TITLE,Wu Xing,Wu Xing
+UI_TAGLINE,Le cycle des cinq phases,The cycle of the five phases
 UI_NEW_RUN,Nouvelle partie,New run
 UI_CONTINUE,Continuer,Continue
 UI_MENU,Menu principal,Main menu
 UI_RUN_WON,Tu as atteint le sommet de la cultivation !,You reached the peak of cultivation!
 UI_RUN_LOST,Échec de la percée. La run est terminée.,Breakthrough failed. The run is over.
 UI_STONES,Pierres spirituelles : %d,Spirit stones: %d
-UI_REWARD,+%d pierres (goulot %d + mains %d + intérêts %d),+%d stones (bottleneck %d + hands %d + interest %d)
 ARTIFACT_EPEE_VOLANTE,Épée volante de jade,Flying Jade Sword
 ARTIFACT_EPEE_VOLANTE_DESC,+15 Qi à chaque main jouée.,+15 Qi on every hand played.
 ARTIFACT_GOURDE_ELIXIR,Gourde d'élixir,Elixir Gourd
@@ -47,12 +46,9 @@ ARTIFACT_PERLE_MAREES,Perle des marées,Tidal Pearl
 ARTIFACT_PERLE_MAREES_DESC,+1 Compréhension pour chaque carte Eau qui compte.,+1 Comprehension for each scoring Water card.
 ARTIFACT_MIROIR_JUMEAU,Miroir jumeau,Twin Mirror
 ARTIFACT_MIROIR_JUMEAU_DESC,x2 Compréhension si la main est une Paire ou une Double paire.,x2 Comprehension if the hand is a Pair or Two Pair.
-UI_ARTIFACTS,Artefacts : %s,Artifacts: %s
 UI_NONE,aucun,none
 UI_SHOP,Boutique,Shop
-UI_SHOP_OFFER,%s (%d pierres),%s (%d stones)
-UI_SHOP_REROLL,Relancer (%d pierres),Reroll (%d stones)
-UI_MANUAL_OFFER,Manuel : %s (%d pierres),Manual: %s (%d stones)
+UI_SHOP_REROLL,Relancer %d,Reroll %d
 UI_MANUAL_DESC,%s gagne un niveau : +%d Qi et +%d Compréhension.,%s gains a level: +%d Qi and +%d Comprehension.
 PILL_FEU_CELESTE,Pilule du feu céleste,Celestial Fire Pill
 PILL_FEU_CELESTE_DESC,Change jusqu'à 3 cartes sélectionnées en Feu.,Turns up to 3 selected cards into Fire.
@@ -62,7 +58,6 @@ PILL_RAFFINEMENT,Pilule de raffinement,Refining Pill
 PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (9 maximum).,+1 rank to up to 2 selected cards (9 maximum).
 PILL_PURIFICATION,Pilule de purification,Purification Pill
 PILL_PURIFICATION_DESC,Détruit jusqu'à 2 cartes sélectionnées pour le reste de la run.,Destroys up to 2 selected cards for the rest of the run.
-UI_USE_PILL,Utiliser : %s,Use: %s
 BOTTLENECK_TRIBULATION_FLAMMES,Tribulation des flammes célestes,Tribulation of Celestial Flames
 BOTTLENECK_TRIBULATION_VENT_NOIR,Tribulation du vent noir,Tribulation of the Black Wind
 BOTTLENECK_TRIBULATION_DEMON,Tribulation du démon intérieur,Tribulation of the Inner Demon
@@ -78,30 +73,61 @@ UI_STATS_BEST_REALM,Meilleur royaume atteint,Best realm reached
 UI_STATS_BEST_HAND_SCORE,Meilleur score d'une main,Best hand score
 UI_STATS_HANDS_PLAYED,Mains jouées,Hands played
 UI_STATS_FAVORITE_HAND,Main favorite,Favorite hand
-UI_STATS_HAND_COUNT,%s (%d fois),%s (%d times)
 UI_BACK,Retour,Back
-UI_INFO_BUTTON,Infos,Info
 UI_RUN_INFO,Infos de la run,Run info
 UI_INFO_TAB_HANDS,Mains,Hands
 UI_INFO_TAB_PATH,Parcours,Path
 UI_INFO_TAB_RUN,Run,Run
-UI_INFO_HAND,Main,Hand
 UI_INFO_LEVEL,Niveau,Level
-UI_INFO_VALUE,Qi x Compréhension,Qi x Comprehension
-UI_INFO_VALUE_FORMAT,%d x %d,%d x %d
-UI_INFO_PLAYED,Jouée,Played
 UI_INFO_TARGET,Objectif,Target
-UI_INFO_CONSTRAINT,Contrainte,Constraint
-UI_INFO_STATE,État,State
 UI_INFO_CLEARED,Franchi,Cleared
 UI_INFO_CURRENT,En cours,Current
 UI_INFO_UPCOMING,À venir,Upcoming
 UI_INFO_DISCARDS,Défausses utilisées,Discards used
 UI_INFO_STONES,Pierres gagnées,Stones earned
 UI_INFO_CLEARED_COUNT,Goulots franchis,Bottlenecks cleared
-UI_START_RUN,Commencer,Start
+UI_ABANDON_RESTART,Abandonner et recommencer,Abandon and restart
 UI_NEW_RUN_WARNING,Commencer une nouvelle partie effacera la partie en cours.,Starting a new run will erase the current run.
 UI_SAVED_STAGE,Prochain goulot,Next bottleneck
 UI_SAVED_STONES,Pierres spirituelles,Spirit stones
 UI_SAVED_ARTIFACTS,Artefacts,Artifacts
 UI_SAVED_PILLS,Pilules,Pills
+UI_OPTIONS_BUTTON,Options,Options
+UI_OPTIONS_TITLE,Options,Options
+UI_OPTIONS_REDUCE_MOTION,Réduire les animations,Reduce motion
+UI_OPTIONS_GAME_SPEED,Vitesse de jeu,Game speed
+UI_OPTIONS_SPEED_ITEM,x%s,x%s
+UI_OPTIONS_FULLSCREEN,Plein écran,Fullscreen
+UI_OPTIONS_MENU,Retour au menu,Back to menu
+UI_OPTIONS_NEW_RUN,Nouvelle partie,New run
+UI_OPTIONS_NEW_RUN_CONFIRM,Abandonner la partie en cours et en commencer une nouvelle ?,Abandon the current run and start a new one?
+UI_CANCEL,Annuler,Cancel
+UI_CLOSE,Fermer,Close
+UI_SIDE_TARGET,Atteindre,Reach
+UI_SIDE_TO_WIN,pour gagner,to win
+UI_SIDE_ROUND_QI,Qi du round,Round Qi
+UI_SIDE_NO_HAND,Choisis des cartes,Choose cards
+UI_SIDE_LEVEL,niv. %d,lv. %d
+UI_SIDE_QI,Qi,Qi
+UI_SIDE_COMPREHENSION,Compréhension,Comprehension
+UI_SIDE_HANDS,Mains,Hands
+UI_SIDE_DISCARDS,Défausses,Discards
+UI_SIDE_REALM,Royaume,Realm
+UI_SIDE_BOTTLENECK,Goulot,Bottleneck
+UI_SIDE_OF,%d/%d,%d/%d
+UI_SIDE_PATH,Voie de cultivation,Cultivation path
+UI_ITEMS_ARTIFACTS,Artefacts %d/%d,Artifacts %d/%d
+UI_ITEMS_PILLS,Pilules %d/%d,Pills %d/%d
+UI_SORT_RANK,Rang,Rank
+UI_SORT_ELEMENT,Élément,Element
+UI_DECK,Paquet,Deck
+UI_DECK_VIEW,Tout le paquet,Full deck
+UI_DECK_VIEW_CLOSE,Cliquer ou Échap pour fermer,Click or Esc to close
+UI_SHOP_LEVEL_UP,%s passe au niveau %d : %d x %d devient %d x %d,%s reaches level %d: %d x %d becomes %d x %d
+UI_QUIT,Quitter le jeu,Quit game
+UI_INFO_TIMES,x,x
+UI_INFO_PLAYED_COUNT,Jouée %d fois,Played %d times
+UI_STATS_TOP_HANDS,Mains les plus jouées,Most played hands
+UI_OPTIONS_MASTER_VOLUME,Volume général,Master volume
+UI_OPTIONS_MUSIC_VOLUME,Musique,Music
+UI_OPTIONS_EFFECTS_VOLUME,Effets sonores,Sound effects

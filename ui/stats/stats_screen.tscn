@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://ui/stats/stats_screen.gd" id="1"]
+[ext_resource type="Script" path="res://ui/kit/scroll_panel.gd" id="2"]
 
 [node name="StatsScreen" type="Control"]
 layout_mode = 3
@@ -19,23 +20,51 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Layout" type="VBoxContainer" parent="Center"]
+[node name="Scroll" type="PanelContainer" parent="Center"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 32
+script = ExtResource("2")
 
-[node name="Title" type="Label" parent="Center/Layout"]
+[node name="Layout" type="VBoxContainer" parent="Center/Scroll"]
+custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Center/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"ScrollTitle"
 text = "UI_STATS_TITLE"
 horizontal_alignment = 1
 
-[node name="Grid" type="GridContainer" parent="Center/Layout"]
+[node name="Grid" type="HFlowContainer" parent="Center/Scroll/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/h_separation = 48
-theme_override_constants/v_separation = 12
-columns = 2
+alignment = 1
 
-[node name="BackButton" type="Button" parent="Center/Layout"]
+[node name="RealmCaption" type="Label" parent="Center/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"ScrollCaption"
+text = "UI_STATS_BEST_REALM"
+horizontal_alignment = 1
+
+[node name="BestRealm" type="Label" parent="Center/Scroll/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"ScrollTitle"
+horizontal_alignment = 1
+
+[node name="BarsCaption" type="Label" parent="Center/Scroll/Layout"]
+layout_mode = 2
+theme_type_variation = &"ScrollCaption"
+text = "UI_STATS_TOP_HANDS"
+
+[node name="Bars" type="VBoxContainer" parent="Center/Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Center/Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"SealButton"
 text = "UI_BACK"

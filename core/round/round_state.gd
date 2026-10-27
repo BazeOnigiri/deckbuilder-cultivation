@@ -46,6 +46,36 @@ func hand() -> Array[CardInstance]:
 	return _deck.hand
 
 
+## Cartes encore dans la pioche (compteur de la pioche a l'ecran).
+func draw_count() -> int:
+	return _deck.draw_pile.size()
+
+
+func deck_size() -> int:
+	return _deck.total_count()
+
+
+## Toutes les cartes de la run, toutes piles confondues (vue du paquet).
+func deck_cards() -> Array[CardInstance]:
+	return _deck.all_cards()
+
+
+func in_draw_pile(card: CardInstance) -> bool:
+	return _deck.draw_pile.has(card)
+
+
+## Faux si la tribulation scelle cette carte : jouee, elle ne compte pas.
+func counts(card: CardInstance) -> bool:
+	return _constraint.counts(card)
+
+
+## Main que formeraient ces cartes, sans rien jouer (apercu de la selection). null si la selection est refusee.
+func preview(cards: Array[CardInstance]) -> HandResult:
+	if not _valid_selection(cards):
+		return null
+	return _evaluator.evaluate(cards)
+
+
 ## Renvoie le score du coup, ou null si le coup est refuse (rien ne change alors).
 func play(cards: Array[CardInstance]) -> ScoreContext:
 	if status != Status.PLAYING or hands_left <= 0 or not _valid_selection(cards):
@@ -57,11 +87,11 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 	# Filtrer avant les artefacts : une carte qui ne compte pas ne declenche pas non plus CARD_SCORED.
 	var counted: Array[CardInstance] = []
 	for card: CardInstance in result.scoring_cards:
-		if _constraint.counts(card):
+		if counts(card):
 			counted.append(card)
 	result.scoring_cards = counted
-	var effects := ArtifactResolver.effects_for(_artifacts, result)
-	var context := ScoringPipeline.score(result, effects, _levels.level_of(result.definition.id))
+	var effects := ArtifactResolver.triggered_for(_artifacts, result)
+	var context := ScoringPipeline.score_triggered(result, effects, _levels.level_of(result.definition.id))
 	score += context.total()
 	hands_left -= 1
 	hand_played.emit(result, context)

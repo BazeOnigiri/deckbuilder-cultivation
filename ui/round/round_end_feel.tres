@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="RoundEndFeel" format=3]
+
+[ext_resource type="Script" path="res://ui/round/round_end_feel.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+seal_time = 1.1
+seal_drop = 120.0
+wave_time = 1.1
+wave_width = 0.06
+wave_echo = 0.15
+victory_color = Color(0.7882, 0.651, 0.3529, 1)
+victory_flash = 0.3
+victory_flash_time = 0.6
+victory_pulse = 0.6
+victory_pulse_time = 1.6
+crystal_max = 10
+crystal_time = 0.5
+crystal_stagger = 0.05
+crystal_size = 16.0
+crystal_fall = 160.0
+stones_bump = 1.25
+defeat_time = 2.4
+victory_music = &"musique_victoire"
+defeat_music = &"musique_defaite"
+music_fade = 1.2

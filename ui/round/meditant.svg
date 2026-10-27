@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Meditant en tailleur, silhouette pleine blanche : le shader meditant.gdshader la remplit de qi.
+       Bras traces a part du torse : le vide entre les deux fait lire la posture. -->
+  <g fill="#ffffff">
+    <!-- Tete et chignon -->
+    <circle cx="50" cy="19" r="8"/>
+    <circle cx="50" cy="9" r="3.5"/>
+    <!-- Cou et torse, epaules larges, taille plus fine -->
+    <path d="M46 26 L54 26 L55 30 Q63 31 64 36 L60 58 L40 58 L36 36 Q37 31 45 30 Z"/>
+    <!-- Jambes croisees : deux genoux arrondis et le pied croise au milieu -->
+    <path d="M12 78 Q12 66 28 63 L72 63 Q88 66 88 78 Q88 84 80 84 Q66 76 50 80 Q34 76 20 84 Q12 84 12 78 Z"/>
+    <ellipse cx="50" cy="74" rx="14" ry="5"/>
+  </g>
+  <!-- Bras : de l'epaule au coude vers l'exterieur, puis l'avant-bras rejoint les mains jointes -->
+  <g fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M37 34 Q27 44 28 56 Q34 64 46 65"/>
+    <path d="M63 34 Q73 44 72 56 Q66 64 54 65"/>
+  </g>
+  <!-- Mains jointes dans le giron -->
+  <ellipse cx="50" cy="65" rx="6" ry="3.5" fill="#ffffff"/>
+</svg>

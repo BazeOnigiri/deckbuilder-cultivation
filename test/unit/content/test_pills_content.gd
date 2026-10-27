@@ -28,3 +28,14 @@ func test_ids_uniques() -> void:
 	for pill: PillDefinition in _pills:
 		assert_false(ids.has(pill.id), "id en double : %s" % pill.id)
 		ids[pill.id] = true
+
+## Le glyphe est dessine dans l'emplacement : un seul caractere, present dans la police des sceaux, distinct des autres.
+func test_glyphe_unique_et_dans_la_police() -> void:
+	var font: FontFile = load("res://ui/fonts/MaShanZheng-Sceaux.ttf")
+	var seen: Dictionary = {}
+	for item: PillDefinition in _pills:
+		assert_eq(item.glyph.length(), 1, "glyphe d'un caractere : %s" % item.id)
+		if item.glyph.length() == 1:
+			assert_true(font.has_char(item.glyph.unicode_at(0)), "glyphe absent de la police : %s" % item.id)
+		assert_false(seen.has(item.glyph), "glyphe en double : %s" % item.id)
+		seen[item.glyph] = true

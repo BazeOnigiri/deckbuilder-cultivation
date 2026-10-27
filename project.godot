@@ -15,6 +15,11 @@ run/main_scene="res://ui/main/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Ambiance="*res://ui/theme/ambiance.tscn"
+Sons="*res://ui/audio/sound_bank.gd"
+
 [display]
 
 window/stretch/mode="canvas_items"
@@ -27,6 +32,10 @@ project/assembly_name="deckbuilder-cultivation"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[gui]
+
+theme/custom="uid://cqoir5fnb7fno"
 
 [internationalization]
 
@@ -41,3 +50,19 @@ locale/translations=PackedStringArray("res://localization/textes.fr.translation"
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.05882353, 0.08627451, 0.1254902, 1)
+
+[shader_globals]
+
+motion_scale={
+"type": "float",
+"value": 1.0
+}
+pulse_color={
+"type": "color",
+"value": Color(0, 0, 0, 1)
+}
+pulse_strength={
+"type": "float",
+"value": 0.0
+}

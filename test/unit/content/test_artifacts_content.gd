@@ -23,6 +23,12 @@ func test_tous_les_artefacts_valides() -> void:
 		assert_true(artifact.is_valid(), "artefact invalide : %s" % artifact.resource_path)
 
 
+## Ajouter un artefact = son .tres + son SVG dans content/artifacts/icones/.
+func test_chaque_artefact_a_une_icone() -> void:
+	for artifact: ArtifactDefinition in _artifacts:
+		assert_not_null(artifact.icon, "artefact sans icone : %s" % artifact.id)
+
+
 func test_ids_uniques() -> void:
 	var ids: Dictionary = {}
 	for artifact: ArtifactDefinition in _artifacts:
@@ -42,3 +48,14 @@ func test_mains_referencees_existent() -> void:
 				continue
 			for hand_id: String in condition.hand_ids:
 				assert_true(hand_ids.has(hand_id), "%s : main inconnue %s" % [artifact.id, hand_id])
+
+## Le glyphe est dessine dans l'emplacement : un seul caractere, present dans la police des sceaux, distinct des autres.
+func test_glyphe_unique_et_dans_la_police() -> void:
+	var font: FontFile = load("res://ui/fonts/MaShanZheng-Sceaux.ttf")
+	var seen: Dictionary = {}
+	for item: ArtifactDefinition in _artifacts:
+		assert_eq(item.glyph.length(), 1, "glyphe d'un caractere : %s" % item.id)
+		if item.glyph.length() == 1:
+			assert_true(font.has_char(item.glyph.unicode_at(0)), "glyphe absent de la police : %s" % item.id)
+		assert_false(seen.has(item.glyph), "glyphe en double : %s" % item.id)
+		seen[item.glyph] = true

@@ -197,3 +197,48 @@ func test_main_et_pioche_vides_hors_coup_font_perdre() -> void:
 func _destroy(r: RoundState, cards: Array[CardInstance]) -> void:
 	var deck: DeckState = r.get("_deck")
 	DestroyPillEffect.new().apply(cards, deck)
+
+func test_apercu_reconnait_la_main_sans_jouer() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100)
+	var hand_before: Array[CardInstance] = r.hand().duplicate()
+	var result := r.preview(_pick(r, 5))
+	assert_not_null(result)
+	assert_eq(result.definition.id, "test")
+	assert_eq(r.score, 0)
+	assert_eq(r.hands_left, 3)
+	assert_eq(r.hand(), hand_before)
+
+
+func test_apercu_d_une_selection_invalide_est_nul() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100)
+	var empty: Array[CardInstance] = []
+	assert_null(r.preview(empty))
+	assert_null(r.preview(_first(r, MAX_SELECTED + 1)))
+
+
+func test_pioche_diminue_quand_on_pioche() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8, 9, 1], 8, 100)
+	assert_eq(r.deck_size(), 10)
+	assert_eq(r.draw_count(), 2)
+	r.discard(_first(r, 2))
+	assert_eq(r.draw_count(), 0, "deux cartes repiochees")
+
+
+func test_paquet_complet_et_cartes_dans_la_pioche() -> void:
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8, 9, 1], 8, 100)
+	r.discard(_first(r, 1))
+	var cards := r.deck_cards()
+	assert_eq(cards.size(), r.deck_size())
+	var in_pile: int = cards.filter(r.in_draw_pile).size()
+	assert_eq(in_pile, r.draw_count())
+	assert_false(r.in_draw_pile(r.hand()[0]), "carte en main : hors de la pioche")
+
+
+func test_carte_scellee_reconnue_avant_de_jouer() -> void:
+	var seal := ElementSealConstraint.new()
+	seal.element = Element.Type.FEU
+	var r := _round([1, 2, 3, 4, 5, 6, 7, 8], 8, 100, 3, 1, [], null, seal)
+	var card: CardInstance = r.hand()[0]
+	assert_true(r.counts(card), "carte de bois : pas scellee")
+	card.element = Element.Type.FEU
+	assert_false(r.counts(card))

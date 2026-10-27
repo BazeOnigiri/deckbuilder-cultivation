@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="ScoreFeel" format=3]
+
+[ext_resource type="Script" path="res://ui/round/score_feel.gd" id="1_feel"]
+
+[resource]
+script = ExtResource("1_feel")
+start_delay = 0.35
+step_delay = 0.4
+end_delay = 0.9
+roll_time = 0.25
+total_font_size = 22
+orb_time = 0.35
+orb_size = 32.0
+orb_mult_size = 48.0
+orb_arc = 0.25
+glow_time = 0.5
+hit_flash = Color(1.6, 1.6, 1.6, 1)
+hit_scale = 1.25
+hit_time = 0.3
+qi_color = Color(0.372549, 0.658824, 0.541176, 1)
+comprehension_color = Color(0.788235, 0.635294, 0.305882, 1)
+shake_max = 8.0
+shake_time = 0.35
+pulse_strength = 0.25
+pulse_time = 1.2
+particle_amount = 18
+particle_lifetime = 0.7
+particle_speed = 120.0
+slot_pulse_scale = 1.15
+slot_pulse_time = 0.3
+announce_time = 0.8
+announce_tilt = -4.0
+flash_max = 0.18
+flash_time = 0.4
+flash_color = Color(0.9098, 0.8824, 0.8157, 1)
+banner_flicker_color = Color(1.25, 0.85, 0.75, 1)
+banner_flicker_time = 0.9

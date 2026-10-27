@@ -1,0 +1,83 @@
+extends GutTest
+## Lecteur de sons : sons par ID, gamme de note_carte, voix reprises au-dela du maximum, volumes vers les bus.
+
+var _bank: SoundBank
+
+
+func before_each() -> void:
+	_bank = add_child_autofree(SoundBank.new())
+	_bank.rng.seed = 7
+
+
+func after_each() -> void:
+	# Les bus sont globaux : on remet les volumes par defaut pour les autres tests.
+	Sons.apply_volumes(GameSettings.new())
+
+
+func test_son_connu_joue_sur_son_bus() -> void:
+	var voice := _bank.play(&"ui_clic")
+	assert_not_null(voice)
+	assert_eq(voice.bus, &"Effets")
+	assert_true(voice.stream is AudioStreamWAV)
+
+
+func test_jamais_deux_fois_la_meme_prise_de_suite() -> void:
+	var used := {}
+	var previous: AudioStream = null
+	for i: int in 40:
+		var stream := _bank.play(&"ui_clic").stream
+		assert_ne(stream, previous, "meme prise deux fois de suite")
+		previous = stream
+		used[stream] = true
+	var cue: SoundCue = load("res://content/sons/ui_clic.tres")
+	assert_eq(used.size(), cue.streams.size(), "toutes les prises finissent par sortir")
+
+
+func test_son_inconnu_ne_joue_rien() -> void:
+	assert_null(_bank.play(&"son_qui_n_existe_pas"))
+
+
+func test_note_de_carte_monte_dans_la_gamme() -> void:
+	var cue: SoundCue = load("res://content/sons/note_carte.tres")
+	assert_eq(cue.pitch_for(0), 1.0)
+	assert_almost_eq(cue.pitch_for(3), pow(2.0, 7 / 12.0), 0.0001, "4e note de la gamme pentatonique : quinte")
+	assert_almost_eq(cue.pitch_for(5), 2.0, 0.0001, "apres la gamme : l'octave")
+	assert_almost_eq(_bank.play(&"note_carte", 5).pitch_scale, 2.0, 0.0001, "pas de variation au hasard sur une note")
+
+
+func test_voix_reprises_au_dela_du_maximum() -> void:
+	var voices := {}
+	for i: int in SoundBank.VOICES + 3:
+		voices[_bank.play(&"victoire")] = true
+	assert_eq(voices.size(), SoundBank.VOICES)
+
+
+func test_volume_nul_coupe_le_bus() -> void:
+	var settings := GameSettings.new()
+	settings.music_volume = 0.0
+	settings.effects_volume = 0.5
+	_bank.apply_volumes(settings)
+	assert_true(AudioServer.is_bus_mute(AudioServer.get_bus_index(&"Musique")))
+	var effects := AudioServer.get_bus_index(&"Effets")
+	assert_false(AudioServer.is_bus_mute(effects))
+	assert_almost_eq(AudioServer.get_bus_volume_db(effects), linear_to_db(0.5), 0.01)
+
+
+func test_variantes_synchronisees() -> void:
+	_bank.play_music(&"musique_nuit", 0.0)
+	assert_true(_bank.is_music_playing())
+	assert_gt(_bank.music_volume_db(&"musique_nuit"), SoundBank.SILENT_DB)
+	assert_eq(_bank.music_volume_db(&"musique_boutique"), SoundBank.SILENT_DB)
+	_bank.play_music(&"musique_boutique", 0.1)
+	await wait_seconds(0.2)
+	assert_eq(_bank.music_volume_db(&"musique_nuit"), SoundBank.SILENT_DB, "la nuit s'est tue")
+	assert_gt(_bank.music_volume_db(&"musique_boutique"), SoundBank.SILENT_DB)
+	assert_true(_bank.is_music_playing(), "meme lecture : la musique ne reprend pas au debut")
+	_bank.play_music(&"", 0.0)
+	assert_false(_bank.is_music_playing(), "silence")
+
+
+func test_musique_inconnue_ignoree() -> void:
+	_bank.play_music(&"musique_nuit", 0.0)
+	_bank.play_music(&"musique_qui_n_existe_pas", 0.0)
+	assert_eq(_bank.music_id(), &"musique_nuit")

@@ -71,3 +71,15 @@ func test_ordre_d_acquisition_conserve() -> void:
 	var effects := ArtifactResolver.effects_for(artifacts, _result("main_paire", [[C.FEU, 4]]))
 	assert_eq(effects[0].amount, 1.0)
 	assert_eq(effects[1].amount, 2.0)
+
+func test_effet_declenche_garde_son_artefact_et_sa_carte() -> void:
+	var artifacts := _artifacts([
+		_effect(ArtifactEffect.Trigger.HAND_PLAYED, null, 10.0),
+		_effect(ArtifactEffect.Trigger.CARD_SCORED, _element(C.FEU), 2.0),
+	])
+	var result := _result("main_paire", [[C.FEU, 4], [C.EAU, 4]])
+	var triggered := ArtifactResolver.triggered_for(artifacts, result)
+	assert_eq(triggered.size(), 2)
+	assert_eq(triggered[0].source, artifacts[0])
+	assert_null(triggered[0].card, "main jouee : pas de carte")
+	assert_eq(triggered[1].card, result.scoring_cards[0], "la carte Feu")

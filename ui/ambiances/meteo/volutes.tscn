@@ -1,0 +1,88 @@
+[gd_scene format=3]
+
+[sub_resource type="Gradient" id="fondu"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="tache"]
+gradient = SubResource("fondu")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="GradientTexture2D" id="braise"]
+gradient = SubResource("fondu")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="vie"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.12, 0.0, 0.15, 0, 0.12, 0.0, 0.15, 0.55, 0.12, 0.0, 0.15, 0)
+
+[sub_resource type="Gradient" id="vie_brume"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.5, 0.1, 0.45, 0, 0.5, 0.1, 0.45, 0.22, 0.5, 0.1, 0.45, 0)
+
+[sub_resource type="Gradient" id="vie_braise"]
+offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
+colors = PackedColorArray(0.9, 0.1, 0.25, 0, 0.9, 0.1, 0.25, 0.9, 0.9, 0.1, 0.25, 0.9, 0.9, 0.1, 0.25, 0)
+
+[node name="Volutes" type="Node2D"]
+
+[node name="Ombres" type="CPUParticles2D" parent="."]
+position = Vector2(576, 324)
+amount = 14
+lifetime = 12.0
+preprocess = 12.0
+texture = SubResource("tache")
+emission_shape = 3
+emission_rect_extents = Vector2(680, 360)
+spread = 180.0
+gravity = Vector2(0, -4)
+initial_velocity_min = 8.0
+initial_velocity_max = 20.0
+angular_velocity_min = -8.0
+angular_velocity_max = 8.0
+scale_amount_min = 3.0
+scale_amount_max = 6.0
+color_ramp = SubResource("vie")
+
+[node name="Brume" type="CPUParticles2D" parent="."]
+position = Vector2(576, 324)
+amount = 8
+lifetime = 9.0
+preprocess = 9.0
+texture = SubResource("tache")
+emission_shape = 3
+emission_rect_extents = Vector2(680, 360)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 5.0
+initial_velocity_max = 15.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color_ramp = SubResource("vie_brume")
+
+[node name="Braises" type="CPUParticles2D" parent="."]
+position = Vector2(576, -20)
+amount = 30
+lifetime = 10.0
+preprocess = 10.0
+texture = SubResource("braise")
+emission_shape = 3
+emission_rect_extents = Vector2(700, 10)
+direction = Vector2(0, 1)
+spread = 20.0
+gravity = Vector2(0, 4)
+initial_velocity_min = 25.0
+initial_velocity_max = 55.0
+tangential_accel_min = -10.0
+tangential_accel_max = 10.0
+scale_amount_min = 0.25
+scale_amount_max = 0.6
+color_ramp = SubResource("vie_braise")
+

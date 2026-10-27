@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SoundCue" format=3]
+
+[ext_resource type="Script" path="res://ui/audio/sound_cue.gd" id="1_cue"]
+[ext_resource type="AudioStream" path="res://audio/musique/musique_menu.wav" id="2_son"]
+
+[resource]
+script = ExtResource("1_cue")
+id = &"musique_menu"
+streams = Array[AudioStream]([ExtResource("2_son")])
+volume_db = -6.0
+bus = &"Musique"
+pitch_variance = 0.0
+volume_variance = 0.0
+scale = PackedInt32Array()

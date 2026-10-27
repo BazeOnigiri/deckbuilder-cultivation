@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AmbianceTheme" format=3]
+
+[ext_resource type="Script" path="res://ui/ambiances/ambiance_theme.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"nuit"
+base_color = Color(0.0588, 0.0863, 0.1255, 1)
+deep_color = Color(0.0314, 0.0471, 0.0706, 1)
+ink_color = Color(0.098, 0.1647, 0.1804, 1)
+speed = 0.02
+vignette = 0.45
+music = &"musique_nuit"

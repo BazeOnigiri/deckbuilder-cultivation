@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 26" width="48" height="26">
+  <!-- Interrupteur ouvert : capsule tracee a l'encre, pierre d'encre a gauche. -->
+  <rect x="2" y="3" width="44" height="20" rx="10" fill="#d9cfb8" stroke="#2a211a" stroke-width="2"/>
+  <circle cx="13" cy="13" r="7" fill="#5a4e42"/>
+</svg>

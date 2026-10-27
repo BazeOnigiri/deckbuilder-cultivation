@@ -1,0 +1,103 @@
+{
+	"note": "Theme du jeu : sol# mineur pentatonique (les cordes du Dan Tranh), 76 BPM, 16 mesures qui bouclent. Temps en noires depuis le debut de la mesure. Chaque arrangement melange les memes pistes a des volumes differents : ils jouent tous ensemble dans le jeu, synchronises, et changer d'ecran ne fait que monter l'un et baisser les autres.",
+	"bpm": 76,
+	"mesures": 16,
+	"temps_par_mesure": 4,
+	"swing": 0.1,
+	"frequence": 22050,
+	"accords": [
+		{"mesures": 2, "basse": "G#1", "notes": ["G#3", "B3", "D#4", "F#4"]},
+		{"mesures": 2, "basse": "E1", "notes": ["E3", "G#3", "B3", "D#4"]},
+		{"mesures": 2, "basse": "B1", "notes": ["B2", "C#3", "F#3", "B3"]},
+		{"mesures": 2, "basse": "F#1", "notes": ["F#3", "B3", "C#4"]},
+		{"mesures": 2, "basse": "G#1", "notes": ["G#3", "B3", "D#4", "F#4"]},
+		{"mesures": 2, "basse": "E1", "notes": ["E3", "G#3", "B3", "D#4"]},
+		{"mesures": 2, "basse": "C#2", "notes": ["C#3", "E3", "G#3", "B3"]},
+		{"mesures": 2, "basse": "D#2", "notes": ["D#3", "F#3", "B3"]}
+	],
+	"basse": [[0, 0, 0.9, 1.4], [2.5, 0, 0.55, 0.6], [3.5, 12, 0.35, 0.4]],
+	"arpeges": {
+		"arpege": {"source": "accord", "octave": 0, "motif": [[0.5, 0, 0.5, 0.75], [1.0, 1, 0.45, 0.75], [1.5, 2, 0.5, 0.75], [2.5, 1, 0.4, 0.75], [3.0, 3, 0.45, 0.75], [3.5, 2, 0.4, 0.75]]},
+		"arpege_haut": {"source": "accord", "octave": 12, "motif": [[0, 2, 0.4, 0.5], [0.75, 1, 0.3, 0.5], [1.5, 3, 0.35, 0.5], [2.25, 2, 0.3, 0.5], [3, 0, 0.35, 0.5], [3.5, 1, 0.3, 0.5]]},
+		"tremolo": {"source": "basse", "octave": 12, "motif": [[0, 0, 0.6, 0.25], [0.25, 0, 0.35, 0.25], [0.5, 0, 0.45, 0.25], [0.75, 0, 0.35, 0.25], [1, 0, 0.55, 0.25], [1.25, 0, 0.35, 0.25], [1.5, 0, 0.45, 0.25], [1.75, 0, 0.35, 0.25], [2, 1, 0.6, 0.25], [2.25, 1, 0.35, 0.25], [2.5, 1, 0.45, 0.25], [2.75, 1, 0.35, 0.25], [3, 0, 0.55, 0.25], [3.25, 0, 0.35, 0.25], [3.5, 0, 0.45, 0.25], [3.75, 0, 0.35, 0.25]]}
+	},
+	"nappes": {
+		"nappe": {"source": "accord", "intervalles": [0]},
+		"bourdon": {"source": "basse", "intervalles": [12, 13, 18], "note": "Demi-ton et triton au-dessus de la basse : dissonance de la tribulation demoniaque."}
+	},
+	"frappes": {
+		"tambour_doux": [[0, 0.8], [2.5, 0.55]],
+		"fente": [[1, 0.6], [3, 0.7]],
+		"bois": [[0.5, 0.35], [1.5, 0.3], [2.5, 0.35], [3.5, 0.3]],
+		"tambour": [[0, 1.0], [0.5, 0.35], [1, 0.6], [1.5, 0.35], [2, 0.85], [2.75, 0.4], [3, 0.6], [3.5, 0.45]],
+		"tambour_rapide": [[0, 0.9], [0.25, 0.3], [0.5, 0.5], [0.75, 0.3], [1, 0.7], [1.25, 0.3], [1.5, 0.5], [1.75, 0.4], [2, 0.9], [2.25, 0.3], [2.5, 0.5], [2.75, 0.3], [3, 0.7], [3.25, 0.4], [3.5, 0.6], [3.75, 0.5]]
+	},
+	"par_mesures": {
+		"gong": [1, 9],
+		"gong_rapide": [1, 5, 9, 13],
+		"cymbalette": [1, 5, 9, 13],
+		"carillon": [1, 9],
+		"glissando_haut": [1, 5, 9, 13],
+		"glissando_bas": [3, 7, 11, 15]
+	},
+	"bruits": {
+		"souffle": {"passe_bas": 700, "passe_haut": 120, "respirations": 8}
+	},
+	"melodie": [
+		[1, 0, "D#4", 1.5], [1, 1.5, "C#4", 0.5], [1, 2, "B3", 1], [1, 3, "G#3", 1],
+		[2, 0, "F#3", 2.5], [2, 3, "G#3", 0.5], [2, 3.5, "B3", 0.5],
+		[3, 0, "B3", 1.5], [3, 1.5, "G#3", 0.5], [3, 2, "F#3", 1], [3, 3, "D#3", 1],
+		[4, 0, "C#3", 3],
+		[5, 0, "D#4", 1.5], [5, 1.5, "F#4", 0.5], [5, 2, "D#4", 1], [5, 3, "C#4", 1],
+		[6, 0, "B3", 2], [6, 2, "C#4", 0.5], [6, 2.5, "B3", 0.5], [6, 3, "G#3", 1],
+		[7, 0, "F#3", 1], [7, 1, "G#3", 1], [7, 2, "B3", 1.5], [7, 3.5, "C#4", 0.5],
+		[8, 0, "B3", 3],
+		[9, 0, "G#4", 1], [9, 1, "F#4", 0.5], [9, 1.5, "D#4", 0.5], [9, 2, "F#4", 2],
+		[10, 0, "D#4", 1], [10, 1, "C#4", 1], [10, 2, "B3", 2],
+		[11, 0, "C#4", 1], [11, 1, "D#4", 0.5], [11, 1.5, "C#4", 0.5], [11, 2, "B3", 1], [11, 3, "G#3", 1],
+		[12, 0, "B3", 4],
+		[13, 0, "D#4", 1.5], [13, 1.5, "C#4", 0.5], [13, 2, "B3", 1], [13, 3, "G#3", 1],
+		[14, 0, "F#3", 2], [14, 2, "G#3", 1], [14, 3, "B3", 1],
+		[15, 0, "C#4", 1.5], [15, 1.5, "B3", 0.5], [15, 2, "G#3", 2],
+		[16, 0, "G#3", 3]
+	],
+	"arrangements": {
+		"menu": {"pistes": {"melodie": 0.85, "nappe": 0.6, "arpege": 0.3, "basse": 0.5, "carillon": 0.25},
+			"passe_bas": 6000, "reverb": 0.35},
+		"nuit": {"pistes": {"basse": 0.8, "nappe": 0.55, "arpege": 0.45, "melodie": 0.75, "cymbalette": 0.3},
+			"passe_bas": 6500, "reverb": 0.28},
+		"boutique": {"pistes": {"basse": 0.85, "nappe": 0.3, "arpege": 0.6, "arpege_haut": 0.5, "melodie": 0.5, "tambour_doux": 0.55, "fente": 0.5, "bois": 0.45, "cymbalette": 0.3},
+			"passe_bas": 9000, "reverb": 0.18},
+		"demon": {"pistes": {"basse": 1.0, "bourdon": 0.7, "tremolo": 0.55, "tambour": 0.5, "gong": 0.6, "nappe": 0.3},
+			"passe_bas": 2600, "reverb": 0.3},
+		"flammes": {"pistes": {"basse": 0.9, "tambour_rapide": 0.75, "tambour": 0.6, "fente": 0.5, "gong_rapide": 0.5, "arpege": 0.55, "nappe": 0.35},
+			"passe_bas": 5000, "reverb": 0.2},
+		"vent_noir": {"pistes": {"basse": 0.6, "nappe": 0.75, "souffle": 0.6, "glissando_haut": 0.5, "glissando_bas": 0.45, "melodie": 0.3},
+			"passe_bas": 4000, "reverb": 0.42},
+		"victoire": {"pistes": {"melodie": 0.9, "arpege": 0.7, "arpege_haut": 0.5, "basse": 0.8, "nappe": 0.5, "carillon": 0.45, "cymbalette": 0.4},
+			"passe_bas": 10000, "reverb": 0.3},
+		"defaite": {"pistes": {"melodie": 0.45, "bourdon": 0.5, "nappe": 0.35, "basse": 0.4},
+			"passe_bas": 1800, "reverb": 0.45}
+	},
+	"echantillons": {
+		"cithare": "vcsl/Chordophones/Zithers/Dan Tranh/Normal/{note}_mf_1.wav",
+		"cithare_notes": {"35": "B1", "37": "C#2", "39": "D#2", "42": "F#2", "44": "G#2", "47": "b2", "49": "C#3", "51": "D#3", "54": "F#3", "56": "G#3", "59": "B3", "61": "C#4", "63": "D#4", "66": "F#4", "68": "G#4", "71": "B4"},
+		"tambour_doux": "vcsl/Membranophones/Struck Membranophones/Frame Drum/HDrumS_HitMuted_v2_rr1_Sum.wav",
+		"tambour_rapide": "vcsl/Membranophones/Struck Membranophones/Frame Drum/HDrumL_HitMuted_v2_rr1_Sum.wav",
+		"fente": "vcsl/Idiophones/Struck Idiophones/Slit Drum/LogDrumHi_MedM_v2_rr1_Sum.wav",
+		"bois": "vcsl/Idiophones/Struck Idiophones/Woodblock/wood_click_pp_rr1.wav",
+		"tambour": "vcsl/Membranophones/Struck Membranophones/Frame Drum/HDrumL_Hit_v2_rr1_Sum.wav",
+		"gong": "vcsl/Idiophones/Struck Idiophones/Gong 1/gong_2_mp.wav",
+		"gong_rapide": "vcsl/Idiophones/Struck Idiophones/Gong 1/gong_2_mp.wav",
+		"cymbalette": "vcsl/Idiophones/Struck Idiophones/Finger Cymbals/Fing_Cymb.wav",
+		"carillon": "vcsl/Idiophones/Struck Idiophones/Mark Trees/Legacy/windchimes_asc1.wav",
+		"glissando_haut": "vcsl/Chordophones/Zithers/Dan Tranh/Gliss/Gliss_Up_Med_mf_1.wav",
+		"glissando_bas": "vcsl/Chordophones/Zithers/Dan Tranh/Gliss/Gliss_Dwn_Med_mf_1.wav"
+	},
+	"jeu": {
+		"humain_s": 0.008, "humain_velocite": 0.1,
+		"vibrato": 0.012, "vibrato_hz": 5.5, "vibrato_des": 1.5, "relache_s": 0.25,
+		"nappe": {"attaque_s": 0.6, "relache_s": 0.9, "aigu_hz": 1800, "desaccord_cents": 7},
+		"sous_basse": 0.45, "pleurage_s": 0.0015, "pleurage_hz": 0.5, "saturation": 1.3
+	}
+}
