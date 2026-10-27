@@ -166,3 +166,14 @@ CARD_RANK_10,Disciple,Disciple
 CARD_RANK_11,Maître,Master
 CARD_RANK_12,Immortel,Immortal
 CARD_RANK_13,Souverain du Dao,Sovereign of the Dao
+UI_KEY_HINT,Touche : %s,Key: %s
+UI_INFO_TAB_KEYS,Touches,Keys
+UI_KEYS_SELECT,"Choisir une carte (1 à 8, de gauche à droite)","Pick a card (1 to 8, left to right)"
+UI_KEYS_PLAY,"Jouer la main, ou continuer après la boutique","Play the hand, or continue after the shop"
+UI_KEYS_DISCARD,Défausser la sélection,Discard the selection
+UI_KEYS_DESELECT,"Tout désélectionner (aussi clic droit)",Deselect all (also right click)
+UI_KEYS_SORT_RANK,Trier par rang,Sort by rank
+UI_KEYS_SORT_ELEMENT,Trier par élément,Sort by element
+UI_KEYS_DECK,Voir tout le paquet,View the full deck
+UI_KEYS_PATH,Voie de cultivation,Cultivation path
+UI_KEYS_CLOSE,Fermer un rouleau,Close a scroll

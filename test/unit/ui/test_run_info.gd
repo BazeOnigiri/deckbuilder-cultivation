@@ -7,10 +7,12 @@ func _run() -> Array:
 	return [content.new_run(RandomNumberGenerator.new()), content]
 
 
-func test_trois_signets() -> void:
+func test_quatre_signets_dont_les_touches() -> void:
 	var data := _run()
 	var tabs: TabContainer = add_child_autofree(RunInfo.build(data[0], data[1].hands))
-	assert_eq(tabs.get_tab_count(), 3)
+	assert_eq(tabs.get_tab_count(), 4)
+	var keys: GridContainer = tabs.get_child(3).get_child(0)
+	assert_eq(keys.get_child_count(), Keys.LISTED.size() * 2, "une touche et son texte par action")
 
 
 func test_une_tablette_par_main_avec_son_niveau() -> void:

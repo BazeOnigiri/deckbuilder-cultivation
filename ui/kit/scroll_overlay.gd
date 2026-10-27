@@ -67,3 +67,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close()
+	elif event is InputEventKey:
+		# Rouleau ouvert : les touches de la partie (jouer, defausser...) n'agissent pas derriere lui.
+		get_viewport().set_input_as_handled()

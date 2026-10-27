@@ -2,6 +2,7 @@ class_name RunInfo
 extends RefCounted
 ## Contenu du rouleau « Voie de cultivation » pendant une run : onglets en signets Mains, Parcours, Run. Lecture seule.
 ## Mains : une tablette de jade par main. Parcours : le chemin du royaume, de bas en haut. Run : tuiles de chiffres.
+## Touches : les actions du clavier et leur touche.
 
 const POSITION_KEYS := ["UI_INFO_CLEARED", "UI_INFO_CURRENT", "UI_INFO_UPCOMING"]
 ## Sceau pose sur un goulot franchi (decoratif, police des sceaux).
@@ -16,7 +17,22 @@ static func build(run: RunState, hands: Array[HandDefinition]) -> TabContainer:
 	_add_tab(tabs, "UI_INFO_TAB_HANDS", _hand_tablets(run, hands))
 	_add_tab(tabs, "UI_INFO_TAB_PATH", _path(run))
 	_add_tab(tabs, "UI_INFO_TAB_RUN", _run_tiles(run, hands))
+	_add_tab(tabs, "UI_INFO_TAB_KEYS", _keys())
 	return tabs
+
+
+## Une ligne par action : touche en pastille, puis ce qu'elle fait.
+static func _keys() -> GridContainer:
+	var grid := GridContainer.new()
+	grid.columns = 2
+	for entry: Array in Keys.LISTED:
+		var key := SideColumn.make_label(&"KeyCap")
+		key.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		key.text = Keys.name_of(entry[0])
+		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		grid.add_child(key)
+		grid.add_child(SideColumn.make_label(&"ScrollText", entry[1]))
+	return grid
 
 
 static func _add_tab(tabs: TabContainer, title_key: String, content: Control) -> void:

@@ -105,6 +105,11 @@ func _ready() -> void:
 	_side.options_requested.connect(options_requested.emit)
 	_continue_button.hide()
 	_menu_button.hide()
+	_hint(_play_button, &"play_hand")
+	_hint(_continue_button, &"play_hand")
+	_hint(_discard_button, &"discard_hand")
+	_hint(%SortRank, &"sort_by_rank")
+	_hint(%SortElement, &"sort_by_element")
 	run_created.emit(_run, resumed)
 	if not resumed:
 		_run.start()
@@ -316,3 +321,48 @@ func _show_deck() -> void:
 
 func _show_run_info() -> void:
 	ScrollOverlay.open(self, "UI_RUN_INFO", RunInfo.build(_run, content.hands), not settings.reduce_motion)
+
+
+## Clavier (InputMap) : les memes actions que la souris, seulement quand le bouton correspondant est utilisable.
+## Les rouleaux ouverts par-dessus prennent les touches avant l'ecran (ils sont ajoutes apres lui).
+func _unhandled_input(event: InputEvent) -> void:
+	if _scoring or not event.is_pressed() or event.is_echo():
+		return
+	var handled := true
+	var card := Keys.card_index(event, _rules.hand_size)
+	if card >= 0:
+		handled = _round != null and _hand_view.toggle_at(card)
+	elif event.is_action_pressed(&"play_hand"):
+		handled = _press(_continue_button) or _press(_play_button)
+	elif event.is_action_pressed(&"discard_hand"):
+		handled = _press(_discard_button)
+	elif event.is_action_pressed(&"deselect_cards"):
+		_hand_view.deselect_all()
+	elif event.is_action_pressed(&"sort_by_rank"):
+		handled = _press(%SortRank)
+	elif event.is_action_pressed(&"sort_by_element"):
+		handled = _press(%SortElement)
+	elif event.is_action_pressed(&"show_deck"):
+		_show_deck()
+	elif event.is_action_pressed(&"show_path"):
+		_show_run_info()
+	else:
+		handled = false
+	if handled:
+		get_viewport().set_input_as_handled()
+
+
+## Appuie sur le bouton s'il est visible et actif, comme un clic. Vrai si c'est le cas.
+func _press(button: BaseButton) -> bool:
+	if not button.is_visible_in_tree() or button.disabled:
+		return false
+	if button.toggle_mode:
+		button.button_pressed = true
+	else:
+		button.pressed.emit()
+	return true
+
+
+## La touche de l'action dans l'infobulle du bouton.
+func _hint(button: Control, action: StringName) -> void:
+	button.tooltip_text = tr("UI_KEY_HINT") % Keys.name_of(action)
