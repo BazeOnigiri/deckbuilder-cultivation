@@ -170,13 +170,14 @@ def _cithare(score, note, dur, vibrato):
 
 
 def _pad(score, notes, seconds):
-    """Nappe chaude : dents de scie a bande limitee (additive), trois voix desaccordees, attaque et relache lentes."""
+    """Nappe chaude : dents de scie a bande limitee (additive), trois voix desaccordees, attaque et relache lentes.
+    notes : numeros MIDI."""
     cfg = score["jeu"]["nappe"]
     length = int((seconds + cfg["relache_s"]) * RATE)
     t = np.arange(length) / RATE
     out = np.zeros(length)
     for note in notes:
-        freq = 440.0 * 2 ** ((midi(note) - 69) / 12)
+        freq = 440.0 * 2 ** ((note - 69) / 12)
         for cents in (-cfg["desaccord_cents"], 0.0, cfg["desaccord_cents"]):
             f = freq * 2 ** (cents / 1200)
             for k in range(1, int(cfg["aigu_hz"] / f) + 1):
@@ -201,42 +202,57 @@ def _render_tracks(score, rng):
     def vel(value):
         return value * (1 + rng.uniform(-play["humain_velocite"], play["humain_velocite"]))
 
+    def source(chord, kind):
+        # Notes d'ou piochent arpeges et nappes : celles de l'accord, ou la basse et sa quinte.
+        root = midi(chord["basse"])
+        return [midi(note) for note in chord["notes"]] if kind == "accord" else [root, root + 7]
+
     chords = []
     for chord in score["accords"]:
         chords += [chord] * chord["mesures"]
-    for name in ("basse", "nappe", "arpege", "melodie"):
-        tracks[name] = np.zeros(n)
+    names = ["basse", "melodie", *score["arpeges"], *score["nappes"], *score["frappes"], *score["par_mesures"],
+             *score["bruits"]]
+    tracks = {name: np.zeros(n) for name in names}
     for b, chord in enumerate(chords, start=1):
         root = midi(chord["basse"])
-        for beats, offset, v, dur in score["motifs"]["basse"]:
+        for beats, offset, v, dur in score["basse"]:
             clip = _cithare(score, root + offset, dur * beat, 0.0) * vel(v)
             freq = 440.0 * 2 ** ((root + offset - 69) / 12)
             t = np.arange(len(clip)) / RATE
             clip = clip + play["sous_basse"] * v * np.sin(2 * np.pi * freq * t) * np.exp(-t / (dur * beat))
             _place(tracks["basse"], clip, at(b, beats))
-        for beats, index, v in score["motifs"]["arpege"]:
-            note = midi(chord["notes"][index % len(chord["notes"])])
-            _place(tracks["arpege"], _cithare(score, note, beat * 0.75, 0.0) * vel(v), at(b, beats))
+        for name, cfg in score["arpeges"].items():
+            notes = source(chord, cfg["source"])
+            for beats, index, v, dur in cfg["motif"]:
+                note = notes[index % len(notes)] + cfg["octave"]
+                _place(tracks[name], _cithare(score, note, dur * beat, 0.0) * vel(v), at(b, beats))
     start_bar = 1
     for chord in score["accords"]:
-        _place(tracks["nappe"], _pad(score, chord["notes"], chord["mesures"] * bar), at(start_bar, 0))
+        for name, cfg in score["nappes"].items():
+            # Nappe d'accord : toutes ses notes ; bourdon : intervalles au-dessus de la basse seule.
+            base = source(chord, "accord") if cfg["source"] == "accord" else [midi(chord["basse"])]
+            notes = [note + step for note in base for step in cfg["intervalles"]]
+            _place(tracks[name], _pad(score, notes, chord["mesures"] * bar), at(start_bar, 0))
         start_bar += chord["mesures"]
     for b, beats, note, dur in score["melodie"]:
         vibrato = play["vibrato"] if dur >= play["vibrato_des"] else 0.0
         _place(tracks["melodie"], _cithare(score, midi(note), dur * beat, vibrato) * vel(0.8), at(b, beats))
-    for name, hits in score["motifs"].items():
-        if name in tracks:
-            continue
-        tracks[name] = np.zeros(n)
+    for name, hits in score["frappes"].items():
         clip = _trimmed(score["echantillons"][name])
         for b in range(1, score["mesures"] + 1):
             for beats, v in hits:
                 _place(tracks[name], clip * vel(v), at(b, beats))
     for name, bars in score["par_mesures"].items():
-        tracks[name] = np.zeros(n)
         clip = _trimmed(score["echantillons"][name])
         for b in bars:
             _place(tracks[name], clip * vel(0.8), at(b, 0))
+    for name, cfg in score["bruits"].items():
+        # Bruit filtre en frequence (circulaire) qui respire un nombre entier de fois par boucle : sans couture.
+        spectrum = np.fft.rfft(rng.normal(0, 1, n))
+        freqs = np.fft.rfftfreq(n, 1.0 / RATE)
+        spectrum[(freqs < cfg["passe_haut"]) | (freqs > cfg["passe_bas"])] = 0
+        breath = 0.5 * (1 - np.cos(2 * np.pi * cfg["respirations"] * np.arange(n) / n))
+        tracks[name] = np.fft.irfft(spectrum, n) * breath
     return tracks
 
 
@@ -247,15 +263,25 @@ def _fft_lowpass(signal, cutoff):
     return np.fft.irfft(spectrum / np.sqrt(1 + (freqs / cutoff) ** 4), len(signal))
 
 
-def partition(r, rng):
-    """Une variante de la musique : ses pistes a leurs volumes, puis le grain cassette (passe-bas, pleurage,
-    saturation douce) et une reverb circulaire. La boucle se raccorde exactement."""
+def _score(r):
+    """Partition de la recette et ses pistes rendues, en cache : les arrangements partagent les memes pistes."""
     path = Path(__file__).with_name(r["file"])
     if path not in _tracks:
         score = json.loads(path.read_text(encoding="utf-8"))
         _tracks[path] = (score, _render_tracks(score, np.random.default_rng(zlib.crc32(r["file"].encode()))))
-    score, tracks = _tracks[path]
-    variant = score["variantes"][r["variante"]]
+    return _tracks[path]
+
+
+def output_rate(r):
+    """La musique est filtree sous 10 kHz : 22 kHz suffisent et divisent sa taille par deux."""
+    return _score(r)[0]["frequence"] if r["kind"] in LOOPS else RATE
+
+
+def partition(r, rng):
+    """Un arrangement de la musique : ses pistes a leurs volumes, puis le grain cassette (passe-bas, pleurage,
+    saturation douce) et une reverb circulaire. La boucle se raccorde exactement."""
+    score, tracks = _score(r)
+    variant = score["arrangements"][r["variante"]]
     mix = sum(gain * tracks[name] / max(np.abs(tracks[name]).max(), 1e-9) for name, gain in variant["pistes"].items())
     n = len(mix)
     mix = _fft_lowpass(mix, variant["passe_bas"])
@@ -268,7 +294,10 @@ def partition(r, rng):
     room = _room(rng, 1.8, 5000.0)
     wet = np.fft.irfft(np.fft.rfft(mix) * np.fft.rfft(room, n), n)
     wet *= np.abs(mix).max() / max(np.abs(wet).max(), 1e-9)
-    return mix * (1 - variant["reverb"]) + wet * variant["reverb"]
+    mix = mix * (1 - variant["reverb"]) + wet * variant["reverb"]
+    # Reechantillonnage par FFT : circulaire lui aussi, la boucle reste sans couture.
+    size = int(round(n * output_rate(r) / RATE))
+    return np.fft.irfft(np.fft.rfft(mix)[:size // 2 + 1], size) * size / n
 
 
 KINDS = {"sample": sample}
@@ -290,13 +319,13 @@ def normalize(sound, gain):
     return sound * gain / max(np.abs(sound).max(), 1e-9)
 
 
-def write_wav(path, sound):
+def write_wav(path, sound, rate):
     path.parent.mkdir(parents=True, exist_ok=True)
     data = (np.clip(sound, -1.0, 1.0) * 32767).astype("<i2")
     with wave.open(str(path), "wb") as f:
         f.setnchannels(1)
         f.setsampwidth(2)
-        f.setframerate(RATE)
+        f.setframerate(rate)
         f.writeframes(data.tobytes())
 
 
@@ -347,9 +376,10 @@ def main():
         folder = r.get("dossier", data["dossier"])
         sound = normalize(render(r, recipes), r.get("gain", 0.8))
         check(sound, r)
-        write_wav(ROOT / folder / (r["id"] + ".wav"), sound)
+        rate = output_rate(r)
+        write_wav(ROOT / folder / (r["id"] + ".wav"), sound, rate)
         write_cue(ROOT / data["fiches"] / (r["id"] + ".tres"), folder, r)
-        print("%-20s %.2f s" % (r["id"], len(sound) / RATE))
+        print("%-20s %.2f s" % (r["id"], len(sound) / rate))
     return 0
 
 

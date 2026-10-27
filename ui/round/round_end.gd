@@ -88,6 +88,7 @@ func stones(count: int, to: Vector2, bump: Callable) -> void:
 func run_over(won: bool, summary: Control) -> void:
 	# Le rouleau couvre l'ecran : il prend les clics, son propre sceau mene au menu.
 	mouse_filter = MOUSE_FILTER_STOP
+	Sons.play_music(feel.victory_music if won else feel.defeat_music, feel.music_fade)
 	if not won:
 		Sons.play(&"defaite")
 	var animated := not settings.reduce_motion and feel.defeat_time > 0.0

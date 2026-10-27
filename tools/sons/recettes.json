@@ -513,7 +513,20 @@
 			}
 		},
 		{
-			"id": "nappe_nuit",
+			"id": "musique_menu",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "menu",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -6
+			}
+		},
+		{
+			"id": "musique_nuit",
 			"kind": "partition",
 			"file": "partition.json",
 			"variante": "nuit",
@@ -526,7 +539,7 @@
 			}
 		},
 		{
-			"id": "nappe_boutique",
+			"id": "musique_boutique",
 			"kind": "partition",
 			"file": "partition.json",
 			"variante": "boutique",
@@ -539,16 +552,68 @@
 			}
 		},
 		{
-			"id": "nappe_tribulation",
+			"id": "musique_demon",
 			"kind": "partition",
 			"file": "partition.json",
-			"variante": "tribulation",
+			"variante": "demon",
 			"dossier": "audio/musique",
 			"gain": 0.8,
 			"cue": {
 				"bus": "Musique",
 				"pitch_variance": 0.0,
 				"volume_db": -5
+			}
+		},
+		{
+			"id": "musique_flammes",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "flammes",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -5
+			}
+		},
+		{
+			"id": "musique_vent_noir",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "vent_noir",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -5
+			}
+		},
+		{
+			"id": "musique_victoire",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "victoire",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -6
+			}
+		},
+		{
+			"id": "musique_defaite",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "defaite",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -6
 			}
 		}
 	]

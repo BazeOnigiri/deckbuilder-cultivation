@@ -7,7 +7,7 @@ const THEME_PATH := "res://ui/theme/lavis_de_nuit.tres"
 const LAVIS_COLORS := ["base_color", "deep_color", "ink_color"]
 const AMBIANCES_DIR := "res://ui/ambiances"
 ## Ambiances qui ne correspondent a aucun goulot.
-const SPECIAL_IDS: Array[StringName] = [&"nuit", &"boutique"]
+const SPECIAL_IDS: Array[StringName] = [&"menu", &"nuit", &"boutique"]
 
 
 func test_ambiance_chargee_pour_tout_le_jeu() -> void:
@@ -147,7 +147,25 @@ func test_le_lavis_derive_a_travers_l_ecran() -> void:
 	assert_gt(absf(drift.x), 0.0, "derive horizontale : l'encre passe a gauche comme a droite")
 
 
-func test_chaque_ambiance_a_une_nappe_existante() -> void:
+## Comme les boss de Balatro : chaque tribulation, le menu, la boutique et les rounds ont leur arrangement.
+func test_chaque_ambiance_a_sa_propre_musique() -> void:
+	var owners := {}
+	for ambiance: AmbianceTheme in _ambiances():
+		assert_false(owners.has(ambiance.music), "%s reprend la musique de %s" % [ambiance.id, owners.get(ambiance.music)])
+		owners[ambiance.music] = ambiance.id
+
+
+## Bug evite : apres le bilan d'une run, revenir a la meme ambiance doit relancer sa musique.
+func test_meme_ambiance_reprend_sa_musique() -> void:
+	var ambiance: Node = add_child_autofree(SCENE.instantiate())
+	ambiance.apply(&"boutique")
+	Sons.play_music(&"musique_victoire", 0.0)
+	ambiance.apply(&"boutique")
+	assert_eq(Sons.music_id(), &"musique_boutique")
+	Sons.play_music(&"", 0.0)
+
+
+func test_chaque_ambiance_a_une_musique_existante() -> void:
 	for resource: Resource in ContentLoader.load_all(AMBIANCES_DIR):
 		var ambiance := resource as AmbianceTheme
 		assert_true(Sons.has_cue(ambiance.music), "nappe de %s : %s" % [ambiance.id, ambiance.music])
@@ -156,6 +174,6 @@ func test_chaque_ambiance_a_une_nappe_existante() -> void:
 func test_apply_lance_la_nappe_de_l_ambiance() -> void:
 	var ambiance: Node = add_child_autofree(SCENE.instantiate())
 	ambiance.apply(&"boutique")
-	assert_eq(Sons.music_id(), &"nappe_boutique")
+	assert_eq(Sons.music_id(), &"musique_boutique")
 	Sons.play_music(&"", 0.0)
 

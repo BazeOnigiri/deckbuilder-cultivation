@@ -9,7 +9,7 @@ const OPTIONS_SCENE := preload("res://ui/options/options_screen.tscn")
 ## Parametre global de shader (declare dans project.godot) : 0 fige les shaders animes.
 const MOTION_SCALE := &"motion_scale"
 ## Ambiance du menu et des ecrans hors run.
-const MENU_AMBIANCE := &"nuit"
+const MENU_AMBIANCE := &"menu"
 
 ## Les tests les remplacent pour ne pas toucher aux vraies sauvegardes.
 @export var profile_path: String = ProfileStats.DEFAULT_PATH

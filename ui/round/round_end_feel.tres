@@ -21,3 +21,6 @@ crystal_size = 16.0
 crystal_fall = 160.0
 stones_bump = 1.25
 defeat_time = 2.4
+victory_music = &"musique_victoire"
+defeat_music = &"musique_defaite"
+music_fade = 1.2
