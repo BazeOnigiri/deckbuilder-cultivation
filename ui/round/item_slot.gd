@@ -1,14 +1,18 @@
 class_name ItemSlot
 extends Button
-## Emplacement d'artefact ou de pilule, dessine dans _draw() : cadre et glyphe du contenu.
+## Emplacement d'artefact, de manuel ou de pilule, dessine dans _draw() : cadre et glyphe du contenu.
+## Un manuel est dessine en livre cousu (ManualCover).
 ## Une icone (artefacts) remplace le glyphe. Sans glyphe ni icone, c'est un emplacement libre en pointilles. Apparence dans le Theme (type ItemSlot).
 
-enum Kind {ARTIFACT, PILL}
+enum Kind {ARTIFACT, PILL, MANUAL}
 
 var kind: Kind = Kind.ARTIFACT
 ## Vide : emplacement libre.
 var glyph: String = ""
 var picture: Texture2D
+## Manuel seulement : couleur et motif de la couverture.
+var cover_tier: int = 0
+var cover_pattern: ManualDefinition.Pattern = ManualDefinition.Pattern.CLOUDS
 ## Aura d'un artefact qui se declenche : 1 au moment ou il se declenche, s'eteint jusqu'a 0.
 var glow_amount: float = 0.0
 
@@ -52,14 +56,16 @@ func _draw() -> void:
 	if is_empty():
 		_draw_dashed(rect)
 		return
+	if kind == Kind.MANUAL:
+		_draw_glow(rect)
+		ManualCover.draw(self, rect, glyph, cover_tier, cover_pattern, disabled)
+		if is_hovered() and not disabled:
+			draw_rect(rect, get_theme_color(&"glow_color"), false, 1.0)
+		return
 	var box: String = "pill_slot" if kind == Kind.PILL else "slot"
 	if is_hovered() and not disabled:
 		box += "_hover"
-	if glow_amount > 0.0:
-		var spread: float = get_theme_constant(&"glow_spread")
-		var aura := get_theme_color(&"glow_color")
-		for i: int in range(3, 0, -1):
-			draw_rect(rect.grow(spread * i / 3.0), Color(aura, aura.a * glow_amount / i), false, spread / 3.0)
+	_draw_glow(rect)
 	draw_style_box(get_theme_stylebox(StringName(box)), rect)
 	var font := get_theme_font(&"font")
 	var font_size := get_theme_font_size(&"pill_font_size" if kind == Kind.PILL else &"font_size")
@@ -81,3 +87,12 @@ func _draw_dashed(rect: Rect2) -> void:
 	var corners: Array[Vector2] = [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
 	for i: int in corners.size():
 		draw_dashed_line(corners[i], corners[(i + 1) % corners.size()], color, 1.0, dash)
+
+
+func _draw_glow(rect: Rect2) -> void:
+	if glow_amount <= 0.0:
+		return
+	var spread: float = get_theme_constant(&"glow_spread")
+	var aura := get_theme_color(&"glow_color")
+	for i: int in range(3, 0, -1):
+		draw_rect(rect.grow(spread * i / 3.0), Color(aura, aura.a * glow_amount / i), false, spread / 3.0)

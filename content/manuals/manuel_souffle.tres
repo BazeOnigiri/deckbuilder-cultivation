@@ -8,3 +8,4 @@ script = ExtResource("2_om75s")
 id = &"manuel_souffle"
 hand = ExtResource("1_ot0xx")
 price = 1
+glyph = "息"

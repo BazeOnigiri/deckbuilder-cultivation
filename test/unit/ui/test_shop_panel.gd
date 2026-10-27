@@ -103,3 +103,17 @@ func test_largeur_independante_des_textes() -> void:
 		if title.theme_type_variation == &"SideCaption":
 			title.text = long_text
 	assert_almost_eq(panel.get_combined_minimum_size().x, width, 1.0)
+
+
+func test_manuel_dessine_en_livre() -> void:
+	var parts := _panel(0)
+	var shop: ShopState = parts[1]
+	if shop.manual_offers.is_empty():
+		pass_test("pas de manuel dans ce tirage")
+		return
+	var manual: ManualDefinition = shop.manual_offers[0]
+	var slot := _slots(parts[0])[shop.offers.size()]
+	assert_eq(slot.kind, ItemSlot.Kind.MANUAL)
+	assert_eq(slot.glyph, manual.glyph)
+	assert_eq(slot.cover_tier, manual.tier)
+	assert_eq(slot.cover_pattern, manual.pattern)
