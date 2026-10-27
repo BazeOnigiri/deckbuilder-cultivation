@@ -10,6 +10,9 @@ var kind: Kind = Kind.ARTIFACT
 ## Vide : emplacement libre.
 var glyph: String = ""
 var picture: Texture2D
+## Infobulle : nom et description deja traduits. tooltip_text (le nom) declenche l'infobulle.
+var title: String = ""
+var description: String = ""
 ## Manuel seulement : couleur et motif de la couverture.
 var cover_tier: int = 0
 var cover_pattern: ManualDefinition.Pattern = ManualDefinition.Pattern.CLOUDS
@@ -96,3 +99,18 @@ func _draw_glow(rect: Rect2) -> void:
 	var aura := get_theme_color(&"glow_color")
 	for i: int in range(3, 0, -1):
 		draw_rect(rect.grow(spread * i / 3.0), Color(aura, aura.a * glow_amount / i), false, spread / 3.0)
+
+
+## Infobulle facon Balatro : nom, description coloree, badge du type d'objet dans sa couleur.
+func _make_custom_tooltip(_for_text: String) -> Object:
+	var kinds := {Kind.ARTIFACT: ["UI_KIND_ARTIFACT", get_theme_color(&"artifact_color", &"ItemSlot")],
+		Kind.PILL: ["UI_KIND_PILL", get_theme_color(&"pill_color", &"ItemSlot")],
+		Kind.MANUAL: ["UI_KIND_MANUAL", get_theme_color(StringName("tier_%d" % cover_tier), &"ManualCover")]}
+	return InfoBubble.build(title, description, [[tr(kinds[kind][0]), kinds[kind][1]]])
+
+
+## Nom et description de l'infobulle (le nom sert aussi de tooltip_text).
+func set_info(name_text: String, description_text: String) -> void:
+	title = name_text
+	description = description_text
+	tooltip_text = name_text

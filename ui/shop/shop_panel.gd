@@ -127,7 +127,7 @@ func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, descriptio
 	if manual != null:
 		slot.cover_tier = manual.tier
 		slot.cover_pattern = manual.pattern
-	slot.tooltip_text = tr(name_key) + "\n" + description
+	slot.set_info(tr(name_key), description)
 	slot.disabled = not can_buy
 	slot.size_flags_horizontal = SIZE_SHRINK_CENTER
 	slot.pressed.connect(func() -> void: buy.call(slot))

@@ -157,3 +157,12 @@ ARTIFACT_ERMITE,Ermite,Hermit
 ARTIFACT_ERMITE_DESC,"x1,8 Compréhension si 3 cartes ou moins comptent.",x1.8 Comprehension if 3 cards or fewer score.
 ARTIFACT_CHAUDRON_ALCHIMIQUE,Chaudron alchimique,Alchemical Cauldron
 ARTIFACT_CHAUDRON_ALCHIMIQUE_DESC,"+5 Qi et +0,5 Compréhension à chaque main jouée.",+5 Qi and +0.5 Comprehension on every hand played.
+UI_KIND_ARTIFACT,Artefact,Artifact
+UI_KIND_MANUAL,Manuel de technique,Technique manual
+UI_KIND_PILL,Pilule,Pill
+UI_CARD_RANK,Rang %d,Rank %d
+UI_CARD_QI,+%d Qi quand elle compte.,+%d Qi when it scores.
+CARD_RANK_10,Disciple,Disciple
+CARD_RANK_11,Maître,Master
+CARD_RANK_12,Immortel,Immortal
+CARD_RANK_13,Souverain du Dao,Sovereign of the Dao
