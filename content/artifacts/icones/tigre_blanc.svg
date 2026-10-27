@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Tigre blanc : tete de face, oreilles rondes, rayures, caractere 王 sur le front. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 12 Q50 12 54 30 Q56 46 44 54 Q38 58 32 58 Q26 58 20 54 Q8 46 10 30 Q14 12 32 12 Z" stroke-width="2.5" fill="#ffffff" fill-opacity="0.25"/>
+    <path d="M14 20 Q10 10 18 8 Q22 12 22 15 M50 20 Q54 10 46 8 Q42 12 42 15" stroke-width="2.2"/>
+    <path d="M27 20 L37 20 M28 24 L36 24 M26 28 L38 28 M32 20 L32 28" stroke-width="2"/>
+    <path d="M20 34 Q24 31 28 34 M36 34 Q40 31 44 34" stroke-width="2.2"/>
+    <path d="M29 42 L32 45 L35 42 M32 45 L32 48 Q28 52 25 49 M32 48 Q36 52 39 49" stroke-width="1.8"/>
+    <path d="M12 36 L19 38 M12 42 L19 42 M52 36 L45 38 M52 42 L45 42" stroke-width="1.6" stroke-opacity="0.8"/>
+  </g>
+</svg>

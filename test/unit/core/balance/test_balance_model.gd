@@ -51,13 +51,38 @@ func test_prix_proportionnel_au_gain() -> void:
 	assert_eq(BalanceModel.price(rules, 0.2, 0.0), rules.min_price, "pas de division par zero")
 
 
-## Le gain median fixe la pierre : un artefact aberrant ne change rien.
-func test_valeur_de_la_pierre_sur_le_gain_median() -> void:
+## La pierre se deduit de l'economie : les pierres d'un royaume, bien depensees, donnent power_per_realm.
+func test_valeur_de_la_pierre_par_l_economie() -> void:
 	var rules := _rules()
-	rules.mean_artifact_price = 2.0
-	assert_almost_eq(BalanceModel.stone_value(rules, [0.1, 0.3, 10.0]), 0.15, 0.0001)
-	assert_almost_eq(BalanceModel.stone_value(rules, [0.1, 0.3, 0.5, 10.0]), 0.2, 0.0001)
-	assert_eq(BalanceModel.stone_value(rules, []), 0.0)
+	rules.power_per_realm = 2.0
+	var rewards: Array[int] = [3, 4, 5]
+	var stone := BalanceModel.stone_value(rules, _economy(), rewards)
+	var power := 1.0
+	for earned: int in [6, 7, 8]:
+		power *= 1.0 + stone * earned
+	assert_almost_eq(power, 2.0, 0.0001, "le joueur double sa puissance sur un royaume")
+	rules.power_per_realm = 3.0
+	assert_gt(BalanceModel.stone_value(rules, _economy(), rewards), stone, "plus de puissance par royaume : pierre plus precieuse")
+	assert_eq(BalanceModel.stone_value(rules, _economy(), []), 0.0)
+
+
+## Ajouter des objets ne change ni la valeur de la pierre ni les objectifs : seulement leurs propres prix.
+func test_le_contenu_ne_change_pas_la_difficulte() -> void:
+	var realm := RealmDefinition.new()
+	realm.order = 1
+	for i: int in 3:
+		realm.bottlenecks.append(BottleneckDefinition.new())
+	var realms: Array[RealmDefinition] = [realm, realm]
+	var measures := _measures(range(400, 1400))
+	var weak := ArtifactDefinition.new()
+	weak.id = &"faible"
+	measures.gains[&"faible"] = 0.01
+	var no_artifacts: Array[ArtifactDefinition] = []
+	var with_weak: Array[ArtifactDefinition] = [weak]
+	var before := BalanceModel.solve(_rules(), measures, _economy(), realms, no_artifacts, [])
+	var after := BalanceModel.solve(_rules(), measures, _economy(), realms, with_weak, [])
+	assert_eq(after["stone"], before["stone"])
+	assert_eq(after["realms"], before["realms"])
 
 
 func test_pierres_gagnees_par_goulot() -> void:

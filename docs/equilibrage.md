@@ -42,7 +42,8 @@ main se comparent tous en « % de score ».
   quel que soit son déclencheur, sa condition ou sa probabilité.
 
 Exemple que la mesure a révélé : la Gourde d'élixir à +4 Compréhension faisait **+120 %**. La Compréhension de base
-d'une main vaut environ 3, donc +4 la double. Elle est passée à +1, soit +30 %, comme les autres.
+d'une main vaut environ 3, donc +4 la double. Elle est passée à +1, soit +30 %, comme les autres. De même, la Couronne
+d'immortel (+1 par carte de rang 7 à 9) faisait +49 % : elle est passée à +0,5, soit +25 %.
 
 ## 3. Les prix : la courbe de coût
 
@@ -51,13 +52,17 @@ d'une main vaut environ 3, donc +4 la double. Elle est passée à +1, soit +30 %
 C'est la **courbe de coût** de Schreiber et Romero (*Game Balance*) : tout ce qu'un objet apporte est ramené à une
 seule unité, et le prix suit cette valeur. Un objet deux fois plus utile coûte deux fois plus cher.
 
-`k` est la **valeur d'une pierre** : le gain de score qu'une pierre achète.
+`k` est la **valeur d'une pierre** : le gain de score qu'une pierre achète. On la déduit de l'**économie** :
 
-> k = gain médian des artefacts / `mean_artifact_price`
+> Π (1 + k × W_b) = `power_per_realm`  (2 : avec les pierres d'un royaume, le joueur double son score)
 
-- On fixe un seul nombre de design : le prix d'un artefact typique (6 pierres). Tout le reste en découle.
-- **Médiane et pas moyenne** : la médiane est la valeur du milieu. Un artefact trop fort ne la déplace pas,
-  alors qu'il ferait grimper la moyenne, et avec elle tous les prix.
+- `W_b` est le nombre de pierres gagnées au goulot b (voir section 5). Le produit `Π` porte sur les goulots du premier
+  royaume. L'équation se résout par **dichotomie** : on essaie un `k`, on regarde si le produit est trop petit ou trop
+  grand, et on coupe l'intervalle en deux, 60 fois.
+- **Pourquoi l'économie et pas les objets ?** Une première version ancrait `k` sur le gain médian des artefacts. En
+  ajoutant 13 artefacts plus faibles, la médiane a baissé : tous les prix ont gonflé (l'Épée de 6 à 10 pierres) et les
+  objectifs se sont effondrés (le royaume 3 de 3 500 à 2 000). Ajouter du contenu ne doit pas changer la difficulté.
+  Ancré sur l'économie, `k` ne bouge plus quand on ajoute des objets : seuls les nouveaux objets reçoivent un prix.
 - Le même `k` sert aux manuels : une pierre achète toujours la même quantité de score, quel que soit l'objet.
   Un manuel de main rare coûte peu, parce que le joueur moyen la joue rarement. Un joueur qui construit son paquet
   autour de cette main en tire plus : c'est une récompense de la stratégie.
@@ -84,7 +89,8 @@ prend le 50e plus petit. Le premier goulot est réussi par presque tout le monde
 
 - `W_b` = pierres gagnées au goulot b : récompense, plus 1 pierre par main restante (le joueur de référence en garde 1),
   plus les intérêts de son épargne (10 pierres, soit 2 d'intérêt).
-- `1 + k × W_b` est le facteur dont le joueur grandit en dépensant ces pierres. `Π` est le produit sur les goulots du royaume.
+- `1 + k × W_b` est le facteur dont le joueur grandit en dépensant ces pierres. `Π` est le produit sur les goulots du royaume,
+  qui vaut `power_per_realm` par construction (section 3) : G = π × 2 = 2,5 avec les réglages actuels.
 - **π, la pression** (1,25) : la difficulté va 25 % plus vite que le joueur à chaque royaume. Sans elle, un joueur
   moyen resterait toujours pile au niveau. Avec elle, il doit jouer mieux que la moyenne (défausses, combos) pour suivre.
 
@@ -101,7 +107,7 @@ suivent la même courbe sans qu'on écrive un seul nombre.
 | --- | --- | --- |
 | Le début est trop dur ou trop facile | `first_bottleneck_success` (0,9) | 0,95 : plus facile, 0,8 : plus dur |
 | La fin est trop dure ou trop facile | `pressure` (1,25) | 1,15 : plus doux, 1,4 : plus raide |
-| Tout coûte trop cher ou pas assez | `mean_artifact_price` (6) | change tous les prix ensemble |
+| Tout coûte trop cher ou pas assez | `power_per_realm` (2) | 2,5 : pierres plus précieuses, prix plus bas, mais objectifs plus raides |
 | Pas assez de pierres | `reward_base`, `reward_per_difficulty` | récompenses des goulots |
 
 Après tout changement de paramètre, de main, de paquet ou d'objet : relancer l'outil, relire le rapport, lancer les tests.

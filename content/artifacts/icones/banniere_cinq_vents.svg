@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Banniere des cinq vents : hampe a pointe, etendard qui ondule au vent, cinq points pour les cinq elements. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 6 L14 60" stroke-width="2.8"/>
+    <path d="M11 9 L14 3 L17 9 Z" stroke-width="1.8" fill="#ffffff"/>
+    <path d="M14 10 Q26 6 36 12 Q46 18 56 12 L56 34 Q46 40 36 34 Q26 28 14 32 Z" stroke-width="2.4" fill="#ffffff" fill-opacity="0.3"/>
+    <circle cx="24" cy="18" r="2" fill="#ffffff"/>
+    <circle cx="35" cy="21" r="2" fill="#ffffff"/>
+    <circle cx="46" cy="22" r="2" fill="#ffffff"/>
+    <circle cx="29" cy="26" r="2" fill="#ffffff"/>
+    <circle cx="41" cy="28" r="2" fill="#ffffff"/>
+    <path d="M30 44 Q40 40 50 44 M34 50 Q42 47 52 50" stroke-width="1.8" stroke-opacity="0.6"/>
+  </g>
+</svg>

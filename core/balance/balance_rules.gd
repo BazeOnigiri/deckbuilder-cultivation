@@ -26,8 +26,9 @@ extends Resource
 @export var significant_digits: int = 2
 
 @export_group("Prix et recompenses")
-## Prix d'un artefact typique (gain median) : fixe la valeur d'une pierre (score qu'elle achete), commune a tous les objets.
-@export var mean_artifact_price: float = 6.0
+## Puissance du joueur apres avoir depense les pierres d'un royaume (2 = il double son score) :
+## fixe la valeur d'une pierre, donc tous les prix, sans dependre de la liste des objets.
+@export var power_per_realm: float = 2.0
 @export var min_price: int = 1
 ## Recompense d'un goulot = base + par_difficulte x multiplicateur du goulot.
 @export var reward_base: float = 1.0
@@ -37,4 +38,4 @@ extends Resource
 func is_valid() -> bool:
 	return (not id.is_empty() and samples > 0 and reference_hands_left >= 0 and reference_savings >= 0
 		and first_bottleneck_success > 0.0 and first_bottleneck_success < 1.0 and pressure > 0.0
-		and bottleneck_step >= 0.0 and significant_digits > 0 and mean_artifact_price > 0.0 and min_price > 0)
+		and bottleneck_step >= 0.0 and significant_digits > 0 and power_per_realm > 1.0 and min_price > 0)

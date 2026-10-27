@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Grain de riz spirituel : epi courbe sous le poids de ses grains, une feuille, un grain qui luit a part. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 60 Q28 36 36 22 Q42 12 52 10" stroke-width="2.4"/>
+    <path d="M27 50 Q14 42 10 30 Q22 34 28 44" stroke-width="2" fill="#ffffff" fill-opacity="0.2"/>
+    <g fill="#ffffff" fill-opacity="0.35" stroke-width="1.8">
+      <ellipse cx="38" cy="17" rx="2.6" ry="4.2" transform="rotate(-40 38 17)"/>
+      <ellipse cx="44" cy="12" rx="2.6" ry="4.2" transform="rotate(-60 44 12)"/>
+      <ellipse cx="34" cy="24" rx="2.6" ry="4.2" transform="rotate(-25 34 24)"/>
+      <ellipse cx="42" cy="21" rx="2.6" ry="4.2" transform="rotate(30 42 21)"/>
+      <ellipse cx="48" cy="16" rx="2.6" ry="4.2" transform="rotate(10 48 16)"/>
+      <ellipse cx="38" cy="28" rx="2.6" ry="4.2" transform="rotate(40 38 28)"/>
+    </g>
+    <ellipse cx="50" cy="44" rx="4" ry="6" stroke-width="2.2" fill="#ffffff" fill-opacity="0.5"/>
+    <path d="M50 34 L50 31 M58 44 L61 44 M57 37 L59 35 M43 37 L41 35" stroke-width="1.6" stroke-opacity="0.8"/>
+  </g>
+</svg>

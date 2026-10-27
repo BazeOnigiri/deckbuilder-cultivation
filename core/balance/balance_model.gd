@@ -4,16 +4,32 @@ extends RefCounted
 ## Unite commune (courbe de cout) : le gain relatif de score, 0.1 = +10 % de score moyen.
 
 
-## Valeur d'une pierre k : le gain de score qu'achete une pierre, ancre sur le prix voulu d'un artefact typique.
-## Artefact typique = gain median : un artefact trop fort (ou trop faible) ne fausse pas le prix de tous les autres.
-static func stone_value(rules: BalanceRules, artifact_gains: Array[float]) -> float:
-	if artifact_gains.is_empty():
+## Valeur d'une pierre k : le gain de score qu'achete une pierre. Ancree sur l'economie, pas sur les objets :
+## les pierres d'un royaume (rewards) bien depensees multiplient la puissance par power_per_realm,
+## soit produit(1 + k x pierres du goulot) = power_per_realm, resolu par dichotomie (le produit croit avec k).
+## Ajouter des objets ne change donc ni k ni la difficulte : seulement leurs propres prix.
+static func stone_value(rules: BalanceRules, economy: EconomyRules, rewards: Array[int]) -> float:
+	if rewards.is_empty() or rules.power_per_realm <= 1.0:
 		return 0.0
-	var sorted := artifact_gains.duplicate()
-	sorted.sort()
-	var middle := sorted.size() / 2
-	var median: float = sorted[middle] if sorted.size() % 2 == 1 else (sorted[middle - 1] + sorted[middle]) / 2.0
-	return median / rules.mean_artifact_price
+	var low := 0.0
+	var high := 1.0
+	while _power(rules, economy, high, rewards) < rules.power_per_realm:
+		high *= 2.0
+	for i: int in 60:
+		var middle := (low + high) / 2.0
+		if _power(rules, economy, middle, rewards) < rules.power_per_realm:
+			low = middle
+		else:
+			high = middle
+	return (low + high) / 2.0
+
+
+## Puissance achetee avec les pierres d'un royaume : produit des (1 + k x pierres gagnees a chaque goulot).
+static func _power(rules: BalanceRules, economy: EconomyRules, stone: float, rewards: Array[int]) -> float:
+	var power := 1.0
+	for bottleneck_reward: int in rewards:
+		power *= 1.0 + stone * stones_earned(rules, economy, bottleneck_reward)
+	return power
 
 
 ## Prix = gain / k : un objet deux fois plus utile coute deux fois plus cher.
@@ -41,10 +57,7 @@ static func stones_earned(rules: BalanceRules, economy: EconomyRules, bottleneck
 ## Croissance G d'un royaume au suivant : la puissance que le joueur achete (produit des 1 + k x pierres de
 ## chaque goulot), fois la pression qui garde la difficulte un pas devant lui.
 static func realm_growth(rules: BalanceRules, economy: EconomyRules, stone: float, rewards: Array[int]) -> float:
-	var power := 1.0
-	for bottleneck_reward: int in rewards:
-		power *= 1.0 + stone * stones_earned(rules, economy, bottleneck_reward)
-	return rules.pressure * power
+	return rules.pressure * _power(rules, economy, stone, rewards)
 
 
 ## Score de base d'un royaume : T1 x G1 x G2... (croissances des royaumes d'avant), arrondi pour la lecture.
@@ -62,18 +75,8 @@ static func realm_base_score(rules: BalanceRules, measures: BalanceMeasures, pre
 ## "realms": [score de base par royaume]}. L'outil les ecrit, le test verifie que les .tres n'ont pas derive.
 static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: EconomyRules,
 		realms: Array[RealmDefinition], artifacts: Array[ArtifactDefinition], manuals: Array[ManualDefinition]) -> Dictionary:
-	var artifact_gains: Array[float] = []
-	for artifact: ArtifactDefinition in artifacts:
-		artifact_gains.append(measures.gains.get(artifact.id, 0.0))
-	var stone := stone_value(rules, artifact_gains)
-	var prices := {}
-	for artifact: ArtifactDefinition in artifacts:
-		prices[artifact.id] = price(rules, measures.gains.get(artifact.id, 0.0), stone)
-	for manual: ManualDefinition in manuals:
-		prices[manual.id] = price(rules, measures.gains.get(manual.id, 0.0), stone)
 	var bottlenecks: Array = []
-	var bases: Array[int] = []
-	var growths: Array[float] = []
+	var realm_rewards: Array = []
 	for realm: RealmDefinition in realms:
 		var row: Array = []
 		var rewards: Array[int] = []
@@ -82,6 +85,18 @@ static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: Econo
 			rewards.append(reward(rules, multiplier))
 			row.append([multiplier, rewards[-1]])
 		bottlenecks.append(row)
+		realm_rewards.append(rewards)
+	# La pierre se regle sur le premier royaume, celui ou le joueur commence a acheter.
+	var first_rewards: Array[int] = realm_rewards[0] if not realm_rewards.is_empty() else []
+	var stone := stone_value(rules, economy, first_rewards)
+	var prices := {}
+	for artifact: ArtifactDefinition in artifacts:
+		prices[artifact.id] = price(rules, measures.gains.get(artifact.id, 0.0), stone)
+	for manual: ManualDefinition in manuals:
+		prices[manual.id] = price(rules, measures.gains.get(manual.id, 0.0), stone)
+	var bases: Array[int] = []
+	var growths: Array[float] = []
+	for rewards: Array[int] in realm_rewards:
 		bases.append(realm_base_score(rules, measures, growths))
 		growths.append(realm_growth(rules, economy, stone, rewards))
 	return {"stone": stone, "prices": prices, "bottlenecks": bottlenecks, "realms": bases, "growths": growths}

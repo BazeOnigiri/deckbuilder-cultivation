@@ -59,6 +59,25 @@ func test_carte_comptee_sans_condition_compte_toutes_les_cartes() -> void:
 	assert_eq(ArtifactResolver.effects_for(artifacts, result).size(), 3)
 
 
+func test_condition_de_rang_bornes_incluses() -> void:
+	var condition := CardRankCondition.new()
+	condition.min_rank = 1
+	condition.max_rank = 3
+	var artifacts := _artifacts([_effect(ArtifactEffect.Trigger.CARD_SCORED, condition, 6.0)])
+	var result := _result("main_ascension", [[C.FEU, 1], [C.EAU, 2], [C.BOIS, 3], [C.TERRE, 4], [C.METAL, 5]])
+	assert_eq(ArtifactResolver.effects_for(artifacts, result).size(), 3, "rangs 1, 2 et 3")
+	assert_false(condition.matches(result, null), "sans carte : jamais vraie")
+
+
+func test_condition_sur_le_nombre_de_cartes_qui_comptent() -> void:
+	var condition := ScoringCountCondition.new()
+	condition.max_count = 3
+	var artifacts := _artifacts([_effect(ArtifactEffect.Trigger.HAND_PLAYED, condition, 1.0)])
+	assert_eq(ArtifactResolver.effects_for(artifacts, _result("main_brelan", [[C.FEU, 6], [C.EAU, 6], [C.BOIS, 6]])).size(), 1)
+	var long := _result("main_full", [[C.FEU, 6], [C.EAU, 6], [C.BOIS, 6], [C.FEU, 2], [C.EAU, 2]])
+	assert_eq(ArtifactResolver.effects_for(artifacts, long).size(), 0, "5 cartes : trop longue")
+
+
 func test_condition_de_carte_sur_main_jouee_jamais_vraie() -> void:
 	var artifacts := _artifacts([_effect(ArtifactEffect.Trigger.HAND_PLAYED, _element(Element.Type.FEU), 4.0)])
 	assert_eq(ArtifactResolver.effects_for(artifacts, _result("main_paire", [[C.FEU, 4]])).size(), 0)

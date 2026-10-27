@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Chaudron alchimique (ding) : cuve ronde, deux anses dressees, trois pieds, fumee qui monte en volutes. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 20 Q22 14 28 10 Q34 6 30 2 M36 20 Q40 14 36 10" stroke-width="1.8" stroke-opacity="0.75"/>
+    <path d="M18 26 L18 18 L24 18 L24 26 M40 26 L40 18 L46 18 L46 26" stroke-width="2.2"/>
+    <path d="M10 26 L54 26" stroke-width="2.8"/>
+    <path d="M12 26 Q12 48 32 50 Q52 48 52 26" stroke-width="2.5" fill="#ffffff" fill-opacity="0.3"/>
+    <path d="M18 34 Q32 38 46 34" stroke-width="1.6" stroke-opacity="0.8"/>
+    <path d="M20 46 L16 60 M32 50 L32 60 M44 46 L48 60" stroke-width="3"/>
+  </g>
+</svg>

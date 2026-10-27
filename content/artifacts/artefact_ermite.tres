@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Script" path="res://core/artifacts/scoring_count_condition.gd" id="4"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/ermite.svg" id="icon"]
+
+[sub_resource type="Resource" id="condition_1"]
+script = ExtResource("4")
+min_count = 1
+max_count = 3
+
+[sub_resource type="Resource" id="score_1"]
+script = ExtResource("3")
+phase = 2
+amount = 1.8
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+condition = SubResource("condition_1")
+score_effect = SubResource("score_1")
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_ermite"
+name_key = "ARTIFACT_ERMITE"
+description_key = "ARTIFACT_ERMITE_DESC"
+glyph = "隐"
+icon = ExtResource("icon")
+price = 1
+effects = Array[ExtResource("2")]([SubResource("effect_1")])
