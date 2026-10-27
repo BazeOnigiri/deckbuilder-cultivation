@@ -197,6 +197,7 @@ func _on_buy_pressed(slot: ItemSlot, index: int) -> void:
 	if _shop.can_buy(index):
 		_fly(slot)
 	if _shop.buy(index):
+		Sons.play(&"achat")
 		changed.emit()
 		_refresh()
 
@@ -211,6 +212,7 @@ func _on_reroll_pressed() -> void:
 func _on_buy_manual_pressed(_slot: ItemSlot, index: int) -> void:
 	var hand: HandDefinition = _shop.manual_offers[index].hand
 	if _shop.buy_manual(index):
+		Sons.play(&"manuel")
 		changed.emit()
 		_refresh()
 		_show_level_up(hand)
@@ -221,5 +223,6 @@ func _on_buy_pill_pressed(slot: ItemSlot, index: int) -> void:
 	if _shop.can_buy_pill(index):
 		_fly(slot)
 	if _shop.buy_pill(index):
+		Sons.play(&"achat")
 		changed.emit()
 		_refresh()

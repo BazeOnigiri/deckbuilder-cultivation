@@ -77,13 +77,18 @@ func play(context: ScoreContext, target_score: int) -> void:
 	hand_named.emit(context.hand.definition)
 	_roll_to(context.steps[0])
 	_announce(tr(context.hand.definition.name_key))
+	Sons.play(&"annonce_main")
 	await _wait(feel.start_delay + feel.announce_time)
+	# Chaque note monte d'un cran dans la gamme : la main se lit comme une phrase qui grimpe.
+	var note: int = 0
 	for step: ScoreStep in context.steps:
 		# La base de la main est deja affichee par le _roll_to du depart : rien ne vole.
 		if step.kind == ScoreStep.Kind.BASE:
 			continue
 		var phase: ScoreEffect.Phase = ScoreEffect.Phase.ADD_QI if step.kind == ScoreStep.Kind.CARD else step.effect.phase
-		_send_orb(_light_source(step), phase, step)
+		Sons.play(&"note_carte" if step.card != null else &"orbe_depart", note)
+		_send_orb(_light_source(step), phase, step, note)
+		note += 1
 		# L'orbe a toujours atterri avant l'etape suivante : la colonne suit l'ordre du calcul.
 		await _wait(maxf(feel.step_delay, 0.0 if settings.reduce_motion else feel.orb_time))
 	var total := context.total()
@@ -113,10 +118,10 @@ func _light_source(step: ScoreStep) -> Vector2:
 
 
 ## L'orbe file en courbe vers la case de sa phase ; la case defile et s'eclaire a l'arrivee.
-func _send_orb(from: Vector2, phase: ScoreEffect.Phase, step: ScoreStep) -> void:
+func _send_orb(from: Vector2, phase: ScoreEffect.Phase, step: ScoreStep, note: int) -> void:
 	var target_of: Callable = qi_target if phase == ScoreEffect.Phase.ADD_QI else comprehension_target
 	if settings.reduce_motion or feel.orb_time <= 0.0 or not target_of.is_valid() or not from.is_finite():
-		_land(phase, step)
+		_land(phase, step, note)
 		return
 	var to: Vector2 = target_of.call()
 	var color := feel.qi_color if phase == ScoreEffect.Phase.ADD_QI else feel.comprehension_color
@@ -144,7 +149,7 @@ func _send_orb(from: Vector2, phase: ScoreEffect.Phase, step: ScoreStep) -> void
 		orb.global_position = from.lerp(control, t).lerp(control.lerp(to, t), t), 0.0, 1.0, feel.orb_time
 	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tween.tween_callback(func() -> void:
-		_land(phase, step)
+		_land(phase, step, note)
 		# L'orbe s'eteint, sa trainee finit de se dissiper avant la liberation.
 		orb.self_modulate.a = 0.0
 		trail.emitting = false)
@@ -152,7 +157,8 @@ func _send_orb(from: Vector2, phase: ScoreEffect.Phase, step: ScoreStep) -> void
 	tween.tween_callback(orb.queue_free)
 
 
-func _land(phase: ScoreEffect.Phase, step: ScoreStep) -> void:
+func _land(phase: ScoreEffect.Phase, step: ScoreStep, note: int) -> void:
+	Sons.play(&"multiplication" if phase == ScoreEffect.Phase.MULT_COMPREHENSION else &"orbe_impact", note)
 	_roll_to(step)
 	value_hit.emit(phase)
 

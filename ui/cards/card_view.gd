@@ -71,6 +71,10 @@ func set_tilt(tilt: Vector2) -> void:
 
 
 ## Scellee : la tribulation l'empeche de compter. Flammes (shader) et sceau 封.
+func is_sealed() -> bool:
+	return _sealed
+
+
 func set_sealed(on: bool) -> void:
 	_sealed = on
 	var shader := material as ShaderMaterial

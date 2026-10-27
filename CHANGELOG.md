@@ -41,6 +41,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Voie de cultivation plus visuelle : une tablette de jade par main (pastilles de niveau, Qi et Comprehension en pilules), parcours en chemin vertical (meditant sur le goulot en cours, sceau 破 sur les goulots franchis), chiffres de la run en tuiles. Statistiques en tuiles, meilleur royaume en grand, barres d'encre des mains les plus jouees.
 - Sons du jeu synthetises par tools/sons/generate_sounds.py a partir de recettes en donnees (recettes.json) : cordes pincees, gongs, cloches, souffles d'encre, cristaux. 17 sons dans audio/sfx, deterministes.
 - Lecteur de sons (autoload Sons) : sons appeles par ID depuis des fiches SoundCue de content/sons/ (generees avec les sons), gamme pentatonique pour les notes, legere variation de hauteur, 12 voix. Bus Musique et Effets, curseurs Volume general, Musique et Effets sonores dans les Options (sauvegardes).
+- Sons branches sur le jeu : clic et survol de tous les boutons, pioche, carte jouee, defausse, annonce de la main, une note par carte qui compte qui monte dans la gamme, orbes (depart, impact) et gong des multiplications, sceaux de tribulation, victoire, defaite, pierres, achats, manuels et pilules.
 
 ### Corrigé
 
