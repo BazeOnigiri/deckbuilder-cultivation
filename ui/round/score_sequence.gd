@@ -1,7 +1,8 @@
 class_name ScoreSequence
 extends Control
-## Rejoue le calcul d'une main jouee, etape par etape : la carte qui compte bondit, lache du qi et son montant s'envole,
-## le compteur Qi x Comprehension defile (dans la colonne, par signaux), puis l'ecran tremble et le fond se teinte.
+## Rejoue le calcul d'une main jouee, etape par etape, sans texte : la source (carte, artefact) s'allume, une orbe
+## de qi file vers la case Qi (jade) ou Comprehension (or) de la colonne, qui defile et s'eclaire a l'arrivee.
+## Puis l'ecran tremble et le fond se teinte.
 ## Affichage seulement : le score est deja calcule et compte quand la sequence commence.
 
 signal finished
@@ -9,12 +10,17 @@ signal finished
 signal hand_named(definition: HandDefinition)
 ## Chaque etape du compteur qui defile.
 signal tally_changed(qi: int, comprehension: float)
+## Une orbe arrive dans sa case : la colonne l'eclaire (anneau en plus pour une multiplication).
+signal value_hit(phase: ScoreEffect.Phase)
 
 ## Parametres globaux de shader declares dans project.godot, lus par le fond lavis.
 const PULSE_COLOR := &"pulse_color"
 const PULSE_STRENGTH := &"pulse_strength"
-const POPUP_OUTLINE_SIZE := 6
-const POPUP_OUTLINE_COLOR := Color(0.03, 0.05, 0.07, 0.85)
+const TOTAL_OUTLINE_SIZE := 6
+const TOTAL_OUTLINE_COLOR := Color(0.03, 0.05, 0.07, 0.85)
+## Trainee d'une orbe : particules par seconde de vol et duree de vie.
+const TRAIL_AMOUNT := 60
+const TRAIL_LIFETIME := 0.25
 ## Ecart entre le sceau d'annonce et le haut des cartes jouees.
 const ANNOUNCE_MARGIN := 12.0
 ## Allers-retours du tremblement.
@@ -29,9 +35,12 @@ var running: bool = false
 var score_target: Callable
 ## Renvoie le point (global) d'ou part le total : les cases Qi x Comprehension de la colonne. Vide : pas d'envol.
 var tally_origin: Callable
-## (artefact) -> Vector2 : fait bondir l'emplacement de l'artefact et renvoie ou poser sa popup (INF s'il n'est pas affiche).
-## Vide : popup au-dessus des cartes jouees.
+## (artefact) -> Vector2 : fait bondir et luire l'emplacement de l'artefact, renvoie son centre (INF s'il n'est pas affiche).
+## Vide : l'orbe part du dessus des cartes jouees.
 var artifact_hit: Callable
+## Centres (globaux) des cases Qi et Comprehension, ou filent les orbes. Vides : pas de vol.
+var qi_target: Callable
+var comprehension_target: Callable
 
 var _hand_view: HandView
 var _shake_target: Control
@@ -70,15 +79,13 @@ func play(context: ScoreContext, target_score: int) -> void:
 	_announce(tr(context.hand.definition.name_key))
 	await _wait(feel.start_delay + feel.announce_time)
 	for step: ScoreStep in context.steps:
-		match step.kind:
-			ScoreStep.Kind.CARD:
-				_hand_view.pulse(step.card)
-				_burst(_hand_view.card_center(step.card), ElementStyles.of(step.card.element).color)
-				_popup(tr("UI_POPUP_QI") % step.card.rank, _hand_view.card_center(step.card), feel.qi_color)
-			ScoreStep.Kind.EFFECT:
-				_show_effect(step)
-		_roll_to(step)
-		await _wait(feel.step_delay)
+		# La base de la main est deja affichee par le _roll_to du depart : rien ne vole.
+		if step.kind == ScoreStep.Kind.BASE:
+			continue
+		var phase: ScoreEffect.Phase = ScoreEffect.Phase.ADD_QI if step.kind == ScoreStep.Kind.CARD else step.effect.phase
+		_send_orb(_light_source(step), phase, step)
+		# L'orbe a toujours atterri avant l'etape suivante : la colonne suit l'ordre du calcul.
+		await _wait(maxf(feel.step_delay, 0.0 if settings.reduce_motion else feel.orb_time))
 	var total := context.total()
 	_shake(clampf(float(total) / maxi(target_score, 1), 0.0, 1.0))
 	_pulse_background(context.hand.scoring_cards)
@@ -89,31 +96,65 @@ func play(context: ScoreContext, target_score: int) -> void:
 	finished.emit()
 
 
-func _show_effect(step: ScoreStep) -> void:
-	var amount := String.num(step.effect.amount, 2)
-	var text: String = ""
-	match step.effect.phase:
-		ScoreEffect.Phase.ADD_QI:
-			text = tr("UI_POPUP_QI") % roundi(step.effect.amount)
-		ScoreEffect.Phase.ADD_COMPREHENSION:
-			text = tr("UI_POPUP_COMPREHENSION_ADD") % amount
-		ScoreEffect.Phase.MULT_COMPREHENSION:
-			text = tr("UI_POPUP_COMPREHENSION_MULT") % amount
-	# Le nom de l'artefact : le joueur voit d'ou viennent ses points.
-	var artifact := step.source as ArtifactDefinition
+## La source de l'etape s'allume ; renvoie d'ou part son orbe.
+## Un artefact declenche par une carte : la carte bondit aussi, mais l'orbe part de l'artefact.
+func _light_source(step: ScoreStep) -> Vector2:
 	var at := _above_row()
-	if artifact != null:
-		text = tr(artifact.name_key) + "\n" + text
-		if artifact_hit.is_valid():
-			var slot: Vector2 = artifact_hit.call(artifact)
-			if slot.is_finite():
-				at = slot
 	if step.card != null:
 		_hand_view.pulse(step.card)
 		at = _hand_view.card_center(step.card)
 		_burst(at, ElementStyles.of(step.card.element).color)
-	var color := feel.qi_color if step.effect.phase == ScoreEffect.Phase.ADD_QI else feel.comprehension_color
-	_popup(text, at, color)
+	var artifact := step.source as ArtifactDefinition
+	if artifact != null and artifact_hit.is_valid():
+		var slot: Vector2 = artifact_hit.call(artifact)
+		if slot.is_finite():
+			at = slot
+	return at
+
+
+## L'orbe file en courbe vers la case de sa phase ; la case defile et s'eclaire a l'arrivee.
+func _send_orb(from: Vector2, phase: ScoreEffect.Phase, step: ScoreStep) -> void:
+	var target_of: Callable = qi_target if phase == ScoreEffect.Phase.ADD_QI else comprehension_target
+	if settings.reduce_motion or feel.orb_time <= 0.0 or not target_of.is_valid() or not from.is_finite():
+		_land(phase, step)
+		return
+	var to: Vector2 = target_of.call()
+	var color := feel.qi_color if phase == ScoreEffect.Phase.ADD_QI else feel.comprehension_color
+	var side: float = feel.orb_mult_size if phase == ScoreEffect.Phase.MULT_COMPREHENSION else feel.orb_size
+	var orb := Sprite2D.new()
+	orb.texture = _qi_texture
+	orb.scale = Vector2.ONE * side / QI_DOT_SIZE
+	orb.modulate = color
+	orb.global_position = from
+	add_child(orb)
+	var trail := CPUParticles2D.new()
+	trail.local_coords = false
+	trail.amount = TRAIL_AMOUNT
+	trail.lifetime = TRAIL_LIFETIME
+	trail.texture = _qi_texture
+	trail.gravity = Vector2.ZERO
+	trail.initial_velocity_max = 0.0
+	trail.color = color
+	trail.color_ramp = _fade_out()
+	orb.add_child(trail)
+	# Point de controle de la courbe : a mi-chemin, decale vers le haut de orb_arc fois la distance.
+	var control := (from + to) / 2 + Vector2.UP * from.distance_to(to) * feel.orb_arc
+	var tween := orb.create_tween()
+	tween.tween_method(func(t: float) -> void:
+		orb.global_position = from.lerp(control, t).lerp(control.lerp(to, t), t), 0.0, 1.0, feel.orb_time
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_callback(func() -> void:
+		_land(phase, step)
+		# L'orbe s'eteint, sa trainee finit de se dissiper avant la liberation.
+		orb.self_modulate.a = 0.0
+		trail.emitting = false)
+	tween.tween_interval(TRAIL_LIFETIME)
+	tween.tween_callback(orb.queue_free)
+
+
+func _land(phase: ScoreEffect.Phase, step: ScoreStep) -> void:
+	_roll_to(step)
+	value_hit.emit(phase)
 
 
 func _roll_to(step: ScoreStep) -> void:
@@ -127,29 +168,6 @@ func _roll_to(step: ScoreStep) -> void:
 func _set_tally(values: Vector2) -> void:
 	_shown = values
 	tally_changed.emit(roundi(values.x), values.y)
-
-
-func _popup(text: String, at: Vector2, color: Color) -> void:
-	if not at.is_finite():
-		at = _above_row()
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.mouse_filter = MOUSE_FILTER_IGNORE
-	label.add_theme_color_override(&"font_color", color)
-	label.add_theme_font_size_override(&"font_size", feel.popup_font_size)
-	label.add_theme_constant_override(&"outline_size", POPUP_OUTLINE_SIZE)
-	label.add_theme_color_override(&"font_outline_color", POPUP_OUTLINE_COLOR)
-	add_child(label)
-	label.reset_size()
-	label.global_position = at - label.size / 2
-	# Le nom d'un artefact du bord ne doit pas sortir de l'ecran.
-	label.global_position.x = clampf(label.global_position.x, 0.0, maxf(0.0, get_viewport_rect().size.x - label.size.x))
-	var tween := label.create_tween().set_parallel()
-	if not settings.reduce_motion:
-		tween.tween_property(label, "position:y", label.position.y - feel.popup_rise, feel.popup_time)
-	tween.tween_property(label, "modulate:a", 0.0, feel.popup_time / 2).set_delay(feel.popup_time / 2)
-	tween.chain().tween_callback(label.queue_free)
 
 
 ## Le nom de la main tombe en grand sur un sceau rouge au-dessus des cartes jouees, puis s'efface.
@@ -191,7 +209,7 @@ func _flash(ratio: float) -> void:
 	sky.mouse_filter = MOUSE_FILTER_IGNORE
 	sky.color = Color(feel.flash_color, feel.flash_max * ratio)
 	add_child(sky)
-	# Derriere les popups.
+	# Derriere les orbes.
 	move_child(sky, 0)
 	var tween := sky.create_tween()
 	tween.tween_property(sky, "color:a", 0.0, feel.flash_time)
@@ -206,9 +224,9 @@ func _fly_total(total: int) -> void:
 	label.text = str(total)
 	label.mouse_filter = MOUSE_FILTER_IGNORE
 	label.add_theme_color_override(&"font_color", feel.comprehension_color)
-	label.add_theme_font_size_override(&"font_size", feel.popup_font_size)
-	label.add_theme_constant_override(&"outline_size", POPUP_OUTLINE_SIZE)
-	label.add_theme_color_override(&"font_outline_color", POPUP_OUTLINE_COLOR)
+	label.add_theme_font_size_override(&"font_size", feel.total_font_size)
+	label.add_theme_constant_override(&"outline_size", TOTAL_OUTLINE_SIZE)
+	label.add_theme_color_override(&"font_outline_color", TOTAL_OUTLINE_COLOR)
 	add_child(label)
 	label.reset_size()
 	label.global_position = tally_origin.call() - label.size / 2
@@ -288,9 +306,9 @@ func _set_pulse(strength: float) -> void:
 	RenderingServer.global_shader_parameter_set(PULSE_STRENGTH, strength)
 
 
-## Ou montrer un effet qui ne vient ni d'une carte ni d'un artefact affiche : au-dessus des cartes jouees.
+## D'ou part l'orbe d'un effet qui ne vient ni d'une carte ni d'un artefact affiche : au-dessus des cartes jouees.
 func _above_row() -> Vector2:
-	return _hand_view.played_row_top() - Vector2(0, feel.popup_font_size)
+	return _hand_view.played_row_top() - Vector2(0, ANNOUNCE_MARGIN)
 
 
 func _wait(seconds: float) -> void:

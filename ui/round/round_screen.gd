@@ -86,6 +86,9 @@ func _ready() -> void:
 	_sequence.hand_named.connect(func(definition: HandDefinition) -> void:
 		_side.show_hand(definition, _run.hand_levels.level_of(definition.id)))
 	_sequence.artifact_hit = _items.artifact_hit
+	_sequence.qi_target = _side.qi_center
+	_sequence.comprehension_target = _side.comprehension_center
+	_sequence.value_hit.connect(_side.flash_value)
 	add_child(_sequence)
 	_items.settings = settings
 	# Par-dessus tout, sequence de score comprise.

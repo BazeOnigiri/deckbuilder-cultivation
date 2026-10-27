@@ -51,7 +51,7 @@ func test_clic_sur_une_pilule_donne_son_index() -> void:
 	assert_signal_emitted_with_parameters(row, "pill_pressed", [1])
 
 
-func test_artefact_affiche_se_declenche_sous_son_emplacement() -> void:
+func test_artefact_affiche_luit_et_renvoie_son_centre() -> void:
 	var row := _row()
 	var shown := _artifact("a")
 	var artifacts: Array[ArtifactDefinition] = [shown]
@@ -59,5 +59,7 @@ func test_artefact_affiche_se_declenche_sous_son_emplacement() -> void:
 	await wait_physics_frames(1)
 	var at := row.artifact_hit(shown)
 	assert_true(at.is_finite())
-	assert_gt(at.y, (row._artifact_slots.get_child(0) as ItemSlot).get_global_rect().end.y)
+	var slot := row._artifact_slots.get_child(0) as ItemSlot
+	assert_eq(at, slot.get_global_rect().get_center(), "l'orbe part du centre de l'emplacement")
+	assert_gt(slot.glow_amount, 0.0, "aura posee")
 	assert_eq(row.artifact_hit(_artifact("b")), Vector2.INF, "artefact absent : pas d'emplacement")

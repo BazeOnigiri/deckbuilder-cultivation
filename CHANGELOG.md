@@ -33,6 +33,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Fin de goulot plus marquee : deux ondes dorees, le ciel s'eclaire et le lavis se teinte d'or. Le passage d'une ambiance a l'autre se fait par taches d'encre qui s'etendent. Plus de texte de victoire dans la boutique (les cristaux montrent le gain).
 - Tribulations bien distinctes : chaque ambiance regle aussi la forme du lavis (taille, deformation, force) et la couleur du bord de l'ecran. Flammes : brasier en bas, braises et etincelles. Vent noir : encre grise qui tourbillonne vite, rafales sombres, trainees et debris. Demon interieur : grandes ombres, brume pourpre, bord cramoisi qui bat, braises qui tombent.
 - Options completes : vitesse de jeu (x1 a x3), plein ecran, et pendant une run : retour au menu (la run reste a continuer) et nouvelle partie (avec confirmation). Reglages sauvegardes.
+- Score sans texte : la carte ou l'artefact qui se declenche s'allume (aura doree autour de l'artefact), une orbe de qi file vers la case Qi (jade) ou Comprehension (or) de la colonne, qui defile et s'eclaire a l'arrivee. Une multiplication envoie une orbe plus grosse et lache un anneau autour de la case. Plus de « +2 Qi » ni de nom d'artefact a l'ecran.
 
 ## [0.3.0] - 2026-10-25
 
