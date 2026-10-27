@@ -17,7 +17,7 @@ var enabled: bool = true
 func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_STOP
 	mouse_default_cursor_shape = CURSOR_POINTING_HAND
-	tooltip_text = "UI_DECK_VIEW"
+	tooltip_text = tr("UI_DECK_VIEW") + "\n" + tr("UI_KEY_HINT") % Keys.name_of(&"show_deck")
 	add_child(_backs)
 	var text := VBoxContainer.new()
 	text.alignment = BoxContainer.ALIGNMENT_CENTER

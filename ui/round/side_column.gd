@@ -94,7 +94,9 @@ func _ready() -> void:
 	spacer.size_flags_vertical = SIZE_EXPAND_FILL
 	layout.add_child(spacer)
 	var buttons := HBoxContainer.new()
-	buttons.add_child(_button("UI_SIDE_PATH", path_requested))
+	var path := _button("UI_SIDE_PATH", path_requested)
+	path.tooltip_text = tr("UI_KEY_HINT") % Keys.name_of(&"show_path")
+	buttons.add_child(path)
 	buttons.add_child(_button("UI_OPTIONS_BUTTON", options_requested))
 	layout.add_child(buttons)
 	show_preview(null, 1)
