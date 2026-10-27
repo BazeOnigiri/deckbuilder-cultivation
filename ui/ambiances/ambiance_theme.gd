@@ -20,3 +20,5 @@ extends Resource
 @export var breath_speed: float = 1.0
 ## Particules posees par-dessus le fond. Vide : pas de meteo.
 @export var weather: PackedScene
+## Nappe d'ambiance (ID d'un SoundCue de content/sons/), en fondu croise au changement. Vide : silence.
+@export var music: StringName = &""

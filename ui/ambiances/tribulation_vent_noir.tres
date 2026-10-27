@@ -16,3 +16,4 @@ strength = 0.9
 vignette = 0.55
 vignette_color = Color(0.06, 0.06, 0.09, 1)
 weather = ExtResource("2")
+music = &"nappe_tribulation"

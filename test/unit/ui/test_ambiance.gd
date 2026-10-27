@@ -145,3 +145,17 @@ func test_le_lavis_derive_a_travers_l_ecran() -> void:
 	var lavis: ShaderMaterial = load("res://ui/theme/lavis.tres")
 	var drift: Vector2 = lavis.get_shader_parameter(&"drift")
 	assert_gt(absf(drift.x), 0.0, "derive horizontale : l'encre passe a gauche comme a droite")
+
+
+func test_chaque_ambiance_a_une_nappe_existante() -> void:
+	for resource: Resource in ContentLoader.load_all(AMBIANCES_DIR):
+		var ambiance := resource as AmbianceTheme
+		assert_true(Sons.has_cue(ambiance.music), "nappe de %s : %s" % [ambiance.id, ambiance.music])
+
+
+func test_apply_lance_la_nappe_de_l_ambiance() -> void:
+	var ambiance: Node = add_child_autofree(SCENE.instantiate())
+	ambiance.apply(&"boutique")
+	assert_eq(Sons.music_id(), &"nappe_boutique")
+	Sons.play_music(&"", 0.0)
+

@@ -1,7 +1,7 @@
 """Synthese des sons du jeu : lit recettes.json, ecrit des .wav dans res://audio/sfx/
 et une fiche SoundCue (.tres) par son dans res://content/sons/ (reglages du bloc "cue" de la recette).
 
-Lancement depuis la racine du projet :  python -I tools/sons/generate_sounds.py
+Lancement depuis la racine du projet :  python -I tools/sons/generate_sounds.py [id ...]  (sans id : tout)
 Chaque recette est un son ; une recette « couches » superpose d'autres recettes decalees dans le temps.
 Le resultat est deterministe (graine fixe par son) : relancer le script redonne les memes fichiers.
 """
@@ -124,11 +124,46 @@ def layers(r, rng, recipes):
     return out
 
 
+def nappe(r, rng):
+    """Boucle d'ambiance sans couture : bourdon, vent et notes egrenees d'une gamme pentatonique.
+    Les frequences du bourdon tombent juste sur la duree de la boucle, et ce qui deborde a la fin
+    (queue des notes, filtre du vent) est replie sur le debut : la fin rejoint exactement le debut."""
+    dur = r["duration"]
+    n = int(dur * RATE)
+    t = np.arange(n) / RATE
+    out = np.zeros(n)
+    for freq, gain in r["drone"]:
+        freq = round(freq * dur) / dur
+        breath = 0.65 + 0.35 * np.sin(2 * np.pi * t * r.get("drone_cycles", 2) / dur + rng.uniform(0, 2 * np.pi))
+        out += gain * np.sin(2 * np.pi * freq * t) * breath
+    if r.get("wind", 0.0) > 0:
+        pad = int(2 * RATE)
+        noise = rng.uniform(-1, 1, n)
+        wrapped = np.concatenate([noise[-pad:], noise])
+        cutoff = r["wind_cutoff"] * (1.0 + 0.5 * np.sin(2 * np.pi * np.arange(n + pad) / RATE * 3 / dur))
+        for _ in range(4):
+            wrapped = _lowpass(wrapped, cutoff)
+        out += r["wind"] * wrapped[pad:] / max(np.abs(wrapped[pad:]).max(), 1e-9)
+    slots = np.linspace(0, n, r["notes"], endpoint=False)
+    for i, start in enumerate(slots):
+        start = int(start + rng.uniform(0, 0.6) * n / r["notes"])
+        freq = r["root"] * 2 ** (rng.choice(r["scale"]) / 12)
+        note = r["note"].copy()
+        note.update({"freq": freq, "id": "%s_%d" % (r["id"], i)})
+        tone = KINDS[note["kind"]](note, rng)
+        tone *= r.get("note_gain", 0.5) * rng.uniform(0.6, 1.0) / max(np.abs(tone).max(), 1e-9)
+        idx = (start + np.arange(len(tone))) % n
+        np.add.at(out, idx, tone)
+    return out
+
+
 KINDS = {"pluck": pluck, "partials": partials, "breath": breath, "knock": knock, "sparkle": sparkle}
 
 
 def render(r, recipes):
     rng = np.random.default_rng(zlib.crc32(r["id"].encode()))
+    if r["kind"] == "nappe":
+        return nappe(r, rng)
     sound = layers(r, rng, recipes) if r["kind"] == "layers" else KINDS[r["kind"]](r, rng)
     fade = min(len(sound), int(0.01 * RATE))
     sound[-fade:] *= np.linspace(1.0, 0.0, fade)
@@ -181,19 +216,24 @@ def check(sound, r):
     assert peak <= 1.0, "%s sature" % r["id"]
     assert peak > 0.1, "%s quasi silencieux" % r["id"]
     assert len(sound) >= int(0.02 * RATE), "%s trop court" % r["id"]
+    if r["kind"] == "nappe":
+        # Raccord de la boucle : le dernier echantillon doit preceder le premier sans saut audible.
+        step = np.abs(np.diff(sound)).max()
+        assert abs(sound[-1] - sound[0]) <= 2 * step, "%s : raccord de boucle" % r["id"]
 
 
 def main():
     data = json.loads(RECIPES.read_text(encoding="utf-8"))
     recipes = {r["id"]: r for r in data["recettes"]}
-    out_dir = ROOT / data["dossier"]
+    only = set(sys.argv[1:])
     for r in data["recettes"]:
-        if not r.get("export", True):
+        if not r.get("export", True) or (only and r["id"] not in only):
             continue
+        folder = r.get("dossier", data["dossier"])
         sound = normalize(render(r, recipes), r.get("gain", 0.8))
         check(sound, r)
-        write_wav(out_dir / (r["id"] + ".wav"), sound)
-        write_cue(ROOT / data["fiches"] / (r["id"] + ".tres"), data["dossier"], r)
+        write_wav(ROOT / folder / (r["id"] + ".wav"), sound)
+        write_cue(ROOT / data["fiches"] / (r["id"] + ".tres"), folder, r)
         print("%-20s %.2f s" % (r["id"], len(sound) / RATE))
     return 0
 
