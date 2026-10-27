@@ -34,6 +34,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Tribulations bien distinctes : chaque ambiance regle aussi la forme du lavis (taille, deformation, force) et la couleur du bord de l'ecran. Flammes : brasier en bas, braises et etincelles. Vent noir : encre grise qui tourbillonne vite, rafales sombres, trainees et debris. Demon interieur : grandes ombres, brume pourpre, bord cramoisi qui bat, braises qui tombent.
 - Options completes : vitesse de jeu (x1 a x3), plein ecran, et pendant une run : retour au menu (la run reste a continuer) et nouvelle partie (avec confirmation). Reglages sauvegardes.
 - Score sans texte : la carte ou l'artefact qui se declenche s'allume (aura doree autour de l'artefact), une orbe de qi file vers la case Qi (jade) ou Comprehension (or) de la colonne, qui defile et s'eclaire a l'arrivee. Une multiplication envoie une orbe plus grosse et lache un anneau autour de la case. Plus de « +2 Qi » ni de nom d'artefact a l'ecran.
+- Kit des menus « rouleaux et sceaux » : rouleau de papier de riz entre deux baguettes qui se deroule, rouleau ouvert par-dessus l'ecran (ferme au clic a cote, avec Echap ou par le sceau Fermer), choix a l'encre souligne d'un trait de pinceau au survol, boutons sceaux, interrupteurs de jade, listes et onglets en signets.
 
 ## [0.3.0] - 2026-10-25
 

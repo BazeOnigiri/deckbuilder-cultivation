@@ -89,5 +89,5 @@ func test_prix_lisible_sur_l_etiquette() -> void:
 	var theme: Theme = load("res://ui/theme/lavis_de_nuit.tres")
 	var tag: StyleBoxFlat = theme.get_stylebox("panel", "PriceTag")
 	assert_gt(Contrast.ratio(theme.get_color("font_color", "Price"), tag.bg_color), 4.5)
-	var seal: StyleBoxFlat = theme.get_stylebox("normal", "RerollSeal")
-	assert_gt(Contrast.ratio(theme.get_color("font_color", "RerollSeal"), seal.bg_color), 4.5)
+	var seal: StyleBoxFlat = theme.get_stylebox("normal", "SealButton")
+	assert_gt(Contrast.ratio(theme.get_color("font_color", "SealButton"), seal.bg_color), 4.5)
