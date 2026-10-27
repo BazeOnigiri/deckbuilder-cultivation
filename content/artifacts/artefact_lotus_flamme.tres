@@ -27,5 +27,5 @@ name_key = "ARTIFACT_LOTUS_FLAMME"
 description_key = "ARTIFACT_LOTUS_FLAMME_DESC"
 glyph = "莲"
 icon = ExtResource("icon")
-price = 2
+price = 1
 effects = Array[ExtResource("2")]([SubResource("effect")])

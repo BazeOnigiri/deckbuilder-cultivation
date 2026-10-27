@@ -29,5 +29,5 @@ name_key = "ARTIFACT_CHAUDRON_ALCHIMIQUE"
 description_key = "ARTIFACT_CHAUDRON_ALCHIMIQUE_DESC"
 glyph = "鼎"
 icon = ExtResource("icon")
-price = 8
+price = 6
 effects = Array[ExtResource("2")]([SubResource("effect_1"), SubResource("effect_2")])

@@ -102,6 +102,55 @@ static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: Econo
 	return {"stone": stone, "prices": prices, "bottlenecks": bottlenecks, "realms": bases, "growths": growths}
 
 
+## Surprise d'une main, en nats : -ln(rarete). 0 pour une main toujours la, +2,3 chaque fois qu'elle est 10 fois
+## plus rare. C'est la quantite d'information du tirage : l'echelle naturelle de « c'est rare ».
+static func surprise(rarity: float) -> float:
+	return -log(rarity)
+
+
+## Force de base d'une main (Qi x Comprehension) : force_min x (1 + surprise)^delta. delta est choisi pour que
+## la main la plus surprenante (max_surprise) vaille force_max : la force grandit avec la surprise, plus vite
+## que lineairement, sans exploser comme 1 / rarete.
+static func hand_strength(rules: BalanceRules, rarity: float, max_surprise: float) -> float:
+	if max_surprise <= 0.0:
+		return rules.weakest_hand_strength
+	var delta := log(rules.strongest_hand_strength / rules.weakest_hand_strength) / log(1.0 + max_surprise)
+	return rules.weakest_hand_strength * pow(1.0 + surprise(rarity), delta)
+
+
+## Partage d'une force en Qi et Comprehension, et gain d'un niveau :
+## {"qi", "comprehension", "level_qi", "level_comprehension"}.
+static func hand_values(rules: BalanceRules, strength: float) -> Dictionary:
+	var comprehension := maxi(1, roundi(pow(strength / rules.weakest_hand_strength, rules.comprehension_exponent)))
+	var qi := maxi(1, roundi(strength / comprehension))
+	return {"qi": qi, "comprehension": comprehension, "level_qi": maxi(1, roundi(rules.level_fraction * qi)),
+		"level_comprehension": roundi(rules.level_fraction * comprehension)}
+
+
+## Valeurs de chaque main mesuree, par id : hand_values plus "priority" (rang de force x priority_step ;
+## a force egale, l'ancienne priorite departage). Une main sans rarete mesuree (ou impossible) est ignoree.
+static func solve_hands(rules: BalanceRules, measures: BalanceMeasures, hands: Array[HandDefinition]) -> Dictionary:
+	var measured: Array[HandDefinition] = []
+	var max_surprise := 0.0
+	for hand: HandDefinition in hands:
+		if measures.hand_rarities.get(hand.id, 0.0) > 0.0:
+			measured.append(hand)
+			max_surprise = maxf(max_surprise, surprise(measures.hand_rarities[hand.id]))
+	var strengths := {}
+	for hand: HandDefinition in measured:
+		strengths[hand.id] = hand_strength(rules, measures.hand_rarities[hand.id], max_surprise)
+	measured.sort_custom(func(a: HandDefinition, b: HandDefinition) -> bool:
+		if not is_equal_approx(strengths[a.id], strengths[b.id]):
+			return strengths[a.id] < strengths[b.id]
+		return a.priority < b.priority)
+	var values := {}
+	for index: int in measured.size():
+		var hand := measured[index]
+		values[hand.id] = hand_values(rules, strengths[hand.id])
+		values[hand.id]["priority"] = (index + 1) * rules.priority_step
+	return values
+
+
 ## Garde digits chiffres significatifs : 1117 -> 1100 (2 chiffres), 428 -> 430.
 static func round_to_digits(value: float, digits: int) -> float:
 	if value <= 0.0:

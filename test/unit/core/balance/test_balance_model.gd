@@ -123,3 +123,52 @@ func test_royaumes_de_plus_en_plus_durs() -> void:
 	for r: int in range(1, realms.size()):
 		assert_gt(solved["realms"][r], solved["realms"][r - 1], "royaume %d plus dur que le precedent" % (r + 1))
 	assert_eq(solved["bottlenecks"][3][2], [2.0, 5], "un 4e royaume suit les memes formules")
+
+
+func _hand(id: String, priority: int) -> HandDefinition:
+	var hand := HandDefinition.new()
+	hand.id = id
+	hand.priority = priority
+	return hand
+
+
+func test_surprise_nulle_pour_une_main_toujours_la() -> void:
+	assert_almost_eq(BalanceModel.surprise(1.0), 0.0, 1e-9)
+	assert_almost_eq(BalanceModel.surprise(0.1) - BalanceModel.surprise(1.0), log(10.0), 1e-9)
+
+
+func test_force_des_mains_entre_les_bornes() -> void:
+	var rules := _rules()
+	var max_surprise := BalanceModel.surprise(1e-6)
+	assert_almost_eq(BalanceModel.hand_strength(rules, 1.0, max_surprise), rules.weakest_hand_strength, 1e-6)
+	assert_almost_eq(BalanceModel.hand_strength(rules, 1e-6, max_surprise), rules.strongest_hand_strength, 1e-3)
+	var previous := 0.0
+	for rarity: float in [1.0, 0.5, 0.05, 0.003, 1e-4, 1e-6]:
+		var strength := BalanceModel.hand_strength(rules, rarity, max_surprise)
+		assert_gt(strength, previous, "plus rare, plus forte : %f" % rarity)
+		previous = strength
+
+
+func test_qi_fois_comprehension_proche_de_la_force() -> void:
+	var rules := _rules()
+	for strength: float in [5.0, 16.0, 140.0, 520.0, 1800.0]:
+		var values := BalanceModel.hand_values(rules, strength)
+		assert_almost_eq(float(values["qi"] * values["comprehension"]), strength, strength * 0.15)
+		assert_gte(values["comprehension"], 1)
+		assert_gte(values["level_qi"], 1)
+	assert_eq(BalanceModel.hand_values(rules, 5.0), {"qi": 5, "comprehension": 1, "level_qi": 2, "level_comprehension": 0})
+
+
+func test_priorites_par_rarete_egalite_departagee() -> void:
+	var rules := _rules()
+	var measures := BalanceMeasures.new()
+	measures.hand_rarities = {"commune": 1.0, "rare_a": 0.001, "rare_b": 0.001, "moyenne": 0.1, "impossible": 0.0}
+	var hands: Array[HandDefinition] = [_hand("rare_b", 90), _hand("commune", 10), _hand("rare_a", 40),
+		_hand("moyenne", 20), _hand("impossible", 5)]
+	var values := BalanceModel.solve_hands(rules, measures, hands)
+	assert_false(values.has("impossible"), "une main jamais tiree garde ses valeurs")
+	assert_eq(values["commune"]["priority"], 10)
+	assert_eq(values["moyenne"]["priority"], 20)
+	assert_eq(values["rare_a"]["priority"], 30, "a rarete egale, l'ancienne priorite departage")
+	assert_eq(values["rare_b"]["priority"], 40)
+	assert_eq(values["rare_a"]["qi"], values["rare_b"]["qi"])

@@ -34,8 +34,25 @@ extends Resource
 @export var reward_base: float = 1.0
 @export var reward_per_difficulty: float = 2.0
 
+@export_group("Mains")
+## Cartes d'un tirage pour mesurer la rarete d'une main : la taille d'une main jouee.
+@export var hand_draw_size: int = 5
+## Force de base (Qi x Comprehension) de la main la plus commune et de la plus rare : les autres s'etalent
+## entre les deux selon leur rarete.
+@export var weakest_hand_strength: float = 5.0
+@export var strongest_hand_strength: float = 1800.0
+## Part de la force portee par la Comprehension : C = (force / force la plus faible)^exposant.
+## 0 : tout en Qi ; 0.5 : Qi et Comprehension grandissent autant.
+@export_range(0.0, 1.0) var comprehension_exponent: float = 0.4
+## Un niveau de main ajoute cette part de sa base, en Qi et en Comprehension.
+@export var level_fraction: float = 0.3
+## Ecart entre deux priorites de main (la plus forte gagne quand une main en remplit plusieurs).
+@export var priority_step: int = 10
+
 
 func is_valid() -> bool:
 	return (not id.is_empty() and samples > 0 and reference_hands_left >= 0 and reference_savings >= 0
 		and first_bottleneck_success > 0.0 and first_bottleneck_success < 1.0 and pressure > 0.0
-		and bottleneck_step >= 0.0 and significant_digits > 0 and power_per_realm > 1.0 and min_price > 0)
+		and bottleneck_step >= 0.0 and significant_digits > 0 and power_per_realm > 1.0 and min_price > 0
+		and hand_draw_size > 0 and weakest_hand_strength > 0.0 and strongest_hand_strength > weakest_hand_strength
+		and level_fraction >= 0.0 and priority_step > 0)

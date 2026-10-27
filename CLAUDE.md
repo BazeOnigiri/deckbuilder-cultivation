@@ -17,26 +17,28 @@
 - Antes = royaumes. Blinds = goulots d'étranglement. Boss = tribulation céleste avec contrainte.
 - Jokers = artefacts / bêtes spirituelles. Planètes = manuels de technique. Tarots = pilules.
 
-## Mains (valeurs de départ, à équilibrer dans le tableur)
+## Mains (valeurs calculées par la rareté, voir docs/equilibrage.md)
 
-Une main jouée prend la combinaison la plus haute qu'elle remplit.
+Une main jouée prend la combinaison la plus haute qu'elle remplit. Qi, Compréhension, gains de niveau et priorité
+sont écrits par tools/equilibrage.gd depuis la rareté exacte de chaque main : ne pas les modifier à la main
+(valeurs actuelles dans docs/equilibrage-rapport.md).
 
-| Main | Définition | Fréquence* | Qi | Compr. |
+| Main | Définition | Rareté* | Qi | Compr. |
 | --- | --- | --- | --- | --- |
 | Souffle | carte la plus haute | 100 % | 5 | 1 |
-| Paire | 2 cartes même rang | 98 % | 10 | 2 |
-| Double paire | 2 paires | 72 % | 20 | 2 |
-| Harmonie | 5 éléments différents | 40 % | 25 | 2 |
-| Brelan | 3 cartes même rang | 29 % | 30 | 3 |
-| Ascension | 5 rangs consécutifs | 20 % | 35 | 4 |
-| Full | brelan + paire | 20 % | 40 | 4 |
-| Pureté | 5 cartes même élément | 2,2 % | 60 | 6 |
-| Carré | 4 cartes même rang | 1,9 % | 70 | 7 |
-| Ascension pure | 5 rangs consécutifs, même élément | 0,10 % | 100 | 8 |
-| Cycle d'engendrement | 5 rangs consécutifs dont les éléments suivent le cycle | 0,12 % | 120 | 10 |
-| Cinq Souverains | 5 cartes même rang (donc les 5 éléments) | 0,05 % | 150 | 12 |
+| Paire | 2 cartes même rang | 51 % | 8 | 2 |
+| Double paire | 2 paires | 5,4 % | 34 | 3 |
+| Harmonie | 5 éléments différents | 4,5 % | 38 | 3 |
+| Brelan | 3 cartes même rang | 2,8 % | 36 | 4 |
+| Ascension | 5 rangs consécutifs (le Souverain compte aussi sous le 1) | 0,38 % | 64 | 5 |
+| Full | brelan + paire | 0,19 % | 67 | 6 |
+| Pureté | 5 cartes même élément | 0,078 % | 86 | 6 |
+| Carré | 4 cartes même rang | 0,047 % | 84 | 7 |
+| Ascension pure | 5 rangs consécutifs, même élément | 0,0006 % | 145 | 10 |
+| Cycle d'engendrement | 5 rangs consécutifs dont les éléments suivent le cycle | 0,0006 % | 145 | 10 |
+| Cinq Souverains | 5 cartes même rang (donc les 5 éléments) | 0,00016 % | 164 | 11 |
 
-*Probabilité qu'une main de 8 cartes contienne la combinaison, sans défausse ni paquet modifié.
+*Part exacte des tirages de 5 cartes du paquet de 65 qui contiennent la combinaison.
 
 ## Scope v1
 
