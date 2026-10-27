@@ -8,7 +8,7 @@
 [sub_resource type="Resource" id="score"]
 script = ExtResource("3")
 phase = 1
-amount = 4.0
+amount = 1.0
 
 [sub_resource type="Resource" id="effect"]
 script = ExtResource("2")
@@ -21,5 +21,5 @@ name_key = "ARTIFACT_GOURDE_ELIXIR"
 description_key = "ARTIFACT_GOURDE_ELIXIR_DESC"
 glyph = "葫"
 icon = ExtResource("icon")
-price = 6
+price = 7
 effects = Array[ExtResource("2")]([SubResource("effect")])

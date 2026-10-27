@@ -6,6 +6,15 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Ajouté
+
+- Equilibrage par formules (docs/equilibrage.md) : un joueur de reference simule (Monte-Carlo, graine fixe) mesure le score d'un round et le gain moyen de chaque artefact et manuel. Prix = gain / valeur d'une pierre (courbe de cout, ancree sur le gain median), recompenses et multiplicateurs des goulots par formule, objectifs = score atteint par 90 % des joueurs au depart, puis croissance exponentielle par royaume (puissance achetee par le joueur x pression). Un nouveau royaume n'a besoin que de son ordre. Parametres dans content/rules/equilibrage.tres, outil tools/equilibrage.gd, rapport docs/equilibrage-rapport.md, et un test qui detecte toute valeur qui ne suit plus les formules.
+
+### Modifié
+
+- Objectifs recalcules : 460 / 690 / 920 au premier royaume (avant 200 / 300 / 400), 1300 au deuxieme, 3500 au troisieme. Prix des artefacts et des manuels selon leur gain mesure (manuels de 1 a 10 pierres).
+- Gourde d'elixir : +1 Comprehension au lieu de +4 (la mesure donnait +120 % de score, quatre fois les autres artefacts).
+
 ## [0.4.0] - 2026-10-27
 
 ### Ajouté

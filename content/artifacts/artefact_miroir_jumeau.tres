@@ -27,5 +27,5 @@ name_key = "ARTIFACT_MIROIR_JUMEAU"
 description_key = "ARTIFACT_MIROIR_JUMEAU_DESC"
 glyph = "镜"
 icon = ExtResource("icon")
-price = 7
+price = 4
 effects = Array[ExtResource("2")]([SubResource("effect")])
