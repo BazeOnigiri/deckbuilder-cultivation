@@ -414,6 +414,19 @@ func test_victoire_de_la_run_en_rouleau() -> void:
 	assert_signal_emitted(end, "menu_requested")
 
 
+func test_bilan_de_run_change_la_musique() -> void:
+	var end: RoundEnd = add_child_autofree(RoundEnd.new())
+	end.feel = _instant_end()
+	end.run_over(true, Label.new())
+	assert_eq(Sons.music_id(), end.feel.victory_music)
+	var lost: RoundEnd = add_child_autofree(RoundEnd.new())
+	lost.feel = _instant_end()
+	lost.run_over(false, Label.new())
+	assert_eq(Sons.music_id(), end.feel.defeat_music)
+	assert_true(Sons.has_cue(end.feel.victory_music) and Sons.has_cue(end.feel.defeat_music), "musiques du bilan generees")
+	Sons.play_music(&"", 0.0)
+
+
 func test_voie_de_cultivation_en_rouleau() -> void:
 	var screen: Control = add_child_autofree(SCREEN.instantiate())
 	screen.get_node("%SideColumn").path_requested.emit()

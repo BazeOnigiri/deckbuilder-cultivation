@@ -25,3 +25,7 @@ extends Resource
 ## Bond du compteur de pierres quand les cristaux arrivent.
 @export var stones_bump: float = 1.25
 @export var defeat_time: float = 2.4
+## Arrangements de la musique joues sur le bilan de la run, et leur fondu.
+@export var victory_music: StringName = &"musique_victoire"
+@export var defeat_music: StringName = &"musique_defaite"
+@export var music_fade: float = 1.2

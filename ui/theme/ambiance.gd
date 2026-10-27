@@ -43,7 +43,12 @@ func theme_of(id: StringName) -> AmbianceTheme:
 
 func apply(id: StringName) -> void:
 	var ambiance := theme_of(id)
-	if ambiance == null or ambiance == current:
+	if ambiance == null:
+		return
+	# Le son n'est pas du mouvement : la musique garde son fondu meme avec « Reduire les animations ».
+	# Avant le test de palette : apres le bilan d'une run, la meme ambiance doit reprendre sa musique.
+	Sons.play_music(ambiance.music, fade_time)
+	if ambiance == current:
 		return
 	current = ambiance
 	if _fade != null:
@@ -68,8 +73,6 @@ func apply(id: StringName) -> void:
 			else:
 				material.set_shader_parameter(parameter, targets[material][parameter])
 	_set_weather(ambiance)
-	# Le son n'est pas du mouvement : la nappe garde son fondu meme avec « Reduire les animations ».
-	Sons.play_music(ambiance.music, fade_time)
 
 
 func _set_weather(ambiance: AmbianceTheme) -> void:

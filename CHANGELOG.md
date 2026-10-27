@@ -46,6 +46,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Sources sonores CC0 (Kenney Casino Audio et Impact Sounds, selection VCSL : Dan Tranh, percussions, cloches) : manifeste tools/sons/sources.json, telechargement par fetch_sources.py, conversion des .ogg par Godot (ogg_capture.gd puis split_capture.py). Rien de tout ca dans le depot ni dans l'export.
 - Bruitages refaits a partir d'echantillons enregistres (papier et pions Kenney, cithare Dan Tranh, tambour, gong, verres, carillons VCSL) : sons courts et secs, pion de jade + note de cithare qui montent dans la gamme pentatonique a chaque carte qui compte, tambour et gong pour les multiplications, reverberation courte.
 - Musique composee : theme lo-fi en sol# mineur pentatonique a 76 BPM, ecrit en donnees (tools/sons/partition.json : accords, basse, arpege et melodie au Dan Tranh, nappe chaude, percussions), grain cassette et reverberation, boucle de 16 mesures sans couture. Variantes nuit, boutique et tribulation jouees ensemble (AudioStreamSynchronized) : changer d'ecran fait un fondu a puissance constante sans que la musique reprenne au debut.
+- Huit arrangements du theme au lieu de trois : menu principal, rounds, boutique, une par tribulation (demon : bourdon dissonant et tremolo grave ; flammes : tambours rapides et gong toutes les 4 mesures ; vent noir : glissandos de cithare et souffle), victoire et defaite sur le bilan de la run. Musique en 22 kHz (deja filtree sous 10 kHz) pour garder le poids des fichiers.
 
 ### Corrigé
 

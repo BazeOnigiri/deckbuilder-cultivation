@@ -52,20 +52,20 @@ func test_volume_nul_coupe_le_bus() -> void:
 
 
 func test_variantes_synchronisees() -> void:
-	_bank.play_music(&"nappe_nuit", 0.0)
+	_bank.play_music(&"musique_nuit", 0.0)
 	assert_true(_bank.is_music_playing())
-	assert_gt(_bank.music_volume_db(&"nappe_nuit"), SoundBank.SILENT_DB)
-	assert_eq(_bank.music_volume_db(&"nappe_boutique"), SoundBank.SILENT_DB)
-	_bank.play_music(&"nappe_boutique", 0.1)
+	assert_gt(_bank.music_volume_db(&"musique_nuit"), SoundBank.SILENT_DB)
+	assert_eq(_bank.music_volume_db(&"musique_boutique"), SoundBank.SILENT_DB)
+	_bank.play_music(&"musique_boutique", 0.1)
 	await wait_seconds(0.2)
-	assert_eq(_bank.music_volume_db(&"nappe_nuit"), SoundBank.SILENT_DB, "la nuit s'est tue")
-	assert_gt(_bank.music_volume_db(&"nappe_boutique"), SoundBank.SILENT_DB)
+	assert_eq(_bank.music_volume_db(&"musique_nuit"), SoundBank.SILENT_DB, "la nuit s'est tue")
+	assert_gt(_bank.music_volume_db(&"musique_boutique"), SoundBank.SILENT_DB)
 	assert_true(_bank.is_music_playing(), "meme lecture : la musique ne reprend pas au debut")
 	_bank.play_music(&"", 0.0)
 	assert_false(_bank.is_music_playing(), "silence")
 
 
 func test_musique_inconnue_ignoree() -> void:
-	_bank.play_music(&"nappe_nuit", 0.0)
+	_bank.play_music(&"musique_nuit", 0.0)
 	_bank.play_music(&"musique_qui_n_existe_pas", 0.0)
-	assert_eq(_bank.music_id(), &"nappe_nuit")
+	assert_eq(_bank.music_id(), &"musique_nuit")

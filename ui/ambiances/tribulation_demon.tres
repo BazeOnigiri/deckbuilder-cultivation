@@ -18,4 +18,4 @@ vignette_color = Color(0.22, 0.0, 0.12, 1)
 vignette_breath = 0.2
 breath_speed = 1.3
 weather = ExtResource("2")
-music = &"nappe_tribulation"
+music = &"musique_demon"

@@ -38,10 +38,10 @@ func test_aucun_fichier_orphelin() -> void:
 				assert_has(paths, folder.path_join(file), "%s n'a plus de recette : relancer le script ou le supprimer" % file)
 
 
-## Les nappes tournent en boucle : reglage d'import edit/loop_mode=2 (en avant), a remettre si le .import est recree.
-func test_nappes_en_boucle() -> void:
+## Les musiques tournent en boucle : reglage d'import edit/loop_mode=2 (en avant), a remettre si le .import est recree.
+func test_musiques_en_boucle() -> void:
 	for id: String in _exported():
-		if id.begins_with("nappe_"):
+		if id.begins_with("musique_"):
 			var stream: AudioStreamWAV = load(_exported()[id])
 			assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_FORWARD, id)
 
@@ -50,7 +50,7 @@ func test_nappes_en_boucle() -> void:
 func test_variantes_de_musique_de_meme_longueur() -> void:
 	var lengths := {}
 	for id: String in _exported():
-		if id.begins_with("nappe_"):
+		if id.begins_with("musique_"):
 			lengths[id] = (load(_exported()[id]) as AudioStreamWAV).get_length()
 	assert_gt(lengths.size(), 1)
 	for id: String in lengths:
