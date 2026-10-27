@@ -10,4 +10,5 @@ shader_parameter/ink_color = Color(0.09803922, 0.16470589, 0.18039216, 1)
 shader_parameter/scale = 2.5
 shader_parameter/speed = 0.02
 shader_parameter/warp = 1.5
+shader_parameter/drift = Vector2(1, 0.4)
 shader_parameter/strength = 0.7

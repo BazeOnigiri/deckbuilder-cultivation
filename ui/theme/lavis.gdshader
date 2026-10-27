@@ -16,6 +16,9 @@ uniform float blend : hint_range(0.0, 1.0) = 1.0;
 uniform float scale = 2.5;
 uniform float speed = 0.02;
 uniform float warp = 1.5;
+// Derive des volutes, en unites de bruit par unite de temps : sans elle, la deformation ne deplace l'encre
+// que d'au plus `warp` et les grandes taches restent toujours du meme cote de l'ecran.
+uniform vec2 drift = vec2(1.0, 0.4);
 uniform float strength : hint_range(0.0, 1.0) = 0.7;
 // Reglage « reduire les animations » : 0 fige le lavis (pose par main, declare dans project.godot).
 global uniform float motion_scale;
@@ -39,7 +42,7 @@ void fragment() {
 	float t = TIME * speed * motion_scale;
 	vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t));
 	vec2 r = vec2(fbm(p + warp * q + vec2(1.7, 9.2) + t), fbm(p + warp * q + vec2(8.3, 2.8) - t));
-	float f = fbm(p + warp * r);
+	float f = fbm(p + warp * r + drift * t);
 	vec3 color = palette(base_color.rgb, deep_color.rgb, ink_color.rgb, q, f);
 	if (blend < 1.0) {
 		// Grosses taches lentes : la nouvelle encre gagne d'abord les creux du bruit.

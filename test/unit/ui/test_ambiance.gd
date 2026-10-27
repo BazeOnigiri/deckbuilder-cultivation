@@ -138,3 +138,10 @@ func test_tribulations_differentes_de_la_nuit() -> void:
 		assert_ne(ambiance.base_color, night.base_color, ambiance.id)
 		assert_ne(ambiance.vignette_color, night.vignette_color, "bord teinte : %s" % ambiance.id)
 		assert_not_null(ambiance.weather, "meteo : %s" % ambiance.id)
+
+
+## Bug : sans derive, l'encre restait toujours du meme cote de l'ecran (la deformation seule la deplace a peine).
+func test_le_lavis_derive_a_travers_l_ecran() -> void:
+	var lavis: ShaderMaterial = load("res://ui/theme/lavis.tres")
+	var drift: Vector2 = lavis.get_shader_parameter(&"drift")
+	assert_gt(absf(drift.x), 0.0, "derive horizontale : l'encre passe a gauche comme a droite")
