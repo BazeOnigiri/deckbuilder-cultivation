@@ -12,6 +12,7 @@ func test_fiches_valides() -> void:
 		assert_eq(String(cue.id), res.resource_path.get_file().get_basename(), "ID = nom du fichier")
 		assert_false(ids.has(cue.id), "ID en double : %s" % cue.id)
 		ids[cue.id] = true
-		assert_not_null(cue.stream, String(cue.id))
+		assert_false(cue.streams.is_empty(), String(cue.id))
+		assert_false(cue.streams.has(null), "prise manquante : %s" % cue.id)
 		assert_gt(AudioServer.get_bus_index(cue.bus), -1, "bus %s de %s" % [cue.bus, cue.id])
 	assert_gt(ids.size(), 0)

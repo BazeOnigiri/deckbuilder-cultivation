@@ -21,6 +21,18 @@ func test_son_connu_joue_sur_son_bus() -> void:
 	assert_true(voice.stream is AudioStreamWAV)
 
 
+func test_jamais_deux_fois_la_meme_prise_de_suite() -> void:
+	var used := {}
+	var previous: AudioStream = null
+	for i: int in 40:
+		var stream := _bank.play(&"ui_clic").stream
+		assert_ne(stream, previous, "meme prise deux fois de suite")
+		previous = stream
+		used[stream] = true
+	var cue: SoundCue = load("res://content/sons/ui_clic.tres")
+	assert_eq(used.size(), cue.streams.size(), "toutes les prises finissent par sortir")
+
+
 func test_son_inconnu_ne_joue_rien() -> void:
 	assert_null(_bank.play(&"son_qui_n_existe_pas"))
 

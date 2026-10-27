@@ -6,8 +6,9 @@
 [resource]
 script = ExtResource("1_cue")
 id = &"pilule"
-stream = ExtResource("2_son")
+streams = Array[AudioStream]([ExtResource("2_son")])
 volume_db = -4.0
 bus = &"Effets"
 pitch_variance = 0.03
+volume_variance = 0.0
 scale = PackedInt32Array()

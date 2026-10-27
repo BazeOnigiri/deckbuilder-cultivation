@@ -8,27 +8,57 @@ func _recipes() -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string(RECIPES))
 
 
-## id -> chemin du .wav (dossier de la recette, ou dossier par defaut).
-func _exported() -> Dictionary:
+## id -> chemins des .wav : <id>.wav, ou <id>_1.wav, <id>_2.wav... avec des variantes (meme regle que le script).
+func _takes() -> Dictionary:
 	var data := _recipes()
-	var paths := {}
+	var takes := {}
 	for recipe: Dictionary in data["recettes"]:
-		if recipe.get("export", true):
-			paths[recipe["id"]] = "res://%s/%s.wav" % [recipe.get("dossier", data["dossier"]), recipe["id"]]
+		if not recipe.get("export", true):
+			continue
+		var folder: String = "res://" + recipe.get("dossier", data["dossier"])
+		var count: int = recipe.get("variantes", []).size()
+		var paths: Array[String] = []
+		for i: int in count:
+			paths.append(folder.path_join("%s_%d.wav" % [recipe["id"], i + 1]))
+		if count == 0:
+			paths.append(folder.path_join(recipe["id"] + ".wav"))
+		takes[recipe["id"]] = paths
+	return takes
+
+
+## id -> premier .wav (les musiques n'ont qu'une prise).
+func _exported() -> Dictionary:
+	var paths := {}
+	var takes := _takes()
+	for id: String in takes:
+		paths[id] = takes[id][0]
 	return paths
 
 
 func test_chaque_recette_a_son_fichier() -> void:
-	var paths := _exported()
-	for id: String in paths:
-		var stream := load(paths[id]) as AudioStreamWAV
-		assert_not_null(stream, id)
-		if stream != null:
-			assert_gt(stream.get_length(), 0.0, id)
+	var takes := _takes()
+	for id: String in takes:
+		for path: String in takes[id]:
+			var stream := load(path) as AudioStreamWAV
+			assert_not_null(stream, path)
+			if stream != null:
+				assert_gt(stream.get_length(), 0.0, path)
+
+
+## Effet mitraillette : les sons les plus frequents ont plusieurs prises, et la fiche les liste toutes.
+func test_sons_frequents_en_plusieurs_prises() -> void:
+	var takes := _takes()
+	for id: String in ["ui_clic", "ui_survol", "carte_selection", "carte_deselection", "carte_pioche", "carte_jouee",
+			"note_carte", "orbe_depart", "orbe_impact", "multiplication"]:
+		assert_gt(takes[id].size(), 1, id)
+		var cue: SoundCue = load("res://content/sons/%s.tres" % id)
+		assert_eq(cue.streams.size(), takes[id].size(), "fiche de %s" % id)
 
 
 func test_aucun_fichier_orphelin() -> void:
-	var paths: Array = _exported().values()
+	var paths: Array = []
+	for list: Array in _takes().values():
+		paths.append_array(list)
 	var folders := {}
 	for path: String in paths:
 		folders[path.get_base_dir()] = true

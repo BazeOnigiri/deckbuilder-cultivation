@@ -3,11 +3,14 @@ extends Resource
 ## Un son du jeu, appele par son ID (Sons.play). Fiches generees par tools/sons/generate_sounds.py dans content/sons/.
 
 @export var id: StringName
-@export var stream: AudioStream
+## Prises differentes du meme son : une au hasard a chaque lecture, jamais deux fois la meme de suite (Sons.play).
+@export var streams: Array[AudioStream] = []
 @export var volume_db: float = 0.0
 @export var bus: StringName = &"Effets"
 ## Variation de hauteur au hasard a chaque lecture (0.05 = plus ou moins 5 %), pour que les repetitions lassent moins.
 @export var pitch_variance: float = 0.03
+## Variation de volume au hasard, en dB (plus ou moins).
+@export var volume_variance: float = 0.0
 ## Gamme en demi-tons pour play(id, step) : step 0, 1, 2... monte dans la gamme puis a l'octave. Vide : pas de gamme.
 @export var scale: PackedInt32Array = []
 

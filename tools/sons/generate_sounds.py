@@ -4,7 +4,9 @@ et une fiche SoundCue (.tres) par son dans res://content/sons/ (reglages du bloc
 Lancement depuis la racine du projet :  python -I tools/sons/generate_sounds.py [id ...]  (sans id : tout)
 - « sample » : extrait d'un echantillon CC0 de tools/sons/sources/ (fetch_sources.py, puis ogg_capture.gd et
   split_capture.py pour les .ogg) ; « layers » : superpose d'autres recettes decalees dans le temps.
-- « partition » : une variante de la musique ecrite dans partition.json, en boucle sans couture.
+- « partition » : un arrangement de la musique ecrite dans partition.json, en boucle sans couture.
+- "variantes" : liste de champs qui remplacent ceux de la recette, une prise par entree (<id>_1.wav, <id>_2.wav...) ;
+  la fiche les liste toutes et le jeu en tire une differente a chaque fois.
 Post-traitements communs : filtres, saturation, reverberation. Deterministe (graine fixe par son).
 """
 import json
@@ -332,25 +334,35 @@ def write_wav(path, sound, rate):
 CUE_TEMPLATE = """[gd_resource type="Resource" script_class="SoundCue" format=3]
 
 [ext_resource type="Script" path="res://ui/audio/sound_cue.gd" id="1_cue"]
-[ext_resource type="AudioStream" path="res://{folder}/{id}.wav" id="2_son"]
-
+{streams}
 [resource]
 script = ExtResource("1_cue")
 id = &"{id}"
-stream = ExtResource("2_son")
+streams = Array[AudioStream]([{refs}])
 volume_db = {volume_db}
 bus = &"{bus}"
 pitch_variance = {pitch_variance}
+volume_variance = {volume_variance}
 scale = PackedInt32Array({scale})
 """
-CUE_DEFAULTS = {"volume_db": 0.0, "bus": "Effets", "pitch_variance": 0.03, "scale": []}
+CUE_DEFAULTS = {"volume_db": 0.0, "bus": "Effets", "pitch_variance": 0.03, "volume_variance": 0.0, "scale": []}
+
+
+def take_names(r):
+    """Noms des fichiers d'une recette : <id> seul, ou <id>_1, <id>_2... avec des variantes."""
+    count = len(r.get("variantes", []))
+    return ["%s_%d" % (r["id"], i) for i in range(1, count + 1)] if count else [r["id"]]
 
 
 def write_cue(path, folder, r):
     """Pas d'uid dans la fiche : Godot l'ajoute lui-meme (en inventer un casserait les references)."""
     cue = dict(CUE_DEFAULTS, **r.get("cue", {}))
-    text = CUE_TEMPLATE.format(folder=folder, id=r["id"], volume_db=float(cue["volume_db"]), bus=cue["bus"],
-                               pitch_variance=float(cue["pitch_variance"]), scale=", ".join(str(int(x)) for x in cue["scale"]))
+    names = take_names(r)
+    streams = "".join('[ext_resource type="AudioStream" path="res://%s/%s.wav" id="%d_son"]\n' % (folder, name, i + 2)
+                      for i, name in enumerate(names))
+    text = CUE_TEMPLATE.format(id=r["id"], streams=streams, refs=", ".join('ExtResource("%d_son")' % (i + 2) for i in range(len(names))),
+                               volume_db=float(cue["volume_db"]), bus=cue["bus"], pitch_variance=float(cue["pitch_variance"]),
+                               volume_variance=float(cue["volume_variance"]), scale=", ".join(str(int(x)) for x in cue["scale"]))
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8", newline="\n")
 
@@ -374,12 +386,14 @@ def main():
         if not r.get("export", True) or (only and r["id"] not in only):
             continue
         folder = r.get("dossier", data["dossier"])
-        sound = normalize(render(r, recipes), r.get("gain", 0.8))
-        check(sound, r)
-        rate = output_rate(r)
-        write_wav(ROOT / folder / (r["id"] + ".wav"), sound, rate)
+        for name, overrides in zip(take_names(r), r.get("variantes", [{}])):
+            take = dict(r, **overrides, id=name)
+            sound = normalize(render(take, recipes), take.get("gain", 0.8))
+            check(sound, take)
+            rate = output_rate(take)
+            write_wav(ROOT / folder / (name + ".wav"), sound, rate)
+            print("%-22s %.2f s" % (name, len(sound) / rate))
         write_cue(ROOT / data["fiches"] / (r["id"] + ".tres"), folder, r)
-        print("%-20s %.2f s" % (r["id"], len(sound) / rate))
     return 0
 
 

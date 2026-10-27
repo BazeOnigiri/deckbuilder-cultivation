@@ -10,6 +10,9 @@ const DEFAULT_DIR := "res://content/sons"
 ## Sons des boutons, branches automatiquement sur tout bouton qui entre dans l'arbre.
 const CLICK := &"ui_clic"
 const HOVER := &"ui_survol"
+## Une carte a son propre son quand on la prend ou la repose, a la place du clic.
+const CARD_SELECT := &"carte_selection"
+const CARD_DESELECT := &"carte_deselection"
 ## Sons simultanes au plus : au-dela, la voix la plus ancienne est reprise.
 const VOICES := 12
 ## Bus reglables, dans l'ordre des volumes de GameSettings.
@@ -24,6 +27,8 @@ var rng := RandomNumberGenerator.new()
 const SILENT_DB := -60.0
 
 var _cues: Dictionary = {}
+## Derniere prise jouee par son : la suivante est toujours une autre.
+var _last_take: Dictionary = {}
 ## Toutes les variantes de la musique (fiches du bus Musique, meme longueur) jouent ensemble, synchronisees :
 ## changer d'ambiance ne fait que monter l'une et baisser les autres, la musique ne reprend jamais au debut.
 var _music := AudioStreamPlayer.new()
@@ -55,7 +60,7 @@ func _build_music() -> void:
 	_music_ids.sort()
 	sync.stream_count = _music_ids.size()
 	for i: int in _music_ids.size():
-		sync.set_sync_stream(i, (_cues[_music_ids[i]] as SoundCue).stream)
+		sync.set_sync_stream(i, (_cues[_music_ids[i]] as SoundCue).streams[0])
 		sync.set_sync_stream_volume(i, SILENT_DB)
 	_music.stream = sync
 
@@ -64,7 +69,7 @@ func load_cues(dir_path: String) -> void:
 	_cues.clear()
 	for res: Resource in ContentLoader.load_all(dir_path):
 		var cue := res as SoundCue
-		if cue == null or cue.stream == null:
+		if cue == null or cue.streams.is_empty() or cue.streams.has(null):
 			push_warning("Son ignore dans %s : %s" % [dir_path, res.resource_path])
 			continue
 		_cues[cue.id] = cue
@@ -81,13 +86,26 @@ func play(id: StringName, step: int = 0) -> AudioStreamPlayer:
 		push_warning("Son inconnu : %s" % id)
 		return null
 	var voice := _free_voice()
-	voice.stream = cue.stream
+	voice.stream = cue.streams[_take(cue)]
 	voice.bus = cue.bus
-	voice.volume_db = cue.volume_db
+	voice.volume_db = cue.volume_db + rng.randf_range(-cue.volume_variance, cue.volume_variance)
 	voice.pitch_scale = cue.pitch_for(step) * (1.0 + rng.randf_range(-cue.pitch_variance, cue.pitch_variance))
 	voice.play()
 	played.emit(id, step)
 	return voice
+
+
+## Prise au hasard parmi celles du son, sauf celle jouee juste avant.
+func _take(cue: SoundCue) -> int:
+	var count := cue.streams.size()
+	if count == 1:
+		return 0
+	var last: int = _last_take.get(cue.id, -1)
+	var index := rng.randi_range(0, count - 1 if last < 0 else count - 2)
+	if last >= 0 and index >= last:
+		index += 1
+	_last_take[cue.id] = index
+	return index
 
 
 ## Fondu vers la variante id (vide : silence), en gardant la position dans la musique.
@@ -143,15 +161,21 @@ func music_id() -> StringName:
 ## Clic et survol de chaque bouton, sans que les ecrans aient a s'en occuper. Les cartes sont des boutons aussi.
 func _on_node_added(node: Node) -> void:
 	var button := node as BaseButton
-	# Un bouton qui change de parent rentre dans l'arbre une seconde fois : ne pas brancher deux fois.
-	if button == null or button.pressed.is_connected(_on_button_pressed):
+	# Un bouton qui change de parent rentre dans l'arbre une seconde fois : ne pas brancher deux fois
+	# (marque plutot que is_connected, qui ne reconnait pas une Callable avec bind).
+	if button == null or button.has_meta(&"sons_branches"):
 		return
-	button.pressed.connect(_on_button_pressed)
+	button.set_meta(&"sons_branches", true)
+	button.pressed.connect(_on_button_pressed.bind(button))
 	button.mouse_entered.connect(_on_button_hovered.bind(button))
 
 
-func _on_button_pressed() -> void:
-	play(CLICK)
+## pressed n'est emis que par le joueur : trier ou vider la main par le code reste silencieux.
+func _on_button_pressed(button: BaseButton) -> void:
+	if button is CardView:
+		play(CARD_SELECT if button.button_pressed else CARD_DESELECT)
+	else:
+		play(CLICK)
 
 
 func _on_button_hovered(button: BaseButton) -> void:

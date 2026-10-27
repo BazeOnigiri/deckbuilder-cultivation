@@ -1,13 +1,17 @@
 [gd_resource type="Resource" script_class="SoundCue" format=3]
 
 [ext_resource type="Script" path="res://ui/audio/sound_cue.gd" id="1_cue"]
-[ext_resource type="AudioStream" path="res://audio/sfx/carte_pioche.wav" id="2_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/carte_pioche_1.wav" id="2_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/carte_pioche_2.wav" id="3_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/carte_pioche_3.wav" id="4_son"]
+[ext_resource type="AudioStream" path="res://audio/sfx/carte_pioche_4.wav" id="5_son"]
 
 [resource]
 script = ExtResource("1_cue")
 id = &"carte_pioche"
-stream = ExtResource("2_son")
+streams = Array[AudioStream]([ExtResource("2_son"), ExtResource("3_son"), ExtResource("4_son"), ExtResource("5_son")])
 volume_db = -6.0
 bus = &"Effets"
 pitch_variance = 0.06
+volume_variance = 1.5
 scale = PackedInt32Array()
