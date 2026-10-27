@@ -1,8 +1,10 @@
-"""Synthese des sons du jeu : lit recettes.json, ecrit des .wav dans res://audio/sfx/
+"""Sons du jeu : lit recettes.json, ecrit des .wav dans res://audio/sfx/
 et une fiche SoundCue (.tres) par son dans res://content/sons/ (reglages du bloc "cue" de la recette).
 
 Lancement depuis la racine du projet :  python -I tools/sons/generate_sounds.py [id ...]  (sans id : tout)
 Chaque recette est un son ; une recette « couches » superpose d'autres recettes decalees dans le temps.
+Les recettes « sample » partent des echantillons CC0 de tools/sons/sources/ (fetch_sources.py, puis
+ogg_capture.gd et split_capture.py pour les .ogg). Post-traitements communs : filtres, saturation, reverberation.
 Le resultat est deterministe (graine fixe par son) : relancer le script redonne les memes fichiers.
 """
 import json
@@ -16,6 +18,33 @@ import numpy as np
 RATE = 44100
 ROOT = Path(__file__).resolve().parents[2]
 RECIPES = Path(__file__).with_name("recettes.json")
+SOURCES = Path(__file__).with_name("sources")
+_samples = {}
+
+
+def load_sample(name):
+    """Echantillon mono a RATE, en flottants. name : chemin relatif a tools/sons/sources/ (16 ou 24 bits, mono ou stereo)."""
+    if name not in _samples:
+        with wave.open(str(SOURCES / name)) as f:
+            channels, width, rate = f.getnchannels(), f.getsampwidth(), f.getframerate()
+            raw = f.readframes(f.getnframes())
+        if width == 3:
+            b = np.frombuffer(raw, np.uint8).reshape(-1, 3).astype(np.int32)
+            data = (b[:, 0] | (b[:, 1] << 8) | (b[:, 2] << 16))
+            data = np.where(data >= 1 << 23, data - (1 << 24), data) / float(1 << 23)
+        else:
+            data = np.frombuffer(raw, {2: "<i2", 4: "<i4"}[width]) / float(2 ** (8 * width - 1))
+        data = data.reshape(-1, channels).mean(axis=1)
+        _samples[name] = _resample(data, RATE / rate)
+    return _samples[name]
+
+
+def _resample(signal, ratio):
+    """ratio > 1 : plus d'echantillons (plus long, plus grave a la lecture)."""
+    if abs(ratio - 1.0) < 1e-9:
+        return signal.copy()
+    n = int(len(signal) * ratio)
+    return np.interp(np.arange(n) / ratio, np.arange(len(signal)), signal)
 
 
 def _time(duration):
@@ -114,6 +143,58 @@ def sparkle(r, rng):
     return out
 
 
+def sample(r, rng):
+    """Extrait d'un echantillon : debut et longueur en secondes, transposition en demi-tons, fondu de sortie."""
+    data = load_sample(r["file"])
+    # Silence d'entree des enregistrements coupe : l'attaque tombe pile sur l'evenement du jeu.
+    loud = np.nonzero(np.abs(data) > 0.02 * np.abs(data).max())[0]
+    onset = max(0, loud[0] - int(0.002 * RATE)) if len(loud) else 0
+    start = onset + int(r.get("start", 0.0) * RATE)
+    clip = data[start:start + int(r["length"] * RATE)] if "length" in r else data[start:]
+    if r.get("reverse"):
+        clip = clip[::-1]
+    clip = _resample(clip, 2 ** (-r.get("pitch", 0.0) / 12))
+    fade = min(len(clip), int(r.get("fade_out", 0.05) * RATE))
+    clip[len(clip) - fade:] *= np.linspace(1.0, 0.0, fade) ** 2
+    attack = int(r.get("fade_in", 0.0) * RATE)
+    if attack > 0:
+        clip[:attack] *= np.linspace(0.0, 1.0, attack)
+    return clip
+
+
+def _highpass(signal, cutoff):
+    return signal - _lowpass(signal, cutoff)
+
+
+def reverb(signal, rng, size, mix, tone=6000.0):
+    """Reverberation par convolution avec une reponse de salle synthetique (bruit qui decroit, assombri)."""
+    n = int(size * RATE)
+    ir = rng.uniform(-1, 1, n) * np.exp(-np.arange(n) / (size * RATE / 5.0))
+    ir = _lowpass(ir, tone)
+    ir /= np.sqrt((ir ** 2).sum())
+    size_fft = 1 << int(np.ceil(np.log2(len(signal) + n)))
+    wet = np.fft.irfft(np.fft.rfft(signal, size_fft) * np.fft.rfft(ir, size_fft), size_fft)[:len(signal) + n]
+    dry = np.concatenate([signal, np.zeros(n)])
+    wet *= np.abs(dry).max() / max(np.abs(wet).max(), 1e-9)
+    return dry * (1.0 - mix) + wet * mix
+
+
+def post(sound, r, rng):
+    """Post-traitements optionnels de toute recette, dans l'ordre : passe-haut, passe-bas, saturation, reverb."""
+    if "highpass" in r:
+        sound = _highpass(sound, r["highpass"])
+    if "lowpass" in r:
+        sound = _lowpass(sound, r["lowpass"])
+    if "drive" in r:
+        sound = np.tanh(sound * r["drive"] / max(np.abs(sound).max(), 1e-9))
+    if "reverb" in r:
+        sound = reverb(sound, rng, r["reverb"]["size"], r["reverb"]["mix"], r["reverb"].get("tone", 6000.0))
+        # La queue de reverb s'eteint en silence, sans coupure seche.
+        tail = int(r["reverb"]["size"] * RATE)
+        sound[-tail:] *= np.linspace(1.0, 0.0, tail) ** 2
+    return sound
+
+
 def layers(r, rng, recipes):
     """Superpose d'autres recettes : [{"use": id, "at": secondes, "gain": x}]."""
     parts = [(int(layer.get("at", 0.0) * RATE), layer.get("gain", 1.0), render(recipes[layer["use"]], recipes))
@@ -157,7 +238,7 @@ def nappe(r, rng):
     return out
 
 
-KINDS = {"pluck": pluck, "partials": partials, "breath": breath, "knock": knock, "sparkle": sparkle}
+KINDS = {"pluck": pluck, "partials": partials, "breath": breath, "knock": knock, "sparkle": sparkle, "sample": sample}
 
 
 def render(r, recipes):
@@ -165,6 +246,7 @@ def render(r, recipes):
     if r["kind"] == "nappe":
         return nappe(r, rng)
     sound = layers(r, rng, recipes) if r["kind"] == "layers" else KINDS[r["kind"]](r, rng)
+    sound = post(sound, r, rng)
     fade = min(len(sound), int(0.01 * RATE))
     sound[-fade:] *= np.linspace(1.0, 0.0, fade)
     return sound

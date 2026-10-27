@@ -7,7 +7,7 @@
 script = ExtResource("1_cue")
 id = &"carte_defausse"
 stream = ExtResource("2_son")
-volume_db = 0.0
+volume_db = -6.0
 bus = &"Effets"
-pitch_variance = 0.03
+pitch_variance = 0.05
 scale = PackedInt32Array()

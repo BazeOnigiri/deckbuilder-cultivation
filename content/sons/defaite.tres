@@ -9,5 +9,5 @@ id = &"defaite"
 stream = ExtResource("2_son")
 volume_db = 0.0
 bus = &"Effets"
-pitch_variance = 0.03
+pitch_variance = 0.0
 scale = PackedInt32Array()
