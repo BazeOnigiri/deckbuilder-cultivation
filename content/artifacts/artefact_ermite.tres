@@ -28,5 +28,5 @@ name_key = "ARTIFACT_ERMITE"
 description_key = "ARTIFACT_ERMITE_DESC"
 glyph = "隐"
 icon = ExtResource("icon")
-price = 1
+price = 3
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

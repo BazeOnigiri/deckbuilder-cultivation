@@ -11,7 +11,7 @@
 ## Concept
 
 - Roguelike deckbuilder inspiré de Balatro, thème cultivation (manhua xianxia).
-- Paquet de 45 cartes : 5 éléments (bois, feu, terre, métal, eau) × rangs 1 à 9.
+- Paquet de 65 cartes : 5 éléments (bois, feu, terre, métal, eau) × rangs 1 à 13. Rangs 1 à 9 en chiffres, 10 à 13 en figures (Disciple 徒, Maître 师, Immortel 仙, Souverain 尊). Qi d'une carte : son rang, 10 pour une figure, 11 pour le Souverain (content/rules/rangs.tres). Le Souverain compte aussi sous le 1 dans une Ascension, sans boucle.
 - Cycle d'engendrement : bois > feu > terre > métal > eau > bois.
 - Score = Qi × Compréhension. Qi = Qi de base de la main + rangs des cartes qui comptent.
 - Antes = royaumes. Blinds = goulots d'étranglement. Boss = tribulation céleste avec contrainte.
@@ -136,7 +136,7 @@ Principe : garder les portes ouvertes sans coder pour des besoins qui n'existent
 - Équilibrage centralisé : aucun nombre magique dans le code, tout est dans les Resources ou un fichier de config.
 - Entrées via InputMap uniquement (souris aujourd'hui, manette ou tactile plus tard).
 - Interface en conteneurs Godot et ancres, pour supporter plusieurs résolutions et un futur portage desktop/mobile.
-- Le contenu répétitif (ex : les 45 cartes) est produit par des scripts de res://tools/ (extends SceneTree, lancés en headless). Le jeu ne lit que les .tres générés. tools/, test/ et addons/gut/ sont exclus de l'export.
+- Le contenu répétitif (ex : les 65 cartes) est produit par des scripts de res://tools/ (extends SceneTree, lancés en headless). Le jeu ne lit que les .tres générés. tools/, test/ et addons/gut/ sont exclus de l'export.
 
 ## Assets (je ne sais pas en créer, aide-moi)
 

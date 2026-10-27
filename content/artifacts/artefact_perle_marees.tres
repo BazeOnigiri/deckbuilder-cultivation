@@ -28,5 +28,5 @@ name_key = "ARTIFACT_PERLE_MAREES"
 description_key = "ARTIFACT_PERLE_MAREES_DESC"
 glyph = "珠"
 icon = ExtResource("icon")
-price = 8
+price = 9
 effects = Array[ExtResource("2")]([SubResource("effect")])

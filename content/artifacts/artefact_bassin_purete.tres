@@ -27,5 +27,5 @@ name_key = "ARTIFACT_BASSIN_PURETE"
 description_key = "ARTIFACT_BASSIN_PURETE_DESC"
 glyph = "池"
 icon = ExtResource("icon")
-price = 3
+price = 4
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

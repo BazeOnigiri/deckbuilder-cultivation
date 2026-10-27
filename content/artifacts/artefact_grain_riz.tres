@@ -28,5 +28,5 @@ name_key = "ARTIFACT_GRAIN_RIZ"
 description_key = "ARTIFACT_GRAIN_RIZ_DESC"
 glyph = "米"
 icon = ExtResource("icon")
-price = 4
+price = 3
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

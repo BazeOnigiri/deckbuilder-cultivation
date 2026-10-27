@@ -6,6 +6,7 @@
 [sub_resource type="Resource" id="detector"]
 script = ExtResource("2")
 length = 5
+low_rank = 13
 require_same_element = true
 
 [resource]

@@ -16,7 +16,7 @@ func _init(definition: DeckDefinition, rng: RandomNumberGenerator) -> void:
 	_rng = rng
 	var next_uid: int = 0
 	for card_data: CardData in definition.cards:
-		draw_pile.append(CardInstance.new(next_uid, card_data))
+		draw_pile.append(CardInstance.new(next_uid, card_data, definition.ranks))
 		next_uid += 1
 	RngUtils.shuffle(draw_pile, _rng)
 

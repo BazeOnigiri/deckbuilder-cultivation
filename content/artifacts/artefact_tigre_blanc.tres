@@ -28,5 +28,5 @@ name_key = "ARTIFACT_TIGRE_BLANC"
 description_key = "ARTIFACT_TIGRE_BLANC_DESC"
 glyph = "虎"
 icon = ExtResource("icon")
-price = 6
+price = 5
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

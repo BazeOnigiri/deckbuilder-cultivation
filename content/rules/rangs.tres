@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="RankRules" format=3]
+
+[ext_resource type="Script" path="res://core/cards/rank_rules.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+max_rank = 13
+qi_by_rank = PackedInt32Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 11)

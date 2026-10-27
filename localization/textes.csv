@@ -152,7 +152,7 @@ ARTIFACT_BASSIN_PURETE_DESC,"x2,5 Compréhension si la main est une Pureté ou u
 ARTIFACT_GRAIN_RIZ,Grain de riz spirituel,Spirit Rice Grain
 ARTIFACT_GRAIN_RIZ_DESC,+6 Qi pour chaque carte de rang 1 à 3 qui compte.,+6 Qi for each scoring card of rank 1 to 3.
 ARTIFACT_COURONNE_IMMORTEL,Couronne d'immortel,Immortal's Crown
-ARTIFACT_COURONNE_IMMORTEL_DESC,"+0,5 Compréhension pour chaque carte de rang 7 à 9 qui compte.",+0.5 Comprehension for each scoring card of rank 7 to 9.
+ARTIFACT_COURONNE_IMMORTEL_DESC,"+0,5 Compréhension pour chaque figure qui compte (Disciple, Maître, Immortel, Souverain).","+0.5 Comprehension for each scoring face card (Disciple, Master, Immortal, Sovereign)."
 ARTIFACT_ERMITE,Ermite,Hermit
 ARTIFACT_ERMITE_DESC,"x1,8 Compréhension si 3 cartes ou moins comptent.",x1.8 Comprehension if 3 cards or fewer score.
 ARTIFACT_CHAUDRON_ALCHIMIQUE,Chaudron alchimique,Alchemical Cauldron

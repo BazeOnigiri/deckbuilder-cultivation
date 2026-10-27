@@ -27,5 +27,5 @@ name_key = "ARTIFACT_PAGODE"
 description_key = "ARTIFACT_PAGODE_DESC"
 glyph = "塔"
 icon = ExtResource("icon")
-price = 8
+price = 5
 effects = Array[ExtResource("2")]([SubResource("effect_1")])
