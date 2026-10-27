@@ -43,6 +43,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Lecteur de sons (autoload Sons) : sons appeles par ID depuis des fiches SoundCue de content/sons/ (generees avec les sons), gamme pentatonique pour les notes, legere variation de hauteur, 12 voix. Bus Musique et Effets, curseurs Volume general, Musique et Effets sonores dans les Options (sauvegardes).
 - Sons branches sur le jeu : clic et survol de tous les boutons, pioche, carte jouee, defausse, annonce de la main, une note par carte qui compte qui monte dans la gamme, orbes (depart, impact) et gong des multiplications, sceaux de tribulation, victoire, defaite, pierres, achats, manuels et pilules.
 - Nappes d'ambiance generees par le meme script (bourdon, vent, notes pentatoniques, boucles de 24 s sans couture) : nuit, boutique, tribulation. Chaque ambiance choisit sa nappe (champ music), fondu croise au changement d'ecran.
+- Sources sonores CC0 (Kenney Casino Audio et Impact Sounds, selection VCSL : Dan Tranh, percussions, cloches) : manifeste tools/sons/sources.json, telechargement par fetch_sources.py, conversion des .ogg par Godot (ogg_capture.gd puis split_capture.py). Rien de tout ca dans le depot ni dans l'export.
 
 ### Corrigé
 

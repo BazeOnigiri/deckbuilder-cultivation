@@ -16,5 +16,12 @@
 
 ## Sons
 
-- Tous les sons sont synthétisés par `tools/sons/generate_sounds.py` (aucun échantillon externe).
-  Le script et ses recettes ont été écrits avec l'aide d'une IA (Claude) : à signaler sur la page itch.io.
+- Les sons du jeu sont fabriqués par `tools/sons/generate_sounds.py` à partir des échantillons ci-dessous
+  (découpés, transposés, superposés, réverbérés) et de synthèse. Le script, ses recettes et la musique ont été
+  écrits avec l'aide d'une IA (Claude) : à signaler sur la page itch.io.
+- **Casino Audio** et **Impact Sounds**, Kenney (kenney.nl), licence CC0 1.0.
+  <https://kenney.nl/assets/casino-audio>, <https://kenney.nl/assets/impact-sounds>
+- **Versilian Community Sample Library (VCSL)**, Versilian Studios, licence CC0 1.0 : Dan Tranh, woodblock,
+  slit drum, tambour sur cadre, cloches népalaises, cymbalettes, carillon, verres chantés, gong.
+  <https://github.com/sgossner/VCSL>
+- Liste exacte des fichiers : `tools/sons/sources.json` (téléchargés par `tools/sons/fetch_sources.py`).
