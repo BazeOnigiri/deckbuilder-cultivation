@@ -6,6 +6,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-27
+
 ### Ajouté
 
 - Polices Noto Serif et Ma Shan Zheng (OFL) en sous-ensembles, chiffres tabulaires pour que les scores ne tremblent pas.
