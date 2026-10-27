@@ -92,6 +92,7 @@ func _on_settings_changed() -> void:
 func _apply_settings() -> void:
 	RenderingServer.global_shader_parameter_set(MOTION_SCALE, 0.0 if _settings.reduce_motion else 1.0)
 	Ambiance.reduce_motion = _settings.reduce_motion
+	Sons.apply_volumes(_settings)
 	# Accelere tout ce qui suit le temps du moteur (tweens, minuteurs), pas les shaders.
 	Engine.time_scale = _settings.game_speed
 	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if _settings.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED

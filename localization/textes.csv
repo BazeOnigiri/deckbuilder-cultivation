@@ -128,3 +128,6 @@ UI_QUIT,Quitter le jeu,Quit game
 UI_INFO_TIMES,x,x
 UI_INFO_PLAYED_COUNT,Jouée %d fois,Played %d times
 UI_STATS_TOP_HANDS,Mains les plus jouées,Most played hands
+UI_OPTIONS_MASTER_VOLUME,Volume général,Master volume
+UI_OPTIONS_MUSIC_VOLUME,Musique,Music
+UI_OPTIONS_EFFECTS_VOLUME,Effets sonores,Sound effects

@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" path="res://ui/icons/pierre.svg" id="4_pierre"]
 [ext_resource type="Texture2D" path="res://ui/kit/interrupteur_off.svg" id="5_inter_off"]
 [ext_resource type="Texture2D" path="res://ui/kit/interrupteur_on.svg" id="6_inter_on"]
+[ext_resource type="Texture2D" path="res://ui/kit/curseur.svg" id="7_curseur"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_carte"]
 
@@ -627,6 +628,24 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rainure"]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.36, 0.27, 0.19, 0.3)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rainure_pleine"]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.2, 0.45, 0.38, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [resource]
 default_font = ExtResource("1_15t8c")
 default_font_size = 20
@@ -958,3 +977,10 @@ StatNumber/fonts/font = ExtResource("2_carte")
 StatTile/base_type = &"PanelContainer"
 StatTile/constants/width = 120
 StatTile/styles/panel = SubResource("StyleBoxFlat_tuile")
+ScrollSlider/base_type = &"HSlider"
+ScrollSlider/constants/width = 200
+ScrollSlider/icons/grabber = ExtResource("7_curseur")
+ScrollSlider/icons/grabber_highlight = ExtResource("7_curseur")
+ScrollSlider/styles/grabber_area = SubResource("StyleBoxFlat_rainure_pleine")
+ScrollSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_rainure_pleine")
+ScrollSlider/styles/slider = SubResource("StyleBoxFlat_rainure")

@@ -25,6 +25,9 @@ func _ready() -> void:
 	for speed: float in GameSettings.GAME_SPEEDS:
 		%GameSpeed.add_item(tr("UI_OPTIONS_SPEED_ITEM") % str(speed).trim_suffix(".0"))
 	%GameSpeed.select(maxi(GameSettings.GAME_SPEEDS.find(settings.game_speed), 0))
+	_bind_volume(%MasterVolume, "master_volume")
+	_bind_volume(%MusicVolume, "music_volume")
+	_bind_volume(%EffectsVolume, "effects_volume")
 	%ReduceMotion.toggled.connect(_on_reduce_motion_toggled)
 	%Fullscreen.toggled.connect(_on_fullscreen_toggled)
 	%GameSpeed.item_selected.connect(_on_game_speed_selected)
@@ -34,6 +37,15 @@ func _ready() -> void:
 	%NewRunButton.pressed.connect(_ask_new_run)
 	%BackButton.reduce_motion = settings.reduce_motion
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
+
+
+## Le curseur montre le reglage puis l'ecrit a chaque cran (step 0.05 : une vingtaine d'ecritures au plus par glisse).
+func _bind_volume(slider: HSlider, property: String) -> void:
+	slider.custom_minimum_size.x = get_theme_constant(&"width", &"ScrollSlider")
+	slider.set_value_no_signal(settings.get(property))
+	slider.value_changed.connect(func(value: float) -> void:
+		settings.set(property, value)
+		settings_changed.emit())
 
 
 func _ask_new_run() -> void:

@@ -1,4 +1,5 @@
-"""Synthese des sons du jeu : lit recettes.json, ecrit des .wav dans res://audio/sfx/.
+"""Synthese des sons du jeu : lit recettes.json, ecrit des .wav dans res://audio/sfx/
+et une fiche SoundCue (.tres) par son dans res://content/sons/ (reglages du bloc "cue" de la recette).
 
 Lancement depuis la racine du projet :  python -I tools/sons/generate_sounds.py
 Chaque recette est un son ; une recette « couches » superpose d'autres recettes decalees dans le temps.
@@ -148,6 +149,32 @@ def write_wav(path, sound):
         f.writeframes(data.tobytes())
 
 
+CUE_TEMPLATE = """[gd_resource type="Resource" script_class="SoundCue" format=3]
+
+[ext_resource type="Script" path="res://ui/audio/sound_cue.gd" id="1_cue"]
+[ext_resource type="AudioStream" path="res://{folder}/{id}.wav" id="2_son"]
+
+[resource]
+script = ExtResource("1_cue")
+id = &"{id}"
+stream = ExtResource("2_son")
+volume_db = {volume_db}
+bus = &"{bus}"
+pitch_variance = {pitch_variance}
+scale = PackedInt32Array({scale})
+"""
+CUE_DEFAULTS = {"volume_db": 0.0, "bus": "Effets", "pitch_variance": 0.03, "scale": []}
+
+
+def write_cue(path, folder, r):
+    """Pas d'uid dans la fiche : Godot l'ajoute lui-meme (en inventer un casserait les references)."""
+    cue = dict(CUE_DEFAULTS, **r.get("cue", {}))
+    text = CUE_TEMPLATE.format(folder=folder, id=r["id"], volume_db=float(cue["volume_db"]), bus=cue["bus"],
+                               pitch_variance=float(cue["pitch_variance"]), scale=", ".join(str(int(x)) for x in cue["scale"]))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8", newline="\n")
+
+
 def check(sound, r):
     """Garde-fous : pas de saturation, pas de silence, duree attendue."""
     peak = np.abs(sound).max()
@@ -166,6 +193,7 @@ def main():
         sound = normalize(render(r, recipes), r.get("gain", 0.8))
         check(sound, r)
         write_wav(out_dir / (r["id"] + ".wav"), sound)
+        write_cue(ROOT / data["fiches"] / (r["id"] + ".tres"), data["dossier"], r)
         print("%-20s %.2f s" % (r["id"], len(sound) / RATE))
     return 0
 

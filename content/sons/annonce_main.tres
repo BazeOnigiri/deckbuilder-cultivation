@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SoundCue" format=3]
+
+[ext_resource type="Script" path="res://ui/audio/sound_cue.gd" id="1_cue"]
+[ext_resource type="AudioStream" path="res://audio/sfx/annonce_main.wav" id="2_son"]
+
+[resource]
+script = ExtResource("1_cue")
+id = &"annonce_main"
+stream = ExtResource("2_son")
+volume_db = 0.0
+bus = &"Effets"
+pitch_variance = 0.03
+scale = PackedInt32Array()
