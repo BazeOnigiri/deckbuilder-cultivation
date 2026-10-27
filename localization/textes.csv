@@ -20,6 +20,8 @@ UI_PLAY,Jouer la main,Play hand
 UI_DISCARD,Défausser,Discard
 UI_CREDITS,Crédits,Credits
 UI_CREDITS_INTRO,Ce jeu utilise le moteur Godot (godotengine.org).,This game uses the Godot Engine (godotengine.org).
+UI_CREDITS_GAME,Wu Xing : conception et code par BazeOnigiri. Dessins SVG et shaders écrits à la main.,Wu Xing: design and code by BazeOnigiri. Hand-written SVG drawings and shaders.
+UI_CREDITS_FONTS,Polices : Noto Serif et Ma Shan Zheng (SIL Open Font License 1.1).,Fonts: Noto Serif and Ma Shan Zheng (SIL Open Font License 1.1).
 REALM_RAFFINEMENT_QI,Raffinement du Qi,Qi Refining
 REALM_FONDATIONS,Établissement des fondations,Foundation Establishment
 REALM_NOYAU_OR,Noyau d'or,Golden Core

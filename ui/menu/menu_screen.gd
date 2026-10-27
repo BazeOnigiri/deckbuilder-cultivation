@@ -32,16 +32,16 @@ func _show_play_scroll() -> void:
 		start_requested.emit()
 		return
 	var body := VBoxContainer.new()
+	body.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
 	var progress := saved_run.progress
-	body.add_child(_row("UI_SAVED_STAGE", tr("UI_STAGE") % [tr(progress.current_realm().name_key), tr(progress.current_bottleneck().name_key)]))
-	var stones := _row("UI_SAVED_STONES", str(saved_run.stones))
-	stones.add_child(StoneIcon.new())
-	body.add_child(stones)
-	var artifacts := _row("UI_SAVED_ARTIFACTS", "" if not saved_run.artifacts.is_empty() else tr("UI_NONE"))
+	body.add_child(ScrollRows.row("UI_SAVED_STAGE", tr("UI_STAGE") % [tr(progress.current_realm().name_key), tr(progress.current_bottleneck().name_key)]))
+	var stone_icon: Array[Control] = [StoneIcon.new()]
+	body.add_child(ScrollRows.row("UI_SAVED_STONES", str(saved_run.stones), stone_icon))
+	var icons: Array[Control] = []
 	for artifact: ArtifactDefinition in saved_run.artifacts:
-		artifacts.add_child(_artifact_icon(artifact))
-	body.add_child(artifacts)
-	body.add_child(_row("UI_SAVED_PILLS", _names(saved_run.pills)))
+		icons.append(_artifact_icon(artifact))
+	body.add_child(ScrollRows.row("UI_SAVED_ARTIFACTS", "" if not icons.is_empty() else tr("UI_NONE"), icons))
+	body.add_child(ScrollRows.row("UI_SAVED_PILLS", _names(saved_run.pills)))
 	var warning := SideColumn.make_label(&"ScrollCaption", "UI_NEW_RUN_WARNING")
 	warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	warning.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
@@ -54,17 +54,6 @@ func _show_play_scroll() -> void:
 	body.add_child(actions)
 	# Deux choix explicites : pas de sceau Fermer en plus (Echap et le clic a cote ferment toujours).
 	ScrollOverlay.open(self, "UI_NEW_RUN", body, not settings.reduce_motion).hide_close()
-
-
-func _row(name_key: String, value: String) -> HBoxContainer:
-	var row := HBoxContainer.new()
-	var name_label := SideColumn.make_label(&"ScrollCaption", name_key)
-	name_label.custom_minimum_size.x = get_theme_constant(&"label_width", &"ScrollPanel")
-	row.add_child(name_label)
-	var value_label := SideColumn.make_label(&"ScrollText")
-	value_label.text = value
-	row.add_child(value_label)
-	return row
 
 
 ## Dessin de l'artefact a l'encre, son nom en infobulle.
@@ -96,13 +85,9 @@ func _names(list: Array) -> String:
 
 ## La licence MIT de Godot exige que son texte accompagne le jeu publie.
 func _show_credits() -> void:
-	var dialog := AcceptDialog.new()
-	dialog.title = tr("UI_CREDITS")
 	var text := RichTextLabel.new()
-	text.custom_minimum_size = Vector2(600, 400)
-	text.text = tr("UI_CREDITS_INTRO") + "\n\n" + Engine.get_license_text()
-	dialog.add_child(text)
-	dialog.confirmed.connect(dialog.queue_free)
-	dialog.canceled.connect(dialog.queue_free)
-	add_child(dialog)
-	dialog.popup_centered()
+	text.theme_type_variation = &"ScrollRichText"
+	text.custom_minimum_size = Vector2(get_theme_constant(&"text_width", &"ScrollPanel") * 1.4,
+		get_theme_constant(&"tab_height", &"ScrollPanel"))
+	text.text = tr("UI_CREDITS_GAME") + "\n\n" + tr("UI_CREDITS_FONTS") + "\n\n" + tr("UI_CREDITS_INTRO") + "\n\n" + Engine.get_license_text()
+	ScrollOverlay.open(self, "UI_CREDITS", text, not settings.reduce_motion)

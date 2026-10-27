@@ -14,7 +14,8 @@ var settings: GameSettings = GameSettings.new()
 ## Pose par main avant l'ajout a l'arbre quand les options s'ouvrent par-dessus une run.
 var in_run: bool = false
 
-var _confirm: ConfirmationDialog
+var _confirm: ScrollOverlay
+var _confirm_button: Button
 
 
 func _ready() -> void:
@@ -31,17 +32,35 @@ func _ready() -> void:
 	%RunButtons.visible = in_run
 	%MenuButton.pressed.connect(menu_requested.emit)
 	%NewRunButton.pressed.connect(_ask_new_run)
+	%BackButton.reduce_motion = settings.reduce_motion
+	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 
 
 func _ask_new_run() -> void:
-	_confirm = ConfirmationDialog.new()
-	_confirm.dialog_text = tr("UI_OPTIONS_NEW_RUN_CONFIRM")
-	_confirm.ok_button_text = tr("UI_OPTIONS_NEW_RUN")
-	_confirm.cancel_button_text = tr("UI_CANCEL")
-	_confirm.confirmed.connect(new_run_requested.emit)
-	_confirm.canceled.connect(_confirm.queue_free)
-	add_child(_confirm)
-	_confirm.popup_centered()
+	var body := VBoxContainer.new()
+	var question := SideColumn.make_label(&"ScrollText", "UI_OPTIONS_NEW_RUN_CONFIRM")
+	question.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	question.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
+	body.add_child(question)
+	var actions := HBoxContainer.new()
+	actions.alignment = BoxContainer.ALIGNMENT_CENTER
+	actions.add_theme_constant_override(&"separation", get_theme_constant(&"separation", &"ScrollPanel"))
+	_confirm_button = _seal("UI_OPTIONS_NEW_RUN")
+	_confirm_button.pressed.connect(new_run_requested.emit)
+	actions.add_child(_confirm_button)
+	var cancel := _seal("UI_CANCEL")
+	actions.add_child(cancel)
+	body.add_child(actions)
+	_confirm = ScrollOverlay.open(self, "UI_OPTIONS_NEW_RUN", body, not settings.reduce_motion)
+	_confirm.hide_close()
+	cancel.pressed.connect(_confirm.close)
+
+
+func _seal(text_key: String) -> Button:
+	var button := Button.new()
+	button.theme_type_variation = &"SealButton"
+	button.text = text_key
+	return button
 
 
 func _on_reduce_motion_toggled(on: bool) -> void:

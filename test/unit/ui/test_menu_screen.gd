@@ -68,3 +68,12 @@ func test_les_cinq_phases_immobiles_si_on_reduit_les_animations() -> void:
 	var menu := _menu(false)
 	await wait_physics_frames(3)
 	assert_eq(menu.get_node("%Orbit").angle, 0.0)
+
+
+func test_credits_en_rouleau_avec_la_licence_de_godot() -> void:
+	var menu := _menu(false)
+	menu.get_node("%CreditsButton").pressed.emit()
+	var overlay := _overlay(menu)
+	assert_not_null(overlay)
+	var text: RichTextLabel = overlay.find_children("*", "RichTextLabel", true, false)[0]
+	assert_string_contains(text.text, Engine.get_license_text().substr(0, 40))
