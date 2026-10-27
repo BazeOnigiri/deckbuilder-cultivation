@@ -41,6 +41,7 @@ func victory() -> void:
 	if settings.reduce_motion:
 		seal.position = rest
 		tween.tween_interval(fall)
+		tween.tween_callback(Sons.play.bind(&"victoire", 0))
 	else:
 		seal.position = rest - Vector2(0, feel.seal_drop)
 		seal.scale = Vector2.ONE * 2.0
@@ -59,7 +60,10 @@ func victory() -> void:
 
 ## count pierres gagnees : des cristaux tombent sur `to` (coordonnees globales), puis bump est appele.
 func stones(count: int, to: Vector2, bump: Callable) -> void:
-	if settings.reduce_motion or count <= 0 or not to.is_finite():
+	if count <= 0:
+		return
+	Sons.play(&"pierres")
+	if settings.reduce_motion or not to.is_finite():
 		return
 	var crystals: int = mini(count, feel.crystal_max)
 	for i: int in crystals:
@@ -84,6 +88,8 @@ func stones(count: int, to: Vector2, bump: Callable) -> void:
 func run_over(won: bool, summary: Control) -> void:
 	# Le rouleau couvre l'ecran : il prend les clics, son propre sceau mene au menu.
 	mouse_filter = MOUSE_FILTER_STOP
+	if not won:
+		Sons.play(&"defaite")
 	var animated := not settings.reduce_motion and feel.defeat_time > 0.0
 	var backdrop: ColorRect = null
 	if not won:
@@ -138,6 +144,7 @@ func run_over(won: bool, summary: Control) -> void:
 
 
 func _wave() -> void:
+	Sons.play(&"victoire")
 	if feel.wave_time <= 0.0:
 		return
 	_ring(0.0)

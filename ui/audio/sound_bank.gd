@@ -3,7 +3,13 @@ extends Node
 ## Autoload « Sons » : joue les sons du jeu par ID (fiches SoundCue de content/sons/) et regle les volumes des bus.
 ## Le jeu ne connait que les ID : changer un son = regenerer sa fiche, sans toucher au code.
 
+## Emis a chaque son demande et trouve (tests, futur journal de debug).
+signal played(id: StringName, step: int)
+
 const DEFAULT_DIR := "res://content/sons"
+## Sons des boutons, branches automatiquement sur tout bouton qui entre dans l'arbre.
+const CLICK := &"ui_clic"
+const HOVER := &"ui_survol"
 ## Sons simultanes au plus : au-dela, la voix la plus ancienne est reprise.
 const VOICES := 12
 ## Bus reglables, dans l'ordre des volumes de GameSettings.
@@ -21,6 +27,7 @@ var _next_voice: int = 0
 
 func _ready() -> void:
 	load_cues(DEFAULT_DIR)
+	get_tree().node_added.connect(_on_node_added)
 	for i: int in VOICES:
 		var voice := AudioStreamPlayer.new()
 		add_child(voice)
@@ -53,7 +60,27 @@ func play(id: StringName, step: int = 0) -> AudioStreamPlayer:
 	voice.volume_db = cue.volume_db
 	voice.pitch_scale = cue.pitch_for(step) * (1.0 + rng.randf_range(-cue.pitch_variance, cue.pitch_variance))
 	voice.play()
+	played.emit(id, step)
 	return voice
+
+
+## Clic et survol de chaque bouton, sans que les ecrans aient a s'en occuper. Les cartes sont des boutons aussi.
+func _on_node_added(node: Node) -> void:
+	var button := node as BaseButton
+	# Un bouton qui change de parent rentre dans l'arbre une seconde fois : ne pas brancher deux fois.
+	if button == null or button.pressed.is_connected(_on_button_pressed):
+		return
+	button.pressed.connect(_on_button_pressed)
+	button.mouse_entered.connect(_on_button_hovered.bind(button))
+
+
+func _on_button_pressed() -> void:
+	play(CLICK)
+
+
+func _on_button_hovered(button: BaseButton) -> void:
+	if not button.disabled:
+		play(HOVER)
 
 
 func _free_voice() -> AudioStreamPlayer:

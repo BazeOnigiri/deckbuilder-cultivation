@@ -38,14 +38,20 @@ func _ready() -> void:
 
 ## Affiche ces cartes, dans cet ordre. Les vues des cartes deja la sont gardees et deselectionnees.
 func set_cards(cards: Array[CardInstance]) -> void:
+	var departed := false
 	for card: CardInstance in _views.keys():
 		if not cards.has(card):
 			_depart(_views[card])
 			_views.erase(card)
+			departed = true
+	if departed:
+		Sons.play(&"carte_defausse")
 	_order.clear()
+	var drawn := false
 	for card: CardInstance in cards:
 		var view: CardView = _views.get(card)
 		if view == null:
+			drawn = true
 			view = CardView.new()
 			view.card = card
 			view.toggled.connect(selection_changed.emit.unbind(1))
@@ -56,10 +62,13 @@ func set_cards(cards: Array[CardInstance]) -> void:
 			view.refresh()
 		_order.append(view)
 		move_child(view, -1)
+	if drawn:
+		Sons.play(&"carte_pioche")
 
 
 ## Sort ces cartes de la main : elles montent dans la rangee du score et ne reagissent plus a la souris.
 func play_out(cards: Array[CardInstance]) -> void:
+	Sons.play(&"carte_jouee")
 	for card: CardInstance in cards:
 		var view: CardView = _views.get(card)
 		if view == null:
@@ -86,12 +95,18 @@ func pulse(card: CardInstance) -> void:
 
 ## sealed(card) -> bool : vrai si la tribulation scelle la carte. Appele par round_screen apres set_cards.
 func mark_sealed(sealed: Callable) -> void:
+	var newly := false
 	for view: CardView in _order:
-		view.set_sealed(sealed.call(view.card))
+		var on: bool = sealed.call(view.card)
+		newly = newly or (on and not view.is_sealed())
+		view.set_sealed(on)
+	if newly:
+		Sons.play(&"sceau")
 
 
 ## Une pilule vient de fondre dans la carte : elle s'eclaire de la couleur de son (nouvel) element.
 func transmute(card: CardInstance) -> void:
+	Sons.play(&"pilule")
 	var view := _view_of(card)
 	if view == null or settings.reduce_motion or feel.transmute_time <= 0.0:
 		return
