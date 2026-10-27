@@ -1,11 +1,11 @@
-"""Sons du jeu : lit recettes.json, ecrit des .wav dans res://audio/sfx/
+"""Sons du jeu : lit recettes.json, ecrit des .wav dans res://audio/sfx/ (ou le dossier de la recette)
 et une fiche SoundCue (.tres) par son dans res://content/sons/ (reglages du bloc "cue" de la recette).
 
 Lancement depuis la racine du projet :  python -I tools/sons/generate_sounds.py [id ...]  (sans id : tout)
-Chaque recette est un son ; une recette « couches » superpose d'autres recettes decalees dans le temps.
-Les recettes « sample » partent des echantillons CC0 de tools/sons/sources/ (fetch_sources.py, puis
-ogg_capture.gd et split_capture.py pour les .ogg). Post-traitements communs : filtres, saturation, reverberation.
-Le resultat est deterministe (graine fixe par son) : relancer le script redonne les memes fichiers.
+- « sample » : extrait d'un echantillon CC0 de tools/sons/sources/ (fetch_sources.py, puis ogg_capture.gd et
+  split_capture.py pour les .ogg) ; « layers » : superpose d'autres recettes decalees dans le temps.
+- « partition » : une variante de la musique ecrite dans partition.json, en boucle sans couture.
+Post-traitements communs : filtres, saturation, reverberation. Deterministe (graine fixe par son).
 """
 import json
 import sys
@@ -19,7 +19,9 @@ RATE = 44100
 ROOT = Path(__file__).resolve().parents[2]
 RECIPES = Path(__file__).with_name("recettes.json")
 SOURCES = Path(__file__).with_name("sources")
+NOTE_NAMES = {"C": 0, "C#": 1, "D": 2, "D#": 3, "E": 4, "F": 5, "F#": 6, "G": 7, "G#": 8, "A": 9, "A#": 10, "B": 11}
 _samples = {}
+_tracks = {}
 
 
 def load_sample(name):
@@ -39,26 +41,21 @@ def load_sample(name):
     return _samples[name]
 
 
+def _trimmed(name):
+    """Echantillon sans son silence d'entree, crete a 1 : l'attaque tombe pile sur la note."""
+    data = load_sample(name)
+    loud = np.nonzero(np.abs(data) > 0.02 * np.abs(data).max())[0]
+    onset = max(0, loud[0] - int(0.002 * RATE)) if len(loud) else 0
+    data = data[onset:]
+    return data / max(np.abs(data).max(), 1e-9)
+
+
 def _resample(signal, ratio):
     """ratio > 1 : plus d'echantillons (plus long, plus grave a la lecture)."""
     if abs(ratio - 1.0) < 1e-9:
         return signal.copy()
     n = int(len(signal) * ratio)
     return np.interp(np.arange(n) / ratio, np.arange(len(signal)), signal)
-
-
-def _time(duration):
-    return np.arange(int(duration * RATE)) / RATE
-
-
-def _envelope(n, attack, decay):
-    """Attaque lineaire puis decroissance exponentielle (decay = temps pour perdre ~63 %)."""
-    t = np.arange(n) / RATE
-    env = np.exp(-t / max(decay, 1e-4))
-    a = int(attack * RATE)
-    if a > 0:
-        env[:a] *= np.linspace(0.0, 1.0, a)
-    return env
 
 
 def _lowpass(signal, cutoff):
@@ -73,83 +70,14 @@ def _lowpass(signal, cutoff):
     return out
 
 
-def pluck(r, rng):
-    """Corde pincee (Karplus-Strong) : deux cordes un peu desaccordees, facon guzheng."""
-    n = int(r["duration"] * RATE)
-    out = np.zeros(n)
-    for detune in (0.0, r.get("detune", 3.0)):
-        period = int(RATE / (r["freq"] * 2 ** (detune / 1200)))
-        buf = rng.uniform(-1, 1, period)
-        buf = _lowpass(buf, r.get("brightness", 6000))
-        blend = r.get("damping", 0.996)
-        string = np.empty(n)
-        for i in range(n):
-            j = i % period
-            string[i] = buf[j]
-            buf[j] = blend * 0.5 * (buf[j] + buf[(j + 1) % period])
-        out += string
-    return out * _envelope(n, 0.0, r.get("decay", 1.0))
-
-
-def partials(r, rng):
-    """Gong ou cloche : partiels inharmoniques, chacun sa decroissance ; glide = montee de hauteur (gong)."""
-    t = _time(r["duration"])
-    out = np.zeros_like(t)
-    glide = 1.0 + r.get("glide", 0.0) * (1.0 - np.exp(-t / 0.3))
-    for k, ratio in enumerate(r["ratios"]):
-        phase = 2 * np.pi * np.cumsum(r["freq"] * ratio * glide) / RATE
-        decay = r["decay"] / (1.0 + k * r.get("decay_spread", 0.5))
-        out += np.sin(phase + rng.uniform(0, 2 * np.pi)) * _envelope(len(t), r.get("attack", 0.002), decay) / (k + 1) ** 0.6
-    if r.get("strike", 0.0) > 0:
-        noise = _lowpass(rng.uniform(-1, 1, len(t)), r.get("strike_cutoff", 3000))
-        out += r["strike"] * noise * _envelope(len(t), 0.0, 0.02)
-    return out
-
-
-def breath(r, rng):
-    """Souffle : bruit filtre dont la coupure glisse de cutoff_from a cutoff_to (encre, papier, orbe)."""
-    t = _time(r["duration"])
-    cutoff = np.geomspace(r["cutoff_from"], r["cutoff_to"], len(t))
-    noise = rng.uniform(-1, 1, len(t))
-    # Plusieurs poles : pente plus raide, le souffle reste doux au lieu de siffler.
-    for _ in range(r.get("poles", 4)):
-        noise = _lowpass(noise, cutoff)
-    # Enveloppe en cloche : monte jusqu'a peak (fraction de la duree) puis retombe.
-    x = t / r["duration"]
-    peak = r.get("peak", 0.3)
-    env = np.where(x < peak, x / peak, (1 - x) / (1 - peak)) ** r.get("curve", 1.5)
-    return noise * env
-
-
-def knock(r, rng):
-    """Coup sourd ou clic de bois : sinus dont la hauteur chute vite, plus un claquement de bruit."""
-    t = _time(r["duration"])
-    freq = r["freq_to"] + (r["freq"] - r["freq_to"]) * np.exp(-t / r.get("sweep", 0.02))
-    body = np.sin(2 * np.pi * np.cumsum(freq) / RATE) * _envelope(len(t), 0.001, r["decay"])
-    click = _lowpass(rng.uniform(-1, 1, len(t)), r.get("click_cutoff", 4000)) * _envelope(len(t), 0.0, 0.004)
-    return body + r.get("click", 0.3) * click
-
-
-def sparkle(r, rng):
-    """Cristaux : petites cloches aigues egrenees, hauteurs tirees dans une gamme."""
-    n = int(r["duration"] * RATE)
-    out = np.zeros(n)
-    for i in range(r["count"]):
-        freq = r["freq"] * 2 ** (rng.choice(r["scale"]) / 12)
-        tone = partials({"freq": freq, "ratios": [1.0, 2.76, 5.4], "duration": r["ring"], "decay": r["ring"] / 3}, rng)
-        start = int(i * r["spacing"] * RATE)
-        end = min(n, start + len(tone))
-        out[start:end] += tone[: end - start] * (1.0 - 0.5 * i / r["count"])
-    return out
+def _highpass(signal, cutoff):
+    return signal - _lowpass(signal, cutoff)
 
 
 def sample(r, rng):
     """Extrait d'un echantillon : debut et longueur en secondes, transposition en demi-tons, fondu de sortie."""
-    data = load_sample(r["file"])
-    # Silence d'entree des enregistrements coupe : l'attaque tombe pile sur l'evenement du jeu.
-    loud = np.nonzero(np.abs(data) > 0.02 * np.abs(data).max())[0]
-    onset = max(0, loud[0] - int(0.002 * RATE)) if len(loud) else 0
-    start = onset + int(r.get("start", 0.0) * RATE)
+    data = _trimmed(r["file"])
+    start = int(r.get("start", 0.0) * RATE)
     clip = data[start:start + int(r["length"] * RATE)] if "length" in r else data[start:]
     if r.get("reverse"):
         clip = clip[::-1]
@@ -162,19 +90,19 @@ def sample(r, rng):
     return clip
 
 
-def _highpass(signal, cutoff):
-    return signal - _lowpass(signal, cutoff)
+def _room(rng, size, tone):
+    """Reponse de salle synthetique : bruit qui decroit, assombri, d'energie 1."""
+    n = int(size * RATE)
+    ir = _lowpass(rng.uniform(-1, 1, n) * np.exp(-np.arange(n) / (size * RATE / 5.0)), tone)
+    return ir / np.sqrt((ir ** 2).sum())
 
 
 def reverb(signal, rng, size, mix, tone=6000.0):
-    """Reverberation par convolution avec une reponse de salle synthetique (bruit qui decroit, assombri)."""
-    n = int(size * RATE)
-    ir = rng.uniform(-1, 1, n) * np.exp(-np.arange(n) / (size * RATE / 5.0))
-    ir = _lowpass(ir, tone)
-    ir /= np.sqrt((ir ** 2).sum())
-    size_fft = 1 << int(np.ceil(np.log2(len(signal) + n)))
-    wet = np.fft.irfft(np.fft.rfft(signal, size_fft) * np.fft.rfft(ir, size_fft), size_fft)[:len(signal) + n]
-    dry = np.concatenate([signal, np.zeros(n)])
+    """Reverberation par convolution (FFT) ; le signal s'allonge de la queue de salle."""
+    ir = _room(rng, size, tone)
+    size_fft = 1 << int(np.ceil(np.log2(len(signal) + len(ir))))
+    wet = np.fft.irfft(np.fft.rfft(signal, size_fft) * np.fft.rfft(ir, size_fft), size_fft)[:len(signal) + len(ir)]
+    dry = np.concatenate([signal, np.zeros(len(ir))])
     wet *= np.abs(dry).max() / max(np.abs(wet).max(), 1e-9)
     return dry * (1.0 - mix) + wet * mix
 
@@ -205,46 +133,152 @@ def layers(r, rng, recipes):
     return out
 
 
-def nappe(r, rng):
-    """Boucle d'ambiance sans couture : bourdon, vent et notes egrenees d'une gamme pentatonique.
-    Les frequences du bourdon tombent juste sur la duree de la boucle, et ce qui deborde a la fin
-    (queue des notes, filtre du vent) est replie sur le debut : la fin rejoint exactement le debut."""
-    dur = r["duration"]
-    n = int(dur * RATE)
-    t = np.arange(n) / RATE
-    out = np.zeros(n)
-    for freq, gain in r["drone"]:
-        freq = round(freq * dur) / dur
-        breath = 0.65 + 0.35 * np.sin(2 * np.pi * t * r.get("drone_cycles", 2) / dur + rng.uniform(0, 2 * np.pi))
-        out += gain * np.sin(2 * np.pi * freq * t) * breath
-    if r.get("wind", 0.0) > 0:
-        pad = int(2 * RATE)
-        noise = rng.uniform(-1, 1, n)
-        wrapped = np.concatenate([noise[-pad:], noise])
-        cutoff = r["wind_cutoff"] * (1.0 + 0.5 * np.sin(2 * np.pi * np.arange(n + pad) / RATE * 3 / dur))
-        for _ in range(4):
-            wrapped = _lowpass(wrapped, cutoff)
-        out += r["wind"] * wrapped[pad:] / max(np.abs(wrapped[pad:]).max(), 1e-9)
-    slots = np.linspace(0, n, r["notes"], endpoint=False)
-    for i, start in enumerate(slots):
-        start = int(start + rng.uniform(0, 0.6) * n / r["notes"])
-        freq = r["root"] * 2 ** (rng.choice(r["scale"]) / 12)
-        note = r["note"].copy()
-        note.update({"freq": freq, "id": "%s_%d" % (r["id"], i)})
-        tone = KINDS[note["kind"]](note, rng)
-        tone *= r.get("note_gain", 0.5) * rng.uniform(0.6, 1.0) / max(np.abs(tone).max(), 1e-9)
-        idx = (start + np.arange(len(tone))) % n
-        np.add.at(out, idx, tone)
-    return out
+# --- Musique : partition.json rendue piste par piste, en boucle (tout ce qui deborde revient au debut). ---
+
+def midi(name):
+    return 12 * (int(name[-1]) + 1) + NOTE_NAMES[name[:-1]]
 
 
-KINDS = {"pluck": pluck, "partials": partials, "breath": breath, "knock": knock, "sparkle": sparkle, "sample": sample}
+def _place(out, clip, start):
+    """Ajoute clip a out a partir de start, modulo la longueur de la boucle."""
+    n = len(out)
+    start %= n
+    while len(clip) > 0:
+        end = min(n, start + len(clip))
+        out[start:end] += clip[:end - start]
+        clip = clip[end - start:]
+        start = 0
+
+
+def _cithare(score, note, dur, vibrato):
+    """Note de Dan Tranh : l'echantillon le plus proche, transpose ; vibrato qui s'installe sur les notes longues."""
+    samples = score["echantillons"]
+    notes = {int(k): v for k, v in samples["cithare_notes"].items()}
+    base = min(notes, key=lambda m: abs(m - note))
+    data = _trimmed(samples["cithare"].format(note=notes[base]))
+    play = score["jeu"]
+    length = int((dur + play["relache_s"]) * RATE)
+    t = np.arange(length) / RATE
+    speed = 2 ** ((note - base) / 12) * (1 + vibrato * np.sin(2 * np.pi * play["vibrato_hz"] * t) * np.clip(t / 0.4, 0, 1))
+    pos = np.cumsum(speed)
+    pos = pos[pos < len(data) - 1]
+    clip = np.interp(pos, np.arange(len(data)), data)
+    hold = int(dur * RATE)
+    if len(clip) > hold:
+        clip[hold:] *= np.linspace(1.0, 0.0, len(clip) - hold) ** 2
+    return clip
+
+
+def _pad(score, notes, seconds):
+    """Nappe chaude : dents de scie a bande limitee (additive), trois voix desaccordees, attaque et relache lentes."""
+    cfg = score["jeu"]["nappe"]
+    length = int((seconds + cfg["relache_s"]) * RATE)
+    t = np.arange(length) / RATE
+    out = np.zeros(length)
+    for note in notes:
+        freq = 440.0 * 2 ** ((midi(note) - 69) / 12)
+        for cents in (-cfg["desaccord_cents"], 0.0, cfg["desaccord_cents"]):
+            f = freq * 2 ** (cents / 1200)
+            for k in range(1, int(cfg["aigu_hz"] / f) + 1):
+                out += np.sin(2 * np.pi * f * k * t + k) / k * (1 - f * k / cfg["aigu_hz"])
+    env = np.clip(t / cfg["attaque_s"], 0, 1) * np.clip((length / RATE - t) / cfg["relache_s"], 0, 1)
+    return out * env
+
+
+def _render_tracks(score, rng):
+    """Chaque piste de la partition dans sa propre boucle (meme longueur pour toutes les variantes)."""
+    beat = 60.0 / score["bpm"]
+    bar = beat * score["temps_par_mesure"]
+    n = int(round(score["mesures"] * bar * RATE))
+    play = score["jeu"]
+    tracks = {}
+
+    def at(bar_index, beats):
+        # Swing : les croches du contretemps arrivent un peu en retard ; leger jeu humain.
+        swing = score["swing"] * beat * 0.5 if abs(beats % 1 - 0.5) < 1e-6 else 0.0
+        return int(((bar_index - 1) * bar + beats * beat + swing + rng.normal(0, play["humain_s"])) * RATE)
+
+    def vel(value):
+        return value * (1 + rng.uniform(-play["humain_velocite"], play["humain_velocite"]))
+
+    chords = []
+    for chord in score["accords"]:
+        chords += [chord] * chord["mesures"]
+    for name in ("basse", "nappe", "arpege", "melodie"):
+        tracks[name] = np.zeros(n)
+    for b, chord in enumerate(chords, start=1):
+        root = midi(chord["basse"])
+        for beats, offset, v, dur in score["motifs"]["basse"]:
+            clip = _cithare(score, root + offset, dur * beat, 0.0) * vel(v)
+            freq = 440.0 * 2 ** ((root + offset - 69) / 12)
+            t = np.arange(len(clip)) / RATE
+            clip = clip + play["sous_basse"] * v * np.sin(2 * np.pi * freq * t) * np.exp(-t / (dur * beat))
+            _place(tracks["basse"], clip, at(b, beats))
+        for beats, index, v in score["motifs"]["arpege"]:
+            note = midi(chord["notes"][index % len(chord["notes"])])
+            _place(tracks["arpege"], _cithare(score, note, beat * 0.75, 0.0) * vel(v), at(b, beats))
+    start_bar = 1
+    for chord in score["accords"]:
+        _place(tracks["nappe"], _pad(score, chord["notes"], chord["mesures"] * bar), at(start_bar, 0))
+        start_bar += chord["mesures"]
+    for b, beats, note, dur in score["melodie"]:
+        vibrato = play["vibrato"] if dur >= play["vibrato_des"] else 0.0
+        _place(tracks["melodie"], _cithare(score, midi(note), dur * beat, vibrato) * vel(0.8), at(b, beats))
+    for name, hits in score["motifs"].items():
+        if name in tracks:
+            continue
+        tracks[name] = np.zeros(n)
+        clip = _trimmed(score["echantillons"][name])
+        for b in range(1, score["mesures"] + 1):
+            for beats, v in hits:
+                _place(tracks[name], clip * vel(v), at(b, beats))
+    for name, bars in score["par_mesures"].items():
+        tracks[name] = np.zeros(n)
+        clip = _trimmed(score["echantillons"][name])
+        for b in bars:
+            _place(tracks[name], clip * vel(0.8), at(b, 0))
+    return tracks
+
+
+def _fft_lowpass(signal, cutoff):
+    """Passe-bas d'ordre 2 dans le domaine frequentiel : circulaire, donc sans couture pour une boucle."""
+    spectrum = np.fft.rfft(signal)
+    freqs = np.fft.rfftfreq(len(signal), 1.0 / RATE)
+    return np.fft.irfft(spectrum / np.sqrt(1 + (freqs / cutoff) ** 4), len(signal))
+
+
+def partition(r, rng):
+    """Une variante de la musique : ses pistes a leurs volumes, puis le grain cassette (passe-bas, pleurage,
+    saturation douce) et une reverb circulaire. La boucle se raccorde exactement."""
+    path = Path(__file__).with_name(r["file"])
+    if path not in _tracks:
+        score = json.loads(path.read_text(encoding="utf-8"))
+        _tracks[path] = (score, _render_tracks(score, np.random.default_rng(zlib.crc32(r["file"].encode()))))
+    score, tracks = _tracks[path]
+    variant = score["variantes"][r["variante"]]
+    mix = sum(gain * tracks[name] / max(np.abs(tracks[name]).max(), 1e-9) for name, gain in variant["pistes"].items())
+    n = len(mix)
+    mix = _fft_lowpass(mix, variant["passe_bas"])
+    play = score["jeu"]
+    # Pleurage : la lecture accelere et ralentit un peu, comme une bande ; nombre entier de cycles sur la boucle.
+    cycles = max(1, round(n / RATE * play["pleurage_hz"]))
+    delay = play["pleurage_s"] * RATE * 0.5 * (1 + np.sin(2 * np.pi * cycles * np.arange(n) / n))
+    mix = np.interp((np.arange(n) - delay) % n, np.arange(n + 1), np.concatenate([mix, mix[:1]]))
+    mix = np.tanh(mix * play["saturation"] / max(np.abs(mix).max(), 1e-9))
+    room = _room(rng, 1.8, 5000.0)
+    wet = np.fft.irfft(np.fft.rfft(mix) * np.fft.rfft(room, n), n)
+    wet *= np.abs(mix).max() / max(np.abs(wet).max(), 1e-9)
+    return mix * (1 - variant["reverb"]) + wet * variant["reverb"]
+
+
+KINDS = {"sample": sample}
+LOOPS = {"partition": partition}
 
 
 def render(r, recipes):
     rng = np.random.default_rng(zlib.crc32(r["id"].encode()))
-    if r["kind"] == "nappe":
-        return nappe(r, rng)
+    if r["kind"] in LOOPS:
+        return LOOPS[r["kind"]](r, rng)
     sound = layers(r, rng, recipes) if r["kind"] == "layers" else KINDS[r["kind"]](r, rng)
     sound = post(sound, r, rng)
     fade = min(len(sound), int(0.01 * RATE))
@@ -293,13 +327,12 @@ def write_cue(path, folder, r):
 
 
 def check(sound, r):
-    """Garde-fous : pas de saturation, pas de silence, duree attendue."""
+    """Garde-fous : pas de saturation, pas de silence, duree attendue, raccord de boucle."""
     peak = np.abs(sound).max()
     assert peak <= 1.0, "%s sature" % r["id"]
     assert peak > 0.1, "%s quasi silencieux" % r["id"]
     assert len(sound) >= int(0.02 * RATE), "%s trop court" % r["id"]
-    if r["kind"] == "nappe":
-        # Raccord de la boucle : le dernier echantillon doit preceder le premier sans saut audible.
+    if r["kind"] in LOOPS:
         step = np.abs(np.diff(sound)).max()
         assert abs(sound[-1] - sound[0]) <= 2 * step, "%s : raccord de boucle" % r["id"]
 

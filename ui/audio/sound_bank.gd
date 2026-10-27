@@ -20,12 +20,14 @@ const EFFECTS_BUS := &"Effets"
 ## Variation de hauteur des sons. Injectable (tests, graine fixe).
 var rng := RandomNumberGenerator.new()
 
-## Volume de depart et d'arrivee d'une nappe en fondu : inaudible sans etre -inf.
+## Volume d'une variante de musique qu'on n'entend pas : inaudible sans etre -inf.
 const SILENT_DB := -60.0
 
 var _cues: Dictionary = {}
-## Deux lecteurs de musique : celui qui monte et celui qui s'eteint pendant un fondu croise.
-var _music: Array[AudioStreamPlayer] = []
+## Toutes les variantes de la musique (fiches du bus Musique, meme longueur) jouent ensemble, synchronisees :
+## changer d'ambiance ne fait que monter l'une et baisser les autres, la musique ne reprend jamais au debut.
+var _music := AudioStreamPlayer.new()
+var _music_ids: Array[StringName] = []
 var _music_id: StringName = &""
 var _music_fade: Tween
 var _voices: Array[AudioStreamPlayer] = []
@@ -39,11 +41,23 @@ func _ready() -> void:
 		var voice := AudioStreamPlayer.new()
 		add_child(voice)
 		_voices.append(voice)
-	for i: int in 2:
-		var player := AudioStreamPlayer.new()
-		player.bus = MUSIC_BUS
-		add_child(player)
-		_music.append(player)
+	_music.bus = MUSIC_BUS
+	add_child(_music)
+	_build_music()
+
+
+func _build_music() -> void:
+	var sync := AudioStreamSynchronized.new()
+	_music_ids.clear()
+	for id: StringName in _cues:
+		if (_cues[id] as SoundCue).bus == MUSIC_BUS:
+			_music_ids.append(id)
+	_music_ids.sort()
+	sync.stream_count = _music_ids.size()
+	for i: int in _music_ids.size():
+		sync.set_sync_stream(i, (_cues[_music_ids[i]] as SoundCue).stream)
+		sync.set_sync_stream_volume(i, SILENT_DB)
+	_music.stream = sync
 
 
 func load_cues(dir_path: String) -> void:
@@ -76,32 +90,49 @@ func play(id: StringName, step: int = 0) -> AudioStreamPlayer:
 	return voice
 
 
-## Fondu croise vers la nappe id (vide : silence). La meme nappe deja lancee continue sans reprendre au debut.
+## Fondu vers la variante id (vide : silence), en gardant la position dans la musique.
 func play_music(id: StringName, fade: float) -> void:
 	if id == _music_id:
+		return
+	if not id.is_empty() and not _music_ids.has(id):
+		push_warning("Musique inconnue : %s" % id)
 		return
 	_music_id = id
 	if _music_fade != null:
 		_music_fade.kill()
-	var outgoing := _music[0]
-	var incoming := _music[1]
-	_music.reverse()
-	var cue: SoundCue = _cues.get(id)
-	if cue == null and not id.is_empty():
-		push_warning("Nappe inconnue : %s" % id)
-	if cue != null:
-		incoming.stream = cue.stream
-		incoming.bus = cue.bus
-		incoming.volume_db = SILENT_DB if fade > 0.0 else cue.volume_db
-		incoming.play()
-	if fade <= 0.0:
-		outgoing.stop()
-		return
-	_music_fade = create_tween().set_parallel()
-	if cue != null:
-		_music_fade.tween_property(incoming, "volume_db", cue.volume_db, fade)
-	_music_fade.tween_property(outgoing, "volume_db", SILENT_DB, fade)
-	_music_fade.chain().tween_callback(outgoing.stop)
+	if not id.is_empty() and not _music.playing:
+		_music.play()
+	var sync := _music.stream as AudioStreamSynchronized
+	var from: Array[float] = []
+	var to: Array[float] = []
+	for i: int in _music_ids.size():
+		from.append(db_to_linear(sync.get_sync_stream_volume(i)))
+		to.append(db_to_linear((_cues[_music_ids[i]] as SoundCue).volume_db) if _music_ids[i] == id else 0.0)
+	# Fondu a puissance constante (on interpole l'energie, pas les dB) : pas de creux au milieu du fondu.
+	var blend := func(t: float) -> void:
+		for i: int in _music_ids.size():
+			var gain := sqrt(lerpf(from[i] * from[i], to[i] * to[i], t))
+			sync.set_sync_stream_volume(i, maxf(linear_to_db(gain), SILENT_DB) if gain > 0.0 else SILENT_DB)
+	if fade > 0.0:
+		_music_fade = create_tween()
+		_music_fade.tween_method(blend, 0.0, 1.0, fade)
+	else:
+		blend.call(1.0)
+	if id.is_empty():
+		if fade > 0.0:
+			_music_fade.tween_callback(_music.stop)
+		else:
+			_music.stop()
+
+
+## Volume actuel d'une variante de musique, SILENT_DB si muette ou inconnue (tests).
+func music_volume_db(id: StringName) -> float:
+	var index := _music_ids.find(id)
+	return (_music.stream as AudioStreamSynchronized).get_sync_stream_volume(index) if index >= 0 else SILENT_DB
+
+
+func is_music_playing() -> bool:
+	return _music.playing
 
 
 ## Nappe en cours, vide si aucune.

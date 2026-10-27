@@ -44,3 +44,15 @@ func test_nappes_en_boucle() -> void:
 		if id.begins_with("nappe_"):
 			var stream: AudioStreamWAV = load(_exported()[id])
 			assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_FORWARD, id)
+
+
+## Les variantes jouent synchronisees : meme longueur, sinon elles se decalent a chaque boucle.
+func test_variantes_de_musique_de_meme_longueur() -> void:
+	var lengths := {}
+	for id: String in _exported():
+		if id.begins_with("nappe_"):
+			lengths[id] = (load(_exported()[id]) as AudioStreamWAV).get_length()
+	assert_gt(lengths.size(), 1)
+	for id: String in lengths:
+		assert_almost_eq(lengths[id], lengths.values()[0], 0.0001, id)
+

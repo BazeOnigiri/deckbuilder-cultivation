@@ -514,97 +514,24 @@
 		},
 		{
 			"id": "nappe_nuit",
-			"kind": "nappe",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "nuit",
 			"dossier": "audio/musique",
-			"duration": 24,
-			"drone": [
-				[
-					73.42,
-					0.5
-				],
-				[
-					110.0,
-					0.25
-				],
-				[
-					146.83,
-					0.12
-				]
-			],
-			"drone_cycles": 2,
-			"wind": 0.12,
-			"wind_cutoff": 500,
-			"root": 293.66,
-			"scale": [
-				0,
-				2,
-				4,
-				7,
-				9,
-				12
-			],
-			"notes": 9,
-			"note_gain": 0.55,
-			"note": {
-				"kind": "pluck",
-				"decay": 1.6,
-				"damping": 0.998,
-				"brightness": 4500,
-				"duration": 3.0
-			},
-			"gain": 0.7,
+			"gain": 0.8,
 			"cue": {
 				"bus": "Musique",
 				"pitch_variance": 0.0,
-				"volume_db": -4
+				"volume_db": -6
 			}
 		},
 		{
 			"id": "nappe_boutique",
-			"kind": "nappe",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "boutique",
 			"dossier": "audio/musique",
-			"duration": 24,
-			"drone": [
-				[
-					98.0,
-					0.4
-				],
-				[
-					146.83,
-					0.22
-				],
-				[
-					196.0,
-					0.1
-				]
-			],
-			"drone_cycles": 3,
-			"wind": 0.05,
-			"wind_cutoff": 700,
-			"root": 392.0,
-			"scale": [
-				0,
-				2,
-				4,
-				7,
-				9,
-				12,
-				14
-			],
-			"notes": 14,
-			"note_gain": 0.45,
-			"note": {
-				"kind": "partials",
-				"ratios": [
-					1.0,
-					2.0,
-					2.76,
-					5.4
-				],
-				"decay": 0.7,
-				"duration": 2.5
-			},
-			"gain": 0.65,
+			"gain": 0.8,
 			"cue": {
 				"bus": "Musique",
 				"pitch_variance": 0.0,
@@ -613,48 +540,15 @@
 		},
 		{
 			"id": "nappe_tribulation",
-			"kind": "nappe",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "tribulation",
 			"dossier": "audio/musique",
-			"duration": 24,
-			"drone": [
-				[
-					55.0,
-					0.55
-				],
-				[
-					58.27,
-					0.3
-				],
-				[
-					82.41,
-					0.18
-				]
-			],
-			"drone_cycles": 4,
-			"wind": 0.3,
-			"wind_cutoff": 350,
-			"root": 220.0,
-			"scale": [
-				0,
-				1,
-				5,
-				7,
-				8
-			],
-			"notes": 7,
-			"note_gain": 0.5,
-			"note": {
-				"kind": "pluck",
-				"decay": 1.2,
-				"damping": 0.997,
-				"brightness": 3000,
-				"duration": 2.6
-			},
-			"gain": 0.7,
+			"gain": 0.8,
 			"cue": {
 				"bus": "Musique",
 				"pitch_variance": 0.0,
-				"volume_db": -4
+				"volume_db": -5
 			}
 		}
 	]

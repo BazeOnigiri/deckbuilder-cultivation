@@ -51,22 +51,21 @@ func test_volume_nul_coupe_le_bus() -> void:
 	assert_almost_eq(AudioServer.get_bus_volume_db(effects), linear_to_db(0.5), 0.01)
 
 
-func _music_players() -> Array:
-	return _bank.get_children().filter(func(node: Node) -> bool:
-		return node is AudioStreamPlayer and node.bus == &"Musique" and node.playing)
-
-
-func test_fondu_croise_entre_deux_nappes() -> void:
+func test_variantes_synchronisees() -> void:
 	_bank.play_music(&"nappe_nuit", 0.0)
-	assert_eq(_music_players().size(), 1)
-	var first: AudioStreamPlayer = _music_players()[0]
-	_bank.play_music(&"nappe_nuit", 0.0)
-	assert_eq(_music_players(), [first], "meme nappe : elle continue")
+	assert_true(_bank.is_music_playing())
+	assert_gt(_bank.music_volume_db(&"nappe_nuit"), SoundBank.SILENT_DB)
+	assert_eq(_bank.music_volume_db(&"nappe_boutique"), SoundBank.SILENT_DB)
 	_bank.play_music(&"nappe_boutique", 0.1)
-	assert_eq(_music_players().size(), 2, "les deux nappes pendant le fondu")
 	await wait_seconds(0.2)
-	assert_eq(_music_players().size(), 1, "l'ancienne s'est tue")
-	assert_ne(_music_players()[0], first)
+	assert_eq(_bank.music_volume_db(&"nappe_nuit"), SoundBank.SILENT_DB, "la nuit s'est tue")
+	assert_gt(_bank.music_volume_db(&"nappe_boutique"), SoundBank.SILENT_DB)
+	assert_true(_bank.is_music_playing(), "meme lecture : la musique ne reprend pas au debut")
 	_bank.play_music(&"", 0.0)
-	assert_eq(_music_players().size(), 0, "silence")
+	assert_false(_bank.is_music_playing(), "silence")
 
+
+func test_musique_inconnue_ignoree() -> void:
+	_bank.play_music(&"nappe_nuit", 0.0)
+	_bank.play_music(&"musique_qui_n_existe_pas", 0.0)
+	assert_eq(_bank.music_id(), &"nappe_nuit")
