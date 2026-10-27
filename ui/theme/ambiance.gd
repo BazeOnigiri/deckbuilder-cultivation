@@ -68,6 +68,8 @@ func apply(id: StringName) -> void:
 			else:
 				material.set_shader_parameter(parameter, targets[material][parameter])
 	_set_weather(ambiance)
+	# Le son n'est pas du mouvement : la nappe garde son fondu meme avec « Reduire les animations ».
+	Sons.play_music(ambiance.music, fade_time)
 
 
 func _set_weather(ambiance: AmbianceTheme) -> void:

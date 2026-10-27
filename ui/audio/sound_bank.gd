@@ -20,7 +20,14 @@ const EFFECTS_BUS := &"Effets"
 ## Variation de hauteur des sons. Injectable (tests, graine fixe).
 var rng := RandomNumberGenerator.new()
 
+## Volume de depart et d'arrivee d'une nappe en fondu : inaudible sans etre -inf.
+const SILENT_DB := -60.0
+
 var _cues: Dictionary = {}
+## Deux lecteurs de musique : celui qui monte et celui qui s'eteint pendant un fondu croise.
+var _music: Array[AudioStreamPlayer] = []
+var _music_id: StringName = &""
+var _music_fade: Tween
 var _voices: Array[AudioStreamPlayer] = []
 var _next_voice: int = 0
 
@@ -32,6 +39,11 @@ func _ready() -> void:
 		var voice := AudioStreamPlayer.new()
 		add_child(voice)
 		_voices.append(voice)
+	for i: int in 2:
+		var player := AudioStreamPlayer.new()
+		player.bus = MUSIC_BUS
+		add_child(player)
+		_music.append(player)
 
 
 func load_cues(dir_path: String) -> void:
@@ -62,6 +74,39 @@ func play(id: StringName, step: int = 0) -> AudioStreamPlayer:
 	voice.play()
 	played.emit(id, step)
 	return voice
+
+
+## Fondu croise vers la nappe id (vide : silence). La meme nappe deja lancee continue sans reprendre au debut.
+func play_music(id: StringName, fade: float) -> void:
+	if id == _music_id:
+		return
+	_music_id = id
+	if _music_fade != null:
+		_music_fade.kill()
+	var outgoing := _music[0]
+	var incoming := _music[1]
+	_music.reverse()
+	var cue: SoundCue = _cues.get(id)
+	if cue == null and not id.is_empty():
+		push_warning("Nappe inconnue : %s" % id)
+	if cue != null:
+		incoming.stream = cue.stream
+		incoming.bus = cue.bus
+		incoming.volume_db = SILENT_DB if fade > 0.0 else cue.volume_db
+		incoming.play()
+	if fade <= 0.0:
+		outgoing.stop()
+		return
+	_music_fade = create_tween().set_parallel()
+	if cue != null:
+		_music_fade.tween_property(incoming, "volume_db", cue.volume_db, fade)
+	_music_fade.tween_property(outgoing, "volume_db", SILENT_DB, fade)
+	_music_fade.chain().tween_callback(outgoing.stop)
+
+
+## Nappe en cours, vide si aucune.
+func music_id() -> StringName:
+	return _music_id
 
 
 ## Clic et survol de chaque bouton, sans que les ecrans aient a s'en occuper. Les cartes sont des boutons aussi.

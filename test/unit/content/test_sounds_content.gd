@@ -8,26 +8,39 @@ func _recipes() -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string(RECIPES))
 
 
-func _exported_ids() -> Array[String]:
-	var ids: Array[String] = []
-	for recipe: Dictionary in _recipes()["recettes"]:
+## id -> chemin du .wav (dossier de la recette, ou dossier par defaut).
+func _exported() -> Dictionary:
+	var data := _recipes()
+	var paths := {}
+	for recipe: Dictionary in data["recettes"]:
 		if recipe.get("export", true):
-			ids.append(recipe["id"])
-	return ids
+			paths[recipe["id"]] = "res://%s/%s.wav" % [recipe.get("dossier", data["dossier"]), recipe["id"]]
+	return paths
 
 
 func test_chaque_recette_a_son_fichier() -> void:
-	var folder: String = "res://" + _recipes()["dossier"]
-	for id: String in _exported_ids():
-		var stream := load("%s/%s.wav" % [folder, id]) as AudioStreamWAV
+	var paths := _exported()
+	for id: String in paths:
+		var stream := load(paths[id]) as AudioStreamWAV
 		assert_not_null(stream, id)
 		if stream != null:
 			assert_gt(stream.get_length(), 0.0, id)
 
 
 func test_aucun_fichier_orphelin() -> void:
-	var folder: String = "res://" + _recipes()["dossier"]
-	var ids := _exported_ids()
-	for file: String in DirAccess.get_files_at(folder):
-		if file.ends_with(".wav"):
-			assert_has(ids, file.get_basename(), "%s n'a plus de recette : relancer le script ou le supprimer" % file)
+	var paths: Array = _exported().values()
+	var folders := {}
+	for path: String in paths:
+		folders[path.get_base_dir()] = true
+	for folder: String in folders:
+		for file: String in DirAccess.get_files_at(folder):
+			if file.ends_with(".wav"):
+				assert_has(paths, folder.path_join(file), "%s n'a plus de recette : relancer le script ou le supprimer" % file)
+
+
+## Les nappes tournent en boucle : reglage d'import edit/loop_mode=2 (en avant), a remettre si le .import est recree.
+func test_nappes_en_boucle() -> void:
+	for id: String in _exported():
+		if id.begins_with("nappe_"):
+			var stream: AudioStreamWAV = load(_exported()[id])
+			assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_FORWARD, id)

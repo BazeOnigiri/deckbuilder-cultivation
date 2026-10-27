@@ -49,3 +49,24 @@ func test_volume_nul_coupe_le_bus() -> void:
 	var effects := AudioServer.get_bus_index(&"Effets")
 	assert_false(AudioServer.is_bus_mute(effects))
 	assert_almost_eq(AudioServer.get_bus_volume_db(effects), linear_to_db(0.5), 0.01)
+
+
+func _music_players() -> Array:
+	return _bank.get_children().filter(func(node: Node) -> bool:
+		return node is AudioStreamPlayer and node.bus == &"Musique" and node.playing)
+
+
+func test_fondu_croise_entre_deux_nappes() -> void:
+	_bank.play_music(&"nappe_nuit", 0.0)
+	assert_eq(_music_players().size(), 1)
+	var first: AudioStreamPlayer = _music_players()[0]
+	_bank.play_music(&"nappe_nuit", 0.0)
+	assert_eq(_music_players(), [first], "meme nappe : elle continue")
+	_bank.play_music(&"nappe_boutique", 0.1)
+	assert_eq(_music_players().size(), 2, "les deux nappes pendant le fondu")
+	await wait_seconds(0.2)
+	assert_eq(_music_players().size(), 1, "l'ancienne s'est tue")
+	assert_ne(_music_players()[0], first)
+	_bank.play_music(&"", 0.0)
+	assert_eq(_music_players().size(), 0, "silence")
+
