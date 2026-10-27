@@ -52,6 +52,7 @@ static func _tablet(hand: HandDefinition, level: int, played: int) -> PanelConta
 	tablet.custom_minimum_size.x = tablet.get_theme_constant(&"width", &"HandTablet")
 	var column := VBoxContainer.new()
 	column.add_child(SideColumn.make_label(&"ScrollText", hand.name_key))
+	column.add_child(_example(hand))
 	var pips := LevelPips.new()
 	pips.level = level
 	pips.tooltip_text = "%s %d" % [tr_key("UI_INFO_LEVEL"), level]
@@ -70,6 +71,29 @@ static func _tablet(hand: HandDefinition, level: int, played: int) -> PanelConta
 	column.add_child(count)
 	tablet.add_child(column)
 	return tablet
+
+
+## Exemple de la main en petites cartes, comme Balatro : celles qui comptent en pleine couleur, les autres pales.
+static func _example(hand: HandDefinition) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override(&"separation", row.get_theme_constant(&"card_gap", &"HandTablet"))
+	var cards := hand.example_cards()
+	var scoring := hand.detector.detect(cards)
+	var card_scale: float = row.get_theme_constant(&"card_percent", &"HandTablet") / 100.0
+	for card: CardInstance in cards:
+		# CardView a une taille fixe : reduite par scale dans un cadre a la taille reduite, comme la vue du paquet.
+		var frame := Control.new()
+		frame.custom_minimum_size = CardView.CARD_SIZE * card_scale
+		var view := CardView.new()
+		view.card = card
+		view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		frame.add_child(view)
+		view.position = (frame.custom_minimum_size - CardView.CARD_SIZE) / 2
+		view.scale = Vector2.ONE * card_scale
+		if not scoring.has(card):
+			view.modulate = row.get_theme_color(&"unused_card", &"HandTablet")
+		row.add_child(frame)
+	return row
 
 
 ## Les goulots du royaume en cours seulement, la tribulation en haut : les royaumes suivants restent une surprise.
