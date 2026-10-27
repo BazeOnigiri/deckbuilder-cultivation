@@ -39,6 +39,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Statistiques, options, credits, Voie de cultivation et fin de run en rouleaux : lignes a points de suite, interrupteurs et liste a l'encre, boutons de run et confirmation en sceaux, credits avec la licence de Godot, onglets en signets (mains, parcours avec le sceau 破 et les contraintes, run), bilan de la run sous le titre de victoire ou d'echec.
 - Bouton « Quitter le jeu » dans le menu principal (cache dans l'export web).
 - Voie de cultivation plus visuelle : une tablette de jade par main (pastilles de niveau, Qi et Comprehension en pilules), parcours en chemin vertical (meditant sur le goulot en cours, sceau 破 sur les goulots franchis), chiffres de la run en tuiles. Statistiques en tuiles, meilleur royaume en grand, barres d'encre des mains les plus jouees.
+- Sons du jeu synthetises par tools/sons/generate_sounds.py a partir de recettes en donnees (recettes.json) : cordes pincees, gongs, cloches, souffles d'encre, cristaux. 17 sons dans audio/sfx, deterministes.
 
 ### Corrigé
 
