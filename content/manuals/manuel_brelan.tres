@@ -8,3 +8,5 @@ script = ExtResource("2_l8q3u")
 id = &"manuel_brelan"
 hand = ExtResource("1_7qx5p")
 price = 1
+glyph = "三"
+tier = 1

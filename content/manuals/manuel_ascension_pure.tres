@@ -8,3 +8,6 @@ script = ExtResource("2_ln7il")
 id = &"manuel_ascension_pure"
 hand = ExtResource("1_jfagq")
 price = 1
+glyph = "登"
+tier = 3
+pattern = 1
