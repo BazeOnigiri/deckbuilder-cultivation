@@ -17,4 +17,5 @@ base_comprehension = 4
 level_qi = 11
 level_comprehension = 1
 detector = SubResource("detector")
+example = Array[Vector2i]([Vector2i(0, 7), Vector2i(1, 7), Vector2i(4, 7), Vector2i(2, 2), Vector2i(4, 11)])
 metadata/_custom_type_script = "uid://ddj28r1xbwom5"
