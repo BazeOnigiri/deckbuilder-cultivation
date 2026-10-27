@@ -44,6 +44,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Sons branches sur le jeu : clic et survol de tous les boutons, pioche, carte jouee, defausse, annonce de la main, une note par carte qui compte qui monte dans la gamme, orbes (depart, impact) et gong des multiplications, sceaux de tribulation, victoire, defaite, pierres, achats, manuels et pilules.
 - Nappes d'ambiance generees par le meme script (bourdon, vent, notes pentatoniques, boucles de 24 s sans couture) : nuit, boutique, tribulation. Chaque ambiance choisit sa nappe (champ music), fondu croise au changement d'ecran.
 - Sources sonores CC0 (Kenney Casino Audio et Impact Sounds, selection VCSL : Dan Tranh, percussions, cloches) : manifeste tools/sons/sources.json, telechargement par fetch_sources.py, conversion des .ogg par Godot (ogg_capture.gd puis split_capture.py). Rien de tout ca dans le depot ni dans l'export.
+- Bruitages refaits a partir d'echantillons enregistres (papier et pions Kenney, cithare Dan Tranh, tambour, gong, verres, carillons VCSL) : sons courts et secs, pion de jade + note de cithare qui montent dans la gamme pentatonique a chaque carte qui compte, tambour et gong pour les multiplications, reverberation courte.
 
 ### Corrigé
 
