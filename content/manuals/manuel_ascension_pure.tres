@@ -7,4 +7,4 @@
 script = ExtResource("2_ln7il")
 id = &"manuel_ascension_pure"
 hand = ExtResource("1_jfagq")
-price = 3
+price = 1

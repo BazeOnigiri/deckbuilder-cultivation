@@ -1,9 +1,9 @@
 extends SceneTree
 ## Genere un manuel par main dans content/manuals/.
-## Lancer : godot --headless --path . -s tools/generate_manuals.gd
+## Lancer : godot --headless --path . -s tools/generate_manuals.gd, puis tools/equilibrage.gd qui fixe les prix.
 
 const OUTPUT_DIR := "res://content/manuals"
-const PRICE := 3
+const BALANCE_PATH := "res://content/rules/equilibrage.tres"
 
 
 func _init() -> void:
@@ -13,7 +13,8 @@ func _init() -> void:
 		var manual := ManualDefinition.new()
 		manual.id = StringName("manuel_" + suffix)
 		manual.hand = hand
-		manual.price = PRICE
+		# Prix provisoire valide : tools/equilibrage.gd le remplace par le prix mesure.
+		manual.price = (load(BALANCE_PATH) as BalanceRules).min_price
 		var path: String = OUTPUT_DIR.path_join("manuel_%s.tres" % suffix)
 		var error := ResourceSaver.save(manual, path)
 		if error != OK:

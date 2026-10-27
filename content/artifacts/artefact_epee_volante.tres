@@ -20,5 +20,5 @@ name_key = "ARTIFACT_EPEE_VOLANTE"
 description_key = "ARTIFACT_EPEE_VOLANTE_DESC"
 glyph = "剑"
 icon = ExtResource("icon")
-price = 5
+price = 6
 effects = Array[ExtResource("2")]([SubResource("effect")])
