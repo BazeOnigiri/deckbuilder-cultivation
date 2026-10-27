@@ -909,6 +909,7 @@ SealButton/styles/hover = SubResource("StyleBoxFlat_sceau_main")
 SealButton/styles/normal = SubResource("StyleBoxFlat_sceau_main")
 SealButton/styles/pressed = SubResource("StyleBoxFlat_sceau_victoire")
 ShopCloth/base_type = &"PanelContainer"
+ShopCloth/constants/title_width = 104
 ShopCloth/styles/panel = SubResource("StyleBoxFlat_etoffe")
 ShopPavilion/base_type = &"PanelContainer"
 ShopPavilion/colors/line_color = Color(0.7882, 0.651, 0.3529, 0.7)

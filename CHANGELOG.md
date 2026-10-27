@@ -16,6 +16,11 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Treize nouveaux artefacts (18 au total) avec leur icone SVG et leur sceau : les quatre betes celestes et le qilin (un par element : Dragon azur, Oiseau vermillon, Qilin, Tigre blanc, Tortue noire), Pagode des trois sages, Echelle celeste, Banniere des cinq vents, Bassin de purete, Grain de riz spirituel, Couronne d'immortel, Ermite et Chaudron alchimique. Deux nouvelles conditions en donnees : rang de la carte et nombre de cartes qui comptent. Prix mesures par l'equilibrage (1 a 8 pierres).
 - Gourde d'elixir : +1 Comprehension au lieu de +4 (la mesure donnait +120 % de score, quatre fois les autres artefacts).
 
+### Corrigé
+
+- Boutique plus large que l'ecran : les noms d'offres passent a la ligne dans une largeur fixe (Theme, ShopCloth/title_width) et le message de niveau suit la largeur des offres.
+- Rouleaux (Voie de cultivation, regles...) : la molette en bas de la liste fermait le rouleau. Seuls les clics gauche et droit hors du rouleau le ferment.
+
 ## [0.4.0] - 2026-10-27
 
 ### Ajouté

@@ -33,6 +33,19 @@ func test_rouleau_se_ferme_au_clic_a_cote() -> void:
 	assert_signal_emitted(overlay, "closed")
 
 
+## Bug : la molette au bout d'une liste remontait au voile et fermait le rouleau.
+func test_molette_ne_ferme_pas_le_rouleau() -> void:
+	var overlay := _overlay()
+	watch_signals(overlay)
+	for wheel: MouseButton in [MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_UP]:
+		var event := InputEventMouseButton.new()
+		event.button_index = wheel
+		event.pressed = true
+		overlay._gui_input(event)
+	assert_signal_not_emitted(overlay, "closed")
+	assert_false(overlay.is_queued_for_deletion())
+
+
 func test_sceau_fermer_ferme_et_peut_etre_retire() -> void:
 	var overlay := _overlay()
 	watch_signals(overlay)
