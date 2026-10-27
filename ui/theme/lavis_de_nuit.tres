@@ -633,6 +633,28 @@ expand_margin_top = 32.0
 expand_margin_right = 8.0
 expand_margin_bottom = 8.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_papier_bulle"]
+content_margin_left = 8.0
+content_margin_top = 6.0
+content_margin_right = 8.0
+content_margin_bottom = 6.0
+bg_color = Color(0.9098, 0.8824, 0.8157, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
+content_margin_left = 10.0
+content_margin_top = 1.0
+content_margin_right = 10.0
+content_margin_bottom = 2.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
 [resource]
 default_font = ExtResource("1_15t8c")
 default_font_size = 20
@@ -741,6 +763,29 @@ InkButton/styles/hover = SubResource("StyleBoxEmpty_carte")
 InkButton/styles/hover_pressed = SubResource("StyleBoxEmpty_carte")
 InkButton/styles/normal = SubResource("StyleBoxEmpty_carte")
 InkButton/styles/pressed = SubResource("StyleBoxEmpty_carte")
+InfoBadge/base_type = &"PanelContainer"
+InfoBadge/styles/panel = SubResource("StyleBoxFlat_badge")
+InfoBadgeText/base_type = &"Label"
+InfoBadgeText/colors/font_color = Color(0.0471, 0.0784, 0.1098, 1)
+InfoBadgeText/font_sizes/font_size = 13
+InfoBubble/base_type = &"VBoxContainer"
+InfoBubble/colors/comprehension_color = Color(0.55, 0.38, 0.06, 1)
+InfoBubble/colors/qi_color = Color(0.13, 0.38, 0.31, 1)
+InfoBubble/constants/element_darken_percent = 55
+InfoBubble/constants/separation = 6
+InfoBubble/constants/width = 220
+InfoPaper/base_type = &"PanelContainer"
+InfoPaper/styles/panel = SubResource("StyleBoxFlat_papier_bulle")
+InfoText/base_type = &"RichTextLabel"
+InfoText/colors/default_color = Color(0.16, 0.12, 0.09, 1)
+InfoText/font_sizes/bold_font_size = 15
+InfoText/font_sizes/normal_font_size = 15
+InfoText/fonts/bold_font = ExtResource("2_carte")
+InfoText/fonts/normal_font = ExtResource("1_15t8c")
+InfoTitle/base_type = &"Label"
+InfoTitle/colors/font_color = Color(0.9098, 0.8824, 0.8157, 1)
+InfoTitle/font_sizes/font_size = 18
+InfoTitle/fonts/font = ExtResource("2_carte")
 ItemSlot/base_type = &"Button"
 ItemSlot/colors/artifact_color = Color(0.7882, 0.651, 0.3529, 1)
 ItemSlot/colors/disabled_color = Color(0.4196, 0.4549, 0.4784, 1)

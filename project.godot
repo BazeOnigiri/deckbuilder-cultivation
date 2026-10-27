@@ -36,6 +36,7 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 [gui]
 
 theme/custom="uid://cqoir5fnb7fno"
+timers/tooltip_delay_sec=0.15
 
 [internationalization]
 

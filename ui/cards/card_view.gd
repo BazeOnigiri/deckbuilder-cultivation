@@ -66,7 +66,7 @@ func _ready() -> void:
 ## A rappeler quand une pilule change l'element ou le rang de la carte.
 func refresh() -> void:
 	var style := ElementStyles.of(card.element)
-	tooltip_text = tr("ELEMENT_" + Element.to_id(card.element).to_upper())
+	tooltip_text = _name()
 	(material as ShaderMaterial).set_shader_parameter(&"edge_color", style.color)
 	# Lueur de la couleur de l'element, gardee par carte : le Theme ne donne que sa forme.
 	_glow = (get_theme_stylebox(&"card_glow") as StyleBoxFlat).duplicate()
@@ -156,3 +156,13 @@ func _draw_stamp(seal: Rect2, glyph: String, color: Color, text_color: Color) ->
 	var baseline: float = seal.position.y + (SEAL_SIZE + font.get_ascent(font_size) - font.get_descent(font_size)) / 2
 	draw_string(font, Vector2(seal.position.x, baseline), glyph, HORIZONTAL_ALIGNMENT_CENTER,
 		SEAL_SIZE, font_size, text_color)
+
+
+## « Rang 7 », « Disciple » : l'element est dans le badge de l'infobulle.
+func _name() -> String:
+	return tr("CARD_RANK_%d" % card.rank) if FIGURE_GLYPHS.has(card.rank) else tr("UI_CARD_RANK") % card.rank
+
+
+func _make_custom_tooltip(_for_text: String) -> Object:
+	var element := tr("ELEMENT_" + Element.to_id(card.element).to_upper())
+	return InfoBubble.build(_name(), tr("UI_CARD_QI") % card.qi(), [[element, ElementStyles.of(card.element).color]])
