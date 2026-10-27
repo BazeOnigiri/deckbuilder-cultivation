@@ -1,15 +1,11 @@
 [gd_scene format=3 uid="uid://g8680p53vlsu"]
 
 [ext_resource type="Script" uid="uid://bmvbk133ax1cm" path="res://ui/round/round_screen.gd" id="1"]
-[ext_resource type="Script" uid="uid://cegjm55cl7ug1" path="res://core/artifacts/artifact_definition.gd" id="2_e6au7"]
-[ext_resource type="Resource" path="res://content/artifacts/artefact_epee_volante.tres" id="3_ogkl3"]
-[ext_resource type="Resource" path="res://content/artifacts/artefact_gourde_elixir.tres" id="4_ubaed"]
-[ext_resource type="Resource" path="res://content/artifacts/artefact_lotus_flamme.tres" id="5_1t274"]
-[ext_resource type="Script" path="res://ui/shop/shop_panel.gd" id="shop_panel"]
-[ext_resource type="Script" path="res://ui/cards/hand_view.gd" id="hand_view"]
-[ext_resource type="Script" path="res://ui/round/side_column.gd" id="side_column"]
-[ext_resource type="Script" path="res://ui/round/item_row.gd" id="item_row"]
-[ext_resource type="Script" path="res://ui/round/deck_pile.gd" id="deck_pile"]
+[ext_resource type="Script" uid="uid://3mp7omvyyog8" path="res://ui/round/deck_pile.gd" id="deck_pile"]
+[ext_resource type="Script" uid="uid://f70s24nrjr1q" path="res://ui/cards/hand_view.gd" id="hand_view"]
+[ext_resource type="Script" uid="uid://bp41bgpp2kg2o" path="res://ui/round/item_row.gd" id="item_row"]
+[ext_resource type="Script" uid="uid://b3q1lv2anrr2y" path="res://ui/shop/shop_panel.gd" id="shop_panel"]
+[ext_resource type="Script" uid="uid://dq5kpce8uh6jc" path="res://ui/round/side_column.gd" id="side_column"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_tri"]
 
@@ -21,9 +17,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
-debug_artifacts = Array[ExtResource("2_e6au7")]([ExtResource("3_ogkl3"), ExtResource("4_ubaed"), ExtResource("5_1t274")])
 
-[node name="Root" type="HBoxContainer" parent="."]
+[node name="Root" type="HBoxContainer" parent="." unique_id=132327026]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,7 +39,7 @@ theme_override_constants/margin_bottom = 32
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="ItemRow" type="HBoxContainer" parent="Root/Margin/Layout"]
+[node name="ItemRow" type="HBoxContainer" parent="Root/Margin/Layout" unique_id=1459133971]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("item_row")
@@ -59,7 +54,7 @@ unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("hand_view")
 
-[node name="ShopPanel" type="VBoxContainer" parent="Root/Margin/Layout"]
+[node name="ShopPanel" type="VBoxContainer" parent="Root/Margin/Layout" unique_id=2012507902]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -69,7 +64,7 @@ script = ExtResource("shop_panel")
 layout_mode = 2
 alignment = 1
 
-[node name="SortRank" type="Button" parent="Root/Margin/Layout/Actions"]
+[node name="SortRank" type="Button" parent="Root/Margin/Layout/Actions" unique_id=1612264329]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
@@ -77,14 +72,14 @@ button_pressed = true
 button_group = SubResource("ButtonGroup_tri")
 text = "UI_SORT_RANK"
 
-[node name="SortElement" type="Button" parent="Root/Margin/Layout/Actions"]
+[node name="SortElement" type="Button" parent="Root/Margin/Layout/Actions" unique_id=405004208]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_tri")
 text = "UI_SORT_ELEMENT"
 
-[node name="SpacerLeft" type="Control" parent="Root/Margin/Layout/Actions"]
+[node name="SpacerLeft" type="Control" parent="Root/Margin/Layout/Actions" unique_id=970652493]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -109,16 +104,16 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "UI_MENU"
 
-[node name="SpacerRight" type="Control" parent="Root/Margin/Layout/Actions"]
+[node name="SpacerRight" type="Control" parent="Root/Margin/Layout/Actions" unique_id=1555598208]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DeckPile" type="HBoxContainer" parent="Root/Margin/Layout/Actions"]
+[node name="DeckPile" type="HBoxContainer" parent="Root/Margin/Layout/Actions" unique_id=1624892110]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("deck_pile")
 
-[node name="SideColumn" type="PanelContainer" parent="Root"]
+[node name="SideColumn" type="PanelContainer" parent="Root" unique_id=1823826109]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
