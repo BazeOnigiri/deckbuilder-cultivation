@@ -45,6 +45,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Nappes d'ambiance generees par le meme script (bourdon, vent, notes pentatoniques, boucles de 24 s sans couture) : nuit, boutique, tribulation. Chaque ambiance choisit sa nappe (champ music), fondu croise au changement d'ecran.
 - Sources sonores CC0 (Kenney Casino Audio et Impact Sounds, selection VCSL : Dan Tranh, percussions, cloches) : manifeste tools/sons/sources.json, telechargement par fetch_sources.py, conversion des .ogg par Godot (ogg_capture.gd puis split_capture.py). Rien de tout ca dans le depot ni dans l'export.
 - Bruitages refaits a partir d'echantillons enregistres (papier et pions Kenney, cithare Dan Tranh, tambour, gong, verres, carillons VCSL) : sons courts et secs, pion de jade + note de cithare qui montent dans la gamme pentatonique a chaque carte qui compte, tambour et gong pour les multiplications, reverberation courte.
+- Musique composee : theme lo-fi en sol# mineur pentatonique a 76 BPM, ecrit en donnees (tools/sons/partition.json : accords, basse, arpege et melodie au Dan Tranh, nappe chaude, percussions), grain cassette et reverberation, boucle de 16 mesures sans couture. Variantes nuit, boutique et tribulation jouees ensemble (AudioStreamSynchronized) : changer d'ecran fait un fondu a puissance constante sans que la musique reprenne au debut.
 
 ### Corrigé
 
