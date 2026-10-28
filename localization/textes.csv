@@ -177,3 +177,7 @@ UI_KEYS_SORT_ELEMENT,Trier par élément,Sort by element
 UI_KEYS_DECK,Voir tout le paquet,View the full deck
 UI_KEYS_PATH,Voie de cultivation,Cultivation path
 UI_KEYS_CLOSE,Fermer un rouleau,Close a scroll
+UI_RARITY_0,Mortel 凡,Mortal 凡
+UI_RARITY_1,Spirituel 灵,Spiritual 灵
+UI_RARITY_2,Céleste 仙,Celestial 仙
+UI_RARITY_3,Divin 神,Divine 神

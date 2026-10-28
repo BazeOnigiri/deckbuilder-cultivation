@@ -7,6 +7,8 @@ extends Button
 enum Kind {ARTIFACT, PILL, MANUAL}
 
 var kind: Kind = Kind.ARTIFACT
+## Rarete d'un artefact (ArtifactDefinition.rarity), en badge dans l'infobulle. -1 : pas de badge.
+var rarity: int = -1
 ## Vide : emplacement libre.
 var glyph: String = ""
 var picture: Texture2D
@@ -106,7 +108,10 @@ func _make_custom_tooltip(_for_text: String) -> Object:
 	var kinds := {Kind.ARTIFACT: ["UI_KIND_ARTIFACT", get_theme_color(&"artifact_color", &"ItemSlot")],
 		Kind.PILL: ["UI_KIND_PILL", get_theme_color(&"pill_color", &"ItemSlot")],
 		Kind.MANUAL: ["UI_KIND_MANUAL", get_theme_color(StringName("tier_%d" % cover_tier), &"ManualCover")]}
-	return InfoBubble.build(title, description, [[tr(kinds[kind][0]), kinds[kind][1]]])
+	var badges: Array = [[tr(kinds[kind][0]), kinds[kind][1]]]
+	if kind == Kind.ARTIFACT and rarity >= 0:
+		badges.append([tr("UI_RARITY_%d" % rarity), get_theme_color(StringName("rarity_%d" % rarity), &"ItemSlot")])
+	return InfoBubble.build(title, description, badges)
 
 
 ## Nom et description de l'infobulle (le nom sert aussi de tooltip_text).

@@ -33,6 +33,7 @@ func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int) -> voi
 		var slot := _slot(ItemSlot.Kind.ARTIFACT, _artifact_slots)
 		if i < artifacts.size():
 			slot.picture = artifacts[i].icon
+			slot.rarity = artifacts[i].rarity
 			_fill(slot, artifacts[i].glyph, artifacts[i].name_key, artifacts[i].description_key)
 			_slot_of[artifacts[i]] = slot
 

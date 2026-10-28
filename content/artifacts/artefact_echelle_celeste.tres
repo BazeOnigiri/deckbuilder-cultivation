@@ -28,3 +28,4 @@ glyph = "梯"
 icon = ExtResource("icon")
 price = 1
 effects = Array[ExtResource("2")]([SubResource("effect_1")])
+rarity = 0

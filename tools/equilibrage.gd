@@ -60,6 +60,7 @@ func _initialize() -> void:
 	var solved := BalanceModel.solve(rules, measures, content.economy, realms, content.artifacts, content.manuals)
 	for artifact: ArtifactDefinition in content.artifacts:
 		_set_value(artifact.resource_path, "price", str(solved["prices"][artifact.id]))
+		_set_value(artifact.resource_path, "rarity", str(solved["rarities"][artifact.id]))
 	for manual: ManualDefinition in content.manuals:
 		_set_value(manual.resource_path, "price", str(solved["prices"][manual.id]))
 	for r: int in realms.size():
@@ -116,11 +117,12 @@ func _write_report(rules: BalanceRules, measures: BalanceMeasures, solved: Dicti
 		for row: Array in solved["bottlenecks"][r]:
 			cells.append("%d (%d)" % [roundi(solved["realms"][r] * row[0]), row[1]])
 		lines.append("| %d | %d | %s | x%.2f |" % [realms[r].order, solved["realms"][r], ", ".join(cells), solved["growths"][r]])
-	lines.append_array(["", "## Objets (gain mesure, prix)", "", "| Objet | Gain | Prix |", "| --- | --- | --- |"])
+	lines.append_array(["", "## Objets (gain mesure, prix)", "", "| Objet | Gain | Prix | Rarete |", "| --- | --- | --- | --- |"])
 	for item: Resource in content.artifacts:
-		lines.append("| %s | %+.1f %% | %d |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
+		lines.append("| %s | %+.1f %% | %d | %d |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id],
+			solved["rarities"][item.id]])
 	for item: Resource in content.manuals:
-		lines.append("| %s | %+.1f %% | %d |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
+		lines.append("| %s | %+.1f %% | %d | |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
 	lines.append_array(["", "## Mains (rarete exacte sur %d cartes, valeurs ecrites)" % rules.hand_draw_size, "",
 		"| Main | Rarete | Surprise | Qi x Comprehension | Niveau | Priorite |", "| --- | --- | --- | --- | --- | --- |"])
 	var by_priority := content.hands.duplicate()
