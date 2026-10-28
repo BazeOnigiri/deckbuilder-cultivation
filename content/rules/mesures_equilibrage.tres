@@ -50,7 +50,7 @@ hand_frequencies = Dictionary[String, float]({
 "main_purete": 0.0295,
 "main_souffle": 0.062
 })
-content_signature = "9991228d8ee9b81d28f85b9b0e798143"
+content_signature = "59da7ee91a8c453bae6de4720f757f84"
 hand_rarities = Dictionary[String, float]({
 "main_ascension": 0.0028402016225049396,
 "main_ascension_pure": 4.544322596007904e-06,

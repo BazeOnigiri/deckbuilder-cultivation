@@ -179,9 +179,9 @@ func _selected() -> Array[CardInstance]:
 func _on_selection_changed() -> void:
 	var count: int = _selected().size()
 	var can_act: bool = (not _scoring and _round != null and _round.status == RoundState.Status.PLAYING
-		and count > 0 and count <= _run.round_rules().max_selected_cards)
+		and count > 0 and count <= _round.max_selected())
 	_play_button.disabled = not can_act
-	_discard_button.disabled = not can_act or _round.discards_left == 0
+	_discard_button.disabled = not can_act or not _round.can_discard()
 	# Pendant la sequence, la main du round est deja repiochee : la retrier montrerait les nouvelles cartes trop tot.
 	%SortRank.disabled = _scoring
 	_deck_pile.enabled = not _scoring

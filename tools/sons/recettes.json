@@ -1010,6 +1010,71 @@
 			}
 		},
 		{
+			"id": "musique_foudre",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "foudre",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -5
+			}
+		},
+		{
+			"id": "musique_gel",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "gel",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -5
+			}
+		},
+		{
+			"id": "musique_neant",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "neant",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -5
+			}
+		},
+		{
+			"id": "musique_karma",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "karma",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -5
+			}
+		},
+		{
+			"id": "musique_epees",
+			"kind": "partition",
+			"file": "partition.json",
+			"variante": "epees",
+			"dossier": "audio/musique",
+			"gain": 0.8,
+			"cue": {
+				"bus": "Musique",
+				"pitch_variance": 0.0,
+				"volume_db": -5
+			}
+		},
+		{
 			"id": "musique_flammes",
 			"kind": "partition",
 			"file": "partition.json",
