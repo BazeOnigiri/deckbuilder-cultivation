@@ -290,3 +290,48 @@ func test_pierres_d_artefact_au_goulot_et_crans_vendus() -> void:
 	assert_eq(run.artifact_stacks[artifact.id], 1)
 	run.sell_artifact(0)
 	assert_false(run.artifact_stacks.has(artifact.id))
+
+
+func _pill(effect: PillEffect, max_cards: int = 2) -> PillDefinition:
+	var pill := PillDefinition.new()
+	pill.min_cards = 1
+	pill.max_cards = max_cards
+	pill.effect = effect
+	return pill
+
+
+func test_pilule_de_dedoublement_ajoute_une_copie() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.pills.append(_pill(CopyPillEffect.new(), 1))
+	run.start()
+	var card: CardInstance = run.current_round.hand()[0]
+	card.element = Element.Type.EAU
+	var cards: Array[CardInstance] = [card]
+	assert_true(run.use_pill(0, cards))
+	var copies := run.current_round.deck_cards().filter(func(other: CardInstance) -> bool:
+		return other != card and other.data == card.data)
+	assert_eq(copies.size(), 1)
+	assert_eq(copies[0].element, Element.Type.EAU)
+	assert_ne(copies[0].uid, card.uid)
+
+
+func test_pilule_de_dissolution_rapporte_des_pierres() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	var effect := DissolvePillEffect.new()
+	effect.stones_per_card = 2
+	run.pills.append(_pill(effect))
+	run.start()
+	var before := run.stones
+	var cards: Array[CardInstance] = [run.current_round.hand()[0], run.current_round.hand()[1]]
+	assert_true(run.use_pill(0, cards))
+	assert_eq(run.stones, before + 4)
+	assert_eq(run.current_round.deck_cards().size(), 8)
+
+
+func test_pilule_d_illumination_monte_la_main_formee() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.pills.append(_pill(LevelHandPillEffect.new(), 5))
+	run.start()
+	var cards: Array[CardInstance] = [run.current_round.hand()[0]]
+	assert_true(run.use_pill(0, cards))
+	assert_eq(run.hand_levels.level_of("test"), 2)

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PillDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/pills/pill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/pills/dissolve_pill_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+stones_per_card = 2
+
+[resource]
+script = ExtResource("1")
+id = &"pilule_dissolution"
+name_key = "PILL_DISSOLUTION"
+description_key = "PILL_DISSOLUTION_DESC"
+glyph = "散"
+price = 3
+min_cards = 1
+max_cards = 2
+effect = SubResource("effect")

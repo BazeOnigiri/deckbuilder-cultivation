@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PillDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/pills/pill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/pills/add_rank_pill_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+amount = -1
+
+[resource]
+script = ExtResource("1")
+id = &"pilule_regression"
+name_key = "PILL_REGRESSION"
+description_key = "PILL_REGRESSION_DESC"
+glyph = "退"
+price = 3
+min_cards = 1
+max_cards = 2
+effect = SubResource("effect")

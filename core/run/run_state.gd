@@ -52,7 +52,6 @@ func next_round() -> bool:
 	_start_round()
 	return true
 
-## Une pilule s'utilise pendant un round, sur des cartes de la main, en nombre autorise par la pilule.
 ## Regles du round avec les heritages : le round, la boutique et l'economie lisent celles-ci, jamais les heritages.
 func round_rules() -> RoundRules:
 	return _with_legacies(_rules) as RoundRules
@@ -104,6 +103,12 @@ func add_card(data: CardData, ranks: RankRules) -> CardInstance:
 	return card
 
 
+## Main que formeraient ces cartes (pilule d'illumination). null si aucune.
+func evaluate(cards: Array[CardInstance]) -> HandResult:
+	return _evaluator.evaluate(cards)
+
+
+## Une pilule s'utilise pendant un round, sur des cartes de la main, en nombre autorise par la pilule.
 func can_use_pill(index: int, selected: Array[CardInstance]) -> bool:
 	if status != Status.IN_ROUND or index < 0 or index >= pills.size():
 		return false
@@ -115,7 +120,7 @@ func can_use_pill(index: int, selected: Array[CardInstance]) -> bool:
 func use_pill(index: int, selected: Array[CardInstance]) -> bool:
 	if not can_use_pill(index, selected):
 		return false
-	pills[index].effect.apply(selected, _deck)
+	pills[index].effect.apply(selected, _deck, self)
 	pills.remove_at(index)
 	current_round.ensure_playable()
 	return true
