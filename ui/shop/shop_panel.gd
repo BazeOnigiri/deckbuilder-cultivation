@@ -98,7 +98,7 @@ func _refresh() -> void:
 	for i: int in _shop.offers.size():
 		var artifact: ArtifactDefinition = _shop.offers[i]
 		_add_offer(ItemSlot.Kind.ARTIFACT, artifact.glyph, artifact.name_key, tr(artifact.description_key),
-			artifact.price, _shop.can_buy(i), _on_buy_pressed.bind(i), artifact.icon)
+			artifact.price, _shop.can_buy(i), _on_buy_pressed.bind(i), artifact.icon, null, artifact.rarity)
 	for i: int in _shop.manual_offers.size():
 		var manual: ManualDefinition = _shop.manual_offers[i]
 		var hand: HandDefinition = manual.hand
@@ -115,7 +115,7 @@ func _refresh() -> void:
 
 ## buy(slot) : achete l'offre ; le slot sert de point de depart a l'envol.
 func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, description: String, price: int,
-		can_buy: bool, buy: Callable, icon: Texture2D = null, manual: ManualDefinition = null) -> void:
+		can_buy: bool, buy: Callable, icon: Texture2D = null, manual: ManualDefinition = null, rarity: int = -1) -> void:
 	var cloth := PanelContainer.new()
 	cloth.theme_type_variation = &"ShopCloth"
 	var offer := VBoxContainer.new()
@@ -124,6 +124,7 @@ func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, descriptio
 	slot.kind = kind
 	slot.glyph = glyph
 	slot.picture = icon
+	slot.rarity = rarity
 	if manual != null:
 		slot.cover_tier = manual.tier
 		slot.cover_pattern = manual.pattern

@@ -11,6 +11,9 @@ extends Resource
 @export var icon: Texture2D
 ## Prix en pierres spirituelles (utilise par la boutique).
 @export var price: int = 0
+## Rarete (0 Mortel, 1 Spirituel, 2 Celeste, 3 Divin), ecrite par tools/equilibrage.gd depuis le gain mesure :
+## un artefact fort est rare. La boutique tire d'abord une rarete (ShopRules.rarity_weights), puis un artefact.
+@export var rarity: int = 0
 @export var effects: Array[ArtifactEffect] = []
 
 

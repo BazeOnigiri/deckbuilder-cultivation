@@ -67,6 +67,14 @@ seule unité, et le prix suit cette valeur. Un objet deux fois plus utile coûte
   Un manuel de main rare coûte peu, parce que le joueur moyen la joue rarement. Un joueur qui construit son paquet
   autour de cette main en tire plus : c'est une récompense de la stratégie.
 
+## 3 bis. Les raretés des artefacts : plus fort, plus rare
+
+Comme dans Balatro, la boutique tire d'abord une **rareté**, puis un artefact de cette rareté. La rareté n'est pas
+choisie à la main : l'outil classe les artefacts par gain mesuré (section 2) et les répartit selon
+`rarity_shares` (50 / 30 / 15 / 5 % : avec 18 artefacts, 9 Mortels 凡, 5 Spirituels 灵, 3 Célestes 仙, 1 Divin 神).
+Les poids de tirage sont dans la boutique (`rarity_weights` de content/rules/boutique_base.tres : 70 / 22 / 7 / 1).
+Un artefact Divin coûte déjà cher (son prix suit son gain) ; sa rareté le rend en plus difficile à trouver.
+
 ## 4. Les goulots d'un royaume
 
 > multiplicateur = 1 + `bottleneck_step` × rang du goulot  →  ×1, ×1,5, ×2 (comme les blinds de Balatro)

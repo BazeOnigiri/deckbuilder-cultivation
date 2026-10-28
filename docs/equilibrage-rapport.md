@@ -18,38 +18,38 @@ Genere par tools/equilibrage.gd ; ne pas modifier a la main. Explications : equi
 
 ## Objets (gain mesure, prix)
 
-| Objet | Gain | Prix |
-| --- | --- | --- |
-| artefact_banniere_cinq_vents | +30.5 % | 8 |
-| artefact_bassin_purete | +14.2 % | 4 |
-| artefact_chaudron_alchimique | +21.5 % | 6 |
-| artefact_couronne_immortel | +17.9 % | 5 |
-| artefact_dragon_azur | +6.2 % | 2 |
-| artefact_echelle_celeste | +4.9 % | 1 |
-| artefact_epee_volante | +21.0 % | 6 |
-| artefact_ermite | +8.1 % | 2 |
-| artefact_gourde_elixir | +26.1 % | 7 |
-| artefact_grain_riz | +7.1 % | 2 |
-| artefact_lotus_flamme | +4.9 % | 1 |
-| artefact_miroir_jumeau | +29.9 % | 8 |
-| artefact_oiseau_vermillon | +24.5 % | 7 |
-| artefact_pagode | +12.9 % | 3 |
-| artefact_perle_marees | +23.8 % | 6 |
-| artefact_qilin | +6.8 % | 2 |
-| artefact_tigre_blanc | +20.5 % | 6 |
-| artefact_tortue_noire | +7.1 % | 2 |
-| manuel_ascension | +11.1 % | 3 |
-| manuel_ascension_pure | +0.2 % | 1 |
-| manuel_brelan | +2.8 % | 1 |
-| manuel_carre | +1.5 % | 1 |
-| manuel_cinq_souverains | +0.0 % | 1 |
-| manuel_cycle_engendrement | +0.0 % | 1 |
-| manuel_double_paire | +13.4 % | 4 |
-| manuel_full | +9.5 % | 3 |
-| manuel_harmonie | +16.2 % | 4 |
-| manuel_paire | +2.8 % | 1 |
-| manuel_purete | +5.7 % | 2 |
-| manuel_souffle | +0.1 % | 1 |
+| Objet | Gain | Prix | Rarete |
+| --- | --- | --- | --- |
+| artefact_banniere_cinq_vents | +30.5 % | 8 | 3 |
+| artefact_bassin_purete | +14.2 % | 4 | 0 |
+| artefact_chaudron_alchimique | +21.5 % | 6 | 1 |
+| artefact_couronne_immortel | +17.9 % | 5 | 1 |
+| artefact_dragon_azur | +6.2 % | 2 | 0 |
+| artefact_echelle_celeste | +4.9 % | 1 | 0 |
+| artefact_epee_volante | +21.0 % | 6 | 1 |
+| artefact_ermite | +8.1 % | 2 | 0 |
+| artefact_gourde_elixir | +26.1 % | 7 | 2 |
+| artefact_grain_riz | +7.1 % | 2 | 0 |
+| artefact_lotus_flamme | +4.9 % | 1 | 0 |
+| artefact_miroir_jumeau | +29.9 % | 8 | 2 |
+| artefact_oiseau_vermillon | +24.5 % | 7 | 2 |
+| artefact_pagode | +12.9 % | 3 | 0 |
+| artefact_perle_marees | +23.8 % | 6 | 1 |
+| artefact_qilin | +6.8 % | 2 | 0 |
+| artefact_tigre_blanc | +20.5 % | 6 | 1 |
+| artefact_tortue_noire | +7.1 % | 2 | 0 |
+| manuel_ascension | +11.1 % | 3 | |
+| manuel_ascension_pure | +0.2 % | 1 | |
+| manuel_brelan | +2.8 % | 1 | |
+| manuel_carre | +1.5 % | 1 | |
+| manuel_cinq_souverains | +0.0 % | 1 | |
+| manuel_cycle_engendrement | +0.0 % | 1 | |
+| manuel_double_paire | +13.4 % | 4 | |
+| manuel_full | +9.5 % | 3 | |
+| manuel_harmonie | +16.2 % | 4 | |
+| manuel_paire | +2.8 % | 1 | |
+| manuel_purete | +5.7 % | 2 | |
+| manuel_souffle | +0.1 % | 1 | |
 
 ## Mains (rarete exacte sur 5 cartes, valeurs ecrites)
 

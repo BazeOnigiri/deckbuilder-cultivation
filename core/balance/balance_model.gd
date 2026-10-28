@@ -99,7 +99,28 @@ static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: Econo
 	for rewards: Array[int] in realm_rewards:
 		bases.append(realm_base_score(rules, measures, growths))
 		growths.append(realm_growth(rules, economy, stone, rewards))
-	return {"stone": stone, "prices": prices, "bottlenecks": bottlenecks, "realms": bases, "growths": growths}
+	return {"stone": stone, "prices": prices, "bottlenecks": bottlenecks, "realms": bases, "growths": growths,
+		"rarities": rarities(rules, measures, artifacts)}
+
+
+## Rarete de chaque artefact, par id : classes par gain croissant (a gain egal, par id), le milieu de sa place
+## (i + 0,5) / n tombe dans une part de rarity_shares. 18 artefacts en 50/30/15/5 % : 9, 5, 3 et 1.
+static func rarities(rules: BalanceRules, measures: BalanceMeasures, artifacts: Array[ArtifactDefinition]) -> Dictionary:
+	var sorted := artifacts.duplicate()
+	sorted.sort_custom(func(a: ArtifactDefinition, b: ArtifactDefinition) -> bool:
+		var gain_a: float = measures.gains.get(a.id, 0.0)
+		var gain_b: float = measures.gains.get(b.id, 0.0)
+		return gain_a < gain_b if gain_a != gain_b else String(a.id) < String(b.id))
+	var result := {}
+	for i: int in sorted.size():
+		var place := (i + 0.5) / sorted.size()
+		var tier := 0
+		var cumulative := rules.rarity_shares[0]
+		while place > cumulative and tier < rules.rarity_shares.size() - 1:
+			tier += 1
+			cumulative += rules.rarity_shares[tier]
+		result[sorted[i].id] = tier
+	return result
 
 
 ## Surprise d'une main, en nats : -ln(rarete). 0 pour une main toujours la, +2,3 chaque fois qu'elle est 10 fois
@@ -152,7 +173,7 @@ static func solve_hands(rules: BalanceRules, measures: BalanceMeasures, hands: A
 
 
 ## Proprietes que l'outil ecrit (des resultats) ou qui ne changent que l'affichage : hors de l'empreinte.
-const NOT_MEASURED := ["price", "priority", "base_qi", "base_comprehension", "level_qi", "level_comprehension",
+const NOT_MEASURED := ["price", "rarity", "priority", "base_qi", "base_comprehension", "level_qi", "level_comprehension",
 	"score_multiplier", "reward", "base_score", "name_key", "description_key", "glyph", "icon", "example", "tier",
 	"pattern", "resource_local_to_scene", "resource_name", "resource_path", "resource_scene_unique_id", "script"]
 

@@ -188,3 +188,21 @@ func test_empreinte_suit_le_contenu_mesure_pas_les_resultats() -> void:
 	card.rank += 1
 	assert_ne(BalanceModel.content_signature(content, rules), signature, "un paquet change rend les mesures perimees")
 	card.rank -= 1
+
+
+## 18 artefacts en 50/30/15/5 % : 9 Mortels, 5 Spirituels, 3 Celestes, 1 Divin ; le plus fort est le plus rare.
+func test_raretes_par_gain_mesure() -> void:
+	var measures := _measures([1.0])
+	var artifacts: Array[ArtifactDefinition] = []
+	for i: int in 18:
+		var artifact := ArtifactDefinition.new()
+		artifact.id = StringName("a%02d" % i)
+		artifacts.append(artifact)
+		measures.gains[artifact.id] = 0.01 * (18 - i)
+	var rarities := BalanceModel.rarities(_rules(), measures, artifacts)
+	var counts := [0, 0, 0, 0]
+	for tier: int in rarities.values():
+		counts[tier] += 1
+	assert_eq(counts, [9, 5, 3, 1])
+	assert_eq(rarities[&"a00"], 3, "gain le plus fort : Divin")
+	assert_eq(rarities[&"a17"], 0, "gain le plus faible : Mortel")

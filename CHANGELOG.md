@@ -6,6 +6,10 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Ajouté
+
+- Raretes des artefacts : Mortel 凡, Spirituel 灵, Celeste 仙, Divin 神. L'equilibrage les deduit du gain mesure (un artefact fort est rare, parts dans content/rules/equilibrage.tres), la boutique tire une rarete selon ses poids (70 / 22 / 7 / 1 %) puis un artefact. Badge de rarete dans l'infobulle, couleurs dans le Theme.
+
 ## [1.0.0] - 2026-10-28
 
 ### Ajouté

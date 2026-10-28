@@ -12,3 +12,4 @@ max_pills = 2
 reroll_base_cost = 5
 reroll_cost_step = 1
 max_artifacts = 5
+rarity_weights = PackedFloat32Array(70, 22, 7, 1)

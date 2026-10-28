@@ -97,8 +97,7 @@ func _roll_offers() -> void:
 	for artifact: ArtifactDefinition in _catalog:
 		if not owned.has(artifact.id):
 			pool.append(artifact)
-	RngUtils.shuffle(pool, _rng)
-	offers.assign(pool.slice(0, _rules.offer_count))
+	offers.assign(_draw_artifacts(pool, _rules.offer_count))
 	# Manuels : rachetables d'une visite a l'autre, mais distincts dans une meme visite.
 	var manual_pool: Array[ManualDefinition] = _manuals.duplicate()
 	RngUtils.shuffle(manual_pool, _rng)
@@ -107,6 +106,29 @@ func _roll_offers() -> void:
 	var pill_pool: Array[PillDefinition] = _pills.duplicate()
 	RngUtils.shuffle(pill_pool, _rng)
 	pill_offers.assign(pill_pool.slice(0, _rules.pill_offer_count))
+
+## count artefacts distincts : une rarete tiree selon rarity_weights (parmi celles qui en ont encore), puis un
+## artefact de cette rarete au hasard.
+func _draw_artifacts(pool: Array[ArtifactDefinition], count: int) -> Array[ArtifactDefinition]:
+	RngUtils.shuffle(pool, _rng)
+	if _rules.rarity_weights.is_empty():
+		return pool.slice(0, count)
+	var drawn: Array[ArtifactDefinition] = []
+	while drawn.size() < count and not pool.is_empty():
+		var weights := PackedFloat32Array()
+		weights.resize(_rules.rarity_weights.size())
+		for artifact: ArtifactDefinition in pool:
+			var available := mini(artifact.rarity, weights.size() - 1)
+			weights[available] = _rules.rarity_weights[available]
+		var tier := _rng.rand_weighted(weights)
+		# Le melange a deja mis les artefacts dans un ordre au hasard : le premier de la rarete tiree.
+		for i: int in pool.size():
+			if mini(pool[i].rarity, weights.size() - 1) == tier:
+				drawn.append(pool[i])
+				pool.remove_at(i)
+				break
+	return drawn
+
 
 func to_dict() -> Dictionary:
 	return {

@@ -192,3 +192,36 @@ func test_achat_pilule_refuse_inventaire_plein() -> void:
 	var shop := _shop(run, _catalog(5))
 	assert_false(shop.buy_pill(0))
 	assert_eq(run.stones, 10)
+
+## Une rarete est tiree selon ses poids, puis un artefact : sur 4000 relances, la repartition suit 70/22/7/1.
+func test_tirage_suit_les_poids_de_rarete() -> void:
+	var catalog: Array[ArtifactDefinition] = []
+	for tier: int in 4:
+		for copy: int in 2:
+			var artifact := _artifact("r%d_%d" % [tier, copy], 5)
+			artifact.rarity = tier
+			catalog.append(artifact)
+	var rules := _rules(1)
+	rules.rarity_weights = PackedFloat32Array([70, 22, 7, 1])
+	rules.reroll_base_cost = 0
+	rules.reroll_cost_step = 0
+	var shop := _shop(_run(0), catalog, rules)
+	var counts := [0, 0, 0, 0]
+	var rolls := 4000
+	for i: int in rolls:
+		counts[shop.offers[0].rarity] += 1
+		shop.reroll()
+	assert_almost_eq(counts[0] / float(rolls), 0.70, 0.03)
+	assert_almost_eq(counts[1] / float(rolls), 0.22, 0.03)
+	assert_almost_eq(counts[2] / float(rolls), 0.07, 0.02)
+	assert_almost_eq(counts[3] / float(rolls), 0.01, 0.01)
+
+
+## Plus d'artefact d'une rarete (deja possedes) : son poids ne compte plus, les offres restent pleines.
+func test_rarete_epuisee_ignoree() -> void:
+	var catalog: Array[ArtifactDefinition] = [_artifact("commun", 5), _artifact("divin", 5)]
+	catalog[1].rarity = 3
+	var rules := _rules(2)
+	rules.rarity_weights = PackedFloat32Array([70, 22, 7, 1])
+	var shop := _shop(_run(0), catalog, rules)
+	assert_eq(shop.offers.size(), 2)
