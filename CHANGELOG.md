@@ -6,6 +6,13 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-28
+
+### Ajouté
+
+- Premiere version complete : 3 royaumes, 12 mains, 18 artefacts, manuels et pilules, sons et musique, jouable au clavier et a la souris.
+- Builds jointes a la release GitHub : export web (zip) et Windows (exe autonome). Preset d'export Windows.
+
 ### Corrigé
 
 - Options ouvertes pendant une run : les touches (jouer, defausser...) n'agissent plus sur la run cachee sous le voile.
