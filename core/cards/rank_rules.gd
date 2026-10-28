@@ -1,7 +1,7 @@
 class_name RankRules
 extends Resource
 ## Rangs d'un paquet : rang le plus haut et Qi qu'apporte une carte qui compte, selon son rang.
-## Comme Balatro : les chiffres valent leur rang, les figures 10, le Souverain (l'As) 11.
+## Comme Balatro : les chiffres (1 a 10) valent leur rang, les figures 10, le Souverain (l'As) 11.
 
 @export var max_rank: int = 0
 ## Qi d'une carte qui compte : qi_by_rank[rang - 1].

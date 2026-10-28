@@ -55,9 +55,9 @@ func test_infobulle_d_un_artefact() -> void:
 
 func test_infobulle_d_une_figure() -> void:
 	var view := CardView.new()
-	view.card = CardInstance.new(0, CardData.create(&"c", Element.Type.FEU, 10), load("res://content/rules/rangs.tres"))
+	view.card = CardInstance.new(0, CardData.create(&"c", Element.Type.FEU, 11), load("res://content/rules/rangs.tres"))
 	add_child_autofree(view)
-	assert_eq(view.tooltip_text, tr("CARD_RANK_10"))
+	assert_eq(view.tooltip_text, tr("CARD_RANK_11"))
 	var bubble: InfoBubble = autofree(view._make_custom_tooltip(""))
 	var text: RichTextLabel = bubble.find_children("*", "RichTextLabel", true, false)[0]
 	assert_string_contains(text.text, "+10 %s" % tr("UI_SIDE_QI"))

@@ -26,5 +26,5 @@ name_key = "ARTIFACT_ECHELLE_CELESTE"
 description_key = "ARTIFACT_ECHELLE_CELESTE_DESC"
 glyph = "梯"
 icon = ExtResource("icon")
-price = 2
+price = 1
 effects = Array[ExtResource("2")]([SubResource("effect_1")])

@@ -8,8 +8,8 @@
 
 [sub_resource type="Resource" id="condition_1"]
 script = ExtResource("4")
-min_rank = 10
-max_rank = 13
+min_rank = 11
+max_rank = 14
 
 [sub_resource type="Resource" id="score_1"]
 script = ExtResource("3")

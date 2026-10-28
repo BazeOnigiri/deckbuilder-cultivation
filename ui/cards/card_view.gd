@@ -15,7 +15,7 @@ const CORNER_ICON_Y := 33.0
 const CORNER_ICON_SIZE := 14.0
 const PIP_SIZE := 17.0
 const PIP_AREA := Rect2(24, 22, 44, 88)
-## Points des rangs 1 a 9, en pourcentage de PIP_AREA.
+## Points des rangs 1 a 10, en pourcentage de PIP_AREA.
 const PIPS := {
 	1: [Vector2(50, 50)],
 	2: [Vector2(50, 28), Vector2(50, 72)],
@@ -29,17 +29,19 @@ const PIPS := {
 		Vector2(25, 86), Vector2(75, 86)],
 	9: [Vector2(25, 14), Vector2(75, 14), Vector2(25, 38), Vector2(75, 38), Vector2(50, 50), Vector2(25, 62),
 		Vector2(75, 62), Vector2(25, 86), Vector2(75, 86)],
+	10: [Vector2(25, 14), Vector2(75, 14), Vector2(50, 26), Vector2(25, 38), Vector2(75, 38), Vector2(25, 62),
+		Vector2(75, 62), Vector2(50, 74), Vector2(25, 86), Vector2(75, 86)],
 }
 const FIGURE_AREA := Rect2(20, 31, 52, 70)
-## Figures des rangs 10 a 13 : [fond blanc teinte par l'element, trait couleur papier].
+## Figures des rangs 11 a 14 : [fond blanc teinte par l'element, trait couleur papier].
 const FIGURES := {
-	10: [preload("res://ui/cards/figures/disciple_fond.svg"), preload("res://ui/cards/figures/disciple_trait.svg")],
-	11: [preload("res://ui/cards/figures/maitre_fond.svg"), preload("res://ui/cards/figures/maitre_trait.svg")],
-	12: [preload("res://ui/cards/figures/immortel_fond.svg"), preload("res://ui/cards/figures/immortel_trait.svg")],
-	13: [preload("res://ui/cards/figures/souverain_fond.svg"), preload("res://ui/cards/figures/souverain_trait.svg")],
+	11: [preload("res://ui/cards/figures/disciple_fond.svg"), preload("res://ui/cards/figures/disciple_trait.svg")],
+	12: [preload("res://ui/cards/figures/maitre_fond.svg"), preload("res://ui/cards/figures/maitre_trait.svg")],
+	13: [preload("res://ui/cards/figures/immortel_fond.svg"), preload("res://ui/cards/figures/immortel_trait.svg")],
+	14: [preload("res://ui/cards/figures/souverain_fond.svg"), preload("res://ui/cards/figures/souverain_trait.svg")],
 }
 ## Coin des figures : un sinogramme au lieu du chiffre (徒 disciple, 师 maitre, 仙 immortel, 尊 souverain).
-const FIGURE_GLYPHS := {10: "徒", 11: "师", 12: "仙", 13: "尊"}
+const FIGURE_GLYPHS := {11: "徒", 12: "师", 13: "仙", 14: "尊"}
 const SEAL_SIZE := 24.0
 ## Le sceau deborde de la carte en haut et a droite.
 const SEAL_OVERFLOW := 7.0
