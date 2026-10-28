@@ -212,3 +212,18 @@ LEGACY_CELESTIAL_MARKET_NAME,Marché céleste,Celestial Market
 LEGACY_CELESTIAL_MARKET_DESC,La relance coûte 2 pierres de moins,Rerolls cost 2 fewer stones
 UI_KIND_LEGACY,Héritage,Legacy
 UI_INFO_LEGACIES,Héritages,Legacies
+BOTTLENECK_TRIBULATION_FOUDRE,Tribulation de la foudre pourpre,Tribulation of Purple Lightning
+TRIB_FOUDRE_DESC,On ne joue ni ne défausse plus de 4 cartes à la fois.,You cannot play or discard more than 4 cards at once.
+BOTTLENECK_TRIBULATION_GEL,Tribulation du gel éternel,Tribulation of Eternal Frost
+TRIB_GEL_DESC,Les cartes ne rapportent que la moitié de leur Qi.,Cards give only half their Qi.
+BOTTLENECK_TRIBULATION_NEANT,Tribulation du néant,Tribulation of the Void
+TRIB_NEANT_DESC,Les figures ne comptent pas.,Face cards do not score.
+BOTTLENECK_TRIBULATION_KARMA,Tribulation des chaînes du karma,Tribulation of Karmic Chains
+TRIB_KARMA_DESC,Chaque défausse coûte aussi une main.,Each discard also costs a hand.
+BOTTLENECK_TRIBULATION_EPEES,Tribulation des mille épées,Tribulation of a Thousand Swords
+TRIB_EPEES_DESC,Les cartes Métal ne comptent pas.,Metal cards do not score.
+REALM_AME_NAISSANTE,Âme naissante,Nascent Soul
+REALM_TRANSFORMATION_DIVINE,Transformation divine,Spirit Transformation
+REALM_RAFFINEMENT_VIDE,Raffinement du vide,Void Refining
+REALM_INTEGRATION,Intégration,Body Integration
+REALM_GRANDE_ASCENSION,Grande Ascension,Great Ascension

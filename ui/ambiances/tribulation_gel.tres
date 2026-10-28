@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AmbianceTheme" format=3]
+
+[ext_resource type="Script" path="res://ui/ambiances/ambiance_theme.gd" id="1"]
+[ext_resource type="PackedScene" path="res://ui/ambiances/meteo/poussiere.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"tribulation_gel"
+base_color = Color(0.05, 0.09, 0.13, 1)
+deep_color = Color(0.02, 0.04, 0.07, 1)
+ink_color = Color(0.09, 0.16, 0.22, 1)
+speed = 0.04
+scale = 1.6
+warp = 1.2
+strength = 0.8
+vignette = 0.5
+vignette_color = Color(0.08, 0.16, 0.24, 1)
+weather = ExtResource("2")
+music = &"musique_gel"

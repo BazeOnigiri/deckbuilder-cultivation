@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="AmbianceTheme" format=3]
+
+[ext_resource type="Script" path="res://ui/ambiances/ambiance_theme.gd" id="1"]
+[ext_resource type="PackedScene" path="res://ui/ambiances/meteo/escarbilles.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"tribulation_foudre"
+base_color = Color(0.08, 0.05, 0.14, 1)
+deep_color = Color(0.03, 0.015, 0.07, 1)
+ink_color = Color(0.15, 0.08, 0.26, 1)
+speed = 0.2
+scale = 2.2
+warp = 2.6
+strength = 0.95
+vignette = 0.6
+vignette_color = Color(0.16, 0.06, 0.3, 1)
+vignette_breath = 0.35
+breath_speed = 2.4
+weather = ExtResource("2")
+music = &"musique_foudre"
