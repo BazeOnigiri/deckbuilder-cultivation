@@ -87,7 +87,7 @@ func _slot(kind: ItemSlot.Kind, parent: HBoxContainer) -> ItemSlot:
 func _fill(slot: ItemSlot, glyph: String, name_key: String, description_key: String) -> void:
 	slot.glyph = glyph
 	slot.mouse_filter = MOUSE_FILTER_STOP
-	slot.tooltip_text = tr(name_key) + "\n" + tr(description_key)
+	slot.set_info(tr(name_key), tr(description_key))
 	slot.queue_redraw()
 
 

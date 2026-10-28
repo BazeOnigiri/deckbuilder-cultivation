@@ -213,3 +213,16 @@ func _dissolve(delta: float) -> void:
 
 func _lift() -> float:
 	return get_theme_constant(&"lift", &"CardButton")
+
+
+## Clavier : selectionne ou deselectionne la carte a cette place (0 = la plus a gauche). Faux si pas de carte.
+func toggle_at(index: int) -> bool:
+	if index < 0 or index >= _order.size():
+		return false
+	_order[index].button_pressed = not _order[index].button_pressed
+	return true
+
+
+func deselect_all() -> void:
+	for view: CardView in _order:
+		view.button_pressed = false

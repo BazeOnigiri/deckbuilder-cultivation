@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/chaudron_alchimique.svg" id="icon"]
+
+[sub_resource type="Resource" id="score_1"]
+script = ExtResource("3")
+amount = 5.0
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+score_effect = SubResource("score_1")
+
+[sub_resource type="Resource" id="score_2"]
+script = ExtResource("3")
+phase = 1
+amount = 0.5
+
+[sub_resource type="Resource" id="effect_2"]
+script = ExtResource("2")
+score_effect = SubResource("score_2")
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_chaudron_alchimique"
+name_key = "ARTIFACT_CHAUDRON_ALCHIMIQUE"
+description_key = "ARTIFACT_CHAUDRON_ALCHIMIQUE_DESC"
+glyph = "鼎"
+icon = ExtResource("icon")
+price = 6
+effects = Array[ExtResource("2")]([SubResource("effect_1"), SubResource("effect_2")])

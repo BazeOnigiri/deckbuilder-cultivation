@@ -6,15 +6,17 @@
 [sub_resource type="Resource" id="detector"]
 script = ExtResource("2")
 length = 5
+low_rank = 14
 
 [resource]
 script = ExtResource("1")
 id = "main_ascension"
 name_key = "HAND_ASCENSION"
 priority = 60
-base_qi = 35
-base_comprehension = 4
-level_qi = 30
-level_comprehension = 3
+base_qi = 68
+base_comprehension = 5
+level_qi = 20
+level_comprehension = 2
 detector = SubResource("detector")
+example = Array[Vector2i]([Vector2i(0, 3), Vector2i(1, 4), Vector2i(4, 5), Vector2i(2, 6), Vector2i(4, 7)])
 metadata/_custom_type_script = "uid://ddj28r1xbwom5"

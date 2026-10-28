@@ -106,7 +106,7 @@ static func _restore_cards(data: Variant, content: GameContent) -> Array[CardIns
 		var card_data := content.card_by_id(StringName(str(entry.get("card", ""))))
 		if card_data == null:
 			continue
-		var card := CardInstance.new(SaveData.int_of(entry, "uid"), card_data)
+		var card := CardInstance.new(SaveData.int_of(entry, "uid"), card_data, content.starter_deck.ranks)
 		card.element = clampi(SaveData.int_of(entry, "element"), 0, Element.Type.size() - 1) as Element.Type
 		card.rank = maxi(1, SaveData.int_of(entry, "rank", card_data.rank))
 		cards.append(card)

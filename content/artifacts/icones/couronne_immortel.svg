@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Couronne d'immortel : coiffe haute traversee d'une epingle de jade, rubans qui flottent de chaque cote. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 40 L22 18 Q32 10 42 18 L44 40 Z" stroke-width="2.5" fill="#ffffff" fill-opacity="0.3"/>
+    <path d="M22 28 Q32 24 42 28 M21 34 Q32 30 43 34" stroke-width="1.6" stroke-opacity="0.8"/>
+    <path d="M8 24 L56 24" stroke-width="2.6"/>
+    <circle cx="8" cy="24" r="2.4" fill="#ffffff"/>
+    <circle cx="56" cy="24" r="2.4" fill="#ffffff"/>
+    <path d="M32 14 L32 8" stroke-width="2"/>
+    <circle cx="32" cy="6" r="2" fill="#ffffff"/>
+    <path d="M14 40 L50 40 Q48 46 32 46 Q16 46 14 40 Z" stroke-width="2.2" fill="#ffffff" fill-opacity="0.2"/>
+    <path d="M18 44 Q12 52 16 60 M46 44 Q52 52 48 60" stroke-width="2"/>
+  </g>
+</svg>

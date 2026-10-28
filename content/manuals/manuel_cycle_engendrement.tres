@@ -7,4 +7,7 @@
 script = ExtResource("2_7hf5i")
 id = &"manuel_cycle_engendrement"
 hand = ExtResource("1_q5f7n")
-price = 3
+price = 1
+glyph = "生"
+tier = 3
+pattern = 2

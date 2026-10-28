@@ -78,6 +78,8 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"ui_cancel"):
+	if event.is_action_pressed(&"ui_cancel") or event.is_action_pressed(&"show_deck"):
 		get_viewport().set_input_as_handled()
 		close()
+	elif event is InputEventKey:
+		get_viewport().set_input_as_handled()

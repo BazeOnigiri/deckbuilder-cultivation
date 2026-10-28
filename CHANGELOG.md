@@ -6,6 +6,30 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-28
+
+### Ajouté
+
+- Equilibrage par formules (docs/equilibrage.md) : un joueur de reference simule (Monte-Carlo, graine fixe) mesure le score d'un round et le gain moyen de chaque artefact et manuel. Prix = gain / valeur d'une pierre (courbe de cout ; la pierre se deduit de l'economie : les pierres d'un royaume doublent la puissance du joueur, donc ajouter des objets ne change pas la difficulte), recompenses et multiplicateurs des goulots par formule, objectifs = score atteint par 90 % des joueurs au depart, puis croissance exponentielle par royaume (puissance achetee par le joueur x pression). Un nouveau royaume n'a besoin que de son ordre. Parametres dans content/rules/equilibrage.tres, outil tools/equilibrage.gd, rapport docs/equilibrage-rapport.md, et un test qui detecte toute valeur qui ne suit plus les formules.
+- Figures : le paquet passe a 70 cartes (rangs 1 a 14). Les chiffres vont de 1 a 10, Disciple, Maitre et Immortel deviennent les rangs 11 a 13, nouveau Souverain du Dao au rang 14, avec leur sinogramme dans le coin (徒 师 仙 尊). Points dessines pour les rangs 7 a 10. Comme Balatro, une figure rapporte 10 Qi et le Souverain 11 (content/rules/rangs.tres) ; le Souverain compte aussi sous le 1 dans une Ascension, sans boucle.
+- Mains calculees par leur rarete (docs/equilibrage.md, section 5 bis) : l'outil compte exactement les 8 259 888 tirages de 5 cartes du paquet, la surprise -ln(rarete) donne la force de chaque main (Qi x Comprehension) entre 5 (Souffle) et 1800 (Cinq Souverains), partagee entre Qi et Comprehension ; gains de niveau (30 % de la base) et priorites en decoulent. Garde-fou : une main dont les valeurs ne suivent plus la formule fait echouer les tests.
+- Manuels de technique en livres cousus a la chinoise, dessines par le moteur (ManualCover) : reliure a droite, fil qui passe par quatre trous et fait le tour du dos, tranche des pages, etiquette de titre avec un sinogramme propre a chaque main (息 双 偶 和 三 升 满 纯 四 登 生 尊), couleur de couverture selon la rarete de la main et motif (nuages, vagues, treillis, sapeques) : les douze livres sont tous differents. Couleurs et tailles dans le Theme (type ManualCover).
+- Voie de cultivation : chaque main montre un exemple en petites cartes, comme Balatro ; les cartes qui comptent sont en pleine couleur, les autres pales. Exemples en donnees dans chaque main (HandDefinition.example), un test verifie que chacun est reconnu comme sa propre main.
+- Infobulles facon Balatro (InfoBubble) : nom en titre, description sur un encart papier ou les valeurs de Qi sont en jade, celles de Comprehension en or et les elements dans leur couleur, puis un badge (Artefact, Manuel de technique dans la couleur de son livre, Pilule, ou l'element d'une carte). Les cartes montrent leur rang ou leur figure et le Qi qu'elles rapportent. Elles apparaissent plus vite (0,15 s).
+- Jouer au clavier et a la souris (actions de l'InputMap, touches physiques donc meme place en AZERTY et QWERTY) : 1 a 8 choisissent une carte, Entree joue la main ou continue apres la boutique, D defausse, Retour arriere ou clic droit deselectionnent tout, R et E trient, Tab montre le paquet, V ouvre la Voie de cultivation, Echap ferme un rouleau. Un rouleau ouvert garde les touches pour lui. Touches rappelees dans l'infobulle des boutons et dans un onglet Touches de la Voie de cultivation.
+
+### Modifié
+
+- Objectifs recalcules (paquet de 70 cartes, mains par rarete) : 460 / 690 / 920 au premier royaume (avant 200 / 300 / 400), 1200 au deuxieme, 2900 au troisieme. Prix des artefacts et des manuels selon leur gain mesure (manuels de 1 a 10 pierres).
+- Treize nouveaux artefacts (18 au total) avec leur icone SVG et leur sceau : les quatre betes celestes et le qilin (un par element : Dragon azur, Oiseau vermillon, Qilin, Tigre blanc, Tortue noire), Pagode des trois sages, Echelle celeste, Banniere des cinq vents, Bassin de purete, Grain de riz spirituel, Couronne d'immortel, Ermite et Chaudron alchimique. Deux nouvelles conditions en donnees : rang de la carte et nombre de cartes qui comptent. Prix mesures par l'equilibrage (1 a 8 pierres).
+- Couronne d'immortel : bonus pour chaque figure qui compte (rangs 11 a 14) au lieu des rangs 7 a 9. Pilule de raffinement : monte jusqu'au Souverain.
+- Gourde d'elixir : +1 Comprehension au lieu de +4 (la mesure donnait +120 % de score, quatre fois les autres artefacts).
+
+### Corrigé
+
+- Boutique plus large que l'ecran : les noms d'offres passent a la ligne dans une largeur fixe (Theme, ShopCloth/title_width) et le message de niveau suit la largeur des offres.
+- Rouleaux (Voie de cultivation, regles...) : la molette en bas de la liste fermait le rouleau. Seuls les clics gauche et droit hors du rouleau le ferment.
+
 ## [0.4.0] - 2026-10-27
 
 ### Ajouté

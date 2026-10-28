@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cegjm55cl7ug1" path="res://core/artifacts/artifact_definition.gd" id="1"]
 [ext_resource type="Script" uid="uid://cvrq3heighi7n" path="res://core/artifacts/artifact_effect.gd" id="2"]
 [ext_resource type="Script" uid="uid://c46kskwvtda65" path="res://core/scoring/score_effect.gd" id="3"]
-[ext_resource type="Texture2D" path="res://content/artifacts/icones/epee_volante.svg" id="icon"]
+[ext_resource type="Texture2D" uid="uid://cfhf04ett4g4e" path="res://content/artifacts/icones/epee_volante.svg" id="icon"]
 
 [sub_resource type="Resource" id="score"]
 script = ExtResource("3")
@@ -20,5 +20,5 @@ name_key = "ARTIFACT_EPEE_VOLANTE"
 description_key = "ARTIFACT_EPEE_VOLANTE_DESC"
 glyph = "剑"
 icon = ExtResource("icon")
-price = 5
+price = 6
 effects = Array[ExtResource("2")]([SubResource("effect")])

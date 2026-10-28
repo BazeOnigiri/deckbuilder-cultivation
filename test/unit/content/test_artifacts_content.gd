@@ -18,6 +18,11 @@ func test_chaque_fichier_donne_un_artefact() -> void:
 	assert_eq(_artifacts.size(), count)
 
 
+## Scope v1 : 15 a 20 artefacts.
+func test_assez_d_artefacts_pour_la_v1() -> void:
+	assert_between(_artifacts.size(), 15, 20)
+
+
 func test_tous_les_artefacts_valides() -> void:
 	for artifact: ArtifactDefinition in _artifacts:
 		assert_true(artifact.is_valid(), "artefact invalide : %s" % artifact.resource_path)

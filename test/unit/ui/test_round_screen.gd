@@ -432,3 +432,40 @@ func test_voie_de_cultivation_en_rouleau() -> void:
 	screen.get_node("%SideColumn").path_requested.emit()
 	var overlays := screen.get_children().filter(func(node: Node) -> bool: return node is ScrollOverlay)
 	assert_eq(overlays.size(), 1)
+
+
+func _action(name: StringName) -> InputEventAction:
+	var event := InputEventAction.new()
+	event.action = name
+	event.pressed = true
+	return event
+
+
+func test_clavier_choisit_une_carte_puis_deselectionne() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var first: CardView = screen.get_node("%HandRow")._order[0]
+	screen._unhandled_input(_action(&"select_card_1"))
+	assert_true(first.button_pressed)
+	assert_false(screen.get_node("%PlayButton").disabled, "une carte choisie : on peut jouer")
+	screen._unhandled_input(_action(&"deselect_cards"))
+	assert_false(first.button_pressed)
+
+
+func test_clavier_joue_la_main_comme_le_bouton() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen.get_node("%PlayButton").pressed.connect(func() -> void: screen.set_meta(&"joue", true))
+	screen._unhandled_input(_action(&"play_hand"))
+	assert_false(screen.has_meta(&"joue"), "bouton inactif sans selection : la touche ne fait rien")
+	screen._unhandled_input(_action(&"select_card_1"))
+	screen._unhandled_input(_action(&"play_hand"))
+	assert_true(screen.has_meta(&"joue"))
+
+
+func test_rouleau_ouvert_garde_les_touches() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var overlay := ScrollOverlay.open(screen, "UI_CLOSE", Label.new(), false)
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_ENTER
+	key.pressed = true
+	overlay._unhandled_input(key)
+	assert_true(screen.get_viewport().is_input_handled(), "la touche s'arrete au rouleau")

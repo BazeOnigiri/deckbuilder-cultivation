@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Oiseau vermillon : ailes deployees en flammes, aigrette sur la tete, longues plumes de queue. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 18 Q38 20 36 30 Q34 38 32 40 Q30 38 28 30 Q26 20 32 18 Z" stroke-width="2.4" fill="#ffffff" fill-opacity="0.35"/>
+    <path d="M31 18 Q30 12 34 8 M33 18 Q36 13 40 12" stroke-width="1.8"/>
+    <path d="M34 26 Q46 14 58 16 Q50 20 52 24 Q44 24 40 32" stroke-width="2.4" fill="#ffffff" fill-opacity="0.2"/>
+    <path d="M30 26 Q18 14 6 16 Q14 20 12 24 Q20 24 24 32" stroke-width="2.4" fill="#ffffff" fill-opacity="0.2"/>
+    <path d="M32 40 Q30 50 22 58 M32 40 Q34 52 44 58 M32 40 L32 60" stroke-width="2"/>
+    <circle cx="22" cy="58" r="1.6" fill="#ffffff"/>
+    <circle cx="44" cy="58" r="1.6" fill="#ffffff"/>
+  </g>
+</svg>

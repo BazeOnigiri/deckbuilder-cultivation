@@ -75,6 +75,31 @@ func test_ascension_desordre_accepte() -> void:
 	assert_eq(_ranks(detector.detect(cards)), [3, 4, 5, 6, 7])
 
 
+func test_ascension_souverain_en_bas() -> void:
+	var detector := StraightDetector.new()
+	detector.length = 5
+	detector.low_rank = 14
+	var cards := C.hand([[C.BOIS, 2], [C.FEU, 14], [C.EAU, 4], [C.METAL, 3], [C.TERRE, 1]])
+	assert_eq(_ranks(detector.detect(cards)), [14, 1, 2, 3, 4])
+
+
+func test_ascension_souverain_en_haut() -> void:
+	var detector := StraightDetector.new()
+	detector.length = 5
+	detector.low_rank = 14
+	var cards := C.hand([[C.BOIS, 11], [C.FEU, 14], [C.EAU, 13], [C.METAL, 12], [C.TERRE, 10]])
+	assert_eq(_ranks(detector.detect(cards)), [10, 11, 12, 13, 14])
+
+
+## Pas de boucle, comme Balatro : Immortel, Souverain, 1, 2, 3 n'est pas une Ascension.
+func test_ascension_sans_boucle() -> void:
+	var detector := StraightDetector.new()
+	detector.length = 5
+	detector.low_rank = 14
+	var cards := C.hand([[C.BOIS, 13], [C.FEU, 14], [C.EAU, 1], [C.METAL, 2], [C.TERRE, 3]])
+	assert_true(detector.detect(cards).is_empty())
+
+
 func test_ascension_trou_refuse() -> void:
 	var detector := StraightDetector.new()
 	detector.length = 5

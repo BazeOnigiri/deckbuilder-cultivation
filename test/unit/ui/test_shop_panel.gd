@@ -91,3 +91,29 @@ func test_prix_lisible_sur_l_etiquette() -> void:
 	assert_gt(Contrast.ratio(theme.get_color("font_color", "Price"), tag.bg_color), 4.5)
 	var seal: StyleBoxFlat = theme.get_stylebox("normal", "SealButton")
 	assert_gt(Contrast.ratio(theme.get_color("font_color", "SealButton"), seal.bg_color), 4.5)
+
+
+## Bug : un nom d'offre ou un message long elargissait la boutique hors de l'ecran.
+func test_largeur_independante_des_textes() -> void:
+	var panel: ShopPanel = _panel(0)[0]
+	var width := panel.get_combined_minimum_size().x
+	var long_text := "Pagode des trois sages immortels ".repeat(6)
+	panel._level_up.text = long_text
+	for title: Label in panel._offers.find_children("*", "Label", true, false):
+		if title.theme_type_variation == &"SideCaption":
+			title.text = long_text
+	assert_almost_eq(panel.get_combined_minimum_size().x, width, 1.0)
+
+
+func test_manuel_dessine_en_livre() -> void:
+	var parts := _panel(0)
+	var shop: ShopState = parts[1]
+	if shop.manual_offers.is_empty():
+		pass_test("pas de manuel dans ce tirage")
+		return
+	var manual: ManualDefinition = shop.manual_offers[0]
+	var slot := _slots(parts[0])[shop.offers.size()]
+	assert_eq(slot.kind, ItemSlot.Kind.MANUAL)
+	assert_eq(slot.glyph, manual.glyph)
+	assert_eq(slot.cover_tier, manual.tier)
+	assert_eq(slot.cover_pattern, manual.pattern)

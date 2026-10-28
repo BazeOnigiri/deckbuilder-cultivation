@@ -11,32 +11,34 @@
 ## Concept
 
 - Roguelike deckbuilder inspiré de Balatro, thème cultivation (manhua xianxia).
-- Paquet de 45 cartes : 5 éléments (bois, feu, terre, métal, eau) × rangs 1 à 9.
+- Paquet de 70 cartes : 5 éléments (bois, feu, terre, métal, eau) × rangs 1 à 14. Rangs 1 à 10 en chiffres, 11 à 14 en figures (Disciple 徒, Maître 师, Immortel 仙, Souverain 尊). Qi d'une carte : son rang, 10 pour une figure, 11 pour le Souverain (content/rules/rangs.tres). Le Souverain compte aussi sous le 1 dans une Ascension, sans boucle.
 - Cycle d'engendrement : bois > feu > terre > métal > eau > bois.
 - Score = Qi × Compréhension. Qi = Qi de base de la main + rangs des cartes qui comptent.
 - Antes = royaumes. Blinds = goulots d'étranglement. Boss = tribulation céleste avec contrainte.
 - Jokers = artefacts / bêtes spirituelles. Planètes = manuels de technique. Tarots = pilules.
 
-## Mains (valeurs de départ, à équilibrer dans le tableur)
+## Mains (valeurs calculées par la rareté, voir docs/equilibrage.md)
 
-Une main jouée prend la combinaison la plus haute qu'elle remplit.
+Une main jouée prend la combinaison la plus haute qu'elle remplit. Qi, Compréhension, gains de niveau et priorité
+sont écrits par tools/equilibrage.gd depuis la rareté exacte de chaque main : ne pas les modifier à la main
+(valeurs actuelles dans docs/equilibrage-rapport.md).
 
-| Main | Définition | Fréquence* | Qi | Compr. |
+| Main | Définition | Rareté* | Qi | Compr. |
 | --- | --- | --- | --- | --- |
 | Souffle | carte la plus haute | 100 % | 5 | 1 |
-| Paire | 2 cartes même rang | 98 % | 10 | 2 |
-| Double paire | 2 paires | 72 % | 20 | 2 |
-| Harmonie | 5 éléments différents | 40 % | 25 | 2 |
-| Brelan | 3 cartes même rang | 29 % | 30 | 3 |
-| Ascension | 5 rangs consécutifs | 20 % | 35 | 4 |
-| Full | brelan + paire | 20 % | 40 | 4 |
-| Pureté | 5 cartes même élément | 2,2 % | 60 | 6 |
-| Carré | 4 cartes même rang | 1,9 % | 70 | 7 |
-| Ascension pure | 5 rangs consécutifs, même élément | 0,10 % | 100 | 8 |
-| Cycle d'engendrement | 5 rangs consécutifs dont les éléments suivent le cycle | 0,12 % | 120 | 10 |
-| Cinq Souverains | 5 cartes même rang (donc les 5 éléments) | 0,05 % | 150 | 12 |
+| Paire | 2 cartes même rang | 48 % | 8 | 2 |
+| Double paire | 2 paires | 4,7 % | 36 | 3 |
+| Harmonie | 5 éléments différents | 4,4 % | 37 | 3 |
+| Brelan | 3 cartes même rang | 2,4 % | 37 | 4 |
+| Ascension | 5 rangs consécutifs (le Souverain compte aussi sous le 1) | 0,28 % | 68 | 5 |
+| Full | brelan + paire | 0,15 % | 69 | 6 |
+| Pureté | 5 cartes même élément | 0,083 % | 82 | 6 |
+| Carré | 4 cartes même rang | 0,038 % | 86 | 7 |
+| Ascension pure | 5 rangs consécutifs, même élément | 0,00045 % | 145 | 10 |
+| Cycle d'engendrement | 5 rangs consécutifs dont les éléments suivent le cycle | 0,00045 % | 145 | 10 |
+| Cinq Souverains | 5 cartes même rang (donc les 5 éléments) | 0,00012 % | 164 | 11 |
 
-*Probabilité qu'une main de 8 cartes contienne la combinaison, sans défausse ni paquet modifié.
+*Part exacte des tirages de 5 cartes du paquet de 70 qui contiennent la combinaison.
 
 ## Scope v1
 
@@ -136,7 +138,7 @@ Principe : garder les portes ouvertes sans coder pour des besoins qui n'existent
 - Équilibrage centralisé : aucun nombre magique dans le code, tout est dans les Resources ou un fichier de config.
 - Entrées via InputMap uniquement (souris aujourd'hui, manette ou tactile plus tard).
 - Interface en conteneurs Godot et ancres, pour supporter plusieurs résolutions et un futur portage desktop/mobile.
-- Le contenu répétitif (ex : les 45 cartes) est produit par des scripts de res://tools/ (extends SceneTree, lancés en headless). Le jeu ne lit que les .tres générés. tools/, test/ et addons/gut/ sont exclus de l'export.
+- Le contenu répétitif (ex : les 70 cartes) est produit par des scripts de res://tools/ (extends SceneTree, lancés en headless). Le jeu ne lit que les .tres générés. tools/, test/ et addons/gut/ sont exclus de l'export.
 
 ## Assets (je ne sais pas en créer, aide-moi)
 

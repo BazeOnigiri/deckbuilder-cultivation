@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Qilin : tete de profil a corne unique, criniere en volutes de nuage, sur un socle de terre. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 24 Q30 18 40 22 Q48 26 52 34 Q48 38 42 36 Q38 44 30 46 Q24 40 22 32 Z" stroke-width="2.5" fill="#ffffff" fill-opacity="0.3"/>
+    <path d="M32 20 Q34 10 42 6" stroke-width="2.6"/>
+    <circle cx="40" cy="29" r="1.8" fill="#ffffff"/>
+    <path d="M50 35 Q54 38 52 42" stroke-width="1.6"/>
+    <path d="M22 26 Q12 24 12 32 Q18 30 18 36 Q10 38 12 46 Q18 42 22 46" stroke-width="2"/>
+    <path d="M26 46 Q24 52 30 54" stroke-width="1.8" stroke-opacity="0.8"/>
+    <path d="M8 58 L56 58 M14 54 L50 54" stroke-width="2.2"/>
+  </g>
+</svg>

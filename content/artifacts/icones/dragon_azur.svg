@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Dragon azur : tete de profil a gauche (oeil, gueule, cornes, moustache), corps epais en S, cretes, queue en flamme. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 22 Q34 12 44 20 Q54 30 40 36 Q28 42 34 50 Q40 56 54 52" stroke-width="7" stroke-opacity="0.3"/>
+    <path d="M22 22 Q34 12 44 20 Q54 30 40 36 Q28 42 34 50 Q40 56 54 52" stroke-width="2.4"/>
+    <path d="M24 18 Q16 12 6 16 L8 20 L4 24 Q14 28 24 26 Z" stroke-width="2.4" fill="#ffffff" fill-opacity="0.35"/>
+    <circle cx="15" cy="18" r="1.6" fill="#ffffff"/>
+    <path d="M20 15 Q20 8 26 5 M17 14 Q14 8 16 4" stroke-width="2"/>
+    <path d="M6 22 Q2 28 6 34" stroke-width="1.6"/>
+    <path d="M33 15 L33 9 L38 15 M45 21 L51 18 L49 25 M47 32 L53 34 L47 37" stroke-width="2" fill="#ffffff" fill-opacity="0.3"/>
+    <path d="M54 52 Q60 46 58 40 M54 52 Q62 56 62 49" stroke-width="2.2"/>
+  </g>
+</svg>

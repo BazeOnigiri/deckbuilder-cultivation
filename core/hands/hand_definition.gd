@@ -13,6 +13,17 @@ extends Resource
 @export var level_qi: int = 0
 @export var level_comprehension: int = 0
 @export var detector: HandDetector
+## Exemple montre dans la Voie de cultivation : une carte par entree, x = element (Element.Type), y = rang.
+@export var example: Array[Vector2i] = []
+
+
+## Cartes de l'exemple, pretes a passer aux detecteurs.
+func example_cards() -> Array[CardInstance]:
+	var cards: Array[CardInstance] = []
+	for i: int in example.size():
+		var data := CardData.create(StringName("%s_exemple_%d" % [id, i]), example[i].x as Element.Type, example[i].y)
+		cards.append(CardInstance.new(i, data))
+	return cards
 
 
 func is_valid() -> bool:

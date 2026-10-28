@@ -6,8 +6,6 @@ extends VBoxContainer
 
 signal changed
 
-## Glyphe des manuels de technique : 法, la methode.
-const MANUAL_GLYPH := "法"
 ## Enseigne du marche, decorative : identique dans toutes les langues.
 const SIGN_GLYPHS := "坊市"
 const LANTERN := preload("res://ui/shop/lanterne.svg")
@@ -54,6 +52,8 @@ func _ready() -> void:
 	row.add_child(_offers)
 	layout.add_child(row)
 	_level_up.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# Retour a la ligne : le message prend la largeur des offres au lieu d'elargir la boutique.
+	_level_up.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	layout.add_child(_level_up)
 	_reroll.theme_type_variation = &"SealButton"
 	_reroll.icon = get_theme_icon(&"icon", &"StoneIcon")
@@ -100,10 +100,11 @@ func _refresh() -> void:
 		_add_offer(ItemSlot.Kind.ARTIFACT, artifact.glyph, artifact.name_key, tr(artifact.description_key),
 			artifact.price, _shop.can_buy(i), _on_buy_pressed.bind(i), artifact.icon)
 	for i: int in _shop.manual_offers.size():
-		var hand: HandDefinition = _shop.manual_offers[i].hand
-		_add_offer(ItemSlot.Kind.ARTIFACT, MANUAL_GLYPH, hand.name_key,
+		var manual: ManualDefinition = _shop.manual_offers[i]
+		var hand: HandDefinition = manual.hand
+		_add_offer(ItemSlot.Kind.MANUAL, manual.glyph, hand.name_key,
 			tr("UI_MANUAL_DESC") % [tr(hand.name_key), hand.level_qi, hand.level_comprehension],
-			_shop.manual_offers[i].price, _shop.can_buy_manual(i), _on_buy_manual_pressed.bind(i))
+			manual.price, _shop.can_buy_manual(i), _on_buy_manual_pressed.bind(i), null, manual)
 	for i: int in _shop.pill_offers.size():
 		var pill: PillDefinition = _shop.pill_offers[i]
 		_add_offer(ItemSlot.Kind.PILL, pill.glyph, pill.name_key, tr(pill.description_key),
@@ -114,7 +115,7 @@ func _refresh() -> void:
 
 ## buy(slot) : achete l'offre ; le slot sert de point de depart a l'envol.
 func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, description: String, price: int,
-		can_buy: bool, buy: Callable, icon: Texture2D = null) -> void:
+		can_buy: bool, buy: Callable, icon: Texture2D = null, manual: ManualDefinition = null) -> void:
 	var cloth := PanelContainer.new()
 	cloth.theme_type_variation = &"ShopCloth"
 	var offer := VBoxContainer.new()
@@ -123,13 +124,19 @@ func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, descriptio
 	slot.kind = kind
 	slot.glyph = glyph
 	slot.picture = icon
-	slot.tooltip_text = tr(name_key) + "\n" + description
+	if manual != null:
+		slot.cover_tier = manual.tier
+		slot.cover_pattern = manual.pattern
+	slot.set_info(tr(name_key), description)
 	slot.disabled = not can_buy
 	slot.size_flags_horizontal = SIZE_SHRINK_CENTER
 	slot.pressed.connect(func() -> void: buy.call(slot))
 	offer.add_child(slot)
 	var title := SideColumn.make_label(&"SideCaption", name_key)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# Largeur fixe et retour a la ligne : un nom long ne pousse pas la boutique hors de l'ecran.
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title.custom_minimum_size.x = get_theme_constant(&"title_width", &"ShopCloth")
 	offer.add_child(title)
 	var tag := PanelContainer.new()
 	tag.theme_type_variation = &"PriceTag"

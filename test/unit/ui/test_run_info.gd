@@ -7,10 +7,12 @@ func _run() -> Array:
 	return [content.new_run(RandomNumberGenerator.new()), content]
 
 
-func test_trois_signets() -> void:
+func test_quatre_signets_dont_les_touches() -> void:
 	var data := _run()
 	var tabs: TabContainer = add_child_autofree(RunInfo.build(data[0], data[1].hands))
-	assert_eq(tabs.get_tab_count(), 3)
+	assert_eq(tabs.get_tab_count(), 4)
+	var keys: GridContainer = tabs.get_child(3).get_child(0)
+	assert_eq(keys.get_child_count(), Keys.LISTED.size() * 2, "une touche et son texte par action")
 
 
 func test_une_tablette_par_main_avec_son_niveau() -> void:
@@ -34,3 +36,21 @@ func test_parcours_du_royaume_en_cours() -> void:
 	assert_eq(first.position_state, 0, "le premier goulot, en bas du chemin, est en cours")
 	assert_false(first.line_down)
 	assert_true(lines[0].get_child(0).line_down, "la tribulation, en haut, est reliee au reste")
+
+
+## Comme Balatro : chaque tablette montre un exemple, les cartes qui ne comptent pas sont pales.
+func test_exemple_de_main_en_petites_cartes() -> void:
+	var data := _run()
+	var tabs: TabContainer = add_child_autofree(RunInfo.build(data[0], data[1].hands))
+	var grid: GridContainer = tabs.get_child(0).get_child(0)
+	for tablet: Node in grid.get_children():
+		var views := tablet.find_children("*", "CardView", true, false)
+		assert_eq(views.size(), 5)
+	var pair: HandDefinition = load("res://content/hands/main_paire.tres")
+	var row := RunInfo._example(pair)
+	add_child_autofree(row)
+	var pale := 0
+	for view: CardView in row.find_children("*", "CardView", true, false):
+		if view.modulate != Color.WHITE:
+			pale += 1
+	assert_eq(pale, 3, "paire : trois cartes ne comptent pas")

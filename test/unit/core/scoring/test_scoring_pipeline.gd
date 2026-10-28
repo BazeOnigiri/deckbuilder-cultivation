@@ -104,3 +104,17 @@ func test_etapes_gardent_la_source_et_la_carte() -> void:
 	var step: ScoreStep = ScoringPipeline.score_triggered(hand, triggered).steps[-1]
 	assert_eq(step.source, artifact)
 	assert_eq(step.card, hand.scoring_cards[0])
+
+
+func test_figures_et_souverain_selon_les_rangs_du_paquet() -> void:
+	var ranks: RankRules = load("res://content/rules/rangs.tres")
+	var hand := _hand(0, 1, [[C.BOIS, 12], [C.FEU, 14], [C.EAU, 10]])
+	for card: CardInstance in hand.scoring_cards:
+		card.ranks = ranks
+	assert_eq(ScoringPipeline.score(hand, _no_effects()).qi, 10 + 11 + 10)
+
+
+func test_le_qi_suit_le_rang_change_par_une_pilule() -> void:
+	var card := CardInstance.new(0, CardData.create(&"c", Element.Type.BOIS, 9), load("res://content/rules/rangs.tres"))
+	card.rank = 14
+	assert_eq(card.qi(), 11)

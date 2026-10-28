@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="effect"]
 script = ExtResource("2")
 amount = 1
-max_rank = 9
+max_rank = 14
 
 [resource]
 script = ExtResource("1")

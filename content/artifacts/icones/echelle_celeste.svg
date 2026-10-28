@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Echelle celeste : echelle en perspective qui monte et se perd dans un nuage, barreaux de plus en plus serres. -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 60 L28 16 M44 60 L36 16" stroke-width="2.6"/>
+    <path d="M17 54 L43 54 M19 45 L41 45 M22 37 L39 37 M24 30 L38 30 M26 24 L37 24" stroke-width="2.2"/>
+    <path d="M14 16 Q14 8 22 9 Q24 3 32 4 Q40 3 42 9 Q50 8 50 16 Q50 20 44 20 L20 20 Q14 20 14 16 Z" stroke-width="2.2" fill="#ffffff" fill-opacity="0.35"/>
+    <path d="M8 30 L10 26 M56 34 L54 30 M6 44 L9 41" stroke-width="1.6" stroke-opacity="0.6"/>
+  </g>
+</svg>
