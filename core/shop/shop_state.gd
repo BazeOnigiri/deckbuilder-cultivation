@@ -18,28 +18,36 @@ var _catalog: Array[ArtifactDefinition]
 var _manuals: Array[ManualDefinition]
 var _pills: Array[PillDefinition]
 var _packs: Array[PackDefinition]
+var _legacies: Array[LegacyDefinition]
+## Regles de la boutique sans heritages : _rules est recalcule apres l'achat d'un heritage.
+var _base_rules: ShopRules
 ## Paquet de depart : les cartes qu'un sceau de disciples peut ajouter, et leurs rangs.
 var _deck: DeckDefinition
 var _rules: ShopRules
 var _rng: RandomNumberGenerator
 
 
-func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[ManualDefinition], pills: Array[PillDefinition], packs: Array[PackDefinition], deck: DeckDefinition, rules: ShopRules, rng: RandomNumberGenerator, saved: Dictionary = {}) -> void:
+func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[ManualDefinition], pills: Array[PillDefinition], packs: Array[PackDefinition], legacies: Array[LegacyDefinition], deck: DeckDefinition, rules: ShopRules, rng: RandomNumberGenerator, saved: Dictionary = {}) -> void:
 	_run = run
 	_catalog = catalog
 	_manuals = manuals
 	_pills = pills
 	_packs = packs
+	_legacies = legacies
 	_deck = deck
-	_rules = rules
+	_base_rules = rules
+	_rules = run.shop_rules(rules)
 	_rng = rng
-	reroll_cost = rules.reroll_base_cost
+	reroll_cost = _rules.reroll_base_cost
 	# Boutique sauvegardee : on reprend ses offres sans tirer, la RNG ne bouge pas.
 	if saved.is_empty():
 		_roll_offers()
 		var pack_pool: Array[PackDefinition] = _packs.duplicate()
 		RngUtils.shuffle(pack_pool, _rng)
 		pack_offers.assign(pack_pool.slice(0, _rules.pack_count))
+		# Nouveau royaume : un nouvel heritage, qui reste propose jusqu'a son achat ou la fin du royaume.
+		if not _legacies.is_empty() and _run.legacy_offer_realm != _run.progress.realm_number():
+			_roll_legacy()
 	else:
 		_restore(saved)
 
@@ -88,6 +96,39 @@ func buy_pill(index: int) -> bool:
 	_run.pills.append(pill)
 	pill_offers.remove_at(index)
 	return true
+
+## Heritage propose pendant ce royaume, null si aucun.
+func legacy_offer() -> LegacyDefinition:
+	return _run.legacy_offer
+
+
+func can_buy_legacy() -> bool:
+	return _run.legacy_offer != null and _run.stones >= _run.legacy_offer.price
+
+
+## L'heritage agit tout de suite, y compris sur cette boutique (emplacements, relance).
+func buy_legacy() -> bool:
+	if not can_buy_legacy():
+		return false
+	_run.stones -= _run.legacy_offer.price
+	_run.legacies.append(_run.legacy_offer)
+	_run.legacy_offer = null
+	_rules = _run.shop_rules(_base_rules)
+	return true
+
+
+## Un heritage pas encore possede dont le prerequis l'est, au hasard. Aucun : rien n'est propose.
+func _roll_legacy() -> void:
+	var owned: Dictionary = {}
+	for legacy: LegacyDefinition in _run.legacies:
+		owned[legacy.id] = true
+	var pool: Array[LegacyDefinition] = []
+	for legacy: LegacyDefinition in _legacies:
+		if not owned.has(legacy.id) and (legacy.requires.is_empty() or owned.has(legacy.requires)):
+			pool.append(legacy)
+	_run.legacy_offer = null if pool.is_empty() else pool[_rng.randi_range(0, pool.size() - 1)]
+	_run.legacy_offer_realm = _run.progress.realm_number()
+
 
 ## Un seul sceau ouvert a la fois.
 func can_buy_pack(index: int) -> bool:

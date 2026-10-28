@@ -194,3 +194,21 @@ PACK_DISCIPLES_DESC,"Ajouter 1 carte parmi 3 au paquet","Add 1 of 3 cards to the
 UI_KIND_PACK,Sceau-trésor,Treasure Seal
 UI_PACK_SKIP,Passer,Skip
 UI_PACK_PICKS,"Encore %d à choisir","%d left to choose"
+LEGACY_MERIDIAN_NAME,Méridien ouvert,Opened Meridian
+LEGACY_MERIDIAN_DESC,+1 main par round,+1 hand per round
+LEGACY_GREAT_MERIDIAN_NAME,Grand méridien,Great Meridian
+LEGACY_GREAT_MERIDIAN_DESC,Encore +1 main par round,Another +1 hand per round
+LEGACY_BREATH_NAME,Souffle retenu,Held Breath
+LEGACY_BREATH_DESC,+1 défausse par round,+1 discard per round
+LEGACY_DEEP_BREATH_NAME,Souffle profond,Deep Breath
+LEGACY_DEEP_BREATH_DESC,Encore +1 défausse par round,Another +1 discard per round
+LEGACY_POUCH_NAME,Bourse qiankun,Qiankun Pouch
+LEGACY_POUCH_DESC,+1 emplacement d'artefact,+1 artifact slot
+LEGACY_WORLDS_POUCH_NAME,Bourse des mille mondes,Pouch of a Thousand Worlds
+LEGACY_WORLDS_POUCH_DESC,Encore +1 emplacement d'artefact,Another +1 artifact slot
+LEGACY_STALL_NAME,Étal du marché,Market Stall
+LEGACY_STALL_DESC,+1 offre en boutique,+1 shop offer
+LEGACY_CELESTIAL_MARKET_NAME,Marché céleste,Celestial Market
+LEGACY_CELESTIAL_MARKET_DESC,La relance coûte 2 pierres de moins,Rerolls cost 2 fewer stones
+UI_KIND_LEGACY,Héritage,Legacy
+UI_INFO_LEGACIES,Héritages,Legacies

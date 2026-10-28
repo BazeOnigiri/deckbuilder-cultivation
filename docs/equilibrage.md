@@ -168,6 +168,10 @@ Après tout changement de paramètre, de main, de paquet ou d'objet : relancer l
 
 ## 8. Limites connues (dites, pas cachées)
 
+- Les prix des sceaux-trésor (content/packs/) et des héritages (content/legacies/) sont des données posées à la main :
+  le joueur de référence n'ouvre pas de sceau et n'achète pas d'héritage. Un héritage qui ajoute une main ou une
+  défausse rend la suite plus facile que ce que les objectifs supposent ; à régler après des parties (section 6).
+
 - Chaque objet est mesuré **seul** : les combos entre artefacts ne sont pas mesurés.
 - Le joueur de référence ne défausse pas et n'achète rien pendant la mesure. La croissance du joueur entre les royaumes
   vient de la formule de G, pas d'une run simulée.

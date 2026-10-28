@@ -133,7 +133,7 @@ func _refresh() -> void:
 	if _round != null:
 		_deck_pile.show_count(_round.draw_count(), _round.deck_size())
 	_on_selection_changed()
-	_items.show_artifacts(_run.artifacts, content.shop_rules.max_artifacts, _run.artifacts.map(_run.sell_price))
+	_items.show_artifacts(_run.artifacts, _run.shop_rules(content.shop_rules).max_artifacts, _run.artifacts.map(_run.sell_price))
 	_save_run()
 
 
@@ -179,7 +179,7 @@ func _selected() -> Array[CardInstance]:
 func _on_selection_changed() -> void:
 	var count: int = _selected().size()
 	var can_act: bool = (not _scoring and _round != null and _round.status == RoundState.Status.PLAYING
-		and count > 0 and count <= _rules.max_selected_cards)
+		and count > 0 and count <= _run.round_rules().max_selected_cards)
 	_play_button.disabled = not can_act
 	_discard_button.disabled = not can_act or _round.discards_left == 0
 	# Pendant la sequence, la main du round est deja repiochee : la retrier montrerait les nouvelles cartes trop tot.
@@ -199,7 +199,7 @@ func _refresh_pills() -> void:
 	var usable: Array[bool] = []
 	for i: int in _run.pills.size():
 		usable.append(not _scoring and _run.can_use_pill(i, selected))
-	_items.show_pills(_run.pills, content.shop_rules.max_pills, usable)
+	_items.show_pills(_run.pills, _run.shop_rules(content.shop_rules).max_pills, usable)
 
 
 ## Vente d'un artefact, en round comme en boutique (jamais pendant la sequence de score).
@@ -339,7 +339,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _scoring or not event.is_pressed() or event.is_echo():
 		return
 	var handled := true
-	var card := Keys.card_index(event, _rules.hand_size)
+	var card := Keys.card_index(event, _run.round_rules().hand_size)
 	if card >= 0:
 		handled = _round != null and _hand_view.toggle_at(card)
 	elif event.is_action_pressed(&"play_hand"):

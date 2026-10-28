@@ -18,6 +18,7 @@ var artifacts: Array[ArtifactDefinition]
 var manuals: Array[ManualDefinition]
 var pills: Array[PillDefinition]
 var packs: Array[PackDefinition]
+var legacies: Array[LegacyDefinition]
 
 
 static func load_default() -> GameContent:
@@ -32,6 +33,7 @@ static func load_default() -> GameContent:
 	content.manuals = ManualCatalog.load_definitions()
 	content.pills = PillCatalog.load_definitions()
 	content.packs = PackCatalog.load_definitions()
+	content.legacies = LegacyCatalog.load_definitions()
 	return content
 
 
@@ -41,7 +43,7 @@ func new_run(rng: RandomNumberGenerator) -> RunState:
 
 ## saved : offres d'une boutique sauvegardee. Vide : nouvelles offres tirees au hasard.
 func new_shop(run: RunState, rng: RandomNumberGenerator, saved: Dictionary = {}) -> ShopState:
-	return ShopState.new(run, artifacts, manuals, pills, packs, starter_deck, shop_rules, rng, saved)
+	return ShopState.new(run, artifacts, manuals, pills, packs, legacies, starter_deck, shop_rules, rng, saved)
 
 ## Recherches par id pour la sauvegarde. Contenu retire du jeu : null.
 func card_by_id(id: StringName) -> CardData:
@@ -50,6 +52,10 @@ func card_by_id(id: StringName) -> CardData:
 
 func artifact_by_id(id: StringName) -> ArtifactDefinition:
 	return _find(artifacts, id) as ArtifactDefinition
+
+
+func legacy_by_id(id: StringName) -> LegacyDefinition:
+	return _find(legacies, id) as LegacyDefinition
 
 
 func pill_by_id(id: StringName) -> PillDefinition:

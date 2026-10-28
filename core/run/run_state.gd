@@ -18,6 +18,11 @@ var artifacts: Array[ArtifactDefinition] = []
 var hand_levels := HandLevels.new()
 var pills: Array[PillDefinition] = []
 var stats := RunStats.new()
+## Heritages achetes : leurs modificateurs changent les regles de base pour le reste de la run.
+var legacies: Array[LegacyDefinition] = []
+## Heritage propose en boutique pendant ce royaume (null : achete ou aucun), et le royaume ou il a ete tire.
+var legacy_offer: LegacyDefinition
+var legacy_offer_realm: int = 0
 
 var _deck: DeckState
 var _rules: RoundRules
@@ -46,9 +51,33 @@ func next_round() -> bool:
 	return true
 
 ## Une pilule s'utilise pendant un round, sur des cartes de la main, en nombre autorise par la pilule.
+## Regles du round avec les heritages : le round, la boutique et l'economie lisent celles-ci, jamais les heritages.
+func round_rules() -> RoundRules:
+	return _with_legacies(_rules) as RoundRules
+
+
+func economy() -> EconomyRules:
+	return _with_legacies(_economy) as EconomyRules
+
+
+func shop_rules(base: ShopRules) -> ShopRules:
+	return _with_legacies(base) as ShopRules
+
+
+## Copie des regles de base, chaque modificateur de chaque heritage applique dans l'ordre d'achat.
+func _with_legacies(base: Resource) -> Resource:
+	if legacies.is_empty():
+		return base
+	var rules := base.duplicate()
+	for legacy: LegacyDefinition in legacies:
+		for modifier: RuleModifier in legacy.modifiers:
+			modifier.apply_to(rules)
+	return rules
+
+
 ## Prix de vente d'un artefact : la part sell_fraction de son prix, arrondie en dessous.
 func sell_price(artifact: ArtifactDefinition) -> int:
-	return floori(artifact.price * _economy.sell_fraction)
+	return floori(artifact.price * economy().sell_fraction)
 
 
 ## Vend l'artefact a cet index : rend ses pierres et libere l'emplacement, des la main suivante. Faux si
@@ -118,7 +147,7 @@ func _create_round() -> void:
 	var constraint: TribulationConstraint = progress.current_bottleneck().constraint
 	if constraint == null:
 		constraint = TribulationConstraint.new()
-	current_round = RoundState.new(_deck, _rules, _evaluator, progress.current_target(), artifacts, hand_levels, constraint)
+	current_round = RoundState.new(_deck, round_rules(), _evaluator, progress.current_target(), artifacts, hand_levels, constraint)
 	current_round.finished.connect(_on_round_finished)
 	current_round.hand_played.connect(_on_hand_played)
 	current_round.discarded.connect(_on_discarded)
@@ -130,7 +159,7 @@ func _on_round_finished(won: bool) -> void:
 		finished.emit(false)
 		return
 	# Recompense calculee avant advance() : elle depend du goulot qui vient d'etre franchi.
-	var reward := RoundReward.compute(_economy, progress.current_bottleneck().reward, current_round.hands_left, stones)
+	var reward := RoundReward.compute(economy(), progress.current_bottleneck().reward, current_round.hands_left, stones)
 	stones += reward.total()
 	stats.stones_earned += reward.total()
 	stats.bottlenecks_cleared += 1
