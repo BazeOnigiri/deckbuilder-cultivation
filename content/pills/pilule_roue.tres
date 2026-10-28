@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="PillDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/pills/pill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/pills/cycle_element_pill_effect.gd" id="2"]
+[ext_resource type="Resource" path="res://content/cycles/cycle_engendrement.tres" id="3"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+cycle = ExtResource("3")
+
+[resource]
+script = ExtResource("1")
+id = &"pilule_roue"
+name_key = "PILL_ROUE"
+description_key = "PILL_ROUE_DESC"
+glyph = "轮"
+price = 3
+min_cards = 1
+max_cards = 3
+effect = SubResource("effect")

@@ -50,3 +50,47 @@ func test_detruire_refuse_une_carte_hors_main() -> void:
 	var outsider: Array[CardInstance] = [CardInstance.new(99, CardData.create(&"x", Element.Type.FEU, 1))]
 	assert_false(deck.destroy(outsider))
 	assert_eq(deck.total_count(), 5)
+
+func test_retirer_du_rang_s_arrete_a_1() -> void:
+	var cards := C.hand([[C.BOIS, 1], [C.EAU, 5]])
+	var effect := AddRankPillEffect.new()
+	effect.amount = -1
+	effect.apply(cards, null)
+	assert_eq(cards[0].rank, 1)
+	assert_eq(cards[1].rank, 4)
+
+
+func test_roue_suit_le_cycle_d_engendrement() -> void:
+	var cards := C.hand([[C.BOIS, 3], [C.EAU, 5]])
+	var effect := CycleElementPillEffect.new()
+	effect.cycle = load("res://content/cycles/cycle_engendrement.tres")
+	effect.apply(cards, null)
+	assert_eq(cards[0].element, Element.Type.FEU)
+	assert_eq(cards[1].element, Element.Type.BOIS)
+
+
+func test_fusion_garde_la_plus_haute_et_detruit_l_autre() -> void:
+	var deck := _deck_with_hand()
+	var ranks := RankRules.new()
+	ranks.max_rank = 7
+	for card: CardInstance in deck.hand:
+		card.ranks = ranks
+	var low: CardInstance = deck.hand.filter(func(card: CardInstance) -> bool: return card.rank == 2)[0]
+	var high: CardInstance = deck.hand.filter(func(card: CardInstance) -> bool: return card.rank == 4)[0]
+	var target: Array[CardInstance] = [low, high]
+	FusePillEffect.new().apply(target, deck)
+	assert_eq(high.rank, 6)
+	assert_false(deck.hand.has(low))
+	assert_eq(deck.total_count(), 4)
+
+
+func test_fusion_plafonnee_au_rang_max() -> void:
+	var deck := _deck_with_hand()
+	var ranks := RankRules.new()
+	ranks.max_rank = 7
+	for card: CardInstance in deck.hand:
+		card.ranks = ranks
+	var target: Array[CardInstance] = []
+	target.assign(deck.hand.filter(func(card: CardInstance) -> bool: return card.rank >= 4))
+	FusePillEffect.new().apply(target, deck)
+	assert_eq(target.filter(func(card: CardInstance) -> bool: return card.rank == 7).size(), 1)

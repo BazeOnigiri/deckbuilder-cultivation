@@ -55,7 +55,7 @@ PILL_FEU_CELESTE_DESC,Change jusqu'à 3 cartes sélectionnées en Feu.,Turns up 
 PILL_EAU_PROFONDE,Pilule de l'eau profonde,Deep Water Pill
 PILL_EAU_PROFONDE_DESC,Change jusqu'à 3 cartes sélectionnées en Eau.,Turns up to 3 selected cards into Water.
 PILL_RAFFINEMENT,Pilule de raffinement,Refining Pill
-PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (9 maximum).,+1 rank to up to 2 selected cards (9 maximum).
+PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (jusqu'au Souverain).,+1 rank to up to 2 selected cards (up to the Sovereign).
 PILL_PURIFICATION,Pilule de purification,Purification Pill
 PILL_PURIFICATION_DESC,Détruit jusqu'à 2 cartes sélectionnées pour le reste de la run.,Destroys up to 2 selected cards for the rest of the run.
 BOTTLENECK_TRIBULATION_FLAMMES,Tribulation des flammes célestes,Tribulation of Celestial Flames
@@ -264,3 +264,21 @@ ARTIFACT_PIERRE_EVEIL_DESC,"x1 Compréhension, +0,05 pour chaque carte défauss�
 ARTIFACT_ARBRE_MILLENAIRE,Arbre millénaire,Millennial Tree
 ARTIFACT_ARBRE_MILLENAIRE_DESC,"+0,25 Compréhension à chaque main pour chaque goulot franchi depuis son achat.",+0.25 Comprehension on every hand for each bottleneck cleared since you got it.
 UI_ARTIFACT_STACKS,A grandi %d fois.,Has grown %d times.
+PILL_REGRESSION,Pilule de régression,Regression Pill
+PILL_REGRESSION_DESC,-1 rang à jusqu'à 2 cartes sélectionnées (1 minimum).,-1 rank to up to 2 selected cards (1 minimum).
+PILL_FORET,Pilule de la forêt,Forest Pill
+PILL_FORET_DESC,Change jusqu'à 3 cartes sélectionnées en Bois.,Turns up to 3 selected cards into Wood.
+PILL_MONTAGNE,Pilule de la montagne,Mountain Pill
+PILL_MONTAGNE_DESC,Change jusqu'à 3 cartes sélectionnées en Terre.,Turns up to 3 selected cards into Earth.
+PILL_LAME,Pilule de la lame,Blade Pill
+PILL_LAME_DESC,Change jusqu'à 3 cartes sélectionnées en Métal.,Turns up to 3 selected cards into Metal.
+PILL_ROUE,Pilule de la roue,Wheel Pill
+PILL_ROUE_DESC,Jusqu'à 3 cartes sélectionnées prennent l'élément que le leur engendre.,Up to 3 selected cards take the element theirs generates.
+PILL_DEDOUBLEMENT,Pilule de dédoublement,Splitting Pill
+PILL_DEDOUBLEMENT_DESC,Ajoute au paquet une copie de la carte sélectionnée.,Adds a copy of the selected card to the deck.
+PILL_FUSION,Pilule de fusion,Fusion Pill
+PILL_FUSION_DESC,"La plus haute des 2 cartes sélectionnées prend le rang de l'autre en plus, l'autre est détruite.","The higher of the 2 selected cards adds the other's rank, the other is destroyed."
+PILL_DISSOLUTION,Pilule de dissolution,Dissolving Pill
+PILL_DISSOLUTION_DESC,"Détruit jusqu'à 2 cartes sélectionnées, +2 pierres par carte.","Destroys up to 2 selected cards, +2 stones per card."
+PILL_ILLUMINATION,Pilule d'illumination,Illumination Pill
+PILL_ILLUMINATION_DESC,La main que forment les cartes sélectionnées monte d'un niveau.,The hand formed by the selected cards gains a level.
