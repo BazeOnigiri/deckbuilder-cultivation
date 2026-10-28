@@ -3,6 +3,7 @@ extends VBoxContainer
 ## Boutique affichee entre deux goulots, dans un pavillon laque : enseigne 坊市 entre deux lanternes,
 ## offres posees sur des etoffes avec leur etiquette de prix. Construite en code : pas de .tscn.
 ## A l'ouverture les offres se retournent ; un achat file vers la rangee haute ; un manuel montre le gain de niveau.
+## Un sceau-tresor achete s'ouvre dans un rouleau : on clique un choix pour le garder ; fermer le rouleau le passe.
 
 signal changed
 
@@ -22,6 +23,8 @@ var _title := Label.new()
 var _offers := HBoxContainer.new()
 var _level_up := SideColumn.make_label(&"SideCaption")
 var _reroll := Button.new()
+## Rouleau du sceau ouvert, null si aucun.
+var _pack_scroll: ScrollOverlay
 
 
 func _ready() -> void:
@@ -89,6 +92,9 @@ func open(shop: ShopState) -> void:
 	show()
 	_refresh()
 	_reveal()
+	# Sauvegarde reprise avec un sceau ouvert : le rouleau revient avec les memes choix.
+	if _shop.opening != null:
+		_show_opening()
 
 
 ## Redessine les offres si la boutique est ouverte (pierres changees hors de la boutique, par une vente).
@@ -115,6 +121,10 @@ func _refresh() -> void:
 		var pill: PillDefinition = _shop.pill_offers[i]
 		_add_offer(ItemSlot.Kind.PILL, pill.glyph, pill.name_key, tr(pill.description_key),
 			pill.price, _shop.can_buy_pill(i), _on_buy_pill_pressed.bind(i))
+	for i: int in _shop.pack_offers.size():
+		var pack: PackDefinition = _shop.pack_offers[i]
+		_add_offer(ItemSlot.Kind.PACK, pack.glyph, pack.name_key, tr(pack.description_key),
+			pack.price, _shop.can_buy_pack(i), _on_buy_pack_pressed.bind(i))
 	_reroll.text = tr("UI_SHOP_REROLL") % _shop.reroll_cost
 	_reroll.disabled = not _shop.can_reroll()
 
@@ -238,5 +248,105 @@ func _on_buy_pill_pressed(slot: ItemSlot, index: int) -> void:
 		_fly(slot)
 	if _shop.buy_pill(index):
 		Sons.play(&"achat")
+		changed.emit()
+		_refresh()
+
+
+func _on_buy_pack_pressed(_slot: ItemSlot, index: int) -> void:
+	if _shop.buy_pack(index):
+		Sons.play(&"sceau")
+		changed.emit()
+		_refresh()
+		_show_opening()
+
+
+## Rouleau du sceau ouvert : ses choix, combien il reste a prendre, et le sceau Passer.
+func _show_opening(animated: bool = true) -> void:
+	var opening := _shop.opening
+	var body := VBoxContainer.new()
+	var picks := SideColumn.make_label(&"ScrollText")
+	picks.text = tr("UI_PACK_PICKS") % opening.picks_left
+	picks.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body.add_child(picks)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	for i: int in opening.choices.size():
+		var choice := _choice(opening.pack.kind, opening.choices[i])
+		choice.disabled = not _shop.can_take(i)
+		choice.pressed.connect(_on_take_pressed.bind(i))
+		row.add_child(choice)
+	body.add_child(row)
+	var skip := Button.new()
+	skip.theme_type_variation = &"SealButton"
+	skip.text = "UI_PACK_SKIP"
+	skip.size_flags_horizontal = SIZE_SHRINK_CENTER
+	body.add_child(skip)
+	# Pose sur la fenetre : la boutique est rangee dans un conteneur qui placerait le voile comme un enfant.
+	_pack_scroll = ScrollOverlay.open(get_viewport(), tr(opening.pack.name_key), body, animated and not settings.reduce_motion)
+	_pack_scroll.hide_close()
+	skip.pressed.connect(_pack_scroll.close)
+	# Fermer le rouleau (Passer, Echap ou clic a cote) laisse le reste du sceau.
+	_pack_scroll.closed.connect(_on_pack_closed)
+
+
+## Un choix de sceau, cliquable : emplacement d'objet, ou carte dans un cadre.
+func _choice(kind: PackDefinition.Kind, item: Resource) -> BaseButton:
+	if kind == PackDefinition.Kind.CARD:
+		var card := CardInstance.new(-1, item as CardData, _shop.card_ranks())
+		var frame := Button.new()
+		frame.flat = true
+		frame.focus_mode = FOCUS_NONE
+		var small := CardView.small(card, feel.pack_card_scale)
+		frame.custom_minimum_size = small.custom_minimum_size
+		frame.add_child(small)
+		return frame
+	var slot := ItemSlot.new()
+	match kind:
+		PackDefinition.Kind.ARTIFACT:
+			var artifact := item as ArtifactDefinition
+			slot.glyph = artifact.glyph
+			slot.picture = artifact.icon
+			slot.rarity = artifact.rarity
+			slot.set_info(tr(artifact.name_key), tr(artifact.description_key))
+		PackDefinition.Kind.MANUAL:
+			var manual := item as ManualDefinition
+			slot.kind = ItemSlot.Kind.MANUAL
+			slot.glyph = manual.glyph
+			slot.cover_tier = manual.tier
+			slot.cover_pattern = manual.pattern
+			slot.set_info(tr(manual.hand.name_key), tr("UI_MANUAL_DESC") % [tr(manual.hand.name_key),
+				manual.hand.level_qi, manual.hand.level_comprehension])
+		PackDefinition.Kind.PILL:
+			var pill := item as PillDefinition
+			slot.kind = ItemSlot.Kind.PILL
+			slot.glyph = pill.glyph
+			slot.set_info(tr(pill.name_key), tr(pill.description_key))
+	slot.size_flags_vertical = SIZE_SHRINK_CENTER
+	return slot
+
+
+func _on_take_pressed(index: int) -> void:
+	var kind := _shop.opening.pack.kind
+	var manual: ManualDefinition = _shop.opening.choices[index] if kind == PackDefinition.Kind.MANUAL else null
+	if not _shop.take(index):
+		return
+	Sons.play(&"manuel" if manual != null else &"achat")
+	changed.emit()
+	if manual != null:
+		_show_level_up(manual.hand)
+	# Encore des choix : le rouleau est redessine sur place, sans se derouler a nouveau.
+	var scroll := _pack_scroll
+	_pack_scroll = null
+	scroll.closed.disconnect(_on_pack_closed)
+	scroll.close()
+	if _shop.opening != null:
+		_show_opening(false)
+	_refresh()
+
+
+func _on_pack_closed() -> void:
+	_pack_scroll = null
+	if _shop.opening != null:
+		_shop.skip()
 		changed.emit()
 		_refresh()

@@ -183,3 +183,14 @@ UI_RARITY_2,Céleste 仙,Celestial 仙
 UI_RARITY_3,Divin 神,Divine 神
 UI_SELL,Vendre (%d),Sell (%d)
 UI_KEYS_SELL,"Vendre l'artefact sous la souris (appuyer deux fois)","Sell the artifact under the mouse (press twice)"
+PACK_LIBRARY_NAME,Bibliothèque,Library
+PACK_LIBRARY_DESC,"Choisir 1 manuel de technique parmi 3, appris tout de suite","Choose 1 of 3 technique manuals, learned at once"
+PACK_ALCHEMIST_NAME,Coffret d'alchimiste,Alchemist's Case
+PACK_ALCHEMIST_DESC,Choisir 1 pilule parmi 3,Choose 1 of 3 pills
+PACK_BEASTS_NAME,Cage aux bêtes,Beast Cage
+PACK_BEASTS_DESC,Choisir 1 artefact parmi 2,Choose 1 of 2 artifacts
+PACK_DISCIPLES_NAME,Rouleau de disciples,Disciple Scroll
+PACK_DISCIPLES_DESC,"Ajouter 1 carte parmi 3 au paquet","Add 1 of 3 cards to the deck"
+UI_KIND_PACK,Sceau-trésor,Treasure Seal
+UI_PACK_SKIP,Passer,Skip
+UI_PACK_PICKS,"Encore %d à choisir","%d left to choose"

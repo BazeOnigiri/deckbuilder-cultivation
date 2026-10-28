@@ -8,6 +8,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Ajouté
 
+- Sceaux-tresor (les paquets de Balatro) : 2 par visite de boutique, en plus des offres, et la relance ne les change pas. Bibliotheque 书 (1 manuel parmi 3, appris tout de suite), Coffret d'alchimiste 丹 (1 pilule parmi 3), Cage aux betes 兽 (1 artefact parmi 2, tire selon sa rarete), Rouleau de disciples 徒 (1 carte parmi 3 ajoutee au paquet). Le sceau s'ouvre dans un rouleau ; le fermer passe le reste. Un sceau ouvert est sauvegarde avec ses choix. Prix en donnees (content/packs/).
 - Boutique aleatoire : au lieu de toujours 2 artefacts, 1 manuel et 1 pilule, chacun des 2 emplacements tire un type d'offre (artefact 70 %, manuel 15 %, pilule 15 %, poids dans content/rules/boutique_base.tres), puis un objet de ce type. Un type sans objet a proposer laisse sa place aux autres.
 - Vente des artefacts, en round comme en boutique : un clic sur un artefact montre le sceau « Vendre (n) », un second clic le vend pour la moitie de son prix arrondie en dessous (sell_fraction dans content/rules/economie_base.tres). Au clavier : S deux fois sur l'artefact sous la souris.
 - Raretes des artefacts : Mortel 凡, Spirituel 灵, Celeste 仙, Divin 神. L'equilibrage les deduit du gain mesure (un artefact fort est rare, parts dans content/rules/equilibrage.tres), la boutique tire une rarete selon ses poids (70 / 22 / 7 / 1 %) puis un artefact. Badge de rarete dans l'infobulle, couleurs dans le Theme.

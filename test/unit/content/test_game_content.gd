@@ -35,3 +35,11 @@ func test_nouvelle_boutique_remplie() -> void:
 	var rng := _rng()
 	var shop := _content.new_shop(_content.new_run(rng), rng)
 	assert_eq(shop.offers.size() + shop.manual_offers.size() + shop.pill_offers.size(), _content.shop_rules.offer_count)
+
+func test_sceaux_valides_et_dessinables() -> void:
+	var font: FontFile = load("res://ui/fonts/MaShanZheng-Sceaux.ttf")
+	assert_eq(_content.packs.size(), PackDefinition.Kind.size(), "un sceau par famille")
+	for pack: PackDefinition in _content.packs:
+		assert_true(pack.is_valid(), String(pack.id))
+		assert_eq(pack.glyph.length(), 1, String(pack.id))
+		assert_true(font.has_char(pack.glyph.unicode_at(0)), "glyphe absent de la police : %s" % pack.id)

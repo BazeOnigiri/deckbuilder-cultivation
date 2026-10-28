@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PackDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/shop/pack_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"sceau_betes"
+name_key = "PACK_BEASTS_NAME"
+description_key = "PACK_BEASTS_DESC"
+glyph = "兽"
+kind = 0
+choices = 2
+picks = 1
+price = 6
