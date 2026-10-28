@@ -91,6 +91,12 @@ func open(shop: ShopState) -> void:
 	_reveal()
 
 
+## Redessine les offres si la boutique est ouverte (pierres changees hors de la boutique, par une vente).
+func refresh() -> void:
+	if visible and _shop != null:
+		_refresh()
+
+
 func _refresh() -> void:
 	for child: Node in _offers.get_children():
 		_offers.remove_child(child)

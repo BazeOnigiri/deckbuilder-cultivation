@@ -97,6 +97,7 @@ func _ready() -> void:
 	_round_end.menu_requested.connect(menu_requested.emit)
 	add_child(_round_end)
 	_items.pill_pressed.connect(_on_pill_pressed)
+	_items.artifact_sell_requested.connect(_on_artifact_sell_requested)
 	%SortRank.toggled.connect(_on_sort_toggled)
 	%SortElement.toggled.connect(_on_sort_toggled)
 	_side.settings = settings
@@ -132,7 +133,7 @@ func _refresh() -> void:
 	if _round != null:
 		_deck_pile.show_count(_round.draw_count(), _round.deck_size())
 	_on_selection_changed()
-	_items.show_artifacts(_run.artifacts, content.shop_rules.max_artifacts)
+	_items.show_artifacts(_run.artifacts, content.shop_rules.max_artifacts, _run.artifacts.map(_run.sell_price))
 	_save_run()
 
 
@@ -199,6 +200,15 @@ func _refresh_pills() -> void:
 	for i: int in _run.pills.size():
 		usable.append(not _scoring and _run.can_use_pill(i, selected))
 	_items.show_pills(_run.pills, content.shop_rules.max_pills, usable)
+
+
+## Vente d'un artefact, en round comme en boutique (jamais pendant la sequence de score).
+func _on_artifact_sell_requested(index: int) -> void:
+	if _scoring or not _run.sell_artifact(index):
+		return
+	Sons.play(&"pierres")
+	_shop_panel.refresh()
+	_refresh()
 
 
 func _on_pill_pressed(index: int) -> void:
@@ -346,6 +356,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_show_deck()
 	elif event.is_action_pressed(&"show_path"):
 		_show_run_info()
+	elif event.is_action_pressed(&"sell_artifact"):
+		handled = _items.press_hovered_artifact()
 	else:
 		handled = false
 	if handled:

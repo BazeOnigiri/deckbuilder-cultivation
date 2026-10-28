@@ -181,3 +181,5 @@ UI_RARITY_0,Mortel 凡,Mortal 凡
 UI_RARITY_1,Spirituel 灵,Spiritual 灵
 UI_RARITY_2,Céleste 仙,Celestial 仙
 UI_RARITY_3,Divin 神,Divine 神
+UI_SELL,Vendre (%d),Sell (%d)
+UI_KEYS_SELL,"Vendre l'artefact sous la souris (appuyer deux fois)","Sell the artifact under the mouse (press twice)"

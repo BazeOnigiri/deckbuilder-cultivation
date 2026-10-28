@@ -46,7 +46,21 @@ func next_round() -> bool:
 	return true
 
 ## Une pilule s'utilise pendant un round, sur des cartes de la main, en nombre autorise par la pilule.
-## Une pilule s'utilise pendant un round, sur des cartes de la main, en nombre autorise par la pilule.
+## Prix de vente d'un artefact : la part sell_fraction de son prix, arrondie en dessous.
+func sell_price(artifact: ArtifactDefinition) -> int:
+	return floori(artifact.price * _economy.sell_fraction)
+
+
+## Vend l'artefact a cet index : rend ses pierres et libere l'emplacement, des la main suivante. Faux si
+## l'index n'existe pas.
+func sell_artifact(index: int) -> bool:
+	if index < 0 or index >= artifacts.size():
+		return false
+	stones += sell_price(artifacts[index])
+	artifacts.remove_at(index)
+	return true
+
+
 func can_use_pill(index: int, selected: Array[CardInstance]) -> bool:
 	if status != Status.IN_ROUND or index < 0 or index >= pills.size():
 		return false

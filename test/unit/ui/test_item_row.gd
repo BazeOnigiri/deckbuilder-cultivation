@@ -63,3 +63,28 @@ func test_artefact_affiche_luit_et_renvoie_son_centre() -> void:
 	assert_eq(at, slot.get_global_rect().get_center(), "l'orbe part du centre de l'emplacement")
 	assert_gt(slot.glow_amount, 0.0, "aura posee")
 	assert_eq(row.artifact_hit(_artifact("b")), Vector2.INF, "artefact absent : pas d'emplacement")
+
+
+## Premier appui : sceau « Vendre (n) » ; second appui : demande de vente.
+func test_deux_appuis_pour_vendre() -> void:
+	var row := _row()
+	var artifacts: Array[ArtifactDefinition] = [_artifact("a"), _artifact("b")]
+	row.show_artifacts(artifacts, 3, [2, 3])
+	watch_signals(row)
+	row.press_artifact(1)
+	assert_not_null(row._seal)
+	assert_eq(row._seal.text, tr("UI_SELL") % 3)
+	assert_signal_not_emitted(row, "artifact_sell_requested")
+	row.press_artifact(1)
+	assert_signal_emitted_with_parameters(row, "artifact_sell_requested", [1])
+	assert_null(row._seal)
+
+
+func test_sans_prix_pas_de_vente() -> void:
+	var row := _row()
+	var artifacts: Array[ArtifactDefinition] = [_artifact("a")]
+	row.show_artifacts(artifacts, 3)
+	watch_signals(row)
+	row.press_artifact(0)
+	row.press_artifact(0)
+	assert_signal_not_emitted(row, "artifact_sell_requested")

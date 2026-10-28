@@ -8,6 +8,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Ajouté
 
+- Vente des artefacts, en round comme en boutique : un clic sur un artefact montre le sceau « Vendre (n) », un second clic le vend pour la moitie de son prix arrondie en dessous (sell_fraction dans content/rules/economie_base.tres). Au clavier : S deux fois sur l'artefact sous la souris.
 - Raretes des artefacts : Mortel 凡, Spirituel 灵, Celeste 仙, Divin 神. L'equilibrage les deduit du gain mesure (un artefact fort est rare, parts dans content/rules/equilibrage.tres), la boutique tire une rarete selon ses poids (70 / 22 / 7 / 1 %) puis un artefact. Badge de rarete dans l'infobulle, couleurs dans le Theme.
 
 ## [1.0.0] - 2026-10-28

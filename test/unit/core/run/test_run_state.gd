@@ -236,3 +236,37 @@ func test_stats_de_run_comptent_les_goulots_et_les_pierres() -> void:
 	_play_one(run)
 	assert_eq(run.stats.bottlenecks_cleared, 1)
 	assert_eq(run.stats.stones_earned, 5)
+
+func _artifact_priced(price: int) -> ArtifactDefinition:
+	var artifact := ArtifactDefinition.new()
+	artifact.id = StringName("a%d" % price)
+	artifact.price = price
+	return artifact
+
+
+## Vente : la moitie du prix, arrondie en dessous ; l'emplacement est libere.
+func test_vente_rend_la_moitie_arrondie_en_dessous() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.artifacts.assign([_artifact_priced(5), _artifact_priced(4)])
+	assert_true(run.sell_artifact(0))
+	assert_eq(run.stones, 4 + 2)
+	assert_eq(run.artifacts.size(), 1)
+	assert_eq(run.artifacts[0].price, 4)
+
+
+func test_vente_refusee_hors_des_artefacts() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.artifacts.assign([_artifact_priced(5)])
+	assert_false(run.sell_artifact(1))
+	assert_false(run.sell_artifact(-1))
+	assert_eq(run.stones, 4)
+	assert_eq(run.artifacts.size(), 1)
+
+
+## Un artefact vendu en plein round n'agit plus a la main suivante : le round partage la liste de la run.
+func test_artefact_vendu_quitte_le_round() -> void:
+	var run := _run([_realm(1, 1000, [1.0])])
+	run.start()
+	run.artifacts.append(_artifact_priced(2))
+	run.sell_artifact(0)
+	assert_true(run.current_round._artifacts.is_empty())

@@ -173,7 +173,7 @@ static func solve_hands(rules: BalanceRules, measures: BalanceMeasures, hands: A
 
 
 ## Proprietes que l'outil ecrit (des resultats) ou qui ne changent que l'affichage : hors de l'empreinte.
-const NOT_MEASURED := ["price", "rarity", "priority", "base_qi", "base_comprehension", "level_qi", "level_comprehension",
+const NOT_MEASURED := ["price", "rarity", "sell_fraction", "priority", "base_qi", "base_comprehension", "level_qi", "level_comprehension",
 	"score_multiplier", "reward", "base_score", "name_key", "description_key", "glyph", "icon", "example", "tier",
 	"pattern", "resource_local_to_scene", "resource_name", "resource_path", "resource_scene_unique_id", "script"]
 
