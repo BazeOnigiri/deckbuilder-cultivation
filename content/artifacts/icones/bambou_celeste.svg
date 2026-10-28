@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Tige de bambou a noeuds, deux feuilles qui poussent. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M30 60 L30 6" stroke-width="3.4"/>
+    <path d="M26 48 L34 48 M26 32 L34 32 M26 18 L34 18" stroke-width="2"/>
+    <path d="M30 32 Q42 26 52 30 Q42 34 30 32 Z M30 18 Q20 10 12 14 Q22 20 30 18 Z" stroke-width="1.8" fill="#ffffff" fill-opacity="0.4"/>
+  </g>
+</svg>

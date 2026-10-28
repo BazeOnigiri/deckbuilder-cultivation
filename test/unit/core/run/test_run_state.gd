@@ -270,3 +270,23 @@ func test_artefact_vendu_quitte_le_round() -> void:
 	run.artifacts.append(_artifact_priced(2))
 	run.sell_artifact(0)
 	assert_true(run.current_round._artifacts.is_empty())
+
+
+## Les pierres d'un artefact s'ajoutent a la recompense du goulot ; ses crans quittent la run avec lui.
+func test_pierres_d_artefact_au_goulot_et_crans_vendus() -> void:
+	var run := _run([_realm(1, 1, [1.0, 2.0])])
+	var artifact := _artifact_priced(2)
+	var effect := ArtifactEffect.new()
+	effect.trigger = ArtifactEffect.Trigger.ROUND_WON
+	effect.stones = 3
+	effect.grows = true
+	artifact.effects.append(effect)
+	run.artifacts.append(artifact)
+	watch_signals(run)
+	run.start()
+	_play_one(run)
+	var reward: RoundReward = get_signal_parameters(run, "round_won")[0]
+	assert_eq(reward.artifacts, 3)
+	assert_eq(run.artifact_stacks[artifact.id], 1)
+	run.sell_artifact(0)
+	assert_false(run.artifact_stacks.has(artifact.id))

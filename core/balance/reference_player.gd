@@ -22,7 +22,7 @@ func _init(deck: DeckDefinition, rules: RoundRules, hands: Array[HandDefinition]
 ## Score de chaque round, rounds tires avec les graines first_seed, first_seed + 1...
 ## hand_counts (optionnel) recoit le nombre de fois que chaque main a ete jouee, par id.
 func round_scores(rounds: int, first_seed: int, artifacts: Array[ArtifactDefinition] = [],
-		levels: HandLevels = HandLevels.new(), hand_counts: Dictionary = {}) -> PackedFloat32Array:
+		levels: HandLevels = HandLevels.new(), hand_counts: Dictionary = {}, stacks: Dictionary = {}) -> PackedFloat32Array:
 	var scores := PackedFloat32Array()
 	var rng := RandomNumberGenerator.new()
 	for i: int in rounds:
@@ -33,7 +33,7 @@ func round_scores(rounds: int, first_seed: int, artifacts: Array[ArtifactDefinit
 			deck.fill_hand(_rules.hand_size)
 			if deck.hand.is_empty():
 				break
-			var best := best_play(deck.hand, artifacts, levels)
+			var best := best_play(deck.hand, artifacts, levels, stacks)
 			total += best.total()
 			var hand_id: String = best.hand.definition.id
 			hand_counts[hand_id] = hand_counts.get(hand_id, 0) + 1
@@ -43,8 +43,9 @@ func round_scores(rounds: int, first_seed: int, artifacts: Array[ArtifactDefinit
 
 
 ## Meilleur coup parmi les cartes en main (score le plus haut). Les cartes jouees vont dans last_played.
+## stacks : crans fixes des artefacts qui grandissent (ils ne grandissent pas pendant la mesure).
 func best_play(hand: Array[CardInstance], artifacts: Array[ArtifactDefinition] = [],
-		levels: HandLevels = HandLevels.new()) -> ScoreContext:
+		levels: HandLevels = HandLevels.new(), stacks: Dictionary = {}) -> ScoreContext:
 	var best: ScoreContext = null
 	for combination: PackedInt32Array in _combinations_of(hand.size(), mini(_rules.max_selected_cards, hand.size())):
 		var cards: Array[CardInstance] = []
@@ -52,7 +53,7 @@ func best_play(hand: Array[CardInstance], artifacts: Array[ArtifactDefinition] =
 			cards.append(hand[index])
 		var result := _evaluator.evaluate(cards)
 		var held: Array[CardInstance] = hand.filter(func(card: CardInstance) -> bool: return not cards.has(card))
-		var context := ScoringPipeline.score_triggered(result, ArtifactResolver.triggered_for(artifacts, result, held),
+		var context := ScoringPipeline.score_triggered(result, ArtifactResolver.triggered_for(artifacts, result, held, stacks),
 			levels.level_of(result.definition.id))
 		if best == null or context.total() > best.total():
 			best = context

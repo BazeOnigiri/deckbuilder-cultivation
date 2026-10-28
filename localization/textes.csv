@@ -251,3 +251,16 @@ ARTIFACT_GRUE,Grue céleste,Celestial Crane
 ARTIFACT_GRUE_DESC,"x1,6 Compréhension si 5 cartes comptent.",x1.6 Comprehension if 5 cards score.
 ARTIFACT_NUAGE_POURPRE,Nuage pourpre,Purple Cloud
 ARTIFACT_NUAGE_POURPRE_DESC,x3 Compréhension si la main est un Carré ou Cinq Souverains.,x3 Comprehension if the hand is a Four of a Kind or Five Sovereigns.
+ARTIFACT_ARBRE_SAPEQUES,Arbre à sapèques,Coin Tree
+ARTIFACT_ARBRE_SAPEQUES_DESC,+3 pierres à chaque goulot franchi.,+3 stones for each bottleneck cleared.
+ARTIFACT_CRAPAUD_JADE,Crapaud de jade,Jade Toad
+ARTIFACT_CRAPAUD_JADE_DESC,+1 pierre par main restante quand le goulot est franchi.,+1 stone per hand left when the bottleneck is cleared.
+ARTIFACT_BALAI_BAMBOU,Balai de bambou,Bamboo Broom
+ARTIFACT_BALAI_BAMBOU_DESC,+1 pierre par carte Bois défaussée.,+1 stone for each Wood card discarded.
+ARTIFACT_BAMBOU_CELESTE,Bambou céleste,Celestial Bamboo
+ARTIFACT_BAMBOU_CELESTE_DESC,Gagne +4 Qi à chaque main pour chaque Paire jouée pendant la run.,Gains +4 Qi on every hand for each Pair played during the run.
+ARTIFACT_PIERRE_EVEIL,Pierre d'éveil,Awakening Stone
+ARTIFACT_PIERRE_EVEIL_DESC,"x1 Compréhension, +0,05 pour chaque carte défaussée pendant la run.","x1 Comprehension, +0.05 for each card discarded during the run."
+ARTIFACT_ARBRE_MILLENAIRE,Arbre millénaire,Millennial Tree
+ARTIFACT_ARBRE_MILLENAIRE_DESC,"+0,25 Compréhension à chaque main pour chaque goulot franchi depuis son achat.",+0.25 Comprehension on every hand for each bottleneck cleared since you got it.
+UI_ARTIFACT_STACKS,A grandi %d fois.,Has grown %d times.

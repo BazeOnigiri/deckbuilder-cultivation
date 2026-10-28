@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Arbre aux branches chargees de sapeques (pieces rondes a trou carre). -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M32 58 L32 30 M32 40 L20 28 M32 36 L44 24 M32 30 L32 18" stroke-width="2.6"/>
+    <circle cx="18" cy="24" r="5" stroke-width="2"/><rect x="16.5" y="22.5" width="3" height="3" stroke-width="1.2"/>
+    <circle cx="46" cy="20" r="5" stroke-width="2"/><rect x="44.5" y="18.5" width="3" height="3" stroke-width="1.2"/>
+    <circle cx="32" cy="12" r="5" stroke-width="2"/><rect x="30.5" y="10.5" width="3" height="3" stroke-width="1.2"/>
+    <path d="M20 58 L44 58" stroke-width="2.2"/>
+  </g>
+</svg>

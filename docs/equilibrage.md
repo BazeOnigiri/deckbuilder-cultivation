@@ -67,6 +67,11 @@ seule unité, et le prix suit cette valeur. Un objet deux fois plus utile coûte
   Un manuel de main rare coûte peu, parce que le joueur moyen la joue rarement. Un joueur qui construit son paquet
   autour de cette main en tire plus : c'est une récompense de la stratégie.
 
+Un artefact qui rapporte des **pierres** vaut ce qu'il rapporte pendant `yield_bottlenecks` goulots (3, la durée
+moyenne où on le garde) : chaque pierre compte pour k de gain. Le joueur de référence ne défausse pas : on suppose
+`reference_discarded_cards` cartes défaussées par goulot, dont la part du paquet qui remplit la condition.
+Un artefact qui **grandit** est mesuré avec `reference_growth_stacks` crans (6), sa valeur moyenne sur la durée.
+
 ## 3 bis. Les raretés des artefacts : plus fort, plus rare
 
 Comme dans Balatro, la boutique tire d'abord une **rareté**, puis un artefact de cette rareté. La rareté n'est pas

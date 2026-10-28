@@ -32,7 +32,8 @@ func _ready() -> void:
 
 
 ## sell_prices[i] : pierres rendues par la vente de l'artefact i. Vide : artefacts non vendables.
-func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int, sell_prices: Array = []) -> void:
+## stacks : crans des artefacts qui grandissent (RunState.artifact_stacks), rappeles dans leur infobulle.
+func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int, sell_prices: Array = [], stacks: Dictionary = {}) -> void:
 	_artifact_caption.text = tr("UI_ITEMS_ARTIFACTS") % [artifacts.size(), max_count]
 	_clear(_artifact_slots)
 	_slot_of.clear()
@@ -45,6 +46,8 @@ func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int, sell_p
 			slot.picture = artifacts[i].icon
 			slot.rarity = artifacts[i].rarity
 			_fill(slot, artifacts[i].glyph, artifacts[i].name_key, artifacts[i].description_key)
+			if artifacts[i].growth_step != 0.0:
+				slot.description += "\n" + tr("UI_ARTIFACT_STACKS") % stacks.get(artifacts[i].id, 0)
 			_slot_of[artifacts[i]] = slot
 			if i < sell_prices.size():
 				slot.pressed.connect(press_artifact.bind(i))

@@ -13,6 +13,8 @@ extends Resource
 @export var hand_frequencies: Dictionary[String, float] = {}
 ## Empreinte du contenu mesure (BalanceModel.content_signature) : un contenu different rend ces mesures perimees.
 @export var content_signature: String = ""
+## Pierres que rapporte chaque artefact a pierres sur yield_bottlenecks goulots, par id (BalanceModel.stone_yield).
+@export var stone_yields: Dictionary = {}
 ## Rarete exacte de chaque main, par id : part des tirages de hand_draw_size cartes qui la contiennent.
 @export var hand_rarities: Dictionary[String, float] = {}
 

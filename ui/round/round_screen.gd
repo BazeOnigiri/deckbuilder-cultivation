@@ -133,7 +133,8 @@ func _refresh() -> void:
 	if _round != null:
 		_deck_pile.show_count(_round.draw_count(), _round.deck_size())
 	_on_selection_changed()
-	_items.show_artifacts(_run.artifacts, _run.shop_rules(content.shop_rules).max_artifacts, _run.artifacts.map(_run.sell_price))
+	_items.show_artifacts(_run.artifacts, _run.shop_rules(content.shop_rules).max_artifacts, _run.artifacts.map(_run.sell_price),
+		_run.artifact_stacks)
 	_save_run()
 
 

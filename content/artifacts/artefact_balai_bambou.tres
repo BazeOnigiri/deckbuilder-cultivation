@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Script" path="res://core/artifacts/card_element_condition.gd" id="4"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/balai_bambou.svg" id="icon"]
+
+[sub_resource type="Resource" id="condition_1"]
+script = ExtResource("4")
+element = 0
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+trigger = 4
+condition = SubResource("condition_1")
+stones = 1
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_balai_bambou"
+name_key = "ARTIFACT_BALAI_BAMBOU"
+description_key = "ARTIFACT_BALAI_BAMBOU_DESC"
+glyph = "帚"
+icon = ExtResource("icon")
+price = 2
+effects = Array[ExtResource("2")]([SubResource("effect_1")])
+rarity = 0

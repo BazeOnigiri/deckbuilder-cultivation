@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Galet poli, une veine lumineuse et un halo. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M12 44 Q8 30 22 24 Q34 18 46 24 Q58 32 52 44 Q40 54 26 52 Q14 50 12 44 Z" stroke-width="2.6" fill="#ffffff" fill-opacity="0.3"/>
+    <path d="M20 40 Q30 32 44 36" stroke-width="1.8"/>
+    <path d="M32 14 L32 8 M20 18 L16 12 M44 18 L48 12" stroke-width="2" stroke-opacity="0.8"/>
+  </g>
+</svg>
