@@ -74,6 +74,12 @@ func _show_options_over_run() -> void:
 		_start_new_run())
 	veil.add_child(options)
 	add_child(veil)
+	# Le voile prend la souris, pas le clavier : la run dessous ne lit plus ses touches tant qu'il est ouvert.
+	var run_screen := _screen
+	run_screen.set_process_unhandled_input(false)
+	veil.tree_exited.connect(func() -> void:
+		if is_instance_valid(run_screen):
+			run_screen.set_process_unhandled_input(true))
 
 
 func _options_screen() -> Node:

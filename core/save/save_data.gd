@@ -19,3 +19,11 @@ static func string_list(value: Variant) -> Array[String]:
 			if item is String:
 				result.append(item)
 	return result
+
+
+## Ids texte d'une liste de contenus (artefacts, pilules, manuels), dans l'ordre.
+static func ids(list: Array) -> Array[String]:
+	var result: Array[String] = []
+	for item: Resource in list:
+		result.append(String(item.id))
+	return result

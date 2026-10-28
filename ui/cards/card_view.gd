@@ -168,3 +168,19 @@ func _name() -> String:
 func _make_custom_tooltip(_for_text: String) -> Object:
 	var element := tr("ELEMENT_" + Element.to_id(card.element).to_upper())
 	return InfoBubble.build(_name(), tr("UI_CARD_QI") % card.qi(), [[element, ElementStyles.of(card.element).color]])
+
+
+## Carte reduite dans un cadre a sa taille reduite (vue du paquet, exemples de mains). Sans clic ni infobulle.
+## CardView a une taille fixe et pivote sur son centre : on la reduit par scale et on la recentre dans le cadre.
+static func small(card_instance: CardInstance, card_scale: float, tint: Color = Color.WHITE) -> Control:
+	var frame := Control.new()
+	frame.mouse_filter = MOUSE_FILTER_IGNORE
+	frame.custom_minimum_size = CARD_SIZE * card_scale
+	var view := CardView.new()
+	view.card = card_instance
+	view.mouse_filter = MOUSE_FILTER_IGNORE
+	view.modulate = tint
+	frame.add_child(view)
+	view.position = (frame.custom_minimum_size - CARD_SIZE) / 2
+	view.scale = Vector2.ONE * card_scale
+	return frame

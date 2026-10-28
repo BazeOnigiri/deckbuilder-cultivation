@@ -27,6 +27,12 @@ func test_parametres_valides() -> void:
 	assert_gt(_measures.round_scores.size(), 0, "mesures vides" + HINT)
 
 
+## Bug : le paquet a change (45 puis 65 cartes) sans relancer l'outil, et les tests restaient verts.
+func test_mesures_prises_sur_ce_contenu() -> void:
+	assert_eq(_measures.content_signature, BalanceModel.content_signature(_content, _rules),
+		"le contenu a change depuis la derniere mesure" + HINT)
+
+
 func test_chaque_objet_est_mesure() -> void:
 	for artifact: ArtifactDefinition in _content.artifacts:
 		assert_true(_measures.has_gain(artifact.id), "artefact non mesure : %s%s" % [artifact.id, HINT])

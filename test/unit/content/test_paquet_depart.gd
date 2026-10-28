@@ -68,4 +68,19 @@ func test_qi_des_rangs() -> void:
 
 func test_pilule_de_raffinement_monte_jusqu_au_souverain() -> void:
 	var pill: PillDefinition = load("res://content/pills/pilule_raffinement.tres")
-	assert_eq(pill.effect.max_rank, RANG_MAX)
+	var cards: Array[CardInstance] = [CardInstance.new(0, _deck.cards[0], _deck.ranks)]
+	cards[0].rank = _deck.ranks.max_rank - 1
+	pill.effect.apply(cards, null)
+	pill.effect.apply(cards, null)
+	assert_eq(cards[0].rank, _deck.ranks.max_rank, "plafonnee au rang le plus haut du paquet")
+
+
+## Le rang le plus haut est recopie dans les mains a suite (Souverain sous le 1) et la Couronne (figures) :
+## changer les rangs du paquet sans les suivre fait echouer ce test.
+func test_copies_du_rang_le_plus_haut() -> void:
+	for hand: HandDefinition in HandCatalog.load_definitions():
+		var straight := hand.detector as StraightDetector
+		if straight != null and straight.low_rank > 0:
+			assert_eq(straight.low_rank, _deck.ranks.max_rank, "Souverain bas dans %s" % hand.id)
+	var crown: ArtifactDefinition = load("res://content/artifacts/artefact_couronne_immortel.tres")
+	assert_eq((crown.effects[0].condition as CardRankCondition).max_rank, _deck.ranks.max_rank)

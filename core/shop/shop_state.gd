@@ -110,9 +110,9 @@ func _roll_offers() -> void:
 
 func to_dict() -> Dictionary:
 	return {
-		"artifacts": _ids(offers),
-		"manuals": _ids(manual_offers),
-		"pills": _ids(pill_offers),
+		"artifacts": SaveData.ids(offers),
+		"manuals": SaveData.ids(manual_offers),
+		"pills": SaveData.ids(pill_offers),
 		"reroll_cost": reroll_cost,
 	}
 
@@ -122,13 +122,6 @@ func _restore(saved: Dictionary) -> void:
 	offers.assign(_pick(_catalog, saved.get("artifacts")))
 	manual_offers.assign(_pick(_manuals, saved.get("manuals")))
 	pill_offers.assign(_pick(_pills, saved.get("pills")))
-
-
-static func _ids(list: Array) -> Array[String]:
-	var ids: Array[String] = []
-	for item: Resource in list:
-		ids.append(String(item.id))
-	return ids
 
 
 ## Contenus du catalogue dont l'id est dans la liste sauvegardee, dans l'ordre sauvegarde.

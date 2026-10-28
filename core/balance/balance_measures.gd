@@ -11,6 +11,8 @@ extends Resource
 @export var gains: Dictionary[StringName, float] = {}
 ## Part des mains jouees par type de main, par id (rapport, aide a regler les mains).
 @export var hand_frequencies: Dictionary[String, float] = {}
+## Empreinte du contenu mesure (BalanceModel.content_signature) : un contenu different rend ces mesures perimees.
+@export var content_signature: String = ""
 ## Rarete exacte de chaque main, par id : part des tirages de hand_draw_size cartes qui la contiennent.
 @export var hand_rarities: Dictionary[String, float] = {}
 
