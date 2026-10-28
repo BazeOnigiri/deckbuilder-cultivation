@@ -6,6 +6,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-28
+
 ### Ajouté
 
 - Neuf pilules (13 au total) : regression 退 (-1 rang), foret 林, montagne 岳 et lame 锋 (Bois, Terre, Metal), roue 轮 (chaque carte prend l'element que le sien engendre), dedoublement 分 (copie une carte dans le paquet), fusion 合 (2 cartes : la plus haute prend le rang de l'autre, qui est detruite), dissolution 散 (detruit jusqu'a 2 cartes, +2 pierres chacune), illumination 明 (la main formee par les cartes monte d'un niveau). Nouveaux effets en donnees ; un effet de pilule recoit maintenant la run.
