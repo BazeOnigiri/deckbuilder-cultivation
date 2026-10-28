@@ -5,6 +5,8 @@ extends RefCounted
 
 const VERSION := 1
 const DEFAULT_PATH := "user://run.json"
+## migrations[n] : Callable qui fait passer une sauvegarde de la version n a n + 1 (SaveMigrator).
+static var migrations: Dictionary = {}
 
 
 ## Sauvegardable pendant un round en cours, ou entre deux goulots. Pas une run terminee.
@@ -29,8 +31,8 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 		"progress": run.progress.to_dict(),
 		"cards": cards,
 		"piles": run.piles(),
-		"artifacts": _ids(run.artifacts),
-		"pills": _ids(run.pills),
+		"artifacts": SaveData.ids(run.artifacts),
+		"pills": SaveData.ids(run.pills),
 		"hand_levels": run.hand_levels.to_dict(),
 		"stats": run.stats.to_dict(),
 	}
@@ -50,7 +52,7 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 ## Renvoie null si la sauvegarde est vide, d'une version inconnue, ou incoherente.
 ## La run revient entre deux goulots : appeler ensuite resume_round(), apres avoir branche ses signaux.
 static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGenerator) -> RunState:
-	var save := SaveMigrator.migrate(data, VERSION, {})
+	var save := migrate(data)
 	if save.is_empty():
 		return null
 	var rng_state: Variant = save.get("rng_state")
@@ -83,7 +85,7 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 ## Reprend le round sauvegarde, s'il y en avait un. A appeler apres avoir branche les signaux de la run.
 ## Faux : la sauvegarde etait prise dans la boutique.
 static func resume_round(data: Dictionary, run: RunState) -> bool:
-	var saved: Variant = data.get("round")
+	var saved: Variant = migrate(data).get("round")
 	if not saved is Dictionary:
 		return false
 	run.resume_round(SaveData.int_of(saved, "score"), SaveData.int_of(saved, "hands_left", 1), SaveData.int_of(saved, "discards_left"))
@@ -92,8 +94,13 @@ static func resume_round(data: Dictionary, run: RunState) -> bool:
 
 ## La boutique sauvegardee de cette run, avec ses offres d'origine.
 static func restore_shop(data: Dictionary, run: RunState, content: GameContent, rng: RandomNumberGenerator) -> ShopState:
-	var saved: Variant = data.get("shop", {})
+	var saved: Variant = migrate(data).get("shop", {})
 	return content.new_shop(run, rng, saved if saved is Dictionary else {})
+
+
+## La sauvegarde au format de VERSION. Chaque lecture passe par ici : aucune ne lit un ancien format. {} si inutilisable.
+static func migrate(data: Dictionary) -> Dictionary:
+	return SaveMigrator.migrate(data, VERSION, migrations)
 
 
 static func _restore_cards(data: Variant, content: GameContent) -> Array[CardInstance]:
@@ -140,10 +147,3 @@ static func _take(uids: Variant, by_uid: Dictionary) -> Array[CardInstance]:
 			pile.append(by_uid[uid])
 			by_uid.erase(uid)
 	return pile
-
-
-static func _ids(list: Array) -> Array[String]:
-	var ids: Array[String] = []
-	for item: Resource in list:
-		ids.append(String(item.id))
-	return ids

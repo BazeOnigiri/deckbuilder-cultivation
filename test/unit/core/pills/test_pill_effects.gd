@@ -24,7 +24,11 @@ func test_changer_l_element() -> void:
 
 
 func test_ajouter_du_rang_plafonne() -> void:
+	var ranks := RankRules.new()
+	ranks.max_rank = 9
 	var cards := C.hand([[C.BOIS, 3], [C.EAU, 9]])
+	for card: CardInstance in cards:
+		card.ranks = ranks
 	var effect := AddRankPillEffect.new()
 	effect.apply(cards, null)
 	assert_eq(cards[0].rank, 4)

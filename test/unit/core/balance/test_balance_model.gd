@@ -172,3 +172,19 @@ func test_priorites_par_rarete_egalite_departagee() -> void:
 	assert_eq(values["rare_a"]["priority"], 30, "a rarete egale, l'ancienne priorite departage")
 	assert_eq(values["rare_b"]["priority"], 40)
 	assert_eq(values["rare_a"]["qi"], values["rare_b"]["qi"])
+
+
+func test_empreinte_suit_le_contenu_mesure_pas_les_resultats() -> void:
+	var content := GameContent.load_default()
+	var rules := _rules()
+	var signature := BalanceModel.content_signature(content, rules)
+	assert_eq(BalanceModel.content_signature(content, rules), signature, "stable")
+	var hand: HandDefinition = content.hands[0]
+	var qi := hand.base_qi
+	hand.base_qi += 7
+	assert_eq(BalanceModel.content_signature(content, rules), signature, "un resultat ecrit par l'outil n'y entre pas")
+	hand.base_qi = qi
+	var card: CardData = content.starter_deck.cards[0]
+	card.rank += 1
+	assert_ne(BalanceModel.content_signature(content, rules), signature, "un paquet change rend les mesures perimees")
+	card.rank -= 1

@@ -151,6 +151,36 @@ static func solve_hands(rules: BalanceRules, measures: BalanceMeasures, hands: A
 	return values
 
 
+## Proprietes que l'outil ecrit (des resultats) ou qui ne changent que l'affichage : hors de l'empreinte.
+const NOT_MEASURED := ["price", "priority", "base_qi", "base_comprehension", "level_qi", "level_comprehension",
+	"score_multiplier", "reward", "base_score", "name_key", "description_key", "glyph", "icon", "example", "tier",
+	"pattern", "resource_local_to_scene", "resource_name", "resource_path", "resource_scene_unique_id", "script"]
+
+
+## Empreinte de tout ce que l'equilibrage mesure (paquet, mains, objets, royaumes, regles). L'outil la note dans les
+## mesures ; le garde-fou la recalcule : si le contenu a change depuis, les mesures sont perimees.
+static func content_signature(content: GameContent, rules: BalanceRules) -> String:
+	var parts: Array = [content.starter_deck, content.hands, content.artifacts, content.manuals, content.realms,
+		content.round_rules, content.economy, rules]
+	return _describe(parts).md5_text()
+
+
+## Texte stable d'une valeur : Resources de script decrites propriete par propriete, sauf NOT_MEASURED.
+static func _describe(value: Variant) -> String:
+	if value is Array:
+		return "[" + ",".join(value.map(_describe)) + "]"
+	if not value is Resource:
+		return var_to_str(value)
+	var resource: Resource = value
+	if not resource.get_script() is GDScript:
+		return resource.resource_path
+	var fields: PackedStringArray = [resource.get_script().resource_path]
+	for property: Dictionary in resource.get_property_list():
+		if property.usage & PROPERTY_USAGE_STORAGE and not NOT_MEASURED.has(property.name):
+			fields.append("%s=%s" % [property.name, _describe(resource.get(property.name))])
+	return "{" + ";".join(fields) + "}"
+
+
 ## Garde digits chiffres significatifs : 1117 -> 1100 (2 chiffres), 428 -> 430.
 static func round_to_digits(value: float, digits: int) -> float:
 	if value <= 0.0:

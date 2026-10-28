@@ -81,9 +81,12 @@ func test_options_depuis_la_run_gardent_la_run() -> void:
 	var veil := _current_screen(main)
 	var options := veil.get_child(0)
 	assert_not_null(options.get_node_or_null("%ReduceMotion"))
+	# Bug : Entree ou 1 a 8 jouaient la main derriere le voile des options.
+	assert_false(run_screen.is_processing_unhandled_input(), "touches de la run coupees sous les options")
 	options.get_node("%BackButton").pressed.emit()
 	await wait_physics_frames(1)
 	assert_false(is_instance_valid(veil), "voile ferme")
+	assert_true(run_screen.is_processing_unhandled_input(), "touches rendues a la run")
 	assert_true(is_instance_valid(run_screen) and run_screen.is_inside_tree(), "la run continue")
 
 

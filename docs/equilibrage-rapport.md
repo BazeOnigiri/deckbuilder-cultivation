@@ -55,7 +55,7 @@ Genere par tools/equilibrage.gd ; ne pas modifier a la main. Explications : equi
 
 | Main | Rarete | Surprise | Qi x Comprehension | Niveau | Priorite |
 | --- | --- | --- | --- | --- | --- |
-| main_souffle | 100.0 % | -0.00 | 5 x 1 | +2 / +0 | 10 |
+| main_souffle | 100.0 % | 0.00 | 5 x 1 | +2 / +0 | 10 |
 | main_paire | 48.30833 % | 0.73 | 8 x 2 | +2 / +1 | 20 |
 | main_double_paire | 4.661649 % | 3.07 | 36 x 3 | +11 / +1 | 30 |
 | main_harmonie | 4.44372 % | 3.11 | 37 x 3 | +11 / +1 | 40 |
