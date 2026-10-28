@@ -1,6 +1,8 @@
 class_name ShopState
 extends RefCounted
 ## Boutique entre deux goulots : offres tirees au hasard (RNG injectee), achat et relance. Logique pure.
+## Chaque emplacement tire un type (ShopRules.kind_weights), puis un objet de ce type : les trois listes d'offres
+## n'ont pas de taille fixe.
 
 var offers: Array[ArtifactDefinition] = []
 var manual_offers: Array[ManualDefinition] = []
@@ -97,15 +99,29 @@ func _roll_offers() -> void:
 	for artifact: ArtifactDefinition in _catalog:
 		if not owned.has(artifact.id):
 			pool.append(artifact)
-	offers.assign(_draw_artifacts(pool, _rules.offer_count))
-	# Manuels : rachetables d'une visite a l'autre, mais distincts dans une meme visite.
+	# Manuels et pilules : rachetables d'une visite a l'autre, mais distincts dans une meme visite.
 	var manual_pool: Array[ManualDefinition] = _manuals.duplicate()
 	RngUtils.shuffle(manual_pool, _rng)
-	manual_offers.assign(manual_pool.slice(0, _rules.manual_offer_count))
-	# Pilules : comme les manuels, rachetables d'une visite a l'autre.
 	var pill_pool: Array[PillDefinition] = _pills.duplicate()
 	RngUtils.shuffle(pill_pool, _rng)
-	pill_offers.assign(pill_pool.slice(0, _rules.pill_offer_count))
+	var counts := _draw_kinds([pool.size(), manual_pool.size(), pill_pool.size()])
+	offers.assign(_draw_artifacts(pool, counts[ShopRules.OfferKind.ARTIFACT]))
+	manual_offers.assign(manual_pool.slice(0, counts[ShopRules.OfferKind.MANUAL]))
+	pill_offers.assign(pill_pool.slice(0, counts[ShopRules.OfferKind.PILL]))
+
+
+## Nombre d'offres de chaque type : un type tire par emplacement, parmi ceux qui ont encore un objet a proposer.
+func _draw_kinds(available: Array[int]) -> Array[int]:
+	var counts: Array[int] = [0, 0, 0]
+	for slot: int in _rules.offer_count:
+		var weights := _rules.kind_weights.duplicate()
+		for kind: int in weights.size():
+			if counts[kind] >= available[kind]:
+				weights[kind] = 0.0
+		if not Array(weights).any(func(weight: float) -> bool: return weight > 0.0):
+			break
+		counts[_rng.rand_weighted(weights)] += 1
+	return counts
 
 ## count artefacts distincts : une rarete tiree selon rarity_weights (parmi celles qui en ont encore), puis un
 ## artefact de cette rarete au hasard.

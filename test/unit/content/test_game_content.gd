@@ -34,4 +34,4 @@ func test_nouvelle_run_jouable() -> void:
 func test_nouvelle_boutique_remplie() -> void:
 	var rng := _rng()
 	var shop := _content.new_shop(_content.new_run(rng), rng)
-	assert_eq(shop.offers.size(), _content.shop_rules.offer_count)
+	assert_eq(shop.offers.size() + shop.manual_offers.size() + shop.pill_offers.size(), _content.shop_rules.offer_count)
