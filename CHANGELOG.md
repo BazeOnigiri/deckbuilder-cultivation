@@ -6,6 +6,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-28
+
 ### Ajouté
 
 - Equilibrage par formules (docs/equilibrage.md) : un joueur de reference simule (Monte-Carlo, graine fixe) mesure le score d'un round et le gain moyen de chaque artefact et manuel. Prix = gain / valeur d'une pierre (courbe de cout ; la pierre se deduit de l'economie : les pierres d'un royaume doublent la puissance du joueur, donc ajouter des objets ne change pas la difficulte), recompenses et multiplicateurs des goulots par formule, objectifs = score atteint par 90 % des joueurs au depart, puis croissance exponentielle par royaume (puissance achetee par le joueur x pression). Un nouveau royaume n'a besoin que de son ordre. Parametres dans content/rules/equilibrage.tres, outil tools/equilibrage.gd, rapport docs/equilibrage-rapport.md, et un test qui detecte toute valeur qui ne suit plus les formules.
