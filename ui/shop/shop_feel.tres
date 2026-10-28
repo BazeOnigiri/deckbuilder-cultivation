@@ -10,3 +10,4 @@ fly_time = 0.45
 level_up_fade = 0.3
 lantern_swing = 0.08
 lantern_time = 1.6
+pack_card_scale = 0.6

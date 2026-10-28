@@ -61,6 +61,17 @@ func sell_artifact(index: int) -> bool:
 	return true
 
 
+## Ajoute une carte au paquet de la run (sceau de disciples), avec un uid neuf, dans la pioche : le melange du
+## prochain round la place.
+func add_card(data: CardData, ranks: RankRules) -> CardInstance:
+	var uid := 0
+	for card: CardInstance in _deck.all_cards():
+		uid = maxi(uid, card.uid + 1)
+	var card := CardInstance.new(uid, data, ranks)
+	_deck.draw_pile.append(card)
+	return card
+
+
 func can_use_pill(index: int, selected: Array[CardInstance]) -> bool:
 	if status != Status.IN_ROUND or index < 0 or index >= pills.size():
 		return false

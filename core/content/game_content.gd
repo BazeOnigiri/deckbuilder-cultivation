@@ -17,6 +17,7 @@ var realms: Array[RealmDefinition]
 var artifacts: Array[ArtifactDefinition]
 var manuals: Array[ManualDefinition]
 var pills: Array[PillDefinition]
+var packs: Array[PackDefinition]
 
 
 static func load_default() -> GameContent:
@@ -30,6 +31,7 @@ static func load_default() -> GameContent:
 	content.artifacts = ArtifactCatalog.load_definitions()
 	content.manuals = ManualCatalog.load_definitions()
 	content.pills = PillCatalog.load_definitions()
+	content.packs = PackCatalog.load_definitions()
 	return content
 
 
@@ -39,7 +41,7 @@ func new_run(rng: RandomNumberGenerator) -> RunState:
 
 ## saved : offres d'une boutique sauvegardee. Vide : nouvelles offres tirees au hasard.
 func new_shop(run: RunState, rng: RandomNumberGenerator, saved: Dictionary = {}) -> ShopState:
-	return ShopState.new(run, artifacts, manuals, pills, shop_rules, rng, saved)
+	return ShopState.new(run, artifacts, manuals, pills, packs, starter_deck, shop_rules, rng, saved)
 
 ## Recherches par id pour la sauvegarde. Contenu retire du jeu : null.
 func card_by_id(id: StringName) -> CardData:
