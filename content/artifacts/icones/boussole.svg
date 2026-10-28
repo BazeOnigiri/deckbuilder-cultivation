@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Boussole luopan : plateau carre, cercles concentriques, aiguille au centre. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <rect x="8" y="8" width="48" height="48" rx="3" stroke-width="2.4"/>
+    <circle cx="32" cy="32" r="18" stroke-width="2"/>
+    <circle cx="32" cy="32" r="10" stroke-width="1.6" stroke-opacity="0.8"/>
+    <path d="M32 20 L35 32 L32 44 L29 32 Z" stroke-width="1.6" fill="#ffffff" fill-opacity="0.6"/>
+  </g>
+</svg>

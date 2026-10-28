@@ -4,15 +4,15 @@ extends RefCounted
 ## Ordre : artefacts dans l'ordre d'acquisition, puis le pipeline trie par phase.
 
 
-static func effects_for(artifacts: Array[ArtifactDefinition], result: HandResult) -> Array[ScoreEffect]:
+static func effects_for(artifacts: Array[ArtifactDefinition], result: HandResult, held: Array[CardInstance] = []) -> Array[ScoreEffect]:
 	var effects: Array[ScoreEffect] = []
-	for triggered: TriggeredEffect in triggered_for(artifacts, result):
+	for triggered: TriggeredEffect in triggered_for(artifacts, result, held):
 		effects.append(triggered.effect)
 	return effects
 
 
-## Les memes effets, avec l'artefact et la carte qui les ont declenches.
-static func triggered_for(artifacts: Array[ArtifactDefinition], result: HandResult) -> Array[TriggeredEffect]:
+## Les memes effets, avec l'artefact et la carte qui les ont declenches. held : cartes restees en main.
+static func triggered_for(artifacts: Array[ArtifactDefinition], result: HandResult, held: Array[CardInstance] = []) -> Array[TriggeredEffect]:
 	var triggered: Array[TriggeredEffect] = []
 	for artifact: ArtifactDefinition in artifacts:
 		for effect: ArtifactEffect in artifact.effects:
@@ -22,6 +22,10 @@ static func triggered_for(artifacts: Array[ArtifactDefinition], result: HandResu
 						triggered.append(TriggeredEffect.new(effect.score_effect, artifact))
 				ArtifactEffect.Trigger.CARD_SCORED:
 					for card: CardInstance in result.scoring_cards:
+						if _matches(effect, result, card):
+							triggered.append(TriggeredEffect.new(effect.score_effect, artifact, card))
+				ArtifactEffect.Trigger.CARD_HELD:
+					for card: CardInstance in held:
 						if _matches(effect, result, card):
 							triggered.append(TriggeredEffect.new(effect.score_effect, artifact, card))
 	return triggered

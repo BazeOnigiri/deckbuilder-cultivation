@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Sceau imperial : bloc carre surmonte d'une poignee en bete couchee. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <rect x="14" y="34" width="36" height="22" rx="2" stroke-width="2.6" fill="#ffffff" fill-opacity="0.3"/>
+    <path d="M20 34 Q20 22 32 20 Q44 22 44 34 M26 26 Q32 30 38 26" stroke-width="2.2"/>
+    <path d="M22 42 L42 42 M22 48 L42 48 M32 38 L32 52" stroke-width="1.6" stroke-opacity="0.8"/>
+  </g>
+</svg>

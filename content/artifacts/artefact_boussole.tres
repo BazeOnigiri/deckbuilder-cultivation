@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Script" path="res://core/artifacts/hand_is_condition.gd" id="4"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/boussole.svg" id="icon"]
+
+[sub_resource type="Resource" id="condition_1"]
+script = ExtResource("4")
+hand_ids = Array[String](["main_double_paire", "main_full"])
+
+[sub_resource type="Resource" id="score_1"]
+script = ExtResource("3")
+phase = 2
+amount = 2.0
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+condition = SubResource("condition_1")
+score_effect = SubResource("score_1")
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_boussole"
+name_key = "ARTIFACT_BOUSSOLE"
+description_key = "ARTIFACT_BOUSSOLE_DESC"
+glyph = "盘"
+icon = ExtResource("icon")
+price = 11
+effects = Array[ExtResource("2")]([SubResource("effect_1")])
+rarity = 2

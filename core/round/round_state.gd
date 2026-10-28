@@ -102,7 +102,8 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 		if counts(card):
 			counted.append(card)
 	result.scoring_cards = counted
-	var effects := ArtifactResolver.triggered_for(_artifacts, result)
+	# Les cartes jouees sont deja defaussees : la main ne contient plus que les cartes gardees.
+	var effects := ArtifactResolver.triggered_for(_artifacts, result, _deck.hand)
 	var context := ScoringPipeline.score_triggered(result, effects, _levels.level_of(result.definition.id),
 		_constraint.card_qi_scale())
 	score += context.total()
