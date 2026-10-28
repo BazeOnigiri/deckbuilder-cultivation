@@ -3,9 +3,9 @@ extends GutTest
 
 const DECK_PATH: String = "res://content/decks/paquet_depart.tres"
 const CARDS_DIR: String = "res://content/cards/"
-const NOMBRE_CARTES: int = 65
+const NOMBRE_CARTES: int = 70
 const RANG_MIN: int = 1
-const RANG_MAX: int = 13
+const RANG_MAX: int = 14
 
 var _deck: DeckDefinition
 
@@ -23,7 +23,7 @@ func test_paquet_est_valide() -> void:
 	assert_true(_deck.is_valid())
 
 
-func test_paquet_contient_65_cartes() -> void:
+func test_paquet_contient_70_cartes() -> void:
 	assert_eq(_deck.cards.size(), NOMBRE_CARTES)
 
 
@@ -54,16 +54,16 @@ func test_chaque_carte_a_son_propre_fichier() -> void:
 			"%s doit être un fichier de %s" % [card.id, CARDS_DIR])
 
 
-## Comme Balatro : chiffres = leur rang, figures (10 a 12) = 10, Souverain (13) = 11.
+## Comme Balatro : chiffres (1 a 10) = leur rang, figures (11 a 13) = 10, Souverain (14) = 11.
 func test_qi_des_rangs() -> void:
 	assert_not_null(_deck.ranks, "le paquet reference ses rangs")
 	assert_true(_deck.ranks.is_valid())
 	assert_eq(_deck.ranks.max_rank, RANG_MAX)
-	for rank: int in range(1, 10):
+	for rank: int in range(1, 11):
 		assert_eq(_deck.ranks.qi_of(rank), rank)
-	for rank: int in [10, 11, 12]:
+	for rank: int in [11, 12, 13]:
 		assert_eq(_deck.ranks.qi_of(rank), 10)
-	assert_eq(_deck.ranks.qi_of(13), 11)
+	assert_eq(_deck.ranks.qi_of(14), 11)
 
 
 func test_pilule_de_raffinement_monte_jusqu_au_souverain() -> void:

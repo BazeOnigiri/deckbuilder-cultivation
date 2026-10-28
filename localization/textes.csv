@@ -162,10 +162,10 @@ UI_KIND_MANUAL,Manuel de technique,Technique manual
 UI_KIND_PILL,Pilule,Pill
 UI_CARD_RANK,Rang %d,Rank %d
 UI_CARD_QI,+%d Qi quand elle compte.,+%d Qi when it scores.
-CARD_RANK_10,Disciple,Disciple
-CARD_RANK_11,Maître,Master
-CARD_RANK_12,Immortel,Immortal
-CARD_RANK_13,Souverain du Dao,Sovereign of the Dao
+CARD_RANK_11,Disciple,Disciple
+CARD_RANK_12,Maître,Master
+CARD_RANK_13,Immortel,Immortal
+CARD_RANK_14,Souverain du Dao,Sovereign of the Dao
 UI_KEY_HINT,Touche : %s,Key: %s
 UI_INFO_TAB_KEYS,Touches,Keys
 UI_KEYS_SELECT,"Choisir une carte (1 à 8, de gauche à droite)","Pick a card (1 to 8, left to right)"

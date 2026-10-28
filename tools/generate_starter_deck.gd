@@ -1,5 +1,5 @@
 extends SceneTree
-## Génère les 65 cartes du paquet de départ (une par fichier) et paquet_depart.tres.
+## Génère les 70 cartes du paquet de départ (une par fichier) et paquet_depart.tres.
 ## Usage : godot --headless --path . -s tools/generate_starter_deck.gd
 ## Relancer écrase les fichiers existants : à n'utiliser que pour (re)créer le contenu.
 
@@ -7,8 +7,8 @@ const CARDS_DIR: String = "res://content/cards/"
 const DECK_PATH: String = "res://content/decks/paquet_depart.tres"
 const DECK_ID: StringName = &"paquet_depart"
 const RANK_MIN: int = 1
-const RANK_MAX: int = 13
-## Qi de chaque rang (figures 10 a 12, Souverain 13) : le paquet le reference.
+const RANK_MAX: int = 14
+## Qi de chaque rang (figures 11 a 13, Souverain 14) : le paquet le reference.
 const RANKS_PATH: String = "res://content/rules/rangs.tres"
 
 
