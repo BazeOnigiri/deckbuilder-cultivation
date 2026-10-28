@@ -62,7 +62,7 @@ func _rng(seed_value: int = 1) -> RandomNumberGenerator:
 
 func _shop(run: RunState, catalog: Array[ArtifactDefinition], rules: ShopRules = null, seed_value: int = 1) -> ShopState:
 	var packs: Array[PackDefinition] = []
-	return ShopState.new(run, catalog, _manuals(), _pills(), packs, DeckDefinition.new(), rules if rules != null else _rules(),
+	return ShopState.new(run, catalog, _manuals(), _pills(), packs, [] as Array[LegacyDefinition], DeckDefinition.new(), rules if rules != null else _rules(),
 		_rng(seed_value))
 
 ## Boutique d'un seul emplacement, toujours de ce type d'offre.
@@ -287,7 +287,7 @@ func _shop_with_pack(run: RunState, pack: PackDefinition, catalog: Array[Artifac
 	var rules := _rules(1)
 	rules.pack_count = 1
 	var packs: Array[PackDefinition] = [pack]
-	return ShopState.new(run, catalog, _manuals(), _pills(), packs, deck, rules, _rng())
+	return ShopState.new(run, catalog, _manuals(), _pills(), packs, [] as Array[LegacyDefinition], deck, rules, _rng())
 
 
 func test_sceau_ouvert_montre_ses_choix() -> void:
@@ -388,7 +388,8 @@ func test_sceau_ouvert_restaure() -> void:
 	var deck := DeckDefinition.new()
 	var rules := _rules(1)
 	var packs: Array[PackDefinition] = [pack]
-	var restored := ShopState.new(run, [] as Array[ArtifactDefinition], _manuals(), _pills(), packs, deck, rules, _rng(), saved)
+	var restored := ShopState.new(run, [] as Array[ArtifactDefinition], _manuals(), _pills(), packs, [] as Array[LegacyDefinition],
+		deck, rules, _rng(), saved)
 	assert_not_null(restored.opening)
 	assert_eq(restored.opening.picks_left, 1)
 	assert_eq(_ids_of(restored.opening.choices), _ids_of(shop.opening.choices))

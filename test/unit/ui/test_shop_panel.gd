@@ -29,7 +29,8 @@ func test_un_emplacement_par_offre() -> void:
 	var parts := _panel(0)
 	var shop: ShopState = parts[1]
 	var slots := _slots(parts[0])
-	assert_eq(slots.size(), shop.offers.size() + shop.manual_offers.size() + shop.pill_offers.size() + shop.pack_offers.size())
+	assert_eq(slots.size(), shop.offers.size() + shop.manual_offers.size() + shop.pill_offers.size() + shop.pack_offers.size()
+		+ (1 if shop.legacy_offer() != null else 0))
 	for slot: ItemSlot in slots:
 		assert_false(slot.glyph.is_empty())
 		assert_true(slot.disabled, "pas de pierres : rien d'achetable")

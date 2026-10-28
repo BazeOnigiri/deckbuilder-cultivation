@@ -146,6 +146,10 @@ static func _run_tiles(run: RunState, hands: Array[HandDefinition]) -> VBoxConta
 	tiles.add_child(ScrollTiles.stat(str(stats.stones_earned), "UI_INFO_STONES"))
 	column.add_child(tiles)
 	column.add_child(ScrollRows.row("UI_STATS_FAVORITE_HAND", hand_name(stats.hands.most_played(), hands)))
+	var legacy_names: PackedStringArray = []
+	for legacy: LegacyDefinition in run.legacies:
+		legacy_names.append(tr_key(legacy.name_key))
+	column.add_child(ScrollRows.row("UI_INFO_LEGACIES", ", ".join(legacy_names) if not legacy_names.is_empty() else tr_key("UI_NONE")))
 	return column
 
 
