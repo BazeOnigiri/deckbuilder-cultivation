@@ -178,3 +178,31 @@ func test_capture_selon_l_etat_de_la_run() -> void:
 	assert_true(RunSnapshot.can_capture(run))
 	run.status = RunState.Status.LOST
 	assert_false(RunSnapshot.can_capture(run))
+
+
+## Bug : resume_round et restore_shop lisaient la sauvegarde brute, sans migration.
+## Ici une fausse version 0 rangeait les offres sous « objets » et le round sous « manche ».
+func test_boutique_et_round_lus_apres_migration() -> void:
+	RunSnapshot.migrations = {0: func(old: Dictionary) -> Dictionary:
+		var save := old.duplicate(true)
+		if save.has("manche"):
+			save["round"] = save["manche"]
+		if save.has("shop"):
+			save["shop"]["artifacts"] = save["shop"]["objets"]
+		return save}
+	var rng := _rng()
+	var run := _run_in_shop(rng)
+	var shop := _content.new_shop(run, rng)
+	var data := _through_json(RunSnapshot.capture(run, shop, rng))
+	data["version"] = 0
+	data["shop"]["objets"] = data["shop"]["artifacts"]
+	data["shop"].erase("artifacts")
+	var restored := RunSnapshot.restore(data, _content, _rng())
+	assert_eq(RunSnapshot.restore_shop(data, restored, _content, _rng()).offers, shop.offers)
+	var playing := _run_in_round(_rng())
+	var round_data := _through_json(RunSnapshot.capture(playing, null, rng))
+	round_data["version"] = 0
+	round_data["manche"] = round_data["round"]
+	round_data.erase("round")
+	assert_true(RunSnapshot.resume_round(round_data, RunSnapshot.restore(round_data, _content, _rng())))
+	RunSnapshot.migrations = {}

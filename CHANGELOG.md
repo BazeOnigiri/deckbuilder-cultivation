@@ -6,6 +6,23 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-28
+
+### Ajouté
+
+- Premiere version complete : 3 royaumes, 12 mains, 18 artefacts, manuels et pilules, sons et musique, jouable au clavier et a la souris.
+- Builds jointes a la release GitHub : export web (zip) et Windows (exe autonome). Preset d'export Windows.
+
+### Corrigé
+
+- Options ouvertes pendant une run : les touches (jouer, defausser...) n'agissent plus sur la run cachee sous le voile.
+- Mesures d'equilibrage perimees detectees : l'outil note une empreinte du contenu mesure (paquet, mains, objets, royaumes, regles), un test echoue si le contenu a change sans relancer l'outil.
+- Sauvegarde : la boutique et le round en cours passent eux aussi par la migration de version, pas seulement la run.
+- Pilule de raffinement : son plafond suit le rang le plus haut du paquet (RankRules) au lieu d'une copie du 14 ; un test verifie que les autres copies (Ascension, Couronne d'immortel) suivent ce rang.
+- Code en double fusionne : liste d'IDs pour la sauvegarde (SaveData.ids) et petites cartes de la vue du paquet et des exemples de mains (CardView.small).
+- Rarete des mains environ 5 fois plus rapide : la rotation des elements ne change aucune main, l'outil ne compte qu'un tirage sur cinq avec un poids exact. Un test compare au comptage complet.
+- Rapport d'equilibrage : la surprise du Souffle s'affiche 0.00 et non -0.00.
+
 ## [0.5.0] - 2026-10-28
 
 ### Ajouté

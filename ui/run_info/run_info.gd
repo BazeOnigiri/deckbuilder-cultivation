@@ -96,19 +96,9 @@ static func _example(hand: HandDefinition) -> HBoxContainer:
 	var cards := hand.example_cards()
 	var scoring := hand.detector.detect(cards)
 	var card_scale: float = row.get_theme_constant(&"card_percent", &"HandTablet") / 100.0
+	var unused := row.get_theme_color(&"unused_card", &"HandTablet")
 	for card: CardInstance in cards:
-		# CardView a une taille fixe : reduite par scale dans un cadre a la taille reduite, comme la vue du paquet.
-		var frame := Control.new()
-		frame.custom_minimum_size = CardView.CARD_SIZE * card_scale
-		var view := CardView.new()
-		view.card = card
-		view.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		frame.add_child(view)
-		view.position = (frame.custom_minimum_size - CardView.CARD_SIZE) / 2
-		view.scale = Vector2.ONE * card_scale
-		if not scoring.has(card):
-			view.modulate = row.get_theme_color(&"unused_card", &"HandTablet")
-		row.add_child(frame)
+		row.add_child(CardView.small(card, card_scale, Color.WHITE if scoring.has(card) else unused))
 	return row
 
 

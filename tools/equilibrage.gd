@@ -52,6 +52,7 @@ func _initialize() -> void:
 		levels.level_up(manual.hand.id)
 		measures.gains[manual.id] = _mean(player.round_scores(rounds, rules.random_seed, [], levels)) / base_mean - 1.0
 		print("%-32s %+.3f" % [manual.id, measures.gains[manual.id]])
+	measures.content_signature = BalanceModel.content_signature(content, rules)
 	_save(measures, MEASURES_PATH)
 
 	var realms := content.realms.duplicate()
@@ -128,7 +129,7 @@ func _write_report(rules: BalanceRules, measures: BalanceMeasures, solved: Dicti
 		if hand_values.has(hand.id):
 			var rarity: float = measures.hand_rarities[hand.id]
 			lines.append("| %s | %s %% | %.2f | %d x %d | +%d / +%d | %d |" % [hand.id, String.num(rarity * 100.0, 6),
-				BalanceModel.surprise(rarity), hand.base_qi, hand.base_comprehension, hand.level_qi,
+				absf(BalanceModel.surprise(rarity)), hand.base_qi, hand.base_comprehension, hand.level_qi,
 				hand.level_comprehension, hand.priority])
 	lines.append_array(["", "## Mains jouees par le joueur de reference", "", "| Main | Part des mains jouees |", "| --- | --- |"])
 	var hands := measures.hand_frequencies.keys()

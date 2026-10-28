@@ -47,21 +47,9 @@ func _row(element: int, cards: Array, left: int, in_draw_pile: Callable) -> HBox
 	count.custom_minimum_size.x = get_theme_constant(&"label_width", &"DeckViewer")
 	row.add_child(count)
 	var card_scale: float = get_theme_constant(&"card_percent", &"DeckViewer") / 100.0
+	var used := get_theme_color(&"used_color", &"DeckViewer")
 	for card: CardInstance in cards:
-		# CardView a une taille fixe : reduite par scale dans un cadre a la taille reduite.
-		var frame := Control.new()
-		frame.mouse_filter = MOUSE_FILTER_IGNORE
-		frame.custom_minimum_size = CardView.CARD_SIZE * card_scale
-		var view := CardView.new()
-		view.card = card
-		view.mouse_filter = MOUSE_FILTER_IGNORE
-		frame.add_child(view)
-		# CardView pivote sur son centre (pose dans son _ready) : on recentre la carte reduite dans le cadre.
-		view.position = (frame.custom_minimum_size - CardView.CARD_SIZE) / 2
-		view.scale = Vector2.ONE * card_scale
-		if not in_draw_pile.call(card):
-			view.modulate = get_theme_color(&"used_color", &"DeckViewer")
-		row.add_child(frame)
+		row.add_child(CardView.small(card, card_scale, Color.WHITE if in_draw_pile.call(card) else used))
 	return row
 
 
