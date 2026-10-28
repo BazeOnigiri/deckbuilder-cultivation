@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Script" path="res://core/artifacts/hand_is_condition.gd" id="4"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/bambou_celeste.svg" id="icon"]
+
+[sub_resource type="Resource" id="score_1"]
+script = ExtResource("3")
+amount = 0.0
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+score_effect = SubResource("score_1")
+
+[sub_resource type="Resource" id="condition_2"]
+script = ExtResource("4")
+hand_ids = Array[String](["main_paire"])
+
+[sub_resource type="Resource" id="effect_2"]
+script = ExtResource("2")
+condition = SubResource("condition_2")
+grows = true
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_bambou_celeste"
+name_key = "ARTIFACT_BAMBOU_CELESTE"
+description_key = "ARTIFACT_BAMBOU_CELESTE_DESC"
+glyph = "竹"
+icon = ExtResource("icon")
+price = 9
+effects = Array[ExtResource("2")]([SubResource("effect_1"), SubResource("effect_2")])
+growth_step = 4.0
+rarity = 2

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/arbre_sapeques.svg" id="icon"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+trigger = 3
+stones = 3
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_arbre_sapeques"
+name_key = "ARTIFACT_ARBRE_SAPEQUES"
+description_key = "ARTIFACT_ARBRE_SAPEQUES_DESC"
+glyph = "钱"
+icon = ExtResource("icon")
+price = 9
+effects = Array[ExtResource("2")]([SubResource("effect_1")])
+rarity = 2

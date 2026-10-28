@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/crapaud_jade.svg" id="icon"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+trigger = 3
+stones = 1
+per = 1
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_crapaud_jade"
+name_key = "ARTIFACT_CRAPAUD_JADE"
+description_key = "ARTIFACT_CRAPAUD_JADE_DESC"
+glyph = "蟾"
+icon = ExtResource("icon")
+price = 3
+effects = Array[ExtResource("2")]([SubResource("effect_1")])
+rarity = 0

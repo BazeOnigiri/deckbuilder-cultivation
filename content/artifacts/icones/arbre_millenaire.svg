@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Vieil arbre a large couronne, tronc noueux et racines. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M28 58 Q30 46 28 36 M36 58 Q34 46 36 36 M22 60 Q26 56 28 58 M42 60 Q38 56 36 58" stroke-width="2.4"/>
+    <path d="M10 30 Q8 16 22 14 Q28 4 40 10 Q56 10 54 26 Q58 36 46 38 Q32 42 18 38 Q8 38 10 30 Z" stroke-width="2.6" fill="#ffffff" fill-opacity="0.3"/>
+  </g>
+</svg>

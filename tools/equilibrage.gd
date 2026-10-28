@@ -45,7 +45,12 @@ func _initialize() -> void:
 		measures.hand_frequencies[hand_id] = counts[hand_id] / float(rounds * content.round_rules.hands_per_round)
 	for artifact: ArtifactDefinition in content.artifacts:
 		var with_artifact: Array[ArtifactDefinition] = [artifact]
-		measures.gains[artifact.id] = _mean(player.round_scores(rounds, rules.random_seed, with_artifact)) / base_mean - 1.0
+		var stacks := {artifact.id: rules.reference_growth_stacks} if artifact.growth_step != 0.0 else {}
+		measures.gains[artifact.id] = _mean(player.round_scores(rounds, rules.random_seed, with_artifact, HandLevels.new(),
+			{}, stacks)) / base_mean - 1.0
+		var stones := BalanceModel.stone_yield(rules, content.round_rules, content.starter_deck, artifact)
+		if stones > 0.0:
+			measures.stone_yields[artifact.id] = stones
 		print("%-32s %+.3f" % [artifact.id, measures.gains[artifact.id]])
 	for manual: ManualDefinition in content.manuals:
 		var levels := HandLevels.new()

@@ -34,6 +34,15 @@ extends Resource
 @export var reward_base: float = 1.0
 @export var reward_per_difficulty: float = 2.0
 
+@export_group("Artefacts a pierres et qui grandissent")
+## Goulots pendant lesquels le joueur garde un artefact en moyenne : un artefact a pierres vaut ce qu'il rapporte
+## sur cette duree.
+@export var yield_bottlenecks: int = 3
+## Cartes defaussees par goulot en moyenne (le joueur de reference ne defausse pas).
+@export var reference_discarded_cards: int = 4
+## Crans d'un artefact qui grandit, en moyenne sur la duree ou on le garde : il est mesure avec ces crans.
+@export var reference_growth_stacks: int = 6
+
 @export_group("Raretes des artefacts")
 ## Part des artefacts dans chaque rarete, du gain le plus faible au plus fort (Mortel, Spirituel, Celeste, Divin).
 @export var rarity_shares: PackedFloat32Array = [0.5, 0.3, 0.15, 0.05]

@@ -138,3 +138,44 @@ func test_round_compte_les_cartes_gardees() -> void:
 	var played: Array[CardInstance] = [round_state.hand()[0]]
 	var context := round_state.play(played)
 	assert_eq(context.qi, played[0].qi() + 4 * 3, "4 cartes gardees, +3 Qi chacune")
+
+
+func _stones_effect(trigger: ArtifactEffect.Trigger, stones: int, per: ArtifactEffect.Per = ArtifactEffect.Per.ONCE,
+		condition: ArtifactCondition = null) -> ArtifactEffect:
+	var effect := ArtifactEffect.new()
+	effect.trigger = trigger
+	effect.stones = stones
+	effect.per = per
+	effect.condition = condition
+	return effect
+
+
+func test_pierres_au_goulot_une_fois_ou_par_main_restante() -> void:
+	var artifacts := _artifacts([_stones_effect(ArtifactEffect.Trigger.ROUND_WON, 3),
+		_stones_effect(ArtifactEffect.Trigger.ROUND_WON, 1, ArtifactEffect.Per.HAND_LEFT)])
+	assert_eq(ArtifactResolver.after_round_won(artifacts, {}, 2, 1), 3 + 2)
+
+
+func test_pierres_par_carte_defaussee_qui_remplit_la_condition() -> void:
+	var artifacts := _artifacts([_stones_effect(ArtifactEffect.Trigger.CARD_DISCARDED, 1, ArtifactEffect.Per.ONCE,
+		_element(Element.Type.BOIS))])
+	assert_eq(ArtifactResolver.after_discard(artifacts, {}, C.hand([[C.BOIS, 2], [C.FEU, 3], [C.BOIS, 9]])), 2)
+
+
+## Un artefact qui grandit : rien tant qu'il n'a pas de cran, puis growth_step par cran sur son effet de score.
+func test_artefact_qui_grandit() -> void:
+	var grow := ArtifactEffect.new()
+	grow.trigger = ArtifactEffect.Trigger.CARD_DISCARDED
+	grow.grows = true
+	var artifacts := _artifacts([_effect(ArtifactEffect.Trigger.HAND_PLAYED, null, 0.0), grow])
+	artifacts[0].id = &"bambou"
+	artifacts[0].growth_step = 4.0
+	var stacks := {}
+	var result := _result("main_paire", [[C.FEU, 4]])
+	assert_eq(ArtifactResolver.effects_for(artifacts, result, [], stacks).size(), 0, "+0 : rien a montrer")
+	ArtifactResolver.after_discard(artifacts, stacks, C.hand([[C.FEU, 2], [C.EAU, 3]]))
+	assert_eq(stacks[&"bambou"], 2)
+	var effects := ArtifactResolver.effects_for(artifacts, result, [], stacks)
+	assert_eq(effects.size(), 1)
+	assert_eq(effects[0].amount, 8.0)
+	assert_eq(artifacts[0].effects[0].score_effect.amount, 0.0, "la ressource partagee ne change pas")

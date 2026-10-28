@@ -15,6 +15,8 @@ extends Resource
 ## un artefact fort est rare. La boutique tire d'abord une rarete (ShopRules.rarity_weights), puis un artefact.
 @export var rarity: int = 0
 @export var effects: Array[ArtifactEffect] = []
+## Artefact qui grandit : chaque cran (effet grows) ajoute ce montant a chacun de ses effets de score.
+@export var growth_step: float = 0.0
 
 
 func is_valid() -> bool:

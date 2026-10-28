@@ -4,7 +4,8 @@ extends RefCounted
 
 signal hand_played(result: HandResult, score: ScoreContext)
 signal finished(won: bool)
-signal discarded
+## stones : pierres gagnees par les artefacts sur cette defausse.
+signal discarded(stones: int)
 
 enum Status {PLAYING, WON, LOST}
 
@@ -22,10 +23,13 @@ var _levels: HandLevels
 var _constraint: TribulationConstraint
 var _hand_size: int
 var _max_selected: int
+## Crans des artefacts qui grandissent, partages avec la run (meme dictionnaire).
+var _stacks: Dictionary
 
 
-func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition], levels: HandLevels, constraint: TribulationConstraint) -> void:
+func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition], levels: HandLevels, constraint: TribulationConstraint, stacks: Dictionary = {}) -> void:
 	_deck = deck
+	_stacks = stacks
 	_rules = rules
 	_evaluator = evaluator
 	_artifacts = artifacts
@@ -103,10 +107,11 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 			counted.append(card)
 	result.scoring_cards = counted
 	# Les cartes jouees sont deja defaussees : la main ne contient plus que les cartes gardees.
-	var effects := ArtifactResolver.triggered_for(_artifacts, result, _deck.hand)
+	var effects := ArtifactResolver.triggered_for(_artifacts, result, _deck.hand, _stacks)
 	var context := ScoringPipeline.score_triggered(result, effects, _levels.level_of(result.definition.id),
 		_constraint.card_qi_scale())
 	score += context.total()
+	ArtifactResolver.after_hand(_artifacts, _stacks, result, _deck.hand)
 	hands_left -= 1
 	hand_played.emit(result, context)
 	if score >= target_score:
@@ -125,7 +130,7 @@ func discard(cards: Array[CardInstance]) -> bool:
 		return false
 	discards_left -= 1
 	hands_left -= _constraint.discard_hand_cost()
-	discarded.emit()
+	discarded.emit(ArtifactResolver.after_discard(_artifacts, _stacks, cards))
 	_refill()
 	return true
 

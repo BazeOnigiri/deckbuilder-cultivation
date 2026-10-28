@@ -91,7 +91,7 @@ static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: Econo
 	var stone := stone_value(rules, economy, first_rewards)
 	var prices := {}
 	for artifact: ArtifactDefinition in artifacts:
-		prices[artifact.id] = price(rules, measures.gains.get(artifact.id, 0.0), stone)
+		prices[artifact.id] = price(rules, equivalent_gain(measures, artifact.id, stone), stone)
 	for manual: ManualDefinition in manuals:
 		prices[manual.id] = price(rules, measures.gains.get(manual.id, 0.0), stone)
 	var bases: Array[int] = []
@@ -100,16 +100,49 @@ static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: Econo
 		bases.append(realm_base_score(rules, measures, growths))
 		growths.append(realm_growth(rules, economy, stone, rewards))
 	return {"stone": stone, "prices": prices, "bottlenecks": bottlenecks, "realms": bases, "growths": growths,
-		"rarities": rarities(rules, measures, artifacts)}
+		"rarities": rarities(rules, measures, artifacts, stone)}
+
+
+## Gain d'un artefact en score, plus ses pierres converties en gain (une pierre vaut stone).
+static func equivalent_gain(measures: BalanceMeasures, id: StringName, stone: float) -> float:
+	return measures.gains.get(id, 0.0) + measures.stone_yields.get(id, 0.0) * stone
+
+
+## Pierres qu'un artefact rapporte pendant yield_bottlenecks goulots : en franchissant (une fois, par main restante
+## du joueur de reference, par defausse restante) et en defaussant (cartes defaussees x part du paquet qui
+## remplit la condition).
+static func stone_yield(rules: BalanceRules, round_rules: RoundRules, deck: DeckDefinition, artifact: ArtifactDefinition) -> float:
+	var per_bottleneck := 0.0
+	for effect: ArtifactEffect in artifact.effects:
+		match effect.trigger:
+			ArtifactEffect.Trigger.ROUND_WON:
+				var counts := {ArtifactEffect.Per.ONCE: 1, ArtifactEffect.Per.HAND_LEFT: rules.reference_hands_left,
+					ArtifactEffect.Per.DISCARD_LEFT: round_rules.discards_per_round}
+				per_bottleneck += effect.stones * counts[effect.per]
+			ArtifactEffect.Trigger.CARD_DISCARDED:
+				per_bottleneck += effect.stones * rules.reference_discarded_cards * _deck_share(effect, deck)
+	return per_bottleneck * rules.yield_bottlenecks
+
+
+## Part des cartes du paquet qui remplissent la condition de l'effet.
+static func _deck_share(effect: ArtifactEffect, deck: DeckDefinition) -> float:
+	if effect.condition == null or deck.cards.is_empty():
+		return 1.0
+	var matching := 0
+	for i: int in deck.cards.size():
+		if effect.condition.matches(null, CardInstance.new(i, deck.cards[i], deck.ranks)):
+			matching += 1
+	return float(matching) / deck.cards.size()
 
 
 ## Rarete de chaque artefact, par id : classes par gain croissant (a gain egal, par id), le milieu de sa place
 ## (i + 0,5) / n tombe dans une part de rarity_shares. 18 artefacts en 50/30/15/5 % : 9, 5, 3 et 1.
-static func rarities(rules: BalanceRules, measures: BalanceMeasures, artifacts: Array[ArtifactDefinition]) -> Dictionary:
+static func rarities(rules: BalanceRules, measures: BalanceMeasures, artifacts: Array[ArtifactDefinition],
+		stone: float = 0.0) -> Dictionary:
 	var sorted := artifacts.duplicate()
 	sorted.sort_custom(func(a: ArtifactDefinition, b: ArtifactDefinition) -> bool:
-		var gain_a: float = measures.gains.get(a.id, 0.0)
-		var gain_b: float = measures.gains.get(b.id, 0.0)
+		var gain_a: float = equivalent_gain(measures, a.id, stone)
+		var gain_b: float = equivalent_gain(measures, b.id, stone)
 		return gain_a < gain_b if gain_a != gain_b else String(a.id) < String(b.id))
 	var result := {}
 	for i: int in sorted.size():

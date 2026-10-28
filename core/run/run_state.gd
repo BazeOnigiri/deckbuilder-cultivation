@@ -15,6 +15,8 @@ var current_round: RoundState
 var stones: int = 0
 ## Partage avec chaque round : un artefact ajoute agit des la main suivante.
 var artifacts: Array[ArtifactDefinition] = []
+## Crans des artefacts qui grandissent, par id (sauvegardes). Partages avec chaque round.
+var artifact_stacks: Dictionary = {}
 var hand_levels := HandLevels.new()
 var pills: Array[PillDefinition] = []
 var stats := RunStats.new()
@@ -86,6 +88,7 @@ func sell_artifact(index: int) -> bool:
 	if index < 0 or index >= artifacts.size():
 		return false
 	stones += sell_price(artifacts[index])
+	artifact_stacks.erase(artifacts[index].id)
 	artifacts.remove_at(index)
 	return true
 
@@ -147,7 +150,8 @@ func _create_round() -> void:
 	var constraint: TribulationConstraint = progress.current_bottleneck().constraint
 	if constraint == null:
 		constraint = TribulationConstraint.new()
-	current_round = RoundState.new(_deck, round_rules(), _evaluator, progress.current_target(), artifacts, hand_levels, constraint)
+	current_round = RoundState.new(_deck, round_rules(), _evaluator, progress.current_target(), artifacts, hand_levels, constraint,
+		artifact_stacks)
 	current_round.finished.connect(_on_round_finished)
 	current_round.hand_played.connect(_on_hand_played)
 	current_round.discarded.connect(_on_discarded)
@@ -160,6 +164,8 @@ func _on_round_finished(won: bool) -> void:
 		return
 	# Recompense calculee avant advance() : elle depend du goulot qui vient d'etre franchi.
 	var reward := RoundReward.compute(economy(), progress.current_bottleneck().reward, current_round.hands_left, stones)
+	reward.artifacts = ArtifactResolver.after_round_won(artifacts, artifact_stacks, current_round.hands_left,
+		current_round.discards_left)
 	stones += reward.total()
 	stats.stones_earned += reward.total()
 	stats.bottlenecks_cleared += 1
@@ -174,5 +180,7 @@ func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 	stats.record_hand(result.definition.id, score.total())
 
 
-func _on_discarded() -> void:
+func _on_discarded(gained: int) -> void:
 	stats.discards_used += 1
+	stones += gained
+	stats.stones_earned += gained

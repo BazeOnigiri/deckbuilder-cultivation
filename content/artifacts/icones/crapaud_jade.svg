@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Crapaud de la fortune accroupi, une sapeque dans la gueule. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M12 46 Q10 30 22 26 Q32 20 42 26 Q54 30 52 46 Q42 54 32 52 Q22 54 12 46 Z" stroke-width="2.6" fill="#ffffff" fill-opacity="0.3"/>
+    <circle cx="24" cy="28" r="3" stroke-width="2"/><circle cx="40" cy="28" r="3" stroke-width="2"/>
+    <circle cx="32" cy="40" r="4.5" stroke-width="2"/><rect x="30.5" y="38.5" width="3" height="3" stroke-width="1.2"/>
+    <path d="M10 52 L16 48 M54 52 L48 48" stroke-width="2"/>
+  </g>
+</svg>
