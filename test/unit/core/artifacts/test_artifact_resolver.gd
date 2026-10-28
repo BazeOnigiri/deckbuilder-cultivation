@@ -102,3 +102,39 @@ func test_effet_declenche_garde_son_artefact_et_sa_carte() -> void:
 	assert_eq(triggered[0].source, artifacts[0])
 	assert_null(triggered[0].card, "main jouee : pas de carte")
 	assert_eq(triggered[1].card, result.scoring_cards[0], "la carte Feu")
+
+
+## CARD_HELD : une fois par carte gardee en main qui remplit la condition, jamais pour les cartes jouees.
+func test_carte_gardee_en_main() -> void:
+	var artifacts := _artifacts([_effect(ArtifactEffect.Trigger.CARD_HELD, _element(Element.Type.FEU), 3.0)])
+	var result := _result("main_paire", [[C.FEU, 4], [C.FEU, 4]])
+	var held := C.hand([[C.FEU, 2], [C.EAU, 9], [C.FEU, 7]])
+	var triggered := ArtifactResolver.triggered_for(artifacts, result, held)
+	assert_eq(triggered.size(), 2, "deux cartes Feu gardees")
+	assert_eq(triggered[0].card, held[0])
+	assert_eq(ArtifactResolver.effects_for(artifacts, result).size(), 0, "rien de garde : rien")
+
+
+## Dans un round, les cartes gardees sont celles qui restent en main apres le coup.
+func test_round_compte_les_cartes_gardees() -> void:
+	var artifacts := _artifacts([_effect(ArtifactEffect.Trigger.CARD_HELD, null, 3.0)])
+	var deck_definition := DeckDefinition.new()
+	for rank: int in range(1, 6):
+		deck_definition.cards.append(CardData.create(StringName("c%d" % rank), Element.Type.BOIS, rank))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1
+	var rules := RoundRules.new()
+	rules.hand_size = 5
+	rules.hands_per_round = 2
+	rules.max_selected_cards = 5
+	var definition := HandDefinition.new()
+	definition.id = "test"
+	definition.base_comprehension = 1
+	definition.detector = HighCardDetector.new()
+	var hands: Array[HandDefinition] = [definition]
+	var round_state := RoundState.new(DeckState.new(deck_definition, rng), rules, HandEvaluator.new(hands), 1000, artifacts,
+		HandLevels.new(), TribulationConstraint.new())
+	round_state.start()
+	var played: Array[CardInstance] = [round_state.hand()[0]]
+	var context := round_state.play(played)
+	assert_eq(context.qi, played[0].qi() + 4 * 3, "4 cartes gardees, +3 Qi chacune")

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Source qui jaillit d'un rocher et tombe en vaguelettes. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M10 30 Q16 18 28 20 Q34 12 44 18 Q54 20 54 30 Z" stroke-width="2.4" fill="#ffffff" fill-opacity="0.3"/>
+    <path d="M32 30 Q30 40 32 46" stroke-width="2.4"/>
+    <path d="M12 50 Q18 46 24 50 Q30 54 36 50 Q42 46 48 50 Q52 52 54 50 M16 58 Q24 54 32 58 Q40 54 48 58" stroke-width="2"/>
+  </g>
+</svg>

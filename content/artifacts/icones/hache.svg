@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Hache a large lame en croissant sur un long manche. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M20 58 L42 14" stroke-width="3"/>
+    <path d="M36 26 Q30 12 42 6 Q56 10 54 26 Q48 20 40 24 Z" stroke-width="2.4" fill="#ffffff" fill-opacity="0.35"/>
+  </g>
+</svg>

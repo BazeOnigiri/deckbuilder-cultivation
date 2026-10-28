@@ -51,7 +51,8 @@ func best_play(hand: Array[CardInstance], artifacts: Array[ArtifactDefinition] =
 		for index: int in combination:
 			cards.append(hand[index])
 		var result := _evaluator.evaluate(cards)
-		var context := ScoringPipeline.score_triggered(result, ArtifactResolver.triggered_for(artifacts, result),
+		var held: Array[CardInstance] = hand.filter(func(card: CardInstance) -> bool: return not cards.has(card))
+		var context := ScoringPipeline.score_triggered(result, ArtifactResolver.triggered_for(artifacts, result, held),
 			levels.level_of(result.definition.id))
 		if best == null or context.total() > best.total():
 			best = context

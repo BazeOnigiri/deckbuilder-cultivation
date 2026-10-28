@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Racine de ginseng : corps fourchu et radicelles, trois feuilles au sommet. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M32 22 Q26 34 28 44 Q24 52 20 58 M28 44 Q32 52 38 58 M30 36 Q22 38 16 34 M30 32 Q38 34 46 30" stroke-width="2.6"/>
+    <path d="M32 22 L32 12 M32 14 Q24 6 20 12 Q26 14 32 14 Q40 6 44 12 Q38 14 32 14" stroke-width="2"/>
+  </g>
+</svg>

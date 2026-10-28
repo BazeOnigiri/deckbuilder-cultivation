@@ -18,9 +18,9 @@ func test_chaque_fichier_donne_un_artefact() -> void:
 	assert_eq(_artifacts.size(), count)
 
 
-## Scope v1 : 15 a 20 artefacts.
-func test_assez_d_artefacts_pour_la_v1() -> void:
-	assert_between(_artifacts.size(), 15, 20)
+## Au moins le scope v1 (15), au plus la cible du plan apres v1 (environ 40).
+func test_nombre_d_artefacts() -> void:
+	assert_between(_artifacts.size(), 15, 40)
 
 
 func test_tous_les_artefacts_valides() -> void:

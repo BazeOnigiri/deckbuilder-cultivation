@@ -25,22 +25,34 @@ Genere par tools/equilibrage.gd ; ne pas modifier a la main. Explications : equi
 
 | Objet | Gain | Prix | Rarete |
 | --- | --- | --- | --- |
-| artefact_banniere_cinq_vents | +30.5 % | 8 | 3 |
-| artefact_bassin_purete | +14.2 % | 4 | 0 |
+| artefact_banniere_cinq_vents | +30.5 % | 8 | 2 |
+| artefact_bassin_purete | +14.2 % | 4 | 1 |
+| artefact_boussole | +40.6 % | 11 | 2 |
 | artefact_chaudron_alchimique | +21.5 % | 6 | 1 |
+| artefact_cloche | +4.3 % | 1 | 0 |
 | artefact_couronne_immortel | +17.9 % | 5 | 1 |
 | artefact_dragon_azur | +6.2 % | 2 | 0 |
 | artefact_echelle_celeste | +4.9 % | 1 | 0 |
 | artefact_epee_volante | +21.0 % | 6 | 1 |
 | artefact_ermite | +8.1 % | 2 | 0 |
-| artefact_gourde_elixir | +26.1 % | 7 | 2 |
+| artefact_eventail | -1.1 % | 1 | 0 |
+| artefact_ginseng | +12.6 % | 3 | 0 |
+| artefact_gourde_elixir | +26.1 % | 7 | 1 |
 | artefact_grain_riz | +7.1 % | 2 | 0 |
+| artefact_grue | +43.3 % | 12 | 2 |
+| artefact_hache | +7.6 % | 2 | 0 |
+| artefact_lanterne | +28.1 % | 8 | 2 |
 | artefact_lotus_flamme | +4.9 % | 1 | 0 |
 | artefact_miroir_jumeau | +29.9 % | 8 | 2 |
-| artefact_oiseau_vermillon | +24.5 % | 7 | 2 |
+| artefact_montagne | +23.8 % | 6 | 1 |
+| artefact_nuage_pourpre | +5.2 % | 1 | 0 |
+| artefact_oiseau_vermillon | +24.5 % | 7 | 1 |
 | artefact_pagode | +12.9 % | 3 | 0 |
 | artefact_perle_marees | +23.8 % | 6 | 1 |
+| artefact_pinceau | +8.1 % | 2 | 0 |
 | artefact_qilin | +6.8 % | 2 | 0 |
+| artefact_sceau_jade | +52.4 % | 14 | 3 |
+| artefact_source_cachee | +13.4 % | 4 | 0 |
 | artefact_tigre_blanc | +20.5 % | 6 | 1 |
 | artefact_tortue_noire | +7.1 % | 2 | 0 |
 | manuel_ascension | +11.1 % | 3 | |

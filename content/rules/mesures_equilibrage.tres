@@ -9,20 +9,32 @@ mean_hand_score = 223.708
 gains = Dictionary[StringName, float]({
 &"artefact_banniere_cinq_vents": 0.3048840452733028,
 &"artefact_bassin_purete": 0.14235074293275152,
+&"artefact_boussole": 0.40603599334847207,
 &"artefact_chaudron_alchimique": 0.2150906538881041,
+&"artefact_cloche": 0.04298460493142864,
 &"artefact_couronne_immortel": 0.17881792336438584,
 &"artefact_dragon_azur": 0.062487707189729624,
 &"artefact_echelle_celeste": 0.04889856419976035,
 &"artefact_epee_volante": 0.21034115901085326,
 &"artefact_ermite": 0.08066095088240033,
+&"artefact_eventail": -0.010726035725141636,
+&"artefact_ginseng": 0.1261130580935863,
 &"artefact_gourde_elixir": 0.26147254456702496,
 &"artefact_grain_riz": 0.07125806855365036,
+&"artefact_grue": 0.4332433350617768,
+&"artefact_hache": 0.07587793015895716,
+&"artefact_lanterne": 0.2812438535948647,
 &"artefact_lotus_flamme": 0.04941486223112257,
 &"artefact_miroir_jumeau": 0.29892314982030155,
+&"artefact_montagne": 0.2378547034527152,
+&"artefact_nuage_pourpre": 0.051880129454467516,
 &"artefact_oiseau_vermillon": 0.2445978686502046,
 &"artefact_pagode": 0.12922425662023707,
 &"artefact_perle_marees": 0.23773401040642272,
+&"artefact_pinceau": 0.08110125699572657,
 &"artefact_qilin": 0.06824297745275087,
+&"artefact_sceau_jade": 0.5236223112271354,
+&"artefact_source_cachee": 0.1340117474565059,
 &"artefact_tigre_blanc": 0.20543744524111784,
 &"artefact_tortue_noire": 0.07083117277880091,
 &"manuel_ascension": 0.11099513651724568,
@@ -50,7 +62,7 @@ hand_frequencies = Dictionary[String, float]({
 "main_purete": 0.0295,
 "main_souffle": 0.062
 })
-content_signature = "59da7ee91a8c453bae6de4720f757f84"
+content_signature = "bef8f51d7aab265a7f4f8d5f79b24e6d"
 hand_rarities = Dictionary[String, float]({
 "main_ascension": 0.0028402016225049396,
 "main_ascension_pure": 4.544322596007904e-06,
