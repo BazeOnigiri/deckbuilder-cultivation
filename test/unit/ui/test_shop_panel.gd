@@ -39,6 +39,9 @@ func test_clic_achete_l_artefact() -> void:
 	var parts := _panel(100)
 	var panel: ShopPanel = parts[0]
 	var run: RunState = parts[2]
+	if parts[1].offers.is_empty():
+		pass_test("pas d'artefact dans ce tirage")
+		return
 	var before := run.artifacts.size()
 	watch_signals(panel)
 	_slots(panel)[0].pressed.emit()

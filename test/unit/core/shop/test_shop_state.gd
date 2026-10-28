@@ -40,8 +40,6 @@ func _rules(offer_count: int = 2, max_artifacts: int = 5) -> ShopRules:
 	var rules := ShopRules.new()
 	rules.id = &"test"
 	rules.offer_count = offer_count
-	rules.manual_offer_count = 1
-	rules.pill_offer_count = 1
 	rules.max_pills = 2
 	rules.reroll_base_cost = 5
 	rules.reroll_cost_step = 1
@@ -64,6 +62,14 @@ func _rng(seed_value: int = 1) -> RandomNumberGenerator:
 
 func _shop(run: RunState, catalog: Array[ArtifactDefinition], rules: ShopRules = null, seed_value: int = 1) -> ShopState:
 	return ShopState.new(run, catalog, _manuals(), _pills(), rules if rules != null else _rules(), _rng(seed_value))
+
+## Boutique d'un seul emplacement, toujours de ce type d'offre.
+func _shop_of(run: RunState, kind: ShopRules.OfferKind, max_artifacts: int = 5) -> ShopState:
+	var rules := _rules(1, max_artifacts)
+	rules.kind_weights = PackedFloat32Array([0, 0, 0])
+	rules.kind_weights[kind] = 1.0
+	return _shop(run, _catalog(5), rules)
+
 
 func _ids(artifacts: Array[ArtifactDefinition]) -> Array:
 	var ids: Array = []
@@ -145,13 +151,14 @@ func test_meme_seed_memes_offres() -> void:
 
 
 func test_un_manuel_propose() -> void:
-	var shop := _shop(_run(10), _catalog(5))
+	var shop := _shop_of(_run(10), ShopRules.OfferKind.MANUAL)
 	assert_eq(shop.manual_offers.size(), 1)
+	assert_true(shop.offers.is_empty())
 
 
 func test_achat_manuel_monte_le_niveau_et_debite() -> void:
 	var run := _run(10)
-	var shop := _shop(run, _catalog(5))
+	var shop := _shop_of(run, ShopRules.OfferKind.MANUAL)
 	var hand_id: String = shop.manual_offers[0].hand.id
 	assert_true(shop.buy_manual(0))
 	assert_eq(run.stones, 7)
@@ -162,24 +169,25 @@ func test_achat_manuel_monte_le_niveau_et_debite() -> void:
 func test_manuel_achetable_au_maximum_d_artefacts() -> void:
 	var run := _run(10)
 	run.artifacts.append(_artifact("deja", 1))
-	var shop := _shop(run, _catalog(5), _rules(2, 1))
+	var shop := _shop_of(run, ShopRules.OfferKind.MANUAL, 1)
 	assert_true(shop.buy_manual(0))
 
 
 func test_achat_manuel_refuse_sans_assez_de_pierres() -> void:
 	var run := _run(2)
-	var shop := _shop(run, _catalog(5))
+	var shop := _shop_of(run, ShopRules.OfferKind.MANUAL)
 	assert_false(shop.buy_manual(0))
 	assert_eq(run.stones, 2)
 
+
 func test_une_pilule_proposee() -> void:
-	var shop := _shop(_run(10), _catalog(5))
+	var shop := _shop_of(_run(10), ShopRules.OfferKind.PILL)
 	assert_eq(shop.pill_offers.size(), 1)
 
 
 func test_achat_pilule_ajoute_a_l_inventaire_et_debite() -> void:
 	var run := _run(10)
-	var shop := _shop(run, _catalog(5))
+	var shop := _shop_of(run, ShopRules.OfferKind.PILL)
 	assert_true(shop.buy_pill(0))
 	assert_eq(run.stones, 7)
 	assert_eq(run.pills.size(), 1)
@@ -189,9 +197,41 @@ func test_achat_pilule_ajoute_a_l_inventaire_et_debite() -> void:
 func test_achat_pilule_refuse_inventaire_plein() -> void:
 	var run := _run(10)
 	run.pills.append_array(_pills(2))
-	var shop := _shop(run, _catalog(5))
+	var shop := _shop_of(run, ShopRules.OfferKind.PILL)
 	assert_false(shop.buy_pill(0))
 	assert_eq(run.stones, 10)
+
+
+## Chaque emplacement tire son type : sur 3000 relances d'un emplacement, la repartition suit 70 / 15 / 15.
+func test_types_d_offre_selon_leurs_poids() -> void:
+	var rules := _rules(1)
+	rules.kind_weights = PackedFloat32Array([70, 15, 15])
+	rules.reroll_base_cost = 0
+	rules.reroll_cost_step = 0
+	var shop := _shop(_run(0), _catalog(5), rules)
+	var counts := [0, 0, 0]
+	var rolls := 3000
+	for i: int in rolls:
+		counts[0] += shop.offers.size()
+		counts[1] += shop.manual_offers.size()
+		counts[2] += shop.pill_offers.size()
+		shop.reroll()
+	assert_almost_eq(counts[0] / float(rolls), 0.70, 0.03)
+	assert_almost_eq(counts[1] / float(rolls), 0.15, 0.03)
+	assert_almost_eq(counts[2] / float(rolls), 0.15, 0.03)
+
+
+## Un type sans objet a proposer (tous les artefacts possedes) laisse sa place aux autres.
+func test_type_epuise_laisse_la_place() -> void:
+	var catalog := _catalog(1)
+	var run := _run(0)
+	run.artifacts.append(catalog[0])
+	var rules := _rules(2)
+	rules.kind_weights = PackedFloat32Array([70, 15, 15])
+	var shop := _shop(run, catalog, rules)
+	assert_true(shop.offers.is_empty())
+	assert_eq(shop.manual_offers.size() + shop.pill_offers.size(), 2)
+
 
 ## Une rarete est tiree selon ses poids, puis un artefact : sur 4000 relances, la repartition suit 70/22/7/1.
 func test_tirage_suit_les_poids_de_rarete() -> void:
