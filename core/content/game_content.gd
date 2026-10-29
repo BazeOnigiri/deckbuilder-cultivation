@@ -23,6 +23,7 @@ var packs: Array[PackDefinition]
 var legacies: Array[LegacyDefinition]
 ## Ameliorations, auras et talismans des cartes.
 var modifiers := CardModifierCatalog.new()
+var unlocks: Unlocks
 
 
 static func load_default() -> GameContent:
@@ -40,6 +41,7 @@ static func load_default() -> GameContent:
 	content.packs = PackCatalog.load_definitions()
 	content.legacies = LegacyCatalog.load_definitions()
 	content.modifiers = CardModifierCatalog.load_default()
+	content.unlocks = Unlocks.new(UnlockCatalog.load_rules(), UnlockCatalog.load_achievements())
 	return content
 
 
@@ -56,8 +58,21 @@ func equip(run: RunState) -> RunState:
 
 
 ## saved : offres d'une boutique sauvegardee. Vide : nouvelles offres tirees au hasard.
-func new_shop(run: RunState, rng: RandomNumberGenerator, saved: Dictionary = {}) -> ShopState:
-	return ShopState.new(run, artifacts, manuals, pills, packs, legacies, starter_deck, shop_rules, rng, saved, modifiers)
+## profile : la boutique ne propose que le contenu que ce profil a debloque (null : tout le contenu). Meme profil et
+## meme graine donnent les memes offres : le filtre garde l'ordre des catalogues.
+func new_shop(run: RunState, rng: RandomNumberGenerator, saved: Dictionary = {}, profile: ProfileStats = null) -> ShopState:
+	if profile == null:
+		return ShopState.new(run, artifacts, manuals, pills, packs, legacies, starter_deck, shop_rules, rng, saved, modifiers)
+	var open_artifacts: Array[ArtifactDefinition] = []
+	open_artifacts.assign(unlocks.open(artifacts, profile))
+	var open_pills: Array[PillDefinition] = []
+	open_pills.assign(unlocks.open(pills, profile))
+	var open_packs: Array[PackDefinition] = []
+	open_packs.assign(unlocks.open(packs, profile))
+	var open_legacies: Array[LegacyDefinition] = []
+	open_legacies.assign(unlocks.open(legacies, profile))
+	return ShopState.new(run, open_artifacts, manuals, open_pills, open_packs, open_legacies, starter_deck, shop_rules, rng, saved, modifiers)
+
 
 ## Recherches par id pour la sauvegarde. Contenu retire du jeu : null.
 func card_by_id(id: StringName) -> CardData:
@@ -74,6 +89,15 @@ func legacy_by_id(id: StringName) -> LegacyDefinition:
 
 func pill_by_id(id: StringName) -> PillDefinition:
 	return _find(pills, id) as PillDefinition
+
+
+## Artefact, pilule, heritage ou sceau de cet id (le contenu qui peut etre verrouille). null s'il n'existe pas.
+func item_by_id(id: StringName) -> Resource:
+	for list: Array in [artifacts, pills, legacies, packs]:
+		var found := _find(list, id)
+		if found != null:
+			return found
+	return null
 
 
 static func _find(list: Array, id: StringName) -> Resource:

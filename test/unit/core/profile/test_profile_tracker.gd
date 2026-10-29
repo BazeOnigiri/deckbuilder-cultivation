@@ -236,3 +236,81 @@ func test_choix_d_un_sceau_ouvert_vus() -> void:
 	assert_true(shop.buy_pack(index))
 	for choice: Resource in shop.opening.choices:
 		assert_true(stats.is_seen(Compendium.KEYS[Compendium.kind_of(choice)], choice.id))
+
+
+func _unlocks(kind: UnlockCondition.Kind, count: int = 1, target: StringName = &"") -> Unlocks:
+	var condition := UnlockCondition.new()
+	condition.kind = kind
+	condition.count = count
+	condition.target = target
+	var achievement := AchievementDefinition.new()
+	achievement.id = &"succes_test"
+	achievement.name_key = "N"
+	achievement.description_key = "D"
+	achievement.glyph = "x"
+	achievement.condition = condition
+	var rules: Array[UnlockRule] = []
+	var all: Array[AchievementDefinition] = [achievement]
+	return Unlocks.new(rules, all)
+
+
+func test_succes_obtenu_en_jouant_signale_et_garde_pour_le_bilan() -> void:
+	var stats := ProfileStats.new()
+	var run := _run(1, 1000)
+	_tracker = ProfileTracker.new(stats, null, _unlocks(UnlockCondition.Kind.HAND_PLAYED, 1, &"test"))
+	var got: Array[StringName] = []
+	_tracker.achieved.connect(func(achievement: AchievementDefinition) -> void: got.append(achievement.id))
+	_tracker.track(run)
+	run.start()
+	assert_true(got.is_empty())
+	_play_highest(run)
+	assert_eq(got, [&"succes_test"])
+	assert_true(stats.has_achievement(&"succes_test"))
+	assert_eq(_tracker.pending_achievements.size(), 1)
+
+
+func test_gagner_sans_acheter_refuse_apres_un_achat() -> void:
+	var content := GameContent.load_default()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 3
+	var stats := ProfileStats.new()
+	_tracker = ProfileTracker.new(stats, null, _unlocks(UnlockCondition.Kind.WIN_NO_PURCHASE))
+	var run := _run(1, 1)
+	_tracker.track(run)
+	var shop := content.new_shop(content.new_run(rng), rng)
+	_tracker.track_shop(shop)
+	shop.artifact_bought.emit(shop.offers[0])
+	run.start()
+	_play_highest(run)
+	assert_eq(run.status, RunState.Status.WON)
+	assert_false(stats.has_achievement(&"succes_test"))
+
+
+func test_gagner_sans_acheter_accorde() -> void:
+	var stats := ProfileStats.new()
+	_tracker = ProfileTracker.new(stats, null, _unlocks(UnlockCondition.Kind.WIN_NO_PURCHASE))
+	var run := _run(1, 1)
+	_tracker.track(run)
+	run.start()
+	_play_highest(run)
+	assert_true(stats.has_achievement(&"succes_test"))
+
+
+func test_run_reprise_ne_compte_pas_comme_sans_achat() -> void:
+	var stats := ProfileStats.new()
+	_tracker = ProfileTracker.new(stats, null, _unlocks(UnlockCondition.Kind.WIN_NO_PURCHASE))
+	var run := _run(1, 1)
+	_tracker.track(run, false)
+	run.start()
+	_play_highest(run)
+	assert_false(stats.has_achievement(&"succes_test"))
+
+
+func test_goulot_franchi_en_une_main() -> void:
+	var stats := ProfileStats.new()
+	_tracker = ProfileTracker.new(stats, null, _unlocks(UnlockCondition.Kind.ONE_HAND_CLEARS))
+	var run := _run(1, 1)
+	_tracker.track(run)
+	run.start()
+	_play_highest(run)
+	assert_true(stats.has_achievement(&"succes_test"))

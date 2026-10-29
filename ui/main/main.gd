@@ -43,7 +43,7 @@ func _ready() -> void:
 	_content = GameContent.load_default()
 	_profile_storage = SaveStorage.new(profile_path)
 	_profile = ProfileStats.load_from(_profile_storage)
-	_tracker = ProfileTracker.new(_profile, _content.profile_rules)
+	_tracker = ProfileTracker.new(_profile, _content.profile_rules, _content.unlocks)
 	_tracker.changed.connect(_save_profile)
 	_run_storage = SaveStorage.new(run_path)
 	_show_menu()
@@ -178,6 +178,8 @@ func _show_run(resume_data: Dictionary) -> void:
 	run_screen.run_storage = _run_storage
 	run_screen.resume_data = resume_data
 	run_screen.settings = _settings
+	run_screen.profile = _profile
+	run_screen.tracker = _tracker
 	# Branche avant add_child : run_created est emis pendant le _ready de l'ecran.
 	run_screen.run_created.connect(func(run: RunState, resumed: bool) -> void: _tracker.track(run, not resumed))
 	run_screen.shop_created.connect(_tracker.track_shop)

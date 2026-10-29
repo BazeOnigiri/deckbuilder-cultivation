@@ -25,6 +25,7 @@ func _ready() -> void:
 	%BackButton.pressed.connect(back_requested.emit)
 	%BackButton.grab_focus(not Focus.shown)
 	%HistoryButton.pressed.connect(_show_history)
+	%AchievementsButton.pressed.connect(_show_achievements)
 	%Body.custom_minimum_size.y = get_theme_constant(&"tab_height", &"ScrollPanel")
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 	%Grid.add_child(ScrollTiles.stat(str(profile.runs_started), "UI_STATS_RUNS"))
@@ -70,6 +71,10 @@ func _add_bars() -> void:
 	var most: int = profile.hands.count_of(played[0].id)
 	for hand: HandDefinition in played.slice(0, TOP_HANDS):
 		%Bars.add_child(ScrollTiles.bar(tr(hand.name_key), profile.hands.count_of(hand.id), most))
+
+
+func _show_achievements() -> void:
+	ScrollOverlay.open(self, "UI_ACHIEVEMENTS_TITLE", AchievementsList.build(profile, content), not settings.reduce_motion)
 
 
 func _show_history() -> void:

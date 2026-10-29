@@ -104,3 +104,24 @@ func test_texte_du_meilleur_coup_avec_sa_main() -> void:
 	var content := GameContent.load_default()
 	assert_eq(GameHistory.best_hand_text(900, "", content.hands), "900")
 	assert_eq(GameHistory.best_hand_text(900, content.hands[0].id, content.hands), "900 (%s)" % tr(content.hands[0].name_key))
+
+
+func test_rouleau_des_succes_compte_obtenus_sur_total() -> void:
+	var content := GameContent.load_default()
+	var screen: Control = SCREEN.instantiate()
+	screen.content = content
+	screen.settings = GameSettings.new()
+	screen.settings.reduce_motion = true
+	screen.profile.achieve(content.unlocks.achievements()[0].id)
+	add_child_autofree(screen)
+	screen.get_node("%AchievementsButton").pressed.emit()
+	var overlay: ScrollOverlay = null
+	for child: Node in screen.get_children():
+		if child is ScrollOverlay:
+			overlay = child
+	assert_not_null(overlay)
+	assert_eq(overlay.find_children("*", "ItemSlot", true, false).size(), content.unlocks.achievements().size())
+	var total := content.unlocks.achievements().size()
+	var counter := overlay.find_children("*", "Label", true, false).filter(
+		func(label: Label) -> bool: return label.text == tr("UI_ACHIEVEMENTS_COUNT") % [1, total])
+	assert_eq(counter.size(), 1)

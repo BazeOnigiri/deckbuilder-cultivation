@@ -140,3 +140,32 @@ func test_champs_de_la_version_2_abimes_ignores() -> void:
 	assert_eq(stats.games.size(), 1)
 	assert_false(stats.games[0].won)
 	assert_eq(stats.games[0].artifacts, ["z"])
+
+
+func test_migration_d_un_profil_de_version_2() -> void:
+	var storage := SaveStorage.new(PATH)
+	storage.save({"version": 2, "stats": {"runs_started": 3, "runs_won": 1, "best_realm": 2, "seen": {"artifact": ["a"]}}})
+	var loaded := ProfileStats.load_from(storage)
+	assert_eq(loaded.runs_won, 1)
+	assert_true(loaded.is_seen("artifact", &"a"))
+	assert_true(loaded.unlocked.is_empty())
+	assert_true(loaded.achievements.is_empty())
+	assert_true(loaded.save_to(storage))
+	assert_eq(storage.load_data()["version"], ProfileStats.VERSION)
+
+
+func test_deblocages_et_succes_abimes_ignores() -> void:
+	var stats := ProfileStats.from_dict({"unlocked": ["a", 3, null], "achievements": "pas une liste"})
+	assert_true(stats.has_unlocked(&"a"))
+	assert_eq(stats.unlocked.size(), 1)
+	assert_true(stats.achievements.is_empty())
+
+
+func test_deblocages_et_succes_ecrits_tries() -> void:
+	var stats := ProfileStats.new()
+	stats.unlock(&"b")
+	stats.unlock(&"a")
+	stats.achieve(&"z")
+	var data := stats.to_dict()
+	assert_eq(data["unlocked"], ["a", "b"])
+	assert_eq(data["achievements"], ["z"])

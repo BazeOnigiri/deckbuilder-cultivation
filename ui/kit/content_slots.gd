@@ -54,7 +54,8 @@ static func of(item: Resource) -> ItemSlot:
 
 
 ## La silhouette d'un contenu jamais vu : un point d'interrogation en sceau, le nom cache dans l'infobulle.
-static func hidden(kind: Compendium.Kind) -> ItemSlot:
+## lock_text : la condition de deblocage d'un contenu verrouille, montree a la place.
+static func hidden(kind: Compendium.Kind, lock_text: String = "") -> ItemSlot:
 	var slot := ItemSlot.new()
 	slot.kind = {
 		Compendium.Kind.PILL: ItemSlot.Kind.PILL,
@@ -65,7 +66,10 @@ static func hidden(kind: Compendium.Kind) -> ItemSlot:
 	}.get(kind, ItemSlot.Kind.ARTIFACT)
 	slot.glyph = HIDDEN_GLYPH
 	slot.disabled = true
-	slot.set_info(_tr("UI_COMPENDIUM_UNKNOWN"), "")
+	if lock_text.is_empty():
+		slot.set_info(_tr("UI_COMPENDIUM_UNKNOWN"), "")
+	else:
+		slot.set_info(_tr("UI_COMPENDIUM_LOCKED"), lock_text)
 	return slot
 
 

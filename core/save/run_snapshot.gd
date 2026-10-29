@@ -118,9 +118,9 @@ static func resume_round(data: Dictionary, run: RunState) -> bool:
 
 
 ## La boutique sauvegardee de cette run, avec ses offres d'origine.
-static func restore_shop(data: Dictionary, run: RunState, content: GameContent, rng: RandomNumberGenerator) -> ShopState:
+static func restore_shop(data: Dictionary, run: RunState, content: GameContent, rng: RandomNumberGenerator, profile: ProfileStats = null) -> ShopState:
 	var saved: Variant = migrate(data).get("shop", {})
-	return content.new_shop(run, rng, saved if saved is Dictionary else {})
+	return content.new_shop(run, rng, saved if saved is Dictionary else {}, profile)
 
 
 ## La sauvegarde au format de VERSION. Chaque lecture passe par ici : aucune ne lit un ancien format. {} si inutilisable.

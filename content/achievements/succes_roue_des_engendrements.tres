@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/profile/achievement_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/profile/unlock_condition.gd" id="2"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("2")
+kind = 2
+target = &"main_cycle_engendrement"
+count = 1
+
+[resource]
+script = ExtResource("1")
+id = &"succes_roue_des_engendrements"
+name_key = "ACH_ROUE_DES_ENGENDREMENTS_NAME"
+description_key = "ACH_ROUE_DES_ENGENDREMENTS_DESC"
+glyph = "环"
+condition = SubResource("condition")

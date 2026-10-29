@@ -403,3 +403,59 @@ PILL_EVEIL_DESC,Colle un talisman d'éveil sur la carte sélectionnée (la main 
 UI_KIND_ENHANCEMENT,Amélioration,Enhancement
 UI_KIND_AURA,Aura,Aura
 UI_KIND_TALISMAN,Talisman,Talisman
+ACH_PREMIER_SOUFFLE_NAME,Premier souffle,First Breath
+ACH_PREMIER_SOUFFLE_DESC,Jouer un premier coup.,Play a first hand.
+ACH_PREMIERE_VICTOIRE_NAME,Première victoire,First Victory
+ACH_PREMIERE_VICTOIRE_DESC,Gagner une partie.,Win a run.
+ACH_DISCIPLE_ASSIDU_NAME,Disciple assidu,Diligent Disciple
+ACH_DISCIPLE_ASSIDU_DESC,Gagner 3 parties.,Win 3 runs.
+ACH_VOIE_ACCOMPLIE_NAME,Voie accomplie,Path Fulfilled
+ACH_VOIE_ACCOMPLIE_DESC,Gagner 10 parties.,Win 10 runs.
+ACH_AU_DELA_DU_SEUIL_NAME,Au-delà du seuil,Beyond the Threshold
+ACH_AU_DELA_DU_SEUIL_DESC,Atteindre le deuxième royaume.,Reach the second realm.
+ACH_SOMMET_DES_BRUMES_NAME,Sommet des brumes,Summit of Mists
+ACH_SOMMET_DES_BRUMES_DESC,Atteindre le quatrième royaume.,Reach the fourth realm.
+ACH_ROUE_DES_ENGENDREMENTS_NAME,Roue des engendrements,Wheel of Generation
+ACH_ROUE_DES_ENGENDREMENTS_DESC,Jouer un Cycle d’engendrement.,Play a Generation Cycle.
+ACH_ECHELLE_DE_JADE_NAME,Échelle de jade,Jade Ladder
+ACH_ECHELLE_DE_JADE_DESC,Jouer une Ascension pure.,Play a Pure Ascension.
+ACH_CINQ_TRONES_NAME,Cinq trônes,Five Thrones
+ACH_CINQ_TRONES_DESC,Jouer des Cinq Souverains.,Play Five Sovereigns.
+ACH_QUATRE_VENTS_NAME,Quatre vents,Four Winds
+ACH_QUATRE_VENTS_DESC,Jouer un Carré.,Play a Four of a Kind.
+ACH_CINQ_ELEMENTS_UNIS_NAME,Cinq éléments unis,Five Elements United
+ACH_CINQ_ELEMENTS_UNIS_DESC,Jouer 3 fois une Harmonie.,Play a Harmony 3 times.
+ACH_COLLECTIONNEUR_NAME,Collectionneur,Collector
+ACH_COLLECTIONNEUR_DESC,"Acheter 25 artefacts en boutique, toutes parties.","Buy 25 artifacts in shops, across all runs."
+ACH_SURVIVANT_DU_CIEL_NAME,Survivant du ciel,Survivor of Heaven
+ACH_SURVIVANT_DU_CIEL_DESC,"Vaincre 5 tribulations, toutes parties.","Overcome 5 tribulations, across all runs."
+ACH_COUP_DE_TONNERRE_NAME,Coup de tonnerre,Thunderclap
+ACH_COUP_DE_TONNERRE_DESC,Marquer 3000 points en un seul coup.,Score 3000 points in a single hand.
+ACH_VOIE_DU_VIDE_NAME,Voie du vide,Way of Emptiness
+ACH_VOIE_DU_VIDE_DESC,Gagner une partie sans acheter d’artefact.,Win a run without buying an artifact.
+ACH_UN_SEUL_GESTE_NAME,Un seul geste,A Single Gesture
+ACH_UN_SEUL_GESTE_DESC,Franchir un goulot en une seule main.,Clear a bottleneck with a single hand.
+ACH_ARSENAL_COMPLET_NAME,Arsenal complet,Full Arsenal
+ACH_ARSENAL_COMPLET_DESC,Posséder 5 artefacts en même temps.,Own 5 artifacts at once.
+ACH_HERITIER_NAME,Héritier,Heir
+ACH_HERITIER_DESC,Posséder 3 héritages en même temps.,Own 3 legacies at once.
+ACH_VETERAN_DES_BRUMES_NAME,Vétéran des brumes,Veteran of the Mists
+ACH_VETERAN_DES_BRUMES_DESC,Commencer 10 parties.,Start 10 runs.
+UNLOCK_WINS,Gagner %d parties,Win %d runs
+UNLOCK_REALM,Atteindre le royaume %d,Reach realm %d
+UNLOCK_HAND_PLAYED,Jouer %s %d fois,Play %s %d times
+UNLOCK_ARTIFACTS_BOUGHT,Acheter %d artefacts en boutique,Buy %d artifacts in shops
+UNLOCK_TRIBULATIONS_WON,Vaincre %d tribulations,Overcome %d tribulations
+UNLOCK_BEST_SCORE,Marquer %d points en un coup,Score %d points in one hand
+UNLOCK_GAMES,Commencer %d parties,Start %d runs
+UNLOCK_WIN_NO_PURCHASE,Gagner sans acheter d’artefact,Win without buying an artifact
+UNLOCK_ONE_HAND_CLEARS,Franchir %d goulots en une main,Clear %d bottlenecks with one hand
+UNLOCK_ARTIFACTS_OWNED,Posséder %d artefacts,Own %d artifacts
+UNLOCK_LEGACIES_OWNED,Posséder %d héritages,Own %d legacies
+UI_COMPENDIUM_LOCKED,Verrouillé,Locked
+UI_SUMMARY_UNLOCKED,Débloqué,Unlocked
+UI_SUMMARY_ACHIEVEMENTS,Succès obtenus,Achievements earned
+UI_ACHIEVEMENT_BADGE,Succès,Achievement
+UI_ACHIEVEMENTS_BUTTON,Succès,Achievements
+UI_ACHIEVEMENTS_TITLE,Succès,Achievements
+UI_ACHIEVEMENTS_COUNT,Obtenus : %d / %d,Earned: %d / %d

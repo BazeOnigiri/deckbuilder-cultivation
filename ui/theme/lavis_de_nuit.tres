@@ -793,6 +793,7 @@ InfoBubble/constants/anchor_gap = 8
 InfoBubble/constants/element_darken_percent = 55
 InfoBubble/constants/long_press_ms = 450
 InfoBubble/constants/separation = 6
+InfoBubble/constants/toast_ms = 4000
 InfoBubble/constants/width = 220
 InfoPaper/base_type = &"PanelContainer"
 InfoPaper/styles/panel = SubResource("StyleBoxFlat_papier_bulle")

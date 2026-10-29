@@ -1,9 +1,10 @@
 class_name ProfileStats
 extends RefCounted
 ## Statistiques du joueur, conservees d'une run a l'autre.
-## Version 2 : contenu vu (compendium), historique des parties, achats et tribulations. Champs optionnels.
+## Version 2 : contenu vu (compendium), historique des parties, achats et tribulations.
+## Version 3 : contenus debloques et succes obtenus. Champs optionnels.
 
-const VERSION := 2
+const VERSION := 3
 const DEFAULT_PATH := "user://profil.json"
 
 var runs_started: int = 0
@@ -19,6 +20,10 @@ var artifact_purchases: Dictionary = {}
 var tribulations: Dictionary = {}
 ## Les dernieres parties terminees, la plus ancienne en premier.
 var games: Array[GameRecord] = []
+## id de contenu -> true : les contenus verrouilles au depart (UnlockRule) que le joueur a debloques.
+var unlocked: Dictionary = {}
+## id de succes -> true : les succes obtenus.
+var achievements: Dictionary = {}
 ## L'aide a deja ete proposee a la premiere partie. Champ optionnel : un ancien profil l'a faux.
 var help_offered: bool = false
 
@@ -44,6 +49,8 @@ func to_dict() -> Dictionary:
 		"seen": seen_ids,
 		"artifact_purchases": artifact_purchases.duplicate(),
 		"tribulations": tribulations.duplicate(true),
+		"unlocked": _sorted_ids(unlocked),
+		"achievements": _sorted_ids(achievements),
 		"games": games.map(func(game: GameRecord) -> Dictionary: return game.to_dict()),
 	}
 
@@ -77,6 +84,10 @@ static func from_dict(data: Dictionary) -> ProfileStats:
 				var lost := _count(results[id], "lost")
 				if won + lost > 0:
 					stats.tribulations[id] = {"won": won, "lost": lost}
+	for id: String in SaveData.string_list(data.get("unlocked")):
+		stats.unlock(StringName(id))
+	for id: String in SaveData.string_list(data.get("achievements")):
+		stats.achieve(StringName(id))
 	var saved_games: Variant = data.get("games", [])
 	if saved_games is Array:
 		for game: Variant in saved_games:
@@ -127,6 +138,44 @@ func top_purchases(count: int) -> Array[String]:
 	return ids.slice(0, count)
 
 
+func total_purchases() -> int:
+	var sum := 0
+	for count: int in artifact_purchases.values():
+		sum += count
+	return sum
+
+
+func total_tribulation_wins() -> int:
+	var sum := 0
+	for id: String in tribulations:
+		sum += tribulations[id]["won"]
+	return sum
+
+
+## Vrai si ce contenu vient d'etre debloque (jamais deux fois).
+func unlock(id: StringName) -> bool:
+	if unlocked.has(String(id)):
+		return false
+	unlocked[String(id)] = true
+	return true
+
+
+func has_unlocked(id: StringName) -> bool:
+	return unlocked.has(String(id))
+
+
+## Vrai si ce succes vient d'etre obtenu (jamais deux fois).
+func achieve(id: StringName) -> bool:
+	if achievements.has(String(id)):
+		return false
+	achievements[String(id)] = true
+	return true
+
+
+func has_achievement(id: StringName) -> bool:
+	return achievements.has(String(id))
+
+
 func record_tribulation(id: StringName, won: bool) -> void:
 	var result: Dictionary = tribulations.get_or_add(String(id), {"won": 0, "lost": 0})
 	result["won" if won else "lost"] += 1
@@ -147,9 +196,16 @@ func add_game(game: GameRecord, limit: int) -> void:
 		games.remove_at(0)
 
 
-## Les champs de la version 2 sont optionnels : une sauvegarde de version 1 reste valide telle quelle.
+## Les champs des versions 2 et 3 sont optionnels : une sauvegarde plus ancienne reste valide telle quelle.
 static func _migrations() -> Dictionary:
-	return {1: func(data: Dictionary) -> Dictionary: return data}
+	var keep := func(data: Dictionary) -> Dictionary: return data
+	return {1: keep, 2: keep}
+
+
+static func _sorted_ids(ids: Dictionary) -> Array:
+	var list: Array = ids.keys()
+	list.sort()
+	return list
 
 
 static func _count(data: Dictionary, key: String) -> int:

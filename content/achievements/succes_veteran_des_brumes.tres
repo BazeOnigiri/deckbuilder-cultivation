@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/profile/achievement_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/profile/unlock_condition.gd" id="2"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("2")
+kind = 6
+count = 10
+
+[resource]
+script = ExtResource("1")
+id = &"succes_veteran_des_brumes"
+name_key = "ACH_VETERAN_DES_BRUMES_NAME"
+description_key = "ACH_VETERAN_DES_BRUMES_DESC"
+glyph = "老"
+condition = SubResource("condition")
