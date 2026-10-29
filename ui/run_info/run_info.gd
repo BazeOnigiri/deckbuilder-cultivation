@@ -11,13 +11,16 @@ const MEDITANT := preload("res://ui/round/meditant.svg")
 const HAND_COLUMNS := 3
 
 
-static func build(run: RunState, hands: Array[HandDefinition]) -> TabContainer:
+## content : si donne, un cinquieme signet Aide reprend les regles du jeu (HelpPages).
+static func build(run: RunState, hands: Array[HandDefinition], content: GameContent = null) -> TabContainer:
 	var tabs := TabContainer.new()
 	tabs.theme_type_variation = &"ScrollTabs"
 	_add_tab(tabs, "UI_INFO_TAB_HANDS", _hand_tablets(run, hands))
 	_add_tab(tabs, "UI_INFO_TAB_PATH", _path(run))
 	_add_tab(tabs, "UI_INFO_TAB_RUN", _run_tiles(run, hands))
 	_add_tab(tabs, "UI_INFO_TAB_KEYS", _keys())
+	if content != null:
+		_add_tab(tabs, "UI_INFO_TAB_HELP", HelpPages.build(content))
 	return tabs
 
 

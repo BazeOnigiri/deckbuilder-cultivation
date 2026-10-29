@@ -146,8 +146,13 @@ func buy_pack(index: int) -> bool:
 	var pack: PackDefinition = pack_offers[index]
 	_run.stones -= pack.price
 	pack_offers.remove_at(index)
-	opening = PackOpening.new(pack, _pack_choices(pack))
+	open_pack(pack)
 	return true
+
+
+## Ouvre le sceau : ses choix sont tires tout de suite. Le prix se paie avant (achat), ou jamais (menu debug).
+func open_pack(pack: PackDefinition) -> void:
+	opening = PackOpening.new(pack, _pack_choices(pack))
 
 
 ## Un choix se prend s'il a une place : emplacement d'artefact ou de pilule libre (manuels et cartes : toujours).

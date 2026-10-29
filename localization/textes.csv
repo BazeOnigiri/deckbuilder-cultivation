@@ -292,3 +292,24 @@ PILL_DISSOLUTION,Pilule de dissolution,Dissolving Pill
 PILL_DISSOLUTION_DESC,"Détruit jusqu'à 2 cartes sélectionnées, +2 pierres par carte.","Destroys up to 2 selected cards, +2 stones per card."
 PILL_ILLUMINATION,Pilule d'illumination,Illumination Pill
 PILL_ILLUMINATION_DESC,La main que forment les cartes sélectionnées monte d'un niveau.,The hand formed by the selected cards gains a level.
+UI_HELP,Comment jouer,How to play
+UI_HELP_OFFER,"Première partie ? Les règles tiennent sur un seul rouleau.","First run? The rules fit on a single scroll."
+UI_HELP_OPEN,Lire l'aide,Read the help
+UI_HELP_START,Commencer,Start
+UI_INFO_TAB_HELP,Aide,Help
+HELP_GOAL_TITLE,But de la partie,Goal
+HELP_GOAL_BODY,"Franchis les goulots de %d royaumes pour atteindre la victoire. Chaque goulot fixe un score à atteindre. Le dernier goulot d'un royaume est une tribulation céleste, qui ajoute une contrainte.","Clear the bottlenecks of %d realms to win. Each bottleneck sets a score to reach. The last bottleneck of a realm is a heavenly tribulation, which adds a constraint."
+HELP_PLAY_TITLE,Jouer et défausser,Playing and discarding
+HELP_PLAY_BODY,"Chaque goulot t'accorde %d mains et %d défausses. Choisis jusqu'à %d cartes parmi les %d de ta main, puis joue-les ou défausse-les : elles sont remplacées par de nouvelles cartes. Sans main restante avant l'objectif, la partie est perdue.","Each bottleneck gives you %d hands and %d discards. Pick up to %d cards among the %d in your hand, then play or discard them: they are replaced by new cards. If you run out of hands before the target, the run is lost."
+HELP_SCORE_TITLE,Le score,Scoring
+HELP_SCORE_BODY,"Score d'une main = Qi × Compréhension. Le Qi est celui de base de la main plus le rang des cartes qui comptent (les figures valent %d, le Souverain %d). Les artefacts et les manuels font grandir l'un et l'autre.","A hand scores Qi × Comprehension. Qi is the hand's base Qi plus the rank of the cards that count (face cards are worth %d, the Sovereign %d). Artifacts and manuals raise both."
+HELP_HANDS_TITLE,Les mains,Hands
+HELP_HANDS_BODY,"Une main jouée prend la combinaison la plus haute qu'elle remplit. Le détail de chaque main est dans l'onglet Mains de la Voie de cultivation (touche %s).","A played hand takes the highest combination it fills. Each hand is detailed in the Hands tab of the Cultivation Path (key %s)."
+HELP_CYCLE_TITLE,Cycle d'engendrement,Generating cycle
+HELP_CYCLE_BODY,"Chaque élément engendre le suivant : %s, puis de nouveau le premier. Des mains et des artefacts récompensent ce cycle.","Each element generates the next: %s, then back to the first. Some hands and artifacts reward this cycle."
+HELP_STONES_TITLE,Pierres et intérêts,Stones and interest
+HELP_STONES_BODY,"Chaque goulot franchi rapporte des pierres spirituelles : la récompense du goulot, %d par main restante, et un intérêt d'une pierre par tranche de %d pierres possédées (au plus %d). Les pierres servent à la boutique.","Each cleared bottleneck pays spirit stones: the bottleneck's reward, %d per hand left, and interest of one stone per %d stones you hold (at most %d). Stones are spent in the shop."
+HELP_SHOP_TITLE,La boutique,The shop
+HELP_SHOP_BODY,"Entre deux goulots, la boutique vend des artefacts (jusqu'à %d), des manuels qui font monter une main de niveau, des pilules (jusqu'à %d, à utiliser sur des cartes pendant un goulot) et des sceaux-trésor où choisir parmi plusieurs objets. Chaque royaume propose aussi un héritage qui change les règles. Relancer coûte des pierres, de plus en plus. Vendre un artefact ou une pilule rend %d%% de son prix.","Between bottlenecks, the shop sells artifacts (up to %d), manuals that raise a hand a level, pills (up to %d, used on cards during a bottleneck) and treasure seals to choose among several items. Each realm also offers a legacy that changes the rules. Rerolling costs stones, more each time. Selling an artifact or a pill returns %d%% of its price."
+HELP_TRIBULATION_TITLE,Tribulations,Tribulations
+HELP_TRIBULATION_BODY,"La tribulation qui clôt un royaume impose une contrainte : cartes qui ne comptent pas, moins de mains, moins de cartes... Elle est décrite dans l'onglet Parcours de la Voie de cultivation. Prépare ton paquet et tes artefacts avant de la tenter.","The tribulation that ends a realm imposes a constraint: cards that do not count, fewer hands, fewer cards... It is described in the Path tab of the Cultivation Path. Prepare your deck and artifacts before attempting it."

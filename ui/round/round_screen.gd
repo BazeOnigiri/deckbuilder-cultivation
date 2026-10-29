@@ -340,7 +340,26 @@ func _show_deck() -> void:
 
 
 func _show_run_info() -> void:
-	ScrollOverlay.open(self, "UI_RUN_INFO", RunInfo.build(_run, content.hands), not settings.reduce_motion)
+	ScrollOverlay.open(self, "UI_RUN_INFO", RunInfo.build(_run, content.hands, content), not settings.reduce_motion)
+
+
+## Menu debug (build de developpement seulement) : actions sur la run en cours, via DebugActions.
+func _show_debug() -> void:
+	var panel := DebugPanel.build(_run, content, _shop)
+	var overlay := ScrollOverlay.open(self, "Debug", panel, false)
+	panel.changed.connect(func() -> void:
+		_shop_panel.refresh()
+		_refresh())
+	panel.close_requested.connect(overlay.close)
+	panel.round_restarted.connect(func() -> void:
+		_shop = null
+		_shop_panel.hide()
+		_hand_view.show()
+		_continue_button.hide()
+		_refresh())
+	panel.pack_opened.connect(func() -> void:
+		_shop_panel.open(_shop)
+		_refresh())
 
 
 ## Clavier (InputMap) : les memes actions que la souris, seulement quand le bouton correspondant est utilisable.
@@ -368,6 +387,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_show_run_info()
 	elif event.is_action_pressed(&"sell_artifact"):
 		handled = _items.press_hovered_item()
+	elif OS.is_debug_build() and event.is_action_pressed(&"debug_menu"):
+		_show_debug()
 	else:
 		handled = false
 	if handled:
