@@ -7,6 +7,7 @@ func after_each() -> void:
 
 
 func test_les_nombres_viennent_du_contenu() -> void:
+	TranslationServer.set_locale("fr")
 	var content := GameContent.load_default()
 	var text := "\n".join(HelpPages.sections(content).map(func(s: PackedStringArray) -> String: return s[1]))
 	assert_string_contains(text, "%d mains" % content.round_rules.hands_per_round)
