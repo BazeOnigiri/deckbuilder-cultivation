@@ -5,6 +5,10 @@ extends RefCounted
 ## n'ont pas de taille fixe. Les sceaux-tresor (pack_offers) sont tires une fois par visite, la relance ne les
 ## change pas ; un sceau achete s'ouvre (opening) jusqu'a ce que ses choix soient pris ou passes.
 
+## De nouvelles offres sont montrees (relance, sceau ouvert).
+signal offers_changed
+signal artifact_bought(artifact: ArtifactDefinition)
+
 var offers: Array[ArtifactDefinition] = []
 var manual_offers: Array[ManualDefinition] = []
 var pill_offers: Array[PillDefinition] = []
@@ -65,6 +69,7 @@ func buy(index: int) -> bool:
 	_run.stones -= artifact.price
 	_run.artifacts.append(artifact)
 	offers.remove_at(index)
+	artifact_bought.emit(artifact)
 	return true
 
 
@@ -153,6 +158,7 @@ func buy_pack(index: int) -> bool:
 ## Ouvre le sceau : ses choix sont tires tout de suite. Le prix se paie avant (achat), ou jamais (menu debug).
 func open_pack(pack: PackDefinition) -> void:
 	opening = PackOpening.new(pack, _pack_choices(pack))
+	offers_changed.emit()
 
 
 ## Un choix se prend s'il a une place : emplacement d'artefact ou de pilule libre (manuels et cartes : toujours).
@@ -198,6 +204,20 @@ func skip() -> void:
 	opening = null
 
 
+## Tout ce que la boutique montre au joueur : offres, heritage, sceaux et choix du sceau ouvert (pas les cartes).
+func offered() -> Array[Resource]:
+	var items: Array[Resource] = []
+	items.append_array(offers)
+	items.append_array(manual_offers)
+	items.append_array(pill_offers)
+	items.append_array(pack_offers)
+	if legacy_offer() != null:
+		items.append(legacy_offer())
+	if opening != null and opening.pack.kind != PackDefinition.Kind.CARD:
+		items.append_array(opening.choices)
+	return items
+
+
 ## Pas de relance pendant un sceau ouvert : elle changerait les artefacts possedes sous ses choix.
 func can_reroll() -> bool:
 	return opening == null and _run.stones >= reroll_cost
@@ -209,6 +229,7 @@ func reroll() -> bool:
 	_run.stones -= reroll_cost
 	reroll_cost += _rules.reroll_cost_step
 	_roll_offers()
+	offers_changed.emit()
 	return true
 
 

@@ -254,3 +254,22 @@ func test_uid_en_double_garde_les_deux_cartes() -> void:
 	for card: CardInstance in restored.cards():
 		uids[card.uid] = true
 	assert_eq(uids.size(), run.cards().size(), "uids tous distincts")
+
+
+func test_graine_de_la_run_sauvegardee() -> void:
+	var rng := _rng()
+	var run := _run_in_shop(rng)
+	run.seed_value = 4611686018427387904
+	run.stats.record_hand("main_paire", 300)
+	var data := _through_json(RunSnapshot.capture(run, _content.new_shop(run, rng), rng))
+	var restored := RunSnapshot.restore(data, _content, _rng(999))
+	assert_eq(restored.seed_value, 4611686018427387904, "entier 64 bits conserve")
+	assert_eq(restored.stats.best_hand_id, "main_paire")
+
+
+func test_ancienne_sauvegarde_sans_graine() -> void:
+	var rng := _rng()
+	var run := _run_in_shop(rng)
+	var data := _through_json(RunSnapshot.capture(run, _content.new_shop(run, rng), rng))
+	data.erase("seed")
+	assert_eq(RunSnapshot.restore(data, _content, _rng(999)).seed_value, 0)

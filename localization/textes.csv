@@ -319,3 +319,26 @@ UI_OPTIONS_KEYS_DEFAULT,Touches par défaut,Default controls
 UI_OPTIONS_PRESS_KEY,Appuyez sur une touche…,Press a key…
 UI_OPTIONS_KEY_TAKEN,"%s est réservée (valider, fermer, flèches, chiffres) : choisissez-en une autre.","%s is reserved (confirm, close, arrows, numbers): pick another one."
 UI_OPTIONS_KEY_SWAPPED,"Touches échangées avec « %s ».","Keys swapped with “%s”."
+UI_COMPENDIUM_BUTTON,Compendium,Compendium
+UI_COMPENDIUM_TITLE,Compendium,Compendium
+UI_COMPENDIUM_ARTIFACTS,Artefacts,Artifacts
+UI_COMPENDIUM_PILLS,Pilules,Pills
+UI_COMPENDIUM_MANUALS,Manuels,Manuals
+UI_COMPENDIUM_LEGACIES,Héritages,Legacies
+UI_COMPENDIUM_PACKS,Sceaux,Seals
+UI_COMPENDIUM_TRIBULATIONS,Tribulations,Tribulations
+UI_COMPENDIUM_SEEN,Vus : %d / %d,Seen: %d / %d
+UI_COMPENDIUM_UNKNOWN,???,???
+UI_COMPENDIUM_PRICE,Prix : %d pierres,Price: %d stones
+UI_KIND_TRIBULATION,Tribulation,Tribulation
+UI_STATS_TOP_ARTIFACTS,Artefacts les plus achetés,Most bought artifacts
+UI_STATS_TRIBULATIONS,Réussite des tribulations,Tribulation success
+UI_STATS_TRIBULATION_RATE,%d %% (%d/%d),%d%% (%d/%d)
+UI_HISTORY_BUTTON,Historique,History
+UI_HISTORY_TITLE,Historique des parties,Run history
+UI_HISTORY_EMPTY,Aucune partie terminée.,No finished run yet.
+UI_HISTORY_WON,Victoire,Victory
+UI_HISTORY_LOST,Défaite,Defeat
+UI_HISTORY_STAGE,Goulot atteint,Bottleneck reached
+UI_HISTORY_SEED,Graine,Seed
+UI_SUMMARY_REACHED,Royaume atteint,Realm reached

@@ -1,8 +1,9 @@
 class_name ProfileStats
 extends RefCounted
 ## Statistiques du joueur, conservees d'une run a l'autre.
+## Version 2 : contenu vu (compendium), historique des parties, achats et tribulations. Champs optionnels.
 
-const VERSION := 1
+const VERSION := 2
 const DEFAULT_PATH := "user://profil.json"
 
 var runs_started: int = 0
@@ -10,6 +11,14 @@ var runs_won: int = 0
 var best_realm: int = 0
 var best_hand_score: int = 0
 var hands := HandTally.new()
+## Categorie (Compendium.KEYS) -> {id: true} : les contenus deja offerts en boutique ou possedes.
+var seen: Dictionary = {}
+## id d'artefact -> nombre d'achats en boutique.
+var artifact_purchases: Dictionary = {}
+## id de tribulation -> {"won": n, "lost": n}.
+var tribulations: Dictionary = {}
+## Les dernieres parties terminees, la plus ancienne en premier.
+var games: Array[GameRecord] = []
 ## L'aide a deja ete proposee a la premiere partie. Champ optionnel : un ancien profil l'a faux.
 var help_offered: bool = false
 
@@ -20,6 +29,11 @@ func should_offer_help() -> bool:
 
 
 func to_dict() -> Dictionary:
+	var seen_ids: Dictionary = {}
+	for kind: String in seen:
+		var ids: Array = seen[kind].keys()
+		ids.sort()
+		seen_ids[kind] = ids
 	return {
 		"runs_started": runs_started,
 		"runs_won": runs_won,
@@ -27,6 +41,10 @@ func to_dict() -> Dictionary:
 		"best_hand_score": best_hand_score,
 		"hand_counts": hands.to_dict(),
 		"help_offered": help_offered,
+		"seen": seen_ids,
+		"artifact_purchases": artifact_purchases.duplicate(),
+		"tribulations": tribulations.duplicate(true),
+		"games": games.map(func(game: GameRecord) -> Dictionary: return game.to_dict()),
 	}
 
 
@@ -40,6 +58,30 @@ static func from_dict(data: Dictionary) -> ProfileStats:
 	stats.hands = HandTally.from_dict(data.get("hand_counts", {}))
 	var offered: Variant = data.get("help_offered", false)
 	stats.help_offered = offered is bool and offered
+	var saved_seen: Variant = data.get("seen", {})
+	if saved_seen is Dictionary:
+		for kind: Variant in saved_seen:
+			if kind is String:
+				for id: String in SaveData.string_list(saved_seen[kind]):
+					stats.mark_seen(kind, StringName(id))
+	var purchases: Variant = data.get("artifact_purchases", {})
+	if purchases is Dictionary:
+		for id: Variant in purchases:
+			if id is String and _count(purchases, id) > 0:
+				stats.artifact_purchases[id] = _count(purchases, id)
+	var results: Variant = data.get("tribulations", {})
+	if results is Dictionary:
+		for id: Variant in results:
+			if id is String and results[id] is Dictionary:
+				var won := _count(results[id], "won")
+				var lost := _count(results[id], "lost")
+				if won + lost > 0:
+					stats.tribulations[id] = {"won": won, "lost": lost}
+	var saved_games: Variant = data.get("games", [])
+	if saved_games is Array:
+		for game: Variant in saved_games:
+			if game is Dictionary:
+				stats.games.append(GameRecord.from_dict(game))
 	return stats
 
 
@@ -53,9 +95,61 @@ func save_to(storage: SaveStorage) -> bool:
 	return storage.save({"version": VERSION, "stats": to_dict()})
 
 
-## Exemple pour plus tard : {1: func(data: Dictionary) -> Dictionary: return data}
+## Vrai si ce contenu n'avait jamais ete vu.
+func mark_seen(kind: String, id: StringName) -> bool:
+	var ids: Dictionary = seen.get_or_add(kind, {})
+	if ids.has(String(id)):
+		return false
+	ids[String(id)] = true
+	return true
+
+
+func is_seen(kind: String, id: StringName) -> bool:
+	return seen.get(kind, {}).has(String(id))
+
+
+func record_purchase(artifact_id: StringName) -> void:
+	artifact_purchases[String(artifact_id)] = purchases_of(artifact_id) + 1
+
+
+func purchases_of(artifact_id: StringName) -> int:
+	return artifact_purchases.get(String(artifact_id), 0)
+
+
+## Les artefacts les plus achetes, le plus achete d'abord ; a egalite, l'id le plus petit (resultat stable).
+func top_purchases(count: int) -> Array[String]:
+	var ids: Array[String] = []
+	ids.assign(artifact_purchases.keys())
+	ids.sort_custom(func(a: String, b: String) -> bool:
+		if artifact_purchases[a] != artifact_purchases[b]:
+			return artifact_purchases[a] > artifact_purchases[b]
+		return a < b)
+	return ids.slice(0, count)
+
+
+func record_tribulation(id: StringName, won: bool) -> void:
+	var result: Dictionary = tribulations.get_or_add(String(id), {"won": 0, "lost": 0})
+	result["won" if won else "lost"] += 1
+
+
+func tribulation_wins(id: StringName) -> int:
+	return tribulations.get(String(id), {}).get("won", 0)
+
+
+func tribulation_losses(id: StringName) -> int:
+	return tribulations.get(String(id), {}).get("lost", 0)
+
+
+## Ajoute une partie terminee ; au-dela de limit parties, les plus anciennes sortent.
+func add_game(game: GameRecord, limit: int) -> void:
+	games.append(game)
+	while games.size() > maxi(1, limit):
+		games.remove_at(0)
+
+
+## Les champs de la version 2 sont optionnels : une sauvegarde de version 1 reste valide telle quelle.
 static func _migrations() -> Dictionary:
-	return {}
+	return {1: func(data: Dictionary) -> Dictionary: return data}
 
 
 static func _count(data: Dictionary, key: String) -> int:

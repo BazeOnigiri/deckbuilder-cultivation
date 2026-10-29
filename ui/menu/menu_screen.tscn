@@ -85,6 +85,12 @@ layout_mode = 2
 text = "UI_STATS_BUTTON"
 script = ExtResource("3")
 
+[node name="CompendiumButton" type="Button" parent="Margin/Layout/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_COMPENDIUM_BUTTON"
+script = ExtResource("3")
+
 [node name="OptionsButton" type="Button" parent="Margin/Layout/Scroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2

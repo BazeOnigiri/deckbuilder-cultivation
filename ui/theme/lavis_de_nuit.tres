@@ -818,6 +818,7 @@ ItemSlot/colors/rarity_0 = Color(0.6588, 0.6275, 0.5647, 1)
 ItemSlot/colors/rarity_1 = Color(0.4706, 0.7412, 0.6157, 1)
 ItemSlot/colors/rarity_2 = Color(0.8392, 0.4196, 0.3412, 1)
 ItemSlot/colors/rarity_3 = Color(0.9686, 0.8078, 0.3529, 1)
+ItemSlot/colors/tribulation_color = Color(0.4235, 0.6157, 0.8392, 1)
 ItemSlot/constants/artifact_height = 96
 ItemSlot/constants/artifact_width = 72
 ItemSlot/constants/dash = 4

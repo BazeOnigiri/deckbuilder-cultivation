@@ -10,6 +10,12 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 - Aide « Comment jouer » en rouleau : but de la partie, jouer et defausser, score, mains, cycle d'engendrement, pierres et interets, boutique, tribulations. Les nombres sont lus dans le contenu. Ouverte depuis le bouton du menu principal et depuis l'onglet Aide de la Voie de cultivation ; proposee une seule fois a la toute premiere partie (champ optionnel help_offered du profil).
 - Menu debug (F12, action debug_menu), reserve aux builds de developpement : +10 pierres, donner un artefact, une pilule, un manuel ou un heritage, ouvrir un sceau-tresor, gagner le goulot en cours, sauter a un royaume et un goulot. Logique dans core/debug/debug_actions.gd, testee. Pas de seed affichee dans le jeu : rien a changer de ce cote.
+- Compendium depuis le menu principal : un rouleau a onglets (artefacts avec rarete, pilules, manuels, heritages, sceaux-tresor, tribulations), chaque entree en emplacement avec infobulle (nom, description, prix). Un contenu jamais offert en boutique ni possede reste une silhouette, avec un compteur « vus x / total » par onglet.
+- Historique des parties : le profil garde les dernieres parties (nombre dans content/rules/profil_base.tres) avec date, resultat, royaume et goulot atteints, meilleur coup, main favorite, artefacts et heritages finaux, graine. Rouleau « Historique » depuis les Statistiques.
+- Statistiques par contenu : artefacts les plus achetes (top 5) et taux de reussite de chaque tribulation, dans les Statistiques. Profil en version 2 (anciens profils migres, champs optionnels).
+- Bilan de fin de partie enrichi : royaume atteint, meilleur coup avec le nom de sa main, graine, artefacts et heritages finaux en emplacements.
+- La run retient la graine de sa RNG et la main de son meilleur coup (sauvegardes anciennes toujours lisibles).
+
 - Choix de la langue (francais ou anglais) dans les Options : par defaut la langue du systeme si elle est proposee, sinon l'anglais. Appliquee au demarrage et a chaud, sauvegardee avec les reglages (les anciens fichiers restent valides).
 - Mode contraste eleve dans les Options : couleurs de Qi, de Comprehension, de tribulation et textes secondaires renforces par un Theme de surcharge (ui/theme/contraste.tres).
 - Vente des pilules, en round comme en boutique : S sur la pilule sous la souris montre le sceau « Vendre (n) », S une seconde fois (ou un clic sur le sceau) la vend pour la moitie de son prix arrondie en dessous. Un clic sur une pilule l'utilise toujours.

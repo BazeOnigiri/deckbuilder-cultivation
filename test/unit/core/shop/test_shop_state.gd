@@ -438,3 +438,22 @@ func test_les_offres_ne_reprennent_pas_les_choix_du_sceau_ouvert() -> void:
 		shop._roll_offers()
 		for choice: Resource in shop.opening.choices:
 			assert_false(shop.offers.has(choice), "artefact en double (seed %d)" % seed_value)
+
+
+func test_offered_liste_tout_ce_que_la_boutique_montre() -> void:
+	var run := _run(100)
+	var shop := _shop(run, _catalog(4))
+	var offered := shop.offered()
+	assert_eq(offered.size(), shop.offers.size() + shop.manual_offers.size() + shop.pill_offers.size() + shop.pack_offers.size())
+
+
+func test_signaux_d_achat_et_de_relance() -> void:
+	var run := _run(100)
+	var shop := _shop(run, _catalog(4))
+	watch_signals(shop)
+	var first := shop.offers[0]
+	assert_true(shop.buy(0))
+	assert_signal_emitted_with_parameters(shop, "artifact_bought", [first])
+	assert_signal_not_emitted(shop, "offers_changed")
+	assert_true(shop.reroll())
+	assert_signal_emitted(shop, "offers_changed")

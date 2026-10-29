@@ -484,3 +484,21 @@ func test_focus_dans_la_boutique_a_son_ouverture() -> void:
 	run.status = RunState.Status.BETWEEN_ROUNDS
 	var screen := _resume(RunSnapshot.capture(run, content.new_shop(run, rng), rng))
 	assert_true(screen.get_node("%ShopPanel").is_ancestor_of(get_viewport().gui_get_focus_owner()))
+
+
+func test_bilan_de_fin_de_partie_complet() -> void:
+	var screen: Control = SCREEN.instantiate()
+	screen.settings = GameSettings.new()
+	add_child_autofree(screen)
+	var run: RunState = screen._run
+	run.seed_value = 777
+	run.artifacts.append(screen.content.artifacts[0])
+	run.legacies.append(screen.content.legacies[0])
+	run.stats.record_hand(screen.content.hands[0].id, 321)
+	var summary: Control = screen._run_summary()
+	add_child_autofree(summary)
+	var texts: Array = summary.find_children("*", "Label", true, false).map(func(label: Label) -> String: return label.text)
+	assert_has(texts, "UI_SUMMARY_REACHED")
+	assert_has(texts, "777")
+	assert_has(texts, "321 (%s)" % tr(screen.content.hands[0].name_key))
+	assert_eq(summary.find_children("*", "ItemSlot", true, false).size(), 2, "l'artefact et l'heritage")
