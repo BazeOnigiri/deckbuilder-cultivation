@@ -52,6 +52,7 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Corrigé
 
+- GUT mis a jour en 9.7.1. Icone du jeu appliquee a l'exe Windows (rcedit, modify_resources).
 - Equilibrage : les royaumes 5 a 8 etaient hors de portee (objectifs x2,5 par royaume, x609 du royaume 1 au 8). Pression ramenee de 1,25 a 0,9 (x1,8 par royaume, docs/equilibrage.md) apres simulation de constructions de run ; le mode sans fin suit la meme courbe.
 - Equilibrage des tribulations : chaque contrainte est mesuree par le joueur de reference (appliquee comme en round, avec une defausse naive) et l'objectif de la tribulation suit sa difficulte propre, pour qu'une tribulation tiree au hasard soit aussi dure qu'une autre (la tribulation du demon interieur, main de 6 cartes, demande bien moins que celle des flammes celestes).
 - Pierre d'eveil plafonnee a x1,5 (10 crans, nouveau champ growth_cap des artefacts) : elle grandissait sans fin a chaque carte defaussee.

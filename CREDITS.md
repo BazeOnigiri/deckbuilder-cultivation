@@ -7,7 +7,7 @@
 
 ## Outils de développement (non inclus dans le jeu publié)
 
-- **GUT (Godot Unit Test)** 9.7.0 par bitwes : licence MIT. <https://github.com/bitwes/Gut>
+- **GUT (Godot Unit Test)** 9.7.1 par bitwes : licence MIT. <https://github.com/bitwes/Gut>
 
 ## Polices (incluses dans le projet)
 
