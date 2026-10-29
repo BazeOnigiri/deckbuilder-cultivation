@@ -29,6 +29,7 @@ func _on_round_started(round_state: RoundState, run: RunState) -> void:
 func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 	_stats.best_hand_score = maxi(_stats.best_hand_score, score.total())
 	_stats.hands.record(result.definition.id)
+	changed.emit()
 
 
 func _on_finished(won: bool) -> void:

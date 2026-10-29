@@ -29,3 +29,8 @@ func test_version_absente_traitee_comme_la_premiere() -> void:
 		d["migre"] = true
 		return d}
 	assert_true(SaveMigrator.migrate({"x": 1}, 2, migrations)["migre"])
+
+func test_version_illisible_refusee_sans_planter() -> void:
+	for bad: Variant in [null, [1], {"a": 1}, "2"]:
+		assert_eq(SaveMigrator.migrate({"version": bad, "x": 1}, 2, {}), {})
+	assert_eq(SaveMigrator.migrate({"version": 2.0, "x": 1}, 2, {})["x"], 1)

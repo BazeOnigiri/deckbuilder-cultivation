@@ -8,8 +8,11 @@ extends RefCounted
 static func migrate(data: Dictionary, current_version: int, migrations: Dictionary) -> Dictionary:
 	if data.is_empty():
 		return {}
-	# Les nombres JSON sont lus en float : int() les remet en entier.
-	var version: int = int(data.get("version", 1))
+	# Une version qui n'est pas un nombre (null, tableau...) : sauvegarde illisible, refusee.
+	if data.has("version") and not (data["version"] is int or data["version"] is float):
+		return {}
+	# Les nombres JSON sont lus en float : int_of les remet en entier.
+	var version: int = SaveData.int_of(data, "version", 1)
 	if version > current_version:
 		return {}
 	var result: Dictionary = data.duplicate(true)

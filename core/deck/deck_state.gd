@@ -68,6 +68,12 @@ func destroy(cards: Array[CardInstance]) -> bool:
 	return true
 
 
+## Glisse une carte dans la pioche a une position tiree avec la RNG du paquet : fill_hand pioche par la fin, une carte
+## ajoutee en fin de pile serait piochee tout de suite.
+func insert_into_draw_pile(card: CardInstance) -> void:
+	draw_pile.insert(_rng.randi_range(0, draw_pile.size()), card)
+
+
 ## Remet toutes les cartes dans la pioche et remelange (debut de round).
 func reset() -> void:
 	draw_pile.append_array(hand)

@@ -109,6 +109,7 @@ func test_achat_agit_tout_de_suite_sur_la_boutique() -> void:
 	assert_eq(run.legacies.size(), 1)
 	assert_null(shop.legacy_offer(), "achete : plus propose dans ce royaume")
 	assert_eq(run.shop_rules(_shop_rules()).reroll_base_cost, 3)
+	assert_eq(shop.reroll_cost, 3, "la relance en cours suit la nouvelle base")
 
 
 func test_achat_refuse_sans_assez_de_pierres() -> void:
@@ -116,3 +117,12 @@ func test_achat_refuse_sans_assez_de_pierres() -> void:
 	var shop := _shop(run, [_legacy("a", [_modifier(&"max_artifacts", 1)] as Array[RuleModifier])] as Array[LegacyDefinition])
 	assert_false(shop.buy_legacy())
 	assert_eq(run.stones, 9)
+
+
+func test_modificateur_sur_une_propriete_decimale() -> void:
+	var rules := EconomyRules.new()
+	rules.sell_fraction = 0.5
+	_modifier(&"sell_fraction", 1).apply_to(rules)
+	assert_eq(rules.sell_fraction, 1.5)
+	_modifier(&"sell_fraction", -9).apply_to(rules)
+	assert_eq(rules.sell_fraction, 0.0)

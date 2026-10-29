@@ -179,3 +179,30 @@ func test_artefact_qui_grandit() -> void:
 	assert_eq(effects.size(), 1)
 	assert_eq(effects[0].amount, 8.0)
 	assert_eq(artifacts[0].effects[0].score_effect.amount, 0.0, "la ressource partagee ne change pas")
+
+
+func test_condition_de_main_sans_main_ne_plante_pas() -> void:
+	var hand := HandIsCondition.new()
+	hand.hand_ids = ["main_paire"]
+	assert_false(hand.matches(null, null))
+	assert_false(ScoringCountCondition.new().matches(null, null))
+
+
+func test_validation_conditions_et_pierres() -> void:
+	var hand := HandIsCondition.new()
+	hand.hand_ids = ["main_paire"]
+	var discard := _effect(ArtifactEffect.Trigger.CARD_DISCARDED, hand, 1.0)
+	discard.stones = 1
+	assert_false(discard.is_valid(), "condition de main sur une defausse")
+	discard.condition = _element(Element.Type.FEU)
+	assert_true(discard.is_valid(), "condition de carte sur une defausse")
+	var won := ArtifactEffect.new()
+	won.trigger = ArtifactEffect.Trigger.ROUND_WON
+	won.stones = 2
+	assert_true(won.is_valid())
+	won.condition = _element(Element.Type.FEU)
+	assert_false(won.is_valid(), "aucune condition sur ROUND_WON")
+	var played := ArtifactEffect.new()
+	played.trigger = ArtifactEffect.Trigger.HAND_PLAYED
+	played.stones = 2
+	assert_false(played.is_valid(), "pierres hors ROUND_WON / CARD_DISCARDED")

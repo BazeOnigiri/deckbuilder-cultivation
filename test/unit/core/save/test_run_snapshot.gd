@@ -230,3 +230,27 @@ func test_crans_des_artefacts_sauvegardes() -> void:
 	var shop := _content.new_shop(run, rng)
 	var restored := RunSnapshot.restore(_through_json(RunSnapshot.capture(run, shop, rng)), _content, _rng())
 	assert_eq(restored.artifact_stacks.get(artifact.id, 0), 5)
+
+
+func test_rang_relu_plafonne_au_rang_max() -> void:
+	var rng := _rng()
+	var run := _run_in_shop(rng)
+	var data := _through_json(RunSnapshot.capture(run, _content.new_shop(run, rng), rng))
+	data["cards"][0]["rank"] = 999
+	var restored := RunSnapshot.restore(data, _content, _rng())
+	var max_rank := _content.starter_deck.ranks.max_rank
+	for card: CardInstance in restored.cards():
+		assert_between(card.rank, 1, max_rank)
+
+
+func test_uid_en_double_garde_les_deux_cartes() -> void:
+	var rng := _rng()
+	var run := _run_in_shop(rng)
+	var data := _through_json(RunSnapshot.capture(run, _content.new_shop(run, rng), rng))
+	data["cards"][1]["uid"] = data["cards"][0]["uid"]
+	var restored := RunSnapshot.restore(data, _content, _rng())
+	assert_eq(restored.cards().size(), run.cards().size(), "aucune carte ecrasee")
+	var uids: Dictionary = {}
+	for card: CardInstance in restored.cards():
+		uids[card.uid] = true
+	assert_eq(uids.size(), run.cards().size(), "uids tous distincts")

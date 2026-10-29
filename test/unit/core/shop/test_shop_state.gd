@@ -331,8 +331,9 @@ func test_carte_ajoutee_au_paquet_avec_un_uid_neuf() -> void:
 	assert_true(shop.take(0))
 	var cards := run.cards()
 	assert_eq(cards.size(), 4)
-	assert_eq(cards.back().data, data)
-	assert_eq(cards.back().uid, 3)
+	var added := cards.filter(func(card: CardInstance) -> bool: return card.uid == 3)
+	assert_eq(added.size(), 1)
+	assert_eq(added[0].data, data)
 
 
 func test_artefact_refuse_sans_emplacement_libre() -> void:
@@ -410,3 +411,30 @@ func _economy(stones: int) -> EconomyRules:
 	var economy := EconomyRules.new()
 	economy.starting_stones = stones
 	return economy
+
+
+func test_pas_de_relance_pendant_un_sceau_ouvert() -> void:
+	var run := _run(100)
+	var shop := _shop_with_pack(run, _pack(PackDefinition.Kind.ARTIFACT, 2), _catalog(6))
+	assert_true(shop.can_reroll())
+	shop.buy_pack(0)
+	assert_false(shop.can_reroll())
+	var stones := run.stones
+	assert_false(shop.reroll())
+	assert_eq(run.stones, stones)
+	shop.skip()
+	assert_true(shop.can_reroll())
+
+
+func test_les_offres_ne_reprennent_pas_les_choix_du_sceau_ouvert() -> void:
+	for seed_value: int in 10:
+		var run := _run(100)
+		var catalog := _catalog(6)
+		var packs: Array[PackDefinition] = [_pack(PackDefinition.Kind.ARTIFACT, 2)]
+		var rules := _rules(3)
+		rules.pack_count = 1
+		var shop := ShopState.new(run, catalog, _manuals(), _pills(), packs, [] as Array[LegacyDefinition], DeckDefinition.new(), rules, _rng(seed_value))
+		shop.buy_pack(0)
+		shop._roll_offers()
+		for choice: Resource in shop.opening.choices:
+			assert_false(shop.offers.has(choice), "artefact en double (seed %d)" % seed_value)
