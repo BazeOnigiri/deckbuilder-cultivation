@@ -170,6 +170,7 @@ static func _run_tiles(run: RunState, hands: Array[HandDefinition], content: Gam
 	var tiles := HFlowContainer.new()
 	var stats := run.stats
 	tiles.add_child(ScrollTiles.stat(str(stats.bottlenecks_cleared), "UI_INFO_CLEARED_COUNT", CLEARED_GLYPH))
+	tiles.add_child(ScrollTiles.stat(str(stats.bottlenecks_skipped), "UI_INFO_SKIPPED_COUNT"))
 	tiles.add_child(ScrollTiles.stat(str(stats.hands.total()), "UI_STATS_HANDS_PLAYED"))
 	tiles.add_child(ScrollTiles.stat(str(stats.best_hand_score), "UI_STATS_BEST_HAND_SCORE"))
 	tiles.add_child(ScrollTiles.stat(str(stats.discards_used), "UI_INFO_DISCARDS"))
@@ -184,6 +185,12 @@ static func _run_tiles(run: RunState, hands: Array[HandDefinition], content: Gam
 		for slot: ItemSlot in legacy_slots(run.legacies):
 			slots.add_child(slot)
 		column.add_child(slots)
+	column.add_child(ScrollRows.row("UI_INFO_OMENS", "" if not run.pending_omens.is_empty() else tr_key("UI_NONE")))
+	if not run.pending_omens.is_empty():
+		var omens := HFlowContainer.new()
+		for omen: OmenDefinition in run.pending_omens:
+			omens.add_child(ContentSlots.of(omen))
+		column.add_child(omens)
 	return column
 
 

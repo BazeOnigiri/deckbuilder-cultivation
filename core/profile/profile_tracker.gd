@@ -36,6 +36,8 @@ func track(run: RunState, is_new: bool = true) -> void:
 		_stats.runs_started += 1
 	run.round_started.connect(_on_round_started.bind(run))
 	run.finished.connect(_on_finished.bind(run))
+	run.announced.connect(_on_announced.bind(run))
+	run.skipped.connect(_on_skipped)
 	_run = run
 	_one_hand_clears = 0
 	# Run reprise : les achats d'avant la sauvegarde sont inconnus, on suppose le pire pour « sans achat ».
@@ -64,6 +66,20 @@ func _on_round_started(round_state: RoundState, run: RunState) -> void:
 	# Le goulot est retenu maintenant : la run avance des la fin du round, avant ce signal.
 	round_state.finished.connect(_on_round_finished.bind(bottleneck))
 	_mark_owned(run)
+	_evaluate()
+	changed.emit()
+
+
+## Les presages proposes sur l'annonce sont vus.
+func _on_announced(run: RunState) -> void:
+	var offered: Array[Resource] = []
+	for omen: OmenDefinition in run.omen_offers:
+		if omen != null:
+			offered.append(omen)
+	_mark_all(offered)
+
+
+func _on_skipped(_omen: OmenDefinition) -> void:
 	_evaluate()
 	changed.emit()
 

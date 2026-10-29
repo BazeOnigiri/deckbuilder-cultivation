@@ -5,14 +5,25 @@ const SCREEN := preload("res://ui/round/round_screen.tscn")
 const RULES_PATH := "res://content/rules/regles_base.tres"
 
 
+## Affronte le goulot annonce (rouleau d'annonce ouvert au depart d'une run), pour avoir un round en cours.
+func _fight(screen: Control) -> Control:
+	for overlay: Node in screen.get_children():
+		if overlay is ScrollOverlay and not overlay.is_queued_for_deletion():
+			for button: Button in overlay.find_children("*", "Button", true, false):
+				if button.text == "UI_ANNOUNCE_FIGHT":
+					button.pressed.emit()
+					return screen
+	return screen
+
+
 func test_ecran_affiche_une_main_complete() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var rules: RoundRules = load(RULES_PATH)
 	assert_eq(screen.get_node("%HandRow").get_child_count(), rules.hand_size)
 
 
 func test_boutons_desactives_sans_selection() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	assert_true(screen.get_node("%PlayButton").disabled)
 	assert_true(screen.get_node("%DiscardButton").disabled)
 
@@ -60,7 +71,7 @@ func _play_first_card(screen: Control) -> void:
 
 
 func test_jouer_montre_le_score_puis_rend_la_main() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen._sequence.feel = _instant_feel()
 	screen._side.feel = _instant_feel()
 	var rules: RoundRules = load(RULES_PATH)
@@ -72,7 +83,7 @@ func test_jouer_montre_le_score_puis_rend_la_main() -> void:
 
 
 func test_boutons_bloques_pendant_la_sequence() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	_play_first_card(screen)
 	assert_true(screen._scoring)
 	assert_true(screen.get_node("%PlayButton").disabled)
@@ -84,7 +95,7 @@ func test_coup_sauvegarde_avant_la_fin_de_la_sequence() -> void:
 	var storage := SaveStorage.new("user://test_round_screen_run.json")
 	var instance := SCREEN.instantiate()
 	instance.run_storage = storage
-	var screen: Control = add_child_autofree(instance)
+	var screen: Control = _fight(add_child_autofree(instance))
 	var before := storage.load_data()
 	_play_first_card(screen)
 	assert_true(screen._scoring, "sequence en cours")
@@ -97,7 +108,7 @@ func _particles(screen: Control) -> int:
 
 
 func test_cartes_qui_comptent_lachent_du_qi() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen._sequence.feel = _instant_feel()
 	_play_first_card(screen)
 	assert_gt(_particles(screen), 0)
@@ -107,14 +118,14 @@ func test_pas_de_particules_si_on_reduit_les_animations() -> void:
 	var instance := SCREEN.instantiate()
 	instance.settings = GameSettings.new()
 	instance.settings.reduce_motion = true
-	var screen: Control = add_child_autofree(instance)
+	var screen: Control = _fight(add_child_autofree(instance))
 	screen._sequence.feel = _instant_feel()
 	_play_first_card(screen)
 	assert_eq(_particles(screen), 0)
 
 
 func test_colonne_affiche_objectif_et_compteurs() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var side: SideColumn = screen.get_node("%SideColumn")
 	assert_eq(side._target.text, str(screen._round.target_score))
 	assert_eq(side._hands.text, str(screen._round.hands_left))
@@ -123,7 +134,7 @@ func test_colonne_affiche_objectif_et_compteurs() -> void:
 
 
 func test_selection_montre_l_apercu_de_la_main() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var side: SideColumn = screen.get_node("%SideColumn")
 	assert_eq(side._hand_name.text, tr("UI_SIDE_NO_HAND"))
 	(screen.get_node("%HandRow").get_child(0) as CardView).button_pressed = true
@@ -132,14 +143,14 @@ func test_selection_montre_l_apercu_de_la_main() -> void:
 
 
 func test_bouton_options_demande_les_reglages() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	watch_signals(screen)
 	screen.get_node("%SideColumn").options_requested.emit()
 	assert_signal_emitted(screen, "options_requested")
 
 
 func test_rangee_haute_montre_tous_les_emplacements() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var rules := GameContent.load_default().shop_rules
 	var items: ItemRow = screen.get_node("%ItemRow")
 	assert_eq(items._artifact_slots.get_child_count(), maxi(rules.max_artifacts, screen._run.artifacts.size()))
@@ -147,7 +158,7 @@ func test_rangee_haute_montre_tous_les_emplacements() -> void:
 
 
 func test_clic_sur_une_pilule_l_utilise() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen._run.pills.append(screen.content.pill_by_id(&"pilule_feu_celeste"))
 	var view := screen.get_node("%HandRow").get_child(0) as CardView
 	view.button_pressed = true
@@ -166,7 +177,7 @@ func _shown_cards(screen: Control) -> Array[CardInstance]:
 
 
 func test_tri_par_element_regroupe_les_elements() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen.get_node("%SortElement").button_pressed = true
 	var cards := _shown_cards(screen)
 	for i: int in cards.size() - 1:
@@ -175,7 +186,7 @@ func test_tri_par_element_regroupe_les_elements() -> void:
 
 
 func test_tri_garde_la_selection() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var view := screen.get_node("%HandRow").get_child(0) as CardView
 	view.button_pressed = true
 	screen.get_node("%SortElement").button_pressed = true
@@ -183,14 +194,14 @@ func test_tri_garde_la_selection() -> void:
 
 
 func test_pioche_affiche_les_cartes_restantes() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var pile: DeckPile = screen.get_node("%DeckPile")
 	assert_eq(pile._count.text, tr("UI_SIDE_OF") % [screen._round.draw_count(), screen._round.deck_size()])
 	assert_lt(screen._round.draw_count(), screen._round.deck_size())
 
 
 func test_clic_sur_la_pioche_montre_tout_le_paquet() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen.get_node("%DeckPile").pressed.emit()
 	var viewer: DeckViewer = _viewer(screen)
 	assert_not_null(viewer)
@@ -208,7 +219,7 @@ func test_clic_sur_la_pioche_montre_tout_le_paquet() -> void:
 
 
 func test_pioche_inactive_pendant_la_sequence() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	_play_first_card(screen)
 	assert_false(screen.get_node("%DeckPile").enabled)
 	screen._show_deck()
@@ -233,7 +244,7 @@ func _play_with_announce(reduce_motion: bool) -> Control:
 	var instance := SCREEN.instantiate()
 	instance.settings = GameSettings.new()
 	instance.settings.reduce_motion = reduce_motion
-	var screen: Control = add_child_autofree(instance)
+	var screen: Control = _fight(add_child_autofree(instance))
 	screen._sequence.feel = _short_announce_feel()
 	_play_first_card(screen)
 	return screen
@@ -263,7 +274,7 @@ func _instant_end() -> RoundEndFeel:
 
 
 func _instant_screen() -> Control:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen._sequence.feel = _instant_feel()
 	screen._side.feel = _instant_feel()
 	screen._round_end.feel = _instant_end()
@@ -312,7 +323,7 @@ func test_echec_recouvre_l_ecran_et_mene_au_menu() -> void:
 
 ## Rythme reel de round_end_feel.tres : la victoire doit rendre la main (bug : le sceau libere tuait son tween).
 func test_victoire_animee_puis_boutique() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen._sequence.feel = _instant_feel()
 	screen._side.feel = _instant_feel()
 	screen._round.target_score = 1
@@ -323,7 +334,7 @@ func test_victoire_animee_puis_boutique() -> void:
 
 ## Plus de tableau au-dessus des cartes : le decompte passe par la colonne.
 func test_decompte_affiche_dans_la_colonne() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen._sequence.feel = _instant_feel()
 	var side: SideColumn = screen.get_node("%SideColumn")
 	var last: Array = []
@@ -339,7 +350,7 @@ func test_decompte_affiche_dans_la_colonne() -> void:
 
 
 func test_meditant_rempli_selon_l_objectif() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var side: SideColumn = screen.get_node("%SideColumn")
 	var shader := side._meditant.material as ShaderMaterial
 	side._target_score = 200
@@ -362,7 +373,7 @@ func _labels(screen: Control) -> int:
 
 ## Sans texte : ni montant au-dessus des cartes, ni nom d'artefact. Le sceau d'annonce est coupe par _instant_feel.
 func test_sequence_sans_popup_de_texte() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var feel := _instant_feel()
 	feel.end_delay = 0.0
 	screen._sequence.feel = feel
@@ -374,7 +385,7 @@ func test_sequence_sans_popup_de_texte() -> void:
 
 
 func test_le_decompte_change_a_l_arrivee_de_l_orbe() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var feel := _instant_feel()
 	feel.orb_time = 0.2
 	screen._sequence.feel = feel
@@ -392,7 +403,7 @@ func test_orbes_instantanees_si_on_reduit_les_animations() -> void:
 	var instance := SCREEN.instantiate()
 	instance.settings = GameSettings.new()
 	instance.settings.reduce_motion = true
-	var screen: Control = add_child_autofree(instance)
+	var screen: Control = _fight(add_child_autofree(instance))
 	var feel := _instant_feel()
 	feel.orb_time = 0.5
 	screen._sequence.feel = feel
@@ -428,9 +439,10 @@ func test_bilan_de_run_change_la_musique() -> void:
 
 
 func test_voie_de_cultivation_en_rouleau() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen.get_node("%SideColumn").path_requested.emit()
-	var overlays := screen.get_children().filter(func(node: Node) -> bool: return node is ScrollOverlay)
+	var overlays := screen.get_children().filter(func(node: Node) -> bool:
+		return node is ScrollOverlay and not node.is_queued_for_deletion())
 	assert_eq(overlays.size(), 1)
 
 
@@ -442,7 +454,7 @@ func _action(name: StringName) -> InputEventAction:
 
 
 func test_clavier_choisit_une_carte_puis_deselectionne() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var first: CardView = screen.get_node("%HandRow")._order[0]
 	screen._unhandled_input(_action(&"select_card_1"))
 	assert_true(first.button_pressed)
@@ -452,7 +464,7 @@ func test_clavier_choisit_une_carte_puis_deselectionne() -> void:
 
 
 func test_clavier_joue_la_main_comme_le_bouton() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	screen.get_node("%PlayButton").pressed.connect(func() -> void: screen.set_meta(&"joue", true))
 	screen._unhandled_input(_action(&"play_hand"))
 	assert_false(screen.has_meta(&"joue"), "bouton inactif sans selection : la touche ne fait rien")
@@ -462,7 +474,7 @@ func test_clavier_joue_la_main_comme_le_bouton() -> void:
 
 
 func test_rouleau_ouvert_garde_les_touches() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var overlay := ScrollOverlay.open(screen, "UI_CLOSE", Label.new(), false)
 	var key := InputEventKey.new()
 	key.physical_keycode = KEY_ENTER
@@ -475,14 +487,14 @@ func test_rouleau_ouvert_garde_les_touches() -> void:
 func test_nouvelle_run_avec_les_options_choisies() -> void:
 	var instance := SCREEN.instantiate()
 	instance.setup = RunSetup.custom("", 3, true, "")
-	var screen: Control = add_child_autofree(instance)
+	var screen: Control = _fight(add_child_autofree(instance))
 	assert_eq(screen._run.setup.seed_text.length(), RunSetup.CODE_LENGTH)
 	assert_eq(screen._run.setup.difficulty, 3)
 
 
 ## Apres la victoire au dernier royaume, continuer ouvre la boutique d'un royaume genere.
 func test_continuer_sans_fin_ouvre_la_boutique() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var run: RunState = screen._run
 	run.status = RunState.Status.WON
 	var count := run.progress.realm_count()
@@ -492,12 +504,12 @@ func test_continuer_sans_fin_ouvre_la_boutique() -> void:
 	assert_true(screen.get_node("%ShopPanel").visible)
 	assert_true(screen.get_node("%ContinueButton").visible)
 	screen.get_node("%ContinueButton").pressed.emit()
-	assert_eq(run.status, RunState.Status.IN_ROUND)
+	assert_eq(run.status, RunState.Status.ANNOUNCING, "le goulot s'annonce avant le round")
 	assert_eq(run.progress.current_realm().number, 1)
 
 
 func test_focus_initial_sur_la_premiere_carte() -> void:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var hand: Node = screen.get_node("%HandRow")
 	assert_eq(get_viewport().gui_get_focus_owner(), hand.get_child(0))
 
@@ -526,3 +538,59 @@ func test_bilan_de_fin_de_partie_complet() -> void:
 	assert_has(texts, run.setup.seed_text, "graine de la partie")
 	assert_has(texts, "321 (%s)" % tr(screen.content.hands[0].name_key))
 	assert_eq(summary.find_children("*", "ItemSlot", true, false).size(), 2, "l'artefact et l'heritage")
+
+
+## Le dernier rouleau ouvert sur l'ecran.
+func _announce(screen: Control) -> ScrollOverlay:
+	var nodes := screen.get_children()
+	nodes.reverse()
+	for node: Node in nodes:
+		if node is ScrollOverlay and not node.is_queued_for_deletion():
+			return node
+	return null
+
+
+func _buttons(overlay: ScrollOverlay) -> Array:
+	return overlay.find_children("*", "Button", true, false).map(func(button: Button) -> String: return button.text)
+
+
+func test_nouvelle_run_s_ouvre_sur_l_annonce() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var overlay := _announce(screen)
+	assert_not_null(overlay)
+	assert_false(overlay.dismissable, "seules ses actions la ferment")
+	assert_has(_buttons(overlay), "UI_ANNOUNCE_FIGHT")
+	assert_has(_buttons(overlay), "UI_ANNOUNCE_SKIP")
+	assert_null(screen._round)
+	await wait_process_frames(2)
+	var focused := get_viewport().gui_get_focus_owner() as Button
+	assert_not_null(focused)
+	if focused != null:
+		assert_eq(focused.text, "UI_ANNOUNCE_FIGHT", "focus initial sur Affronter")
+
+
+func test_passer_annonce_le_goulot_suivant() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	for button: Button in _announce(screen).find_children("*", "Button", true, false):
+		if button.text == "UI_ANNOUNCE_SKIP":
+			button.pressed.emit()
+	assert_eq(screen._run.progress.bottleneck_number(), 2)
+	assert_not_null(_announce(screen), "nouvelle annonce")
+
+
+func test_tribulation_sans_bouton_passer() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	while screen._run.can_skip():
+		screen._on_skip_pressed()
+	assert_not_null(screen._run.progress.current_bottleneck().constraint)
+	assert_does_not_have(_buttons(_announce(screen)), "UI_ANNOUNCE_SKIP")
+
+
+func test_reprise_sur_l_annonce() -> void:
+	var content := GameContent.load_default()
+	var rng := RandomNumberGenerator.new()
+	var run := content.new_run(rng)
+	run.announce()
+	var screen := _resume(RunSnapshot.capture(run, null, rng))
+	assert_not_null(_announce(screen))
+	assert_eq(screen._run.status, RunState.Status.ANNOUNCING)

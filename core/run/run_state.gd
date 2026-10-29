@@ -5,9 +5,13 @@ extends RefCounted
 signal round_started(round_state: RoundState)
 signal round_won(reward: RoundReward)
 signal finished(won: bool)
+## Le goulot en cours est annonce : le joueur choisit de l'affronter ou de le passer.
+signal announced
+## Le goulot vient d'etre passe ; omen : le presage gagne (null si aucun).
+signal skipped(omen: OmenDefinition)
 
-## BETWEEN_ROUNDS : goulot franchi, en attente du suivant (la boutique s'inserera ici).
-enum Status {IN_ROUND, BETWEEN_ROUNDS, WON, LOST}
+## BETWEEN_ROUNDS : goulot franchi, la boutique est ouverte. ANNOUNCING : goulot annonce, ni round ni boutique.
+enum Status {IN_ROUND, BETWEEN_ROUNDS, WON, LOST, ANNOUNCING}
 
 var status: Status = Status.IN_ROUND
 var progress: RunProgress
@@ -40,6 +44,15 @@ var setup := RunSetup.new()
 var modifiers: Array[RuleModifier] = []
 ## Vrai des que le joueur continue apres la victoire au dernier royaume.
 var endless: bool = false
+## Presages que la run peut proposer, et catalogue des ameliorations (presage de carte). Poses par GameContent.
+var omen_pool: Array[OmenDefinition] = []
+var card_modifiers: CardModifierCatalog
+## Presage propose pour chaque goulot du royaume en cours (null : tribulation, qu'on ne passe pas), tires a la
+## premiere annonce du royaume omen_offers_realm. Sauvegardes.
+var omen_offers: Array[OmenDefinition] = []
+var omen_offers_realm: int = 0
+## Presages gagnes dont l'effet attend la prochaine boutique ou la prochaine recompense. Sauvegardes.
+var pending_omens: Array[OmenDefinition] = []
 
 var _deck: DeckState
 var _rules: RoundRules
@@ -66,6 +79,88 @@ func next_round() -> bool:
 		return false
 	_start_round()
 	return true
+
+## Annonce le goulot en cours : au depart, apres la boutique ou apres un goulot passe. Tire les presages du
+## royaume a sa premiere annonce. Faux pendant un round ou une fois la run terminee.
+func announce() -> bool:
+	if status == Status.WON or status == Status.LOST or (status == Status.IN_ROUND and current_round != null):
+		return false
+	status = Status.ANNOUNCING
+	if omen_offers_realm != progress.realm_number():
+		_draw_omens()
+	announced.emit()
+	return true
+
+
+## Affronte le goulot annonce.
+func fight() -> bool:
+	if status != Status.ANNOUNCING:
+		return false
+	_start_round()
+	return true
+
+
+## Presage gagne en passant le goulot en cours, null si aucun.
+func current_omen() -> OmenDefinition:
+	var index := progress.bottleneck_number() - 1
+	return omen_offers[index] if index < omen_offers.size() else null
+
+
+## Une tribulation ne se passe pas.
+func can_skip() -> bool:
+	return status == Status.ANNOUNCING and progress.current_bottleneck().constraint == null
+
+
+## Passe le goulot annonce : ni round ni recompense, mais son presage. Il compte comme franchi pour la progression,
+## pas dans stats.bottlenecks_cleared (goulots vaincus) : il a son propre compteur.
+func skip() -> bool:
+	if not can_skip():
+		return false
+	var omen := current_omen()
+	stats.bottlenecks_skipped += 1
+	if omen != null:
+		take_omen(omen)
+	skipped.emit(omen)
+	if progress.advance():
+		announce()
+	else:
+		status = Status.WON
+		finished.emit(true)
+	return true
+
+
+## Effet immediat applique tout de suite, sinon le presage attend son moment.
+func take_omen(omen: OmenDefinition) -> void:
+	if omen.effect.timing() == OmenEffect.Timing.NOW:
+		omen.effect.apply_now(self, _deck.rng())
+	else:
+		pending_omens.append(omen)
+
+
+## Retire et renvoie les presages en attente de ce moment.
+func take_pending_omens(timing: OmenEffect.Timing) -> Array[OmenDefinition]:
+	var taken: Array[OmenDefinition] = []
+	for omen: OmenDefinition in pending_omens.duplicate():
+		if omen.effect.timing() == timing:
+			taken.append(omen)
+			pending_omens.erase(omen)
+	return taken
+
+
+## Un presage par goulot passable du royaume, sans remise tant que le pool suffit.
+func _draw_omens() -> void:
+	omen_offers.clear()
+	omen_offers_realm = progress.realm_number()
+	var bag: Array[OmenDefinition] = []
+	for bottleneck: BottleneckDefinition in progress.current_realm().bottlenecks:
+		if bottleneck.constraint != null or omen_pool.is_empty():
+			omen_offers.append(null)
+			continue
+		if bag.is_empty():
+			bag = omen_pool.duplicate()
+			RngUtils.shuffle(bag, _deck.rng())
+		omen_offers.append(bag.pop_back())
+
 
 ## Regles du round avec les heritages : le round, la boutique et l'economie lisent celles-ci, jamais les heritages.
 func round_rules() -> RoundRules:
@@ -242,6 +337,8 @@ func _on_round_finished(won: bool) -> void:
 	reward.artifacts = ArtifactResolver.after_round_won(artifacts, artifact_stacks, current_round.hands_left,
 		current_round.discards_left)
 	reward.cards = CardEffects.held_stones(_deck.hand)
+	for omen: OmenDefinition in take_pending_omens(OmenEffect.Timing.NEXT_REWARD):
+		omen.effect.apply_to_reward(reward)
 	stones += reward.total()
 	stats.stones_earned += reward.total()
 	stats.bottlenecks_cleared += 1

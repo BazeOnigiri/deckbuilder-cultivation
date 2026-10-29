@@ -9,6 +9,8 @@ var best_hand_id: String = ""
 var discards_used: int = 0
 var stones_earned: int = 0
 var bottlenecks_cleared: int = 0
+## Goulots passes sans les combattre (presages).
+var bottlenecks_skipped: int = 0
 
 
 func record_hand(hand_id: String, score: int) -> void:
@@ -26,6 +28,7 @@ func to_dict() -> Dictionary:
 		"discards_used": discards_used,
 		"stones_earned": stones_earned,
 		"bottlenecks_cleared": bottlenecks_cleared,
+		"bottlenecks_skipped": bottlenecks_skipped,
 	}
 
 
@@ -40,4 +43,5 @@ static func from_dict(data: Variant) -> RunStats:
 	stats.discards_used = maxi(0, SaveData.int_of(data, "discards_used"))
 	stats.stones_earned = maxi(0, SaveData.int_of(data, "stones_earned"))
 	stats.bottlenecks_cleared = maxi(0, SaveData.int_of(data, "bottlenecks_cleared"))
+	stats.bottlenecks_skipped = maxi(0, SaveData.int_of(data, "bottlenecks_skipped"))
 	return stats

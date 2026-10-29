@@ -77,6 +77,7 @@ func _ready() -> void:
 	_run.round_started.connect(_on_round_started)
 	_run.round_won.connect(_on_round_won)
 	_run.finished.connect(_on_run_finished)
+	_run.announced.connect(_show_announce)
 	_play_button.pressed.connect(_on_play_pressed)
 	_discard_button.pressed.connect(_on_discard_pressed)
 	_continue_button.pressed.connect(_on_continue_pressed)
@@ -126,8 +127,10 @@ func _ready() -> void:
 		tracker.achieved.connect(_on_achieved)
 	run_created.emit(_run, resumed)
 	if not resumed:
-		_run.start()
-	elif not RunSnapshot.resume_round(resume_data, _run):
+		_run.announce()
+	elif RunSnapshot.resume_round(resume_data, _run) or RunSnapshot.resume_announce(resume_data, _run):
+		pass
+	else:
 		# Sauvegarde prise dans la boutique : on la rouvre avec ses offres d'origine.
 		_shop = RunSnapshot.restore_shop(resume_data, _run, content, _rng, profile)
 		shop_created.emit(_shop)
@@ -161,7 +164,7 @@ func _keep_focus() -> void:
 		return
 	# Un rouleau ouvert (sceau-tresor, voie) garde le focus pour lui.
 	for child: Node in get_viewport().get_children() + get_children():
-		if child is ScrollOverlay or child is DeckViewer:
+		if (child is ScrollOverlay or child is DeckViewer) and not child.is_queued_for_deletion():
 			return
 	var actions: Control = $Root/Margin/Layout/Actions
 	for root: Control in [_shop_panel if _shop_panel.visible else _hand_view, _continue_button, actions]:
@@ -309,7 +312,29 @@ func _on_continue_pressed() -> void:
 	# Le focus etait dans la boutique : il revient sur la nouvelle main.
 	get_viewport().gui_release_focus()
 	_shop = null
-	_run.next_round()
+	_run.announce()
+	_refresh()
+
+
+## Rouleau d'annonce du goulot en cours : Affronter lance le round, Passer gagne le presage.
+func _show_announce() -> void:
+	_round = null
+	_show_stage()
+	BottleneckAnnounce.open(self, _run, _on_fight_pressed, _on_skip_pressed, not settings.reduce_motion)
+
+
+func _on_fight_pressed() -> void:
+	_run.fight()
+	_refresh()
+
+
+## Le goulot suivant s'annonce aussitot (signal announced), sauf si la run est gagnee.
+func _on_skip_pressed() -> void:
+	var omen := _run.current_omen()
+	_run.skip()
+	if omen != null:
+		Sons.play(&"pierres")
+		Toast.achievement(self, tr(omen.name_key), tr(omen.description_key), "UI_OMEN_BADGE")
 	_refresh()
 
 
@@ -426,6 +451,7 @@ func _open_shop() -> void:
 func _save_run() -> void:
 	if run_storage == null or not RunSnapshot.can_capture(_run):
 		return
+	# Entre deux goulots sans boutique : la boutique se cree avec le coup gagnant, rien a sauvegarder avant.
 	if _run.status == RunState.Status.BETWEEN_ROUNDS and _shop == null:
 		return
 	if not run_storage.save(RunSnapshot.capture(_run, _shop, _rng)):

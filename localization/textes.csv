@@ -505,3 +505,32 @@ UI_ENDLESS_CONTINUE,Continuer sans fin,Continue endlessly
 UI_STATS_DIFFICULTY,Difficulté ouverte,Difficulty unlocked
 UI_STATS_BEST_ENDLESS,Meilleur royaume céleste,Best celestial realm
 UI_STATS_CHALLENGES,Défis gagnés,Challenges won
+UI_ANNOUNCE_FIGHT,Affronter,Face it
+UI_ANNOUNCE_SKIP,Passer,Skip
+UI_ANNOUNCE_REWARD,Récompense : %d pierres,Reward: %d stones
+UI_ANNOUNCE_NO_SKIP,Une tribulation ne se passe pas,A tribulation cannot be skipped
+UI_ANNOUNCE_IF_SKIPPED,Présage si vous passez :,Omen if you skip:
+UI_OMEN_BADGE,Présage,Omen
+UI_KIND_OMEN,Présage,Omen
+UI_COMPENDIUM_OMENS,Présages,Omens
+UI_INFO_OMENS,Présages en attente,Pending omens
+UI_INFO_SKIPPED_COUNT,Goulots passés,Bottlenecks skipped
+UNLOCK_BOTTLENECKS_SKIPPED,Passer %d goulots dans une partie,Skip %d bottlenecks in one run
+ACH_TROIS_PRESAGES_NAME,Lecteur de présages,Omen Reader
+ACH_TROIS_PRESAGES_DESC,Passer 3 goulots dans une même partie.,Skip 3 bottlenecks in a single run.
+OMEN_GIFT_NAME,Don céleste,Heavenly Gift
+OMEN_GIFT_DESC,Le prochain artefact acheté à la prochaine boutique est gratuit.,The next artifact bought at the next shop is free.
+OMEN_STONES_NAME,Pluie de pierres,Rain of Stones
+OMEN_STONES_DESC,Gagnez 6 pierres tout de suite.,Gain 6 stones right away.
+OMEN_SEAL_NAME,Sceau offert,Offered Seal
+OMEN_SEAL_DESC,Le prochain sceau-trésor acheté à la prochaine boutique est gratuit.,The next treasure seal bought at the next shop is free.
+OMEN_REROLL_NAME,Roue du destin,Wheel of Fate
+OMEN_REROLL_DESC,Une relance gratuite à la prochaine boutique.,One free reroll at the next shop.
+OMEN_INTEREST_NAME,Source vive,Living Spring
+OMEN_INTEREST_DESC,Les intérêts du prochain goulot franchi sont doublés.,Interest from the next bottleneck cleared is doubled.
+OMEN_ENLIGHTEN_NAME,Illumination soudaine,Sudden Insight
+OMEN_ENLIGHTEN_DESC,Votre main la plus jouée monte d’un niveau (la Paire si vous n’avez rien joué).,Your most played hand gains a level (Pair if you have played nothing).
+OMEN_CARD_NAME,Talisman inscrit,Inscribed Talisman
+OMEN_CARD_DESC,Une copie améliorée d’une carte de votre paquet le rejoint.,An enhanced copy of a card from your deck joins it.
+OMEN_MARKET_NAME,Marché florissant,Thriving Market
+OMEN_MARKET_DESC,La prochaine boutique propose une offre de plus.,The next shop shows one more offer.

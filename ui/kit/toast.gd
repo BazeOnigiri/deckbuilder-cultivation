@@ -6,12 +6,13 @@ extends MarginContainer
 const MARGIN := 16
 
 
-static func achievement(parent: Control, title: String, description: String) -> void:
+## badge_key : la pastille (succes par defaut, presage gagne).
+static func achievement(parent: Control, title: String, description: String, badge_key: String = "UI_ACHIEVEMENT_BADGE") -> void:
 	var toast := Toast.new()
 	toast.mouse_filter = MOUSE_FILTER_IGNORE
 	toast.set_anchors_and_offsets_preset(PRESET_TOP_RIGHT, PRESET_MODE_MINSIZE, MARGIN)
 	var bubble := InfoBubble.build(title, description,
-		[[TranslationServer.translate("UI_ACHIEVEMENT_BADGE"), parent.get_theme_color(&"qi_color", &"InfoBubble")]])
+		[[TranslationServer.translate(badge_key), parent.get_theme_color(&"qi_color", &"InfoBubble")]])
 	bubble.mouse_filter = MOUSE_FILTER_IGNORE
 	toast.add_child(bubble)
 	parent.add_child(toast)

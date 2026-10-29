@@ -18,6 +18,11 @@ var offer_editions: Dictionary = {}
 ## Sceau ouvert, en attente des choix du joueur. null si aucun.
 var opening: PackOpening
 var reroll_cost: int
+## Presages (ShopOmenEffect) : regles changees pour cette boutique seulement, et achats ou relances gratuits restants.
+var bonus_modifiers: Array[RuleModifier] = []
+var free_artifacts: int = 0
+var free_packs: int = 0
+var free_rerolls: int = 0
 
 var _run: RunState
 var _catalog: Array[ArtifactDefinition]
@@ -44,8 +49,14 @@ func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[Man
 	_legacies = legacies
 	_deck = deck
 	_base_rules = rules
-	_rules = run.shop_rules(rules)
 	_rng = rng
+	# Presages en attente : agissent sur cette nouvelle boutique, avant le tirage des offres.
+	if saved.is_empty():
+		for omen: OmenDefinition in run.take_pending_omens(OmenEffect.Timing.NEXT_SHOP):
+			omen.effect.apply_to_shop(self)
+	else:
+		_restore_bonus(saved)
+	_rules = _current_rules()
 	reroll_cost = _rules.reroll_base_cost
 	# Boutique sauvegardee : on reprend ses offres sans tirer, la RNG ne bouge pas.
 	if saved.is_empty():
@@ -60,8 +71,31 @@ func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[Man
 		_restore(saved)
 
 
-## Prix de l'artefact propose, aura comprise.
+## Ajoute les effets d'un presage a cette boutique. Les regles changees valent pour les prochains tirages.
+func add_bonus(modifiers: Array[RuleModifier], artifacts: int, packs: int, rerolls: int) -> void:
+	bonus_modifiers.append_array(modifiers)
+	free_artifacts += artifacts
+	free_packs += packs
+	free_rerolls += rerolls
+	if _run != null and _base_rules != null:
+		_rules = _current_rules()
+
+
+## Regles de la boutique : celles de la run (heritages compris), puis les presages.
+func _current_rules() -> ShopRules:
+	var rules := _run.shop_rules(_base_rules)
+	if bonus_modifiers.is_empty():
+		return rules
+	rules = rules.duplicate()
+	for modifier: RuleModifier in bonus_modifiers:
+		modifier.apply_to(rules)
+	return rules
+
+
+## Prix de l'artefact propose, aura comprise. Gratuit tant qu'un presage en offre un.
 func price_of(index: int) -> int:
+	if free_artifacts > 0:
+		return 0
 	var edition: EditionDefinition = offer_editions.get(offers[index].id)
 	return offers[index].price + (edition.price_bonus if edition != null else 0)
 
@@ -80,6 +114,7 @@ func buy(index: int) -> bool:
 		return false
 	var artifact: ArtifactDefinition = offers[index]
 	_run.stones -= price_of(index)
+	free_artifacts = maxi(0, free_artifacts - 1)
 	_run.add_artifact(artifact, offer_editions.get(artifact.id))
 	offer_editions.erase(artifact.id)
 	offers.remove_at(index)
@@ -137,7 +172,7 @@ func buy_legacy() -> bool:
 	_run.legacies.append(_run.legacy_offer)
 	_run.legacy_offer = null
 	var old_base := _rules.reroll_base_cost
-	_rules = _run.shop_rules(_base_rules)
+	_rules = _current_rules()
 	# La relance en cours suit le changement de base, sinon l'heritage ne jouerait qu'a la prochaine boutique.
 	reroll_cost = maxi(0, reroll_cost + _rules.reroll_base_cost - old_base)
 	return true
@@ -156,10 +191,15 @@ func _roll_legacy() -> void:
 	_run.legacy_offer_realm = _run.progress.realm_number()
 
 
+## Prix du sceau propose : gratuit tant qu'un presage en offre un.
+func pack_price(index: int) -> int:
+	return 0 if free_packs > 0 else pack_offers[index].price
+
+
 ## Un seul sceau ouvert a la fois.
 func can_buy_pack(index: int) -> bool:
 	return (opening == null and index >= 0 and index < pack_offers.size()
-		and _run.stones >= pack_offers[index].price)
+		and _run.stones >= pack_price(index))
 
 
 ## Achete et ouvre le sceau : ses choix sont tires tout de suite.
@@ -167,7 +207,8 @@ func buy_pack(index: int) -> bool:
 	if not can_buy_pack(index):
 		return false
 	var pack: PackDefinition = pack_offers[index]
-	_run.stones -= pack.price
+	_run.stones -= pack_price(index)
+	free_packs = maxi(0, free_packs - 1)
 	pack_offers.remove_at(index)
 	open_pack(pack)
 	return true
@@ -246,14 +287,22 @@ func offered() -> Array[Resource]:
 
 ## Pas de relance pendant un sceau ouvert : elle changerait les artefacts possedes sous ses choix.
 func can_reroll() -> bool:
-	return opening == null and _run.stones >= reroll_cost
+	return opening == null and _run.stones >= reroll_price()
+
+
+## Prix de la prochaine relance : gratuite tant qu'un presage en offre une (son prix n'augmente alors pas).
+func reroll_price() -> int:
+	return 0 if free_rerolls > 0 else reroll_cost
 
 
 func reroll() -> bool:
 	if not can_reroll():
 		return false
-	_run.stones -= reroll_cost
-	reroll_cost += _rules.reroll_cost_step
+	if free_rerolls > 0:
+		free_rerolls -= 1
+	else:
+		_run.stones -= reroll_cost
+		reroll_cost += _rules.reroll_cost_step
 	_roll_offers()
 	offers_changed.emit()
 	return true
@@ -367,7 +416,27 @@ func to_dict() -> Dictionary:
 			"picks_left": opening.picks_left, "cards": opening.cards.map(func(card: CardInstance) -> Dictionary:
 				return CardModifierCatalog.to_dict(card))},
 		"reroll_cost": reroll_cost,
+		"bonus": bonus_modifiers.map(func(modifier: RuleModifier) -> Dictionary:
+			return {"property": String(modifier.property), "amount": modifier.amount}),
+		"free_artifacts": free_artifacts,
+		"free_packs": free_packs,
+		"free_rerolls": free_rerolls,
 	}
+
+
+## Presages de la boutique sauvegardee (champs absents : aucun).
+func _restore_bonus(saved: Dictionary) -> void:
+	var bonus: Variant = saved.get("bonus")
+	if bonus is Array:
+		for entry: Variant in bonus:
+			if entry is Dictionary and str(entry.get("property", "")) != "":
+				var modifier := RuleModifier.new()
+				modifier.property = StringName(str(entry["property"]))
+				modifier.amount = SaveData.int_of(entry, "amount")
+				bonus_modifiers.append(modifier)
+	free_artifacts = maxi(0, SaveData.int_of(saved, "free_artifacts"))
+	free_packs = maxi(0, SaveData.int_of(saved, "free_packs"))
+	free_rerolls = maxi(0, SaveData.int_of(saved, "free_rerolls"))
 
 
 func _restore(saved: Dictionary) -> void:

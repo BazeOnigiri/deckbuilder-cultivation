@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="OmenDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/omens/omen_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/omens/level_hand_omen_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+amount = 1
+fallback_hand = &"main_paire"
+
+[resource]
+script = ExtResource("1")
+id = &"presage_illumination"
+name_key = "OMEN_ENLIGHTEN_NAME"
+description_key = "OMEN_ENLIGHTEN_DESC"
+glyph = "悟"
+effect = SubResource("effect")

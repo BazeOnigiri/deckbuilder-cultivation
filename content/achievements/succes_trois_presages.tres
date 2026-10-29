@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/profile/achievement_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/profile/unlock_condition.gd" id="2"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("2")
+kind = 11
+count = 3
+
+[resource]
+script = ExtResource("1")
+id = &"succes_trois_presages"
+name_key = "ACH_TROIS_PRESAGES_NAME"
+description_key = "ACH_TROIS_PRESAGES_DESC"
+glyph = "兆"
+condition = SubResource("condition")

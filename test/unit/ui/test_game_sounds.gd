@@ -23,8 +23,19 @@ func _ids() -> Array:
 	return _played.map(func(entry: Array) -> StringName: return entry[0])
 
 
+## Affronte le goulot annonce (rouleau d'annonce ouvert au depart d'une run), pour avoir un round en cours.
+func _fight(screen: Control) -> Control:
+	for overlay: Node in screen.get_children():
+		if overlay is ScrollOverlay and not overlay.is_queued_for_deletion():
+			for button: Button in overlay.find_children("*", "Button", true, false):
+				if button.text == "UI_ANNOUNCE_FIGHT":
+					button.pressed.emit()
+					return screen
+	return screen
+
+
 func _screen() -> Control:
-	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var screen: Control = _fight(add_child_autofree(SCREEN.instantiate()))
 	var feel := ScoreFeel.new()
 	feel.start_delay = 0.0
 	feel.step_delay = 0.0

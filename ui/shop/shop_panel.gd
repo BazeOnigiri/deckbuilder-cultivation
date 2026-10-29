@@ -133,12 +133,12 @@ func _refresh() -> void:
 	for i: int in _shop.pack_offers.size():
 		var pack: PackDefinition = _shop.pack_offers[i]
 		_add_offer(ItemSlot.Kind.PACK, pack.glyph, pack.name_key, tr(pack.description_key),
-			pack.price, _shop.can_buy_pack(i), _on_buy_pack_pressed.bind(i))
+			_shop.pack_price(i), _shop.can_buy_pack(i), _on_buy_pack_pressed.bind(i))
 	var legacy := _shop.legacy_offer()
 	if legacy != null:
 		_add_offer(ItemSlot.Kind.LEGACY, legacy.glyph, legacy.name_key, tr(legacy.description_key),
 			legacy.price, _shop.can_buy_legacy(), _on_buy_legacy_pressed)
-	_reroll.text = tr("UI_SHOP_REROLL") % _shop.reroll_cost
+	_reroll.text = tr("UI_SHOP_REROLL") % _shop.reroll_price()
 	_reroll.disabled = not _shop.can_reroll()
 	if focused >= 0:
 		var place := mini(focused, _offers.get_child_count() - 1)

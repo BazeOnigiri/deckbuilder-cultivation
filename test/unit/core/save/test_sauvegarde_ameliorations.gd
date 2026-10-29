@@ -30,7 +30,7 @@ func test_cartes_et_artefacts_relus_avec_leurs_ameliorations() -> void:
 	var artifact_edition: EditionDefinition = _content.modifiers.artifact_editions()[0]
 	run.add_artifact(_content.artifacts[0], artifact_edition)
 	var data := _through_json(RunSnapshot.capture(run, _content.new_shop(run, rng), rng))
-	assert_eq(data["version"], 2)
+	assert_eq(data["version"], RunSnapshot.VERSION)
 	var restored := RunSnapshot.restore(data, _content, _rng(1))
 	var again: CardInstance = restored.cards().filter(func(c: CardInstance) -> bool: return c.uid == card.uid)[0]
 	assert_eq(again.enhancement, card.enhancement)
@@ -58,7 +58,7 @@ func test_modificateur_inconnu_ignore() -> void:
 func test_migration_v1_vers_v2() -> void:
 	var v1 := {"version": 1, "cards": [{"uid": 0, "card": "carte_bois_1", "element": 0, "rank": 1}]}
 	var migrated := RunSnapshot.migrate(v1)
-	assert_eq(migrated["version"], 2)
+	assert_eq(migrated["version"], RunSnapshot.VERSION)
 	assert_eq(migrated["cards"][0]["enhancement"], "")
 	assert_eq(migrated["artifact_editions"], {})
 

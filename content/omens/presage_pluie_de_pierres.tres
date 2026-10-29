@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OmenDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/omens/omen_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/omens/stones_omen_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+amount = 6
+
+[resource]
+script = ExtResource("1")
+id = &"presage_pluie_de_pierres"
+name_key = "OMEN_STONES_NAME"
+description_key = "OMEN_STONES_DESC"
+glyph = "财"
+effect = SubResource("effect")
