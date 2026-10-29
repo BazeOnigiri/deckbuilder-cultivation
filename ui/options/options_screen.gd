@@ -16,6 +16,11 @@ var in_run: bool = false
 
 var _confirm: ScrollOverlay
 var _confirm_button: Button
+## Rouleau des touches : un bouton par action de jeu, et l'action qui attend sa nouvelle touche (&"" : aucune).
+var _keys_scroll: ScrollOverlay
+var _key_buttons: Dictionary[StringName, Button] = {}
+var _key_status: Label
+var _capturing: StringName = &""
 
 
 func _ready() -> void:
@@ -39,6 +44,12 @@ func _ready() -> void:
 	%MenuButton.pressed.connect(menu_requested.emit)
 	%NewRunButton.pressed.connect(_ask_new_run)
 	%BackButton.reduce_motion = settings.reduce_motion
+	var keys := _seal("UI_OPTIONS_KEYS")
+	keys.size_flags_horizontal = SIZE_SHRINK_CENTER
+	keys.pressed.connect(_show_keys)
+	%RunButtons.add_sibling(keys)
+	%RunButtons.get_parent().move_child(keys, %RunButtons.get_index())
+	%ReduceMotion.grab_focus(not Focus.shown)
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 
 
@@ -86,6 +97,103 @@ func _ask_new_run() -> void:
 	_confirm = ScrollOverlay.open(self, "UI_OPTIONS_NEW_RUN", body, not settings.reduce_motion)
 	_confirm.hide_close()
 	cancel.pressed.connect(_confirm.close)
+
+
+## Liste des actions de jeu et de leur touche. Clic (ou valider) sur une touche, puis appui sur la nouvelle.
+func _show_keys() -> void:
+	var body := VBoxContainer.new()
+	var grid := GridContainer.new()
+	grid.columns = 2
+	_key_buttons.clear()
+	for entry: Array in Keys.LISTED:
+		var action: StringName = entry[0]
+		if not KeyBindings.ACTIONS.has(action):
+			continue
+		var label := SideColumn.make_label(&"ScrollText")
+		label.text = Keys.text_of(entry[1])
+		label.size_flags_horizontal = SIZE_EXPAND_FILL
+		grid.add_child(label)
+		var button := _seal("")
+		button.pressed.connect(_capture.bind(action))
+		grid.add_child(button)
+		_key_buttons[action] = button
+	body.add_child(grid)
+	_key_status = SideColumn.make_label(&"ScrollCaption")
+	_key_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_key_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_key_status.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
+	body.add_child(_key_status)
+	var defaults := _seal("UI_OPTIONS_KEYS_DEFAULT")
+	defaults.size_flags_horizontal = SIZE_SHRINK_CENTER
+	defaults.pressed.connect(_reset_keys)
+	body.add_child(defaults)
+	_keys_scroll = ScrollOverlay.open(self, "UI_OPTIONS_KEYS", body, not settings.reduce_motion)
+	_keys_scroll.closed.connect(func() -> void: _capturing = &"")
+	_refresh_keys()
+
+
+func _refresh_keys() -> void:
+	for action: StringName in _key_buttons:
+		_key_buttons[action].text = tr("UI_OPTIONS_PRESS_KEY") if action == _capturing else Keys.name_of(action, false)
+
+
+func _capture(action: StringName) -> void:
+	_capturing = action
+	_key_status.text = ""
+	_refresh_keys()
+
+
+## La touche attendue est lue avant tout le reste : Echap annule au lieu de fermer le rouleau.
+func _input(event: InputEvent) -> void:
+	if _capturing == &"" or not event.is_pressed() or event.is_echo():
+		return
+	if not (event is InputEventKey or event.is_action(&"ui_cancel")):
+		return
+	get_viewport().set_input_as_handled()
+	var action := _capturing
+	_capturing = &""
+	var key := event as InputEventKey
+	if key != null and not event.is_action(&"ui_cancel"):
+		set_key(action, key.physical_keycode if key.physical_keycode != KEY_NONE else key.keycode)
+	_refresh_keys()
+
+
+## Echange avec une autre action de jeu ; une touche reservee (Echap, Espace, fleches, chiffres) est refusee.
+func set_key(action: StringName, keycode: int) -> bool:
+	var other := KeyBindings.owner_of(keycode, settings.key_bindings)
+	if not KeyBindings.rebind(settings.key_bindings, action, keycode):
+		if _key_status != null:
+			_key_status.text = tr("UI_OPTIONS_KEY_TAKEN") % OS.get_keycode_string(keycode)
+		return false
+	KeyBindings.apply(settings.key_bindings)
+	if _key_status != null:
+		_key_status.text = "" if other == &"" or other == action else tr("UI_OPTIONS_KEY_SWAPPED") % Keys.text_of(_label_of(other))
+	settings_changed.emit()
+	return true
+
+
+func _reset_keys() -> void:
+	settings.key_bindings.clear()
+	KeyBindings.apply(settings.key_bindings)
+	_capturing = &""
+	if _key_status != null:
+		_key_status.text = ""
+	settings_changed.emit()
+	_refresh_keys()
+
+
+func _label_of(action: StringName) -> String:
+	for entry: Array in Keys.LISTED:
+		if entry[0] == action:
+			return entry[1]
+	return String(action)
+
+
+## Manette : B (ui_cancel) ferme les reglages comme le sceau Retour. Un rouleau ouvert le prend avant.
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"ui_cancel"):
+		get_viewport().set_input_as_handled()
+		back_requested.emit()
 
 
 func _seal(text_key: String) -> Button:

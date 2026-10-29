@@ -40,6 +40,14 @@ func _ready() -> void:
 	_close.size_flags_horizontal = SIZE_SHRINK_CENTER
 	_close.pressed.connect(close)
 	layout.add_child(_close)
+	Focus.trap(self)
+	# Apres open() : le contenu et hide_close() sont poses.
+	_grab_initial_focus.call_deferred()
+
+
+func _grab_initial_focus() -> void:
+	if is_inside_tree() and not Focus.grab_first(_body):
+		Focus.grab_first(_close)
 
 
 ## Pour les rouleaux qui ont leurs propres actions (ex. Continuer / Recommencer) : le sceau Fermer est retire.
@@ -67,6 +75,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close()
-	elif event is InputEventKey:
-		# Rouleau ouvert : les touches de la partie (jouer, defausser...) n'agissent pas derriere lui.
+	elif event is InputEventKey or event.is_action_type():
+		# Rouleau ouvert : les touches et boutons de la partie (jouer, defausser...) n'agissent pas derriere lui.
 		get_viewport().set_input_as_handled()

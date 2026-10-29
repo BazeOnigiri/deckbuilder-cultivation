@@ -57,8 +57,11 @@ var _sealed: bool = false
 func _ready() -> void:
 	theme_type_variation = &"CardButton"
 	toggle_mode = true
-	# shortcut: pas de focus (souris seule), a revoir avec la navigation clavier/manette via InputMap
-	focus_mode = FOCUS_NONE
+	# Carte reduite (small) ou sortie de la main : ni clic ni focus.
+	if mouse_filter == MOUSE_FILTER_IGNORE:
+		focus_mode = FOCUS_NONE
+	else:
+		FocusTip.attach(self)
 	size = CARD_SIZE
 	pivot_offset = CARD_SIZE / 2
 	material = TILT_MATERIAL.duplicate()
@@ -104,7 +107,7 @@ func _draw() -> void:
 	# Une carte modifiee par une pilule luit : le joueur la reconnait dans sa main.
 	if card.is_altered():
 		draw_style_box(_glow, Rect2(Vector2.ZERO, CARD_SIZE))
-	var box: StringName = &"card_selected" if button_pressed else (&"card_hover" if is_hovered() else &"card")
+	var box: StringName = &"card_selected" if button_pressed else (&"card_hover" if is_hovered() or has_focus(true) else &"card")
 	draw_style_box(get_theme_stylebox(box), Rect2(Vector2.ZERO, CARD_SIZE))
 	# +0.5 : le trait de 1 px est centre sur le bord du rectangle, on le cale sur une colonne de pixels.
 	var inset := Vector2.ONE * (FRAME_INSET + 0.5)

@@ -19,6 +19,7 @@ func _ready() -> void:
 	_rows.add_theme_constant_override(&"separation", get_theme_constant(&"row_separation", &"DeckViewer"))
 	center.add_child(_rows)
 	add_child(center)
+	Focus.trap(self)
 
 
 ## in_draw_pile(card) -> bool : vrai si la carte peut encore etre piochee.
@@ -70,5 +71,5 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_cancel") or event.is_action_pressed(&"show_deck"):
 		get_viewport().set_input_as_handled()
 		close()
-	elif event is InputEventKey:
+	elif event is InputEventKey or event.is_action_type():
 		get_viewport().set_input_as_handled()

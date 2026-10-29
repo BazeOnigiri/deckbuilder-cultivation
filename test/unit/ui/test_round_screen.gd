@@ -469,3 +469,18 @@ func test_rouleau_ouvert_garde_les_touches() -> void:
 	key.pressed = true
 	overlay._unhandled_input(key)
 	assert_true(screen.get_viewport().is_input_handled(), "la touche s'arrete au rouleau")
+
+
+func test_focus_initial_sur_la_premiere_carte() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var hand: Node = screen.get_node("%HandRow")
+	assert_eq(get_viewport().gui_get_focus_owner(), hand.get_child(0))
+
+
+func test_focus_dans_la_boutique_a_son_ouverture() -> void:
+	var content := GameContent.load_default()
+	var rng := RandomNumberGenerator.new()
+	var run := content.new_run(rng)
+	run.status = RunState.Status.BETWEEN_ROUNDS
+	var screen := _resume(RunSnapshot.capture(run, content.new_shop(run, rng), rng))
+	assert_true(screen.get_node("%ShopPanel").is_ancestor_of(get_viewport().gui_get_focus_owner()))

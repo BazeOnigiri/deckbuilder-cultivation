@@ -192,7 +192,7 @@ UI_RARITY_1,Spirituel 灵,Spiritual 灵
 UI_RARITY_2,Céleste 仙,Celestial 仙
 UI_RARITY_3,Divin 神,Divine 神
 UI_SELL,Vendre (%d),Sell (%d)
-UI_KEYS_SELL,"Vendre l'artefact ou la pilule sous la souris (appuyer deux fois)","Sell the artifact or pill under the mouse (press twice)"
+UI_KEYS_SELL,"Vendre l'artefact ou la pilule visé (appuyer deux fois)","Sell the aimed artifact or pill (press twice)"
 PACK_LIBRARY_NAME,Bibliothèque,Library
 PACK_LIBRARY_DESC,"Choisir 1 manuel de technique parmi 3, appris tout de suite","Choose 1 of 3 technique manuals, learned at once"
 PACK_ALCHEMIST_NAME,Coffret d'alchimiste,Alchemist's Case
@@ -313,3 +313,9 @@ HELP_SHOP_TITLE,La boutique,The shop
 HELP_SHOP_BODY,"Entre deux goulots, la boutique vend des artefacts (jusqu'à %d), des manuels qui font monter une main de niveau, des pilules (jusqu'à %d, à utiliser sur des cartes pendant un goulot) et des sceaux-trésor où choisir parmi plusieurs objets. Chaque royaume propose aussi un héritage qui change les règles. Relancer coûte des pierres, de plus en plus. Vendre un artefact ou une pilule rend %d%% de son prix.","Between bottlenecks, the shop sells artifacts (up to %d), manuals that raise a hand a level, pills (up to %d, used on cards during a bottleneck) and treasure seals to choose among several items. Each realm also offers a legacy that changes the rules. Rerolling costs stones, more each time. Selling an artifact or a pill returns %d%% of its price."
 HELP_TRIBULATION_TITLE,Tribulations,Tribulations
 HELP_TRIBULATION_BODY,"La tribulation qui clôt un royaume impose une contrainte : cartes qui ne comptent pas, moins de mains, moins de cartes... Elle est décrite dans l'onglet Parcours de la Voie de cultivation. Prépare ton paquet et tes artefacts avant de la tenter.","The tribulation that ends a realm imposes a constraint: cards that do not count, fewer hands, fewer cards... It is described in the Path tab of the Cultivation Path. Prepare your deck and artifacts before attempting it."
+UI_KEYS_OPTIONS,Ouvrir les options,Open the options
+UI_OPTIONS_KEYS,Touches,Controls
+UI_OPTIONS_KEYS_DEFAULT,Touches par défaut,Default controls
+UI_OPTIONS_PRESS_KEY,Appuyez sur une touche…,Press a key…
+UI_OPTIONS_KEY_TAKEN,"%s est réservée (valider, fermer, flèches, chiffres) : choisissez-en une autre.","%s is reserved (confirm, close, arrows, numbers): pick another one."
+UI_OPTIONS_KEY_SWAPPED,"Touches échangées avec « %s ».","Keys swapped with “%s”."

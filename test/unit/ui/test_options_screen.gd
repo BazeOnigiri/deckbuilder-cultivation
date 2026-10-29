@@ -40,3 +40,42 @@ func test_plein_ecran_perdu_decoche_la_case() -> void:
 	assert_true(screen.get_node("%Fullscreen").button_pressed)
 	screen.settings.sync_fullscreen(false)
 	assert_false(screen.get_node("%Fullscreen").button_pressed)
+
+
+func after_each() -> void:
+	KeyBindings.apply({})
+
+
+func test_focus_initial_sur_le_premier_reglage() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	assert_true(screen.get_node("%ReduceMotion").has_focus())
+
+
+func test_nouvelle_touche_sauvee_dans_les_reglages() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	watch_signals(screen)
+	assert_true(screen.set_key(&"discard_hand", KEY_K))
+	assert_eq(screen.settings.key_bindings, {"discard_hand": KEY_K})
+	assert_eq(Keys.name_of(&"discard_hand", false), "K")
+	assert_signal_emitted(screen, "settings_changed")
+
+
+func test_touche_reservee_refusee_dans_les_options() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	assert_false(screen.set_key(&"discard_hand", KEY_ESCAPE))
+	assert_eq(screen.settings.key_bindings, {})
+
+
+func test_capture_d_une_touche_puis_retour_par_defaut() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	screen._show_keys()
+	screen._key_buttons[&"play_hand"].pressed.emit()
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_P
+	key.pressed = true
+	get_viewport().push_input(key)
+	assert_eq(screen.settings.key_bindings, {"play_hand": KEY_P})
+	assert_eq(screen._key_buttons[&"play_hand"].text, "P")
+	screen._reset_keys()
+	assert_eq(screen.settings.key_bindings, {})
+	assert_eq(screen._key_buttons[&"play_hand"].text, Keys.name_of(&"play_hand", false))

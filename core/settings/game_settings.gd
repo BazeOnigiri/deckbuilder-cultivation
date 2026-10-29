@@ -26,12 +26,15 @@ var high_contrast: bool = false
 var master_volume: float = 0.8
 var music_volume: float = 0.6
 var effects_volume: float = 0.8
+## Touches choisies dans les options (KeyBindings) : {action : touche physique}. Vide : celles de project.godot.
+var key_bindings: Dictionary = {}
 
 
 func to_dict() -> Dictionary:
 	return {"reduce_motion": reduce_motion, "game_speed": game_speed, "fullscreen": fullscreen,
 		"language": language, "high_contrast": high_contrast,
-		"master_volume": master_volume, "music_volume": music_volume, "effects_volume": effects_volume}
+		"master_volume": master_volume, "music_volume": music_volume, "effects_volume": effects_volume,
+		"key_bindings": key_bindings}
 
 
 ## Le fichier vient du disque du joueur : une valeur absente ou de mauvais type garde sa valeur par defaut.
@@ -51,6 +54,7 @@ static func from_dict(data: Dictionary) -> GameSettings:
 	settings.master_volume = _volume(data, "master_volume", settings.master_volume)
 	settings.music_volume = _volume(data, "music_volume", settings.music_volume)
 	settings.effects_volume = _volume(data, "effects_volume", settings.effects_volume)
+	settings.key_bindings = KeyBindings.sanitized(data.get("key_bindings", {}))
 	return settings
 
 

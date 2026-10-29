@@ -86,8 +86,10 @@ func _show_options_over_run() -> void:
 	options.new_run_requested.connect(func() -> void:
 		veil.queue_free()
 		_start_new_run())
-	veil.add_child(options)
 	add_child(veil)
+	# Avant d'y poser les reglages : la run dessous ne prend plus le focus, et le retrouve a la fermeture.
+	Focus.trap(veil)
+	veil.add_child(options)
 	# Le voile prend la souris, pas le clavier : la run dessous ne lit plus ses touches tant qu'il est ouvert.
 	var run_screen := _screen
 	run_screen.set_process_unhandled_input(false)
@@ -120,6 +122,7 @@ func _apply_settings() -> void:
 	# Accelere tout ce qui suit le temps du moteur (tweens, minuteurs), pas les shaders.
 	Engine.time_scale = _settings.game_speed
 	TranslationServer.set_locale(_settings.language)
+	KeyBindings.apply(_settings.key_bindings)
 	theme = CONTRAST_THEME if _settings.high_contrast else null
 	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if _settings.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
 	if DisplayServer.window_get_mode() != mode:
@@ -133,6 +136,11 @@ func _apply_settings() -> void:
 func _confirm_fullscreen() -> void:
 	if _settings.sync_fullscreen(DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN):
 		_on_settings_saved()
+
+
+## Souris et doigt cachent le focus pose par le jeu, clavier et manette le montrent.
+func _input(event: InputEvent) -> void:
+	Focus.note_input(event)
 
 
 func _show_stats() -> void:

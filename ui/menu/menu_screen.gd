@@ -40,6 +40,7 @@ func _ready() -> void:
 	%Scroll.custom_minimum_size.x = get_theme_constant(&"menu_width", &"ScrollPanel")
 	%Gap.custom_minimum_size.y = get_theme_constant(&"menu_gap", &"ScrollPanel")
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
+	Focus.grab_first(%Scroll)
 
 
 ## Sans run sauvegardee, rien a confirmer : la partie commence.
@@ -143,6 +144,8 @@ func _names(list: Array) -> String:
 func _show_credits() -> void:
 	var text := RichTextLabel.new()
 	text.theme_type_variation = &"ScrollRichText"
+	# Focalisable : les fleches et la manette font defiler le texte.
+	text.focus_mode = FOCUS_ALL
 	text.custom_minimum_size = Vector2(get_theme_constant(&"credits_width", &"ScrollPanel"),
 		get_theme_constant(&"tab_height", &"ScrollPanel"))
 	var parts: Array[String] = [tr("UI_CREDITS_GAME"), tr("UI_CREDITS_FONTS"), tr("UI_CREDITS_SOUNDS")]

@@ -40,6 +40,7 @@ func _ready() -> void:
 ## stacks : crans des artefacts qui grandissent (RunState.artifact_stacks), rappeles dans leur infobulle.
 func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int, sell_prices: Array = [], stacks: Dictionary = {}) -> void:
 	_artifact_caption.text = tr("UI_ITEMS_ARTIFACTS") % [artifacts.size(), max_count]
+	var focused := _focused_index(_artifact_slots)
 	_clear(_artifact_slots)
 	_slot_of.clear()
 	_drop_seal()
@@ -55,11 +56,14 @@ func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int, sell_p
 			_slot_of[artifacts[i]] = slot
 			if i < sell_prices.size():
 				slot.pressed.connect(press_artifact.bind(i))
+				slot.get_node(^"FocusTip").long_pressed.connect(_offer_sale.bind(i, false))
+	_refocus(_artifact_slots, focused)
 
 
 ## usable[i] : la pilule i peut servir sur la selection actuelle. sell_prices[i] : pierres rendues par sa vente.
 func show_pills(pills: Array[PillDefinition], max_count: int, usable: Array[bool], sell_prices: Array = []) -> void:
 	_pill_caption.text = tr("UI_ITEMS_PILLS") % [pills.size(), max_count]
+	var focused := _focused_index(_pill_slots)
 	_clear(_pill_slots)
 	_drop_seal()
 	_pill_sell_prices = sell_prices
@@ -69,6 +73,9 @@ func show_pills(pills: Array[PillDefinition], max_count: int, usable: Array[bool
 			_fill(slot, pills[i].glyph, pills[i].name_key, pills[i].description_key)
 			slot.disabled = not usable[i]
 			slot.pressed.connect(pill_pressed.emit.bind(i))
+			# Tactile : un appui court utilise la pilule, un appui long propose de la vendre.
+			slot.get_node(^"FocusTip").long_pressed.connect(_offer_sale.bind(i, true))
+	_refocus(_pill_slots, focused)
 
 
 ## Premier appui : montre le sceau « Vendre (n) » sous l'artefact. Second appui sur le meme : le vend.
@@ -102,6 +109,12 @@ func _press_sale(index: int, pill: bool) -> void:
 	_seal.position = Vector2((slot.size.x - _seal.size.x) / 2.0, slot.size.y)
 
 
+## Appui long : montre le sceau « Vendre (n) » sans vendre (un second appui sur le sceau vend).
+func _offer_sale(index: int, pill: bool) -> void:
+	if _selling != index or _selling_pill != pill:
+		_press_sale(index, pill)
+
+
 func _drop_seal() -> void:
 	if _seal != null:
 		_seal.queue_free()
@@ -110,15 +123,18 @@ func _drop_seal() -> void:
 	_selling_pill = false
 
 
-## Clavier : appuie sur l'artefact ou la pilule sous la souris. Faux s'il n'y en a pas.
+## Touche de vente : appuie sur l'artefact ou la pilule qui a le focus, sinon celui sous la souris.
+## Faux s'il n'y en a pas.
 func press_hovered_item() -> bool:
-	for pill: bool in [false, true]:
-		var prices := _pill_sell_prices if pill else _sell_prices
-		for i: int in prices.size():
-			var slot: ItemSlot = (_pill_slots if pill else _artifact_slots).get_child(i)
-			if slot.get_global_rect().has_point(slot.get_global_mouse_position()):
-				_press_sale(i, pill)
-				return true
+	for hovered: bool in [false, true]:
+		for pill: bool in [false, true]:
+			var prices := _pill_sell_prices if pill else _sell_prices
+			for i: int in prices.size():
+				var slot: ItemSlot = (_pill_slots if pill else _artifact_slots).get_child(i)
+				var aimed := slot.get_global_rect().has_point(slot.get_global_mouse_position()) if hovered else slot.has_focus()
+				if aimed:
+					_press_sale(i, pill)
+					return true
 	return false
 
 
@@ -160,8 +176,26 @@ func _slot(kind: ItemSlot.Kind, parent: HBoxContainer) -> ItemSlot:
 func _fill(slot: ItemSlot, glyph: String, name_key: String, description_key: String) -> void:
 	slot.glyph = glyph
 	slot.mouse_filter = MOUSE_FILTER_STOP
+	slot.focus_mode = FOCUS_ALL
 	slot.set_info(tr(name_key), tr(description_key))
 	slot.queue_redraw()
+
+
+## Place de l'emplacement qui a le focus, -1 si aucun : la rangee est refaite a chaque changement.
+func _focused_index(parent: Node) -> int:
+	for i: int in parent.get_child_count():
+		if (parent.get_child(i) as Control).has_focus():
+			return i
+	return -1
+
+
+## Rend le focus a la meme place apres reconstruction, ou au dernier objet avant elle (pilule utilisee).
+func _refocus(parent: Node, index: int) -> void:
+	for i: int in range(mini(index, parent.get_child_count() - 1), -1, -1):
+		var slot := parent.get_child(i) as Control
+		if slot.focus_mode != FOCUS_NONE:
+			slot.grab_focus(not Focus.shown)
+			return
 
 
 func _clear(parent: Node) -> void:
