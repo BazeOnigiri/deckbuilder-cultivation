@@ -8,16 +8,31 @@ const LISTED := [
 	[&"select_card_1", "UI_KEYS_SELECT"], [&"play_hand", "UI_KEYS_PLAY"], [&"discard_hand", "UI_KEYS_DISCARD"],
 	[&"deselect_cards", "UI_KEYS_DESELECT"], [&"sort_by_rank", "UI_KEYS_SORT_RANK"],
 	[&"sort_by_element", "UI_KEYS_SORT_ELEMENT"], [&"show_deck", "UI_KEYS_DECK"], [&"show_path", "UI_KEYS_PATH"],
-	[&"sell_artifact", "UI_KEYS_SELL"],
+	[&"sell_artifact", "UI_KEYS_SELL"], [&"show_options", "UI_KEYS_OPTIONS"],
 	[&"ui_cancel", "UI_KEYS_CLOSE"],
 ]
 ## Selection d'une carte par sa place dans la main : select_card_1, select_card_2...
 const SELECT_PREFIX := "select_card_"
 
 
-## Nom de la premiere touche de l'action, dans la disposition du clavier du joueur (« A » en AZERTY...).
-static func name_of(action: StringName) -> String:
-	for event: InputEvent in InputMap.action_get_events(action) if InputMap.has_action(action) else []:
+## Boutons de manette, noms de la disposition Xbox (la plus repandue) : identiques dans toutes les langues.
+const JOY_BUTTONS := {JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_BUTTON_X: "X", JOY_BUTTON_Y: "Y",
+	JOY_BUTTON_BACK: "Select", JOY_BUTTON_START: "Start", JOY_BUTTON_LEFT_SHOULDER: "LB",
+	JOY_BUTTON_RIGHT_SHOULDER: "RB", JOY_BUTTON_DPAD_UP: "↑", JOY_BUTTON_DPAD_DOWN: "↓",
+	JOY_BUTTON_DPAD_LEFT: "←", JOY_BUTTON_DPAD_RIGHT: "→"}
+const JOY_AXES := {JOY_AXIS_TRIGGER_LEFT: "LT", JOY_AXIS_TRIGGER_RIGHT: "RT"}
+
+
+## Nom de la touche de l'action : bouton de manette si une manette est branchee (et que l'action en a un),
+## sinon premiere touche du clavier, dans la disposition du joueur (« A » en AZERTY...).
+static func name_of(action: StringName, joypad: bool = not Input.get_connected_joypads().is_empty()) -> String:
+	var events: Array[InputEvent] = InputMap.action_get_events(action) if InputMap.has_action(action) else []
+	if joypad:
+		for event: InputEvent in events:
+			var joy := joy_name(event)
+			if not joy.is_empty():
+				return joy
+	for event: InputEvent in events:
 		var key := event as InputEventKey
 		if key == null:
 			continue
@@ -27,6 +42,17 @@ static func name_of(action: StringName) -> String:
 		if DisplayServer.get_name() == "headless":
 			return OS.get_keycode_string(key.physical_keycode)
 		return OS.get_keycode_string(DisplayServer.keyboard_get_keycode_from_physical(key.physical_keycode))
+	return ""
+
+
+## Nom d'un bouton ou d'une gachette de manette, vide pour un autre evenement.
+static func joy_name(event: InputEvent) -> String:
+	var button := event as InputEventJoypadButton
+	if button != null:
+		return JOY_BUTTONS.get(button.button_index, "")
+	var motion := event as InputEventJoypadMotion
+	if motion != null:
+		return JOY_AXES.get(motion.axis, "")
 	return ""
 
 

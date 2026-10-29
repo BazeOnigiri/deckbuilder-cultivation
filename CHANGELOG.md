@@ -17,6 +17,10 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Infobulle sur les cartes d'un sceau de disciples (rang, element, Qi) et sur le compteur de pierres de la colonne laterale.
 - Icone originale (cinq elements en pentagone dans un cercle dore) a la place du logo Godot, icon.ico pour l'exe Windows (applique seulement avec rcedit et modify_resources). Titre de fenetre et d'onglet « 五行 Wu Xing » (config/name inchange pour garder les sauvegardes), config/version.
 - Credits : composants tiers du moteur et leurs licences, textes des licences OFL des polices, ligne des sons, declaration d'usage d'IA corrigee (code, SVG, shaders, sons, textes). README.md et LICENSE (code MIT, assets tous droits reserves).
+- Jeu entier au clavier seul et a la manette : focus natif sur les cartes, objets, boutons, offres, sceaux-tresors et rouleaux (fleches ou croix et stick gauche), lueur or et jade de l'element vise, focus initial a l'ouverture de chaque ecran et rouleau. Espace ou A valide (selectionne une carte, utilise une pilule, achete), Entree reste « Jouer », S ou RB vend l'objet vise, l'infobulle suit le focus.
+- Manette : A valider, B fermer ou deselectionner, X defausser, Y jouer, LT et RT trier, LB paquet, RB vendre, Select voie de cultivation, Start options (O au clavier). Les aides nomment les boutons quand une manette est branchee.
+- Touches reconfigurables dans Options > Touches : cliquer puis appuyer sur la nouvelle touche ; une touche d'une autre action est echangee, une touche reservee (Echap, Espace, fleches, chiffres) refusee ; bouton « Touches par defaut ». Sauvegardees avec les reglages (anciens fichiers valides).
+- Tactile : un appui long sur une carte ou un objet montre son infobulle sans cliquer, et propose la vente d'un artefact ou d'une pilule (sceau « Vendre »).
 
 ### Corrigé
 

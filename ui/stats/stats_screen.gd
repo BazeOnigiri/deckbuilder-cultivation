@@ -20,6 +20,7 @@ func _ready() -> void:
 	if content == null:
 		content = GameContent.load_default()
 	%BackButton.pressed.connect(back_requested.emit)
+	%BackButton.grab_focus(not Focus.shown)
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 	%Grid.add_child(ScrollTiles.stat(str(profile.runs_started), "UI_STATS_RUNS"))
 	%Grid.add_child(ScrollTiles.stat(str(profile.runs_won), "UI_STATS_WINS", WIN_GLYPH))
@@ -27,6 +28,13 @@ func _ready() -> void:
 	%Grid.add_child(ScrollTiles.stat(str(profile.best_hand_score), "UI_STATS_BEST_HAND_SCORE"))
 	%BestRealm.text = _realm_name(profile.best_realm)
 	_add_bars()
+
+
+## Manette : B (ui_cancel) revient au menu comme le sceau Retour.
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"ui_cancel"):
+		get_viewport().set_input_as_handled()
+		back_requested.emit()
 
 
 func _win_rate() -> int:

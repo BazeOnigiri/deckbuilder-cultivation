@@ -77,6 +77,7 @@ func play_out(cards: Array[CardInstance]) -> void:
 		_order.erase(view)
 		view.set_pressed_no_signal(false)
 		view.mouse_filter = MOUSE_FILTER_IGNORE
+		view.focus_mode = FOCUS_NONE
 		_played.append(view)
 
 
@@ -145,7 +146,8 @@ func _layout(views: Array[CardView], base: Vector2, delta: float) -> void:
 		var pose := Vector3(base.x + slots[i].x, base.y + slots[i].y, slots[i].z)
 		if view.button_pressed:
 			pose.y -= _lift()
-		var tilt := Vector3(0, 0, feel.hover_scale if view.is_hovered() else 1.0)
+		# Carte visee a la souris ou au clavier / a la manette : elle grandit pareil.
+		var tilt := Vector3(0, 0, feel.hover_scale if view.is_hovered() or view.has_focus(true) else 1.0)
 		if not settings.reduce_motion:
 			# Chaque carte a sa phase, sinon toute la main flotterait d'un bloc.
 			var phase: float = i * 1.7
@@ -194,6 +196,7 @@ func _depart(view: CardView) -> void:
 	_tilts.erase(view)
 	view.set_pressed_no_signal(false)
 	view.mouse_filter = MOUSE_FILTER_IGNORE
+	view.focus_mode = FOCUS_NONE
 	view.reparent(_leaving_layer)
 	_leaving[view] = 0.0
 

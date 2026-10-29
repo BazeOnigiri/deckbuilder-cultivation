@@ -128,6 +128,8 @@ func run_over(won: bool, summary: Control) -> void:
 	scroll.add_child(column)
 	center.add_child(scroll)
 	add_child(center)
+	Focus.trap(self)
+	button.grab_focus(not Focus.shown)
 	if not animated:
 		if backdrop != null:
 			(backdrop.material as ShaderMaterial).set_shader_parameter(&"progress", 1.0)

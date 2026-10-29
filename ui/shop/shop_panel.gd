@@ -105,6 +105,12 @@ func refresh() -> void:
 
 
 func _refresh() -> void:
+	# Achat au clavier ou a la manette : le focus reste a la meme place dans la rangee refaite.
+	var focused := -1
+	var owner := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	for i: int in _offers.get_child_count():
+		if owner != null and _offers.get_child(i).is_ancestor_of(owner):
+			focused = i
 	for child: Node in _offers.get_children():
 		_offers.remove_child(child)
 		child.queue_free()
@@ -132,6 +138,10 @@ func _refresh() -> void:
 			legacy.price, _shop.can_buy_legacy(), _on_buy_legacy_pressed)
 	_reroll.text = tr("UI_SHOP_REROLL") % _shop.reroll_cost
 	_reroll.disabled = not _shop.can_reroll()
+	if focused >= 0:
+		var place := mini(focused, _offers.get_child_count() - 1)
+		if place < 0 or not Focus.grab_first(_offers.get_child(place)):
+			Focus.grab_first(self)
 
 
 ## buy(slot) : achete l'offre ; le slot sert de point de depart a l'envol.
@@ -300,8 +310,8 @@ func _choice(kind: PackDefinition.Kind, item: Resource) -> BaseButton:
 		var card := CardInstance.new(-1, item as CardData, _shop.card_ranks())
 		var frame := Button.new()
 		frame.flat = true
-		frame.focus_mode = FOCUS_NONE
 		frame.tooltip_text = CardView.tip_text(card)
+		FocusTip.attach(frame)
 		var small := CardView.small(card, feel.pack_card_scale)
 		frame.custom_minimum_size = small.custom_minimum_size
 		frame.add_child(small)

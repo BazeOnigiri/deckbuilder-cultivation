@@ -123,3 +123,8 @@ func test_premiere_partie_propose_l_aide_une_seule_fois() -> void:
 	_overlay(menu).close()
 	menu.get_node("%StartButton").pressed.emit()
 	assert_signal_emitted(menu, "start_requested", "plus d'offre ensuite")
+
+
+func test_focus_initial_sur_le_premier_choix() -> void:
+	assert_true(_menu(false).get_node("%StartButton").has_focus())
+	assert_true(_menu(true).get_node("%ContinueButton").has_focus())

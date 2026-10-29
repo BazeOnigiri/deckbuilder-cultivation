@@ -101,3 +101,22 @@ func test_plein_ecran_refuse_decoche_la_case() -> void:
 	assert_true(settings.sync_fullscreen(false))
 	assert_false(settings.fullscreen)
 	assert_signal_emitted(settings, "fullscreen_lost")
+
+
+func test_touches_choisies_sauvees_et_relues() -> void:
+	var storage := SaveStorage.new(PATH)
+	var settings := GameSettings.new()
+	settings.key_bindings = {"play_hand": KEY_P}
+	assert_true(settings.save_to(storage))
+	assert_eq(GameSettings.load_from(storage).key_bindings, {"play_hand": KEY_P})
+
+
+func test_ancien_fichier_sans_touches_garde_celles_par_defaut() -> void:
+	assert_eq(GameSettings.from_dict({"reduce_motion": true}).key_bindings, {})
+
+
+func test_touches_invalides_ignorees() -> void:
+	var data := {"key_bindings": {"play_hand": "P", "action_inconnue": KEY_P, "discard_hand": -3,
+		"show_deck": float(KEY_T)}}
+	assert_eq(GameSettings.from_dict(data).key_bindings, {"show_deck": KEY_T})
+	assert_eq(GameSettings.from_dict({"key_bindings": [1, 2]}).key_bindings, {})

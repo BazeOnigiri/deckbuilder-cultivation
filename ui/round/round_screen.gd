@@ -136,7 +136,22 @@ func _refresh() -> void:
 	_on_selection_changed()
 	_items.show_artifacts(_run.artifacts, _run.shop_rules(content.shop_rules).max_artifacts, _run.artifacts.map(_run.sell_price),
 		_run.artifact_stacks)
+	_keep_focus()
 	_save_run()
+
+
+## Clavier, manette : le focus perdu (carte jouee, offre achetee) revient sur la premiere carte ou offre.
+func _keep_focus() -> void:
+	if not is_inside_tree() or Focus.is_held(get_viewport()):
+		return
+	# Un rouleau ouvert (sceau-tresor, voie) garde le focus pour lui.
+	for child: Node in get_viewport().get_children() + get_children():
+		if child is ScrollOverlay or child is DeckViewer:
+			return
+	var actions: Control = $Root/Margin/Layout/Actions
+	for root: Control in [_shop_panel if _shop_panel.visible else _hand_view, _continue_button, actions]:
+		if Focus.grab_first(root):
+			return
 
 
 func _show_hand(cards: Array[CardInstance]) -> void:
@@ -276,6 +291,8 @@ func _on_continue_pressed() -> void:
 	_shop_panel.hide()
 	_hand_view.show()
 	_continue_button.hide()
+	# Le focus etait dans la boutique : il revient sur la nouvelle main.
+	get_viewport().gui_release_focus()
 	_shop = null
 	_run.next_round()
 	_refresh()
@@ -319,6 +336,8 @@ func _open_shop() -> void:
 	ambiance_changed.emit(SHOP_AMBIANCE)
 	_hand_view.hide()
 	_shop_panel.open(_shop)
+	get_viewport().gui_release_focus()
+	_keep_focus()
 
 
 func _save_run() -> void:
@@ -385,6 +404,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_show_deck()
 	elif event.is_action_pressed(&"show_path"):
 		_show_run_info()
+	elif event.is_action_pressed(&"show_options"):
+		options_requested.emit()
 	elif event.is_action_pressed(&"sell_artifact"):
 		handled = _items.press_hovered_item()
 	elif OS.is_debug_build() and event.is_action_pressed(&"debug_menu"):

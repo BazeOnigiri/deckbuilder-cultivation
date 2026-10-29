@@ -24,8 +24,7 @@ var glow_amount: float = 0.0
 
 func _ready() -> void:
 	theme_type_variation = &"ItemSlot"
-	# shortcut: pas de focus (souris seule), a revoir avec la navigation clavier/manette via InputMap
-	focus_mode = FOCUS_NONE
+	FocusTip.attach(self)
 	if kind == Kind.PILL:
 		custom_minimum_size = Vector2.ONE * get_theme_constant(&"pill_size")
 	else:
@@ -33,6 +32,7 @@ func _ready() -> void:
 	pivot_offset = custom_minimum_size / 2
 	if is_empty():
 		mouse_filter = MOUSE_FILTER_IGNORE
+		focus_mode = FOCUS_NONE
 
 
 ## Bondit puis revient : l'artefact se declenche.
@@ -64,11 +64,11 @@ func _draw() -> void:
 	if kind == Kind.MANUAL:
 		_draw_glow(rect)
 		ManualCover.draw(self, rect, glyph, cover_tier, cover_pattern, disabled)
-		if is_hovered() and not disabled:
+		if (is_hovered() or has_focus(true)) and not disabled:
 			draw_rect(rect, get_theme_color(&"glow_color"), false, 1.0)
 		return
 	var box: String = "pill_slot" if kind == Kind.PILL else "slot"
-	if is_hovered() and not disabled:
+	if (is_hovered() or has_focus(true)) and not disabled:
 		box += "_hover"
 	_draw_glow(rect)
 	draw_style_box(get_theme_stylebox(StringName(box)), rect)
