@@ -9,9 +9,13 @@ signal finished(won: bool)
 signal announced
 ## Le goulot vient d'etre passe ; omen : le presage gagne (null si aucun).
 signal skipped(omen: OmenDefinition)
+## Une rencontre commence ou reprend (current_event), et son choix vient d'etre fait (event_outcome tire).
+signal encountered
+signal event_resolved
 
 ## BETWEEN_ROUNDS : goulot franchi, la boutique est ouverte. ANNOUNCING : goulot annonce, ni round ni boutique.
-enum Status {IN_ROUND, BETWEEN_ROUNDS, WON, LOST, ANNOUNCING}
+## ENCOUNTER : rencontre entre la boutique et l'annonce.
+enum Status {IN_ROUND, BETWEEN_ROUNDS, WON, LOST, ANNOUNCING, ENCOUNTER}
 
 var status: Status = Status.IN_ROUND
 var progress: RunProgress
@@ -53,6 +57,19 @@ var omen_offers: Array[OmenDefinition] = []
 var omen_offers_realm: int = 0
 ## Presages gagnes dont l'effet attend la prochaine boutique ou la prochaine recompense. Sauvegardes.
 var pending_omens: Array[OmenDefinition] = []
+## Rencontres possibles, leurs regles, et les artefacts qu'une rencontre peut donner (debloques). Poses par GameContent.
+var event_pool: Array[EventDefinition] = []
+var event_rules: EventRules
+var artifact_pool: Array[ArtifactDefinition] = []
+## Rencontres deja vecues dans cette partie (jamais deux fois), royaume de la derniere. Sauvegardes.
+var seen_events: Array[StringName] = []
+var event_realm: int = 0
+## Mains de moins au prochain goulot (cout d'une rencontre). Sauvegarde.
+var hand_penalty: int = 0
+## Rencontre en cours (statut ENCOUNTER), choix fait et issue tiree (-1 : pas encore). Sauvegardes.
+var current_event: EventDefinition
+var event_choice: int = -1
+var event_outcome: int = -1
 
 var _deck: DeckState
 var _rules: RoundRules
@@ -147,6 +164,89 @@ func take_pending_omens(timing: OmenEffect.Timing) -> Array[OmenDefinition]:
 	return taken
 
 
+## Quitte la boutique : une rencontre tiree avec la RNG de la run (EventRules.chance), sinon l'annonce du goulot.
+func leave_shop() -> bool:
+	if status != Status.BETWEEN_ROUNDS:
+		return false
+	var event := _draw_event()
+	if event == null:
+		return announce()
+	start_event(event)
+	return true
+
+
+## Rencontres qui peuvent encore apparaitre : pas deja vecues, conditions remplies.
+func open_events() -> Array[EventDefinition]:
+	var open: Array[EventDefinition] = []
+	for event: EventDefinition in event_pool:
+		if not seen_events.has(event.id) and event.can_appear(self):
+			open.append(event)
+	return open
+
+
+## Au plus une rencontre par royaume. Aucune possible : la RNG ne bouge pas.
+func _draw_event() -> EventDefinition:
+	if event_rules == null or event_realm == progress.realm_number():
+		return null
+	var open := open_events()
+	if open.is_empty() or _deck.rng().randf() >= event_rules.chance:
+		return null
+	return open[_deck.rng().randi_range(0, open.size() - 1)]
+
+
+## Ouvre la rencontre ; choice et outcome : reprise d'une sauvegarde ou le choix etait deja fait.
+func start_event(event: EventDefinition, choice: int = -1, outcome: int = -1) -> void:
+	current_event = event
+	event_choice = choice
+	event_outcome = outcome
+	status = Status.ENCOUNTER
+	if not seen_events.has(event.id):
+		seen_events.append(event.id)
+	event_realm = progress.realm_number()
+	encountered.emit()
+
+
+## Cle de la raison qui rend ce choix indisponible, "" s'il est possible.
+func event_blocked_reason(index: int) -> String:
+	return current_event.choices[index].blocked_reason(self)
+
+
+func can_choose(index: int) -> bool:
+	return (status == Status.ENCOUNTER and event_choice < 0 and index >= 0 and index < current_event.choices.size()
+		and event_blocked_reason(index).is_empty())
+
+
+## Paie le cout, tire l'issue avec la RNG de la run et applique ses effets.
+func choose(index: int) -> bool:
+	if not can_choose(index):
+		return false
+	var choice: EventChoice = current_event.choices[index]
+	if choice.cost != null:
+		choice.cost.pay(self, _deck.rng())
+	event_choice = index
+	event_outcome = choice.roll(_deck.rng())
+	choice.outcomes[event_outcome].apply(self, _deck.rng())
+	event_resolved.emit()
+	return true
+
+
+## Issue tiree de la rencontre en cours, null avant le choix.
+func current_outcome() -> EventOutcome:
+	if current_event == null or event_choice < 0:
+		return null
+	return current_event.choices[event_choice].outcomes[event_outcome]
+
+
+## Ferme la rencontre resolue : le goulot suivant s'annonce.
+func end_event() -> bool:
+	if status != Status.ENCOUNTER or event_choice < 0:
+		return false
+	current_event = null
+	event_choice = -1
+	event_outcome = -1
+	return announce()
+
+
 ## Un presage par goulot passable du royaume, sans remise tant que le pool suffit.
 func _draw_omens() -> void:
 	omen_offers.clear()
@@ -215,10 +315,15 @@ func sell_artifact(index: int) -> bool:
 	if index < 0 or index >= artifacts.size():
 		return false
 	stones += sell_price(artifacts[index])
+	lose_artifact(index)
+	return true
+
+
+## Retire l'artefact sans rien rendre (cout d'une rencontre), crans et aura compris.
+func lose_artifact(index: int) -> void:
 	artifact_stacks.erase(artifacts[index].id)
 	artifact_editions.erase(artifacts[index].id)
 	artifacts.remove_at(index)
-	return true
 
 
 ## Ajoute un artefact, avec son aura (null : aucune). Il agit des la main suivante.
@@ -241,6 +346,11 @@ func artifact_slots_used() -> int:
 ## Emplacements de pilule, heritages compris. 0 sans regles de boutique.
 func max_pills() -> int:
 	return 0 if shop_base == null else shop_rules(shop_base).max_pills
+
+
+## Emplacements d'artefact, heritages compris. 0 sans regles de boutique.
+func max_artifacts() -> int:
+	return 0 if shop_base == null else shop_rules(shop_base).max_artifacts
 
 
 ## Prix de vente d'une pilule : meme part sell_fraction de son prix que pour un artefact.
@@ -294,6 +404,16 @@ func use_pill(index: int, selected: Array[CardInstance]) -> bool:
 func cards() -> Array[CardInstance]:
 	return _deck.all_cards()
 
+
+## Paquet de la run, pour les effets de pilule appliques hors d'un round (rencontre).
+func deck() -> DeckState:
+	return _deck
+
+
+## Retire definitivement ces cartes du paquet, quelle que soit leur pile.
+func remove_cards(removed: Array[CardInstance]) -> void:
+	_deck.remove(removed)
+
 ## Piles du paquet par uid (sauvegarde).
 func piles() -> Dictionary:
 	return _deck.pile_uids()
@@ -310,6 +430,10 @@ func resume_round(score: int, hands_left: int, discards_left: int) -> void:
 
 func _start_round() -> void:
 	_create_round()
+	# Cout d'une rencontre : un round repris l'a deja paye (mains sauvegardees).
+	if hand_penalty > 0:
+		current_round.hands_left = maxi(1, current_round.hands_left - hand_penalty)
+		hand_penalty = 0
 	# Emis avant start() : l'UI se branche sur le round avant la premiere pioche.
 	round_started.emit(current_round)
 	current_round.start()

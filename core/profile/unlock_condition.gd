@@ -17,6 +17,7 @@ enum Kind {
 	ARTIFACTS_OWNED, ## count artefacts possedes en meme temps
 	LEGACIES_OWNED, ## count heritages possedes en meme temps
 	BOTTLENECKS_SKIPPED, ## count goulots passes dans cette partie
+	EVENTS_SEEN, ## count rencontres differentes vecues, toutes parties
 }
 
 @export var kind: Kind = Kind.WINS
@@ -56,6 +57,8 @@ func is_met(ctx: UnlockContext) -> bool:
 			return ctx.run != null and ctx.run.legacies.size() >= count
 		Kind.BOTTLENECKS_SKIPPED:
 			return ctx.run != null and ctx.run.stats.bottlenecks_skipped >= count
+		Kind.EVENTS_SEEN:
+			return profile.seen.get(Compendium.KEYS[Compendium.Kind.EVENT], {}).size() >= count
 	return false
 
 

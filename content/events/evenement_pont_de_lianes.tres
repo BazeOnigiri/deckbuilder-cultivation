@@ -1,0 +1,89 @@
+[gd_resource type="Resource" script_class="EventDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/events/event_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/events/pill_event_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/omens/stones_omen_effect.gd" id="3"]
+[ext_resource type="Script" path="res://core/events/run_event_effect.gd" id="4"]
+[ext_resource type="Script" path="res://core/events/event_outcome.gd" id="5"]
+[ext_resource type="Script" path="res://core/events/event_effect.gd" id="6"]
+[ext_resource type="Script" path="res://core/events/cards_event_effect.gd" id="7"]
+[ext_resource type="Script" path="res://core/pills/destroy_pill_effect.gd" id="8"]
+[ext_resource type="Script" path="res://core/events/event_choice.gd" id="9"]
+[ext_resource type="Script" path="res://core/events/event_cost.gd" id="10"]
+
+[sub_resource type="Resource" id="r1"]
+script = ExtResource("2")
+
+[sub_resource type="Resource" id="r2"]
+script = ExtResource("3")
+amount = 3
+
+[sub_resource type="Resource" id="r3"]
+script = ExtResource("4")
+effect = SubResource("r2")
+
+[sub_resource type="Resource" id="r4"]
+script = ExtResource("5")
+weight = 6.0
+text_key = "EVENT_PONT_C1_O1"
+effects = Array[ExtResource("6")]([SubResource("r1"), SubResource("r3")])
+
+[sub_resource type="Resource" id="r5"]
+script = ExtResource("8")
+
+[sub_resource type="Resource" id="r6"]
+script = ExtResource("7")
+effect = SubResource("r5")
+count = 1
+
+[sub_resource type="Resource" id="r7"]
+script = ExtResource("5")
+weight = 4.0
+text_key = "EVENT_PONT_C1_O2"
+effects = Array[ExtResource("6")]([SubResource("r6")])
+
+[sub_resource type="Resource" id="r8"]
+script = ExtResource("9")
+label_key = "EVENT_PONT_C1"
+outcomes = Array[ExtResource("5")]([SubResource("r4"), SubResource("r7")])
+
+[sub_resource type="Resource" id="r9"]
+script = ExtResource("2")
+
+[sub_resource type="Resource" id="r10"]
+script = ExtResource("5")
+weight = 1.0
+text_key = "EVENT_PONT_C2_O1"
+effects = Array[ExtResource("6")]([SubResource("r9")])
+
+[sub_resource type="Resource" id="r11"]
+script = ExtResource("10")
+kind = 3
+amount = 1
+
+[sub_resource type="Resource" id="r12"]
+script = ExtResource("9")
+label_key = "EVENT_PONT_C2"
+cost = SubResource("r11")
+outcomes = Array[ExtResource("5")]([SubResource("r10")])
+
+[sub_resource type="Resource" id="r13"]
+script = ExtResource("5")
+weight = 1.0
+text_key = "EVENT_LEAVE_TEXT"
+effects = Array[ExtResource("6")]([])
+
+[sub_resource type="Resource" id="r14"]
+script = ExtResource("9")
+label_key = "EVENT_LEAVE"
+outcomes = Array[ExtResource("5")]([SubResource("r13")])
+
+[resource]
+script = ExtResource("1")
+id = &"evenement_pont_de_lianes"
+title_key = "EVENT_PONT_TITLE"
+text_key = "EVENT_PONT_TEXT"
+glyph = "桥"
+min_realm = 1
+min_artifacts = 0
+choices = Array[ExtResource("9")]([SubResource("r8"), SubResource("r12"), SubResource("r14")])

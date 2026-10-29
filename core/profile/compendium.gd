@@ -3,10 +3,10 @@ extends RefCounted
 ## Tout le contenu du jeu par categorie, et ce que le joueur en a deja vu (offert en boutique ou possede).
 ## Le contenu vient des catalogues de GameContent : ajouter un contenu l'ajoute ici sans rien declarer.
 
-enum Kind {ARTIFACT, PILL, MANUAL, LEGACY, PACK, TRIBULATION, OMEN}
+enum Kind {ARTIFACT, PILL, MANUAL, LEGACY, PACK, TRIBULATION, OMEN, EVENT}
 
 ## Cle de chaque categorie dans le profil (ProfileStats.seen), dans l'ordre de Kind.
-const KEYS: Array[String] = ["artifact", "pill", "manual", "legacy", "pack", "tribulation", "omen"]
+const KEYS: Array[String] = ["artifact", "pill", "manual", "legacy", "pack", "tribulation", "omen", "event"]
 
 var _content: GameContent
 var _profile: ProfileStats
@@ -33,6 +33,8 @@ static func kind_of(item: Resource) -> int:
 		return Kind.TRIBULATION
 	if item is OmenDefinition:
 		return Kind.OMEN
+	if item is EventDefinition:
+		return Kind.EVENT
 	return -1
 
 
@@ -52,6 +54,8 @@ func entries(kind: Kind) -> Array[Resource]:
 			list.assign(_content.packs)
 		Kind.OMEN:
 			list.assign(_content.omens)
+		Kind.EVENT:
+			list.assign(_content.events)
 		Kind.TRIBULATION:
 			var found: Dictionary = {}
 			for realm: RealmDefinition in _content.realms:

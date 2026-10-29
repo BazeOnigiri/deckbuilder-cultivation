@@ -38,6 +38,7 @@ func track(run: RunState, is_new: bool = true) -> void:
 	run.finished.connect(_on_finished.bind(run))
 	run.announced.connect(_on_announced.bind(run))
 	run.skipped.connect(_on_skipped)
+	run.encountered.connect(_on_encountered.bind(run))
 	_run = run
 	_one_hand_clears = 0
 	# Run reprise : les achats d'avant la sauvegarde sont inconnus, on suppose le pire pour « sans achat ».
@@ -77,6 +78,13 @@ func _on_announced(run: RunState) -> void:
 		if omen != null:
 			offered.append(omen)
 	_mark_all(offered)
+
+
+## Une rencontre est vecue des qu'elle s'ouvre.
+func _on_encountered(run: RunState) -> void:
+	_mark(run.current_event)
+	_evaluate()
+	changed.emit()
 
 
 func _on_skipped(_omen: OmenDefinition) -> void:

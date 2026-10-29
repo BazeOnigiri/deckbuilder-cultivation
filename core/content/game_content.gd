@@ -13,6 +13,8 @@ const BOTTLENECKS_DIR := "res://content/bottlenecks"
 const DIFFICULTIES_DIR := "res://content/difficulties"
 const CHALLENGES_DIR := "res://content/challenges"
 const OMENS_DIR := "res://content/omens"
+const EVENTS_DIR := "res://content/events"
+const EVENT_RULES_PATH := "res://content/rules/rencontres.tres"
 
 var starter_deck: DeckDefinition
 var round_rules: RoundRules
@@ -36,6 +38,9 @@ var difficulties: Array[DifficultyDefinition]
 var challenges: Array[ChallengeDefinition]
 ## Presages gagnes en passant un goulot.
 var omens: Array[OmenDefinition]
+## Rencontres entre la boutique et le goulot suivant, et leurs regles.
+var events: Array[EventDefinition]
+var event_rules: EventRules
 var balance: BalanceRules
 ## Croissance de l'objectif d'un royaume genere au suivant (mode sans fin).
 var endless_growth: float = 1.0
@@ -67,6 +72,9 @@ static func load_default() -> GameContent:
 		return res is ChallengeDefinition))
 	content.omens.assign(ContentLoader.load_all(OMENS_DIR).filter(func(res: Resource) -> bool:
 		return res is OmenDefinition))
+	content.events.assign(ContentLoader.load_all(EVENTS_DIR).filter(func(res: Resource) -> bool:
+		return res is EventDefinition))
+	content.event_rules = load(EVENT_RULES_PATH)
 	content.endless_growth = content.compute_endless_growth()
 	return content
 
@@ -97,7 +105,24 @@ func equip(run: RunState) -> RunState:
 	run.shop_base = shop_rules
 	run.omen_pool = omens
 	run.card_modifiers = modifiers
+	run.event_pool = events
+	run.event_rules = event_rules
+	run.artifact_pool = artifacts
 	return run
+
+
+## Ce que la run tire hors de la boutique (rencontres, pilules creees) restreint au contenu debloque par ce profil.
+## Listes neuves : equip() partage celles du contenu, qu'un assign() modifierait.
+func restrict_to_unlocked(run: RunState, profile: ProfileStats) -> void:
+	var open_artifacts: Array[ArtifactDefinition] = []
+	open_artifacts.assign(unlocks.open(artifacts, profile))
+	run.artifact_pool = open_artifacts
+	var open_pills: Array[PillDefinition] = []
+	open_pills.assign(unlocks.open(pills, profile))
+	run.pill_pool = open_pills
+	var open_events: Array[EventDefinition] = []
+	open_events.assign(unlocks.open(events, profile))
+	run.event_pool = open_events
 
 
 ## Options et modificateurs de la partie poses sur la run (nouvelle ou restauree).
@@ -192,6 +217,10 @@ func pill_by_id(id: StringName) -> PillDefinition:
 
 func omen_by_id(id: StringName) -> OmenDefinition:
 	return _find(omens, id) as OmenDefinition
+
+
+func event_by_id(id: StringName) -> EventDefinition:
+	return _find(events, id) as EventDefinition
 
 
 ## Artefact, pilule, heritage ou sceau de cet id (le contenu qui peut etre verrouille). null s'il n'existe pas.
