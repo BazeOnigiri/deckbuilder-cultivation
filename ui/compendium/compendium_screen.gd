@@ -13,7 +13,7 @@ var content: GameContent
 
 ## Titre de l'onglet de chaque categorie, dans l'ordre de Compendium.Kind.
 const TAB_KEYS: Array[String] = ["UI_COMPENDIUM_ARTIFACTS", "UI_COMPENDIUM_PILLS", "UI_COMPENDIUM_MANUALS",
-	"UI_COMPENDIUM_LEGACIES", "UI_COMPENDIUM_PACKS", "UI_COMPENDIUM_TRIBULATIONS"]
+	"UI_COMPENDIUM_LEGACIES", "UI_COMPENDIUM_PACKS", "UI_COMPENDIUM_TRIBULATIONS", "UI_COMPENDIUM_OMENS"]
 
 
 func _ready() -> void:

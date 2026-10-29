@@ -47,6 +47,11 @@ static func of(item: Resource) -> ItemSlot:
 			slot.kind = ItemSlot.Kind.TRIBULATION
 			slot.glyph = TRIBULATION_GLYPH
 			slot.set_info(_tr(bottleneck.name_key), _tr(bottleneck.constraint.description_key))
+		Compendium.Kind.OMEN:
+			var omen := item as OmenDefinition
+			slot.kind = ItemSlot.Kind.OMEN
+			slot.glyph = omen.glyph
+			slot.set_info(_tr(omen.name_key), _tr(omen.description_key))
 		_:
 			slot.free()
 			return null
@@ -63,6 +68,7 @@ static func hidden(kind: Compendium.Kind, lock_text: String = "") -> ItemSlot:
 		Compendium.Kind.LEGACY: ItemSlot.Kind.LEGACY,
 		Compendium.Kind.PACK: ItemSlot.Kind.PACK,
 		Compendium.Kind.TRIBULATION: ItemSlot.Kind.TRIBULATION,
+		Compendium.Kind.OMEN: ItemSlot.Kind.OMEN,
 	}.get(kind, ItemSlot.Kind.ARTIFACT)
 	slot.glyph = HIDDEN_GLYPH
 	slot.disabled = true

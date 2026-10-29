@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OmenDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/omens/omen_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/omens/card_omen_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+
+
+[resource]
+script = ExtResource("1")
+id = &"presage_talisman_inscrit"
+name_key = "OMEN_CARD_NAME"
+description_key = "OMEN_CARD_DESC"
+glyph = "符"
+effect = SubResource("effect")

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OmenDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/omens/omen_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/omens/shop_omen_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+free_rerolls = 1
+
+[resource]
+script = ExtResource("1")
+id = &"presage_relance_offerte"
+name_key = "OMEN_REROLL_NAME"
+description_key = "OMEN_REROLL_DESC"
+glyph = "转"
+effect = SubResource("effect")

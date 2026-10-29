@@ -5,6 +5,11 @@ extends PanelContainer
 
 signal closed
 
+## Faux : ni Echap ni un clic a cote ne ferment le rouleau, seules ses propres actions (annonce du goulot).
+var dismissable: bool = true
+## Ou poser le focus a l'ouverture (sous ce Control). null : le premier Control du contenu, sinon Fermer.
+var initial_focus: Control
+
 var _scroll := ScrollPanel.new()
 var _body := VBoxContainer.new()
 var _title := SideColumn.make_label(&"ScrollTitle")
@@ -46,7 +51,11 @@ func _ready() -> void:
 
 
 func _grab_initial_focus() -> void:
-	if is_inside_tree() and not Focus.grab_first(_body):
+	if not is_inside_tree() or is_queued_for_deletion():
+		return
+	if initial_focus != null and Focus.grab_first(initial_focus):
+		return
+	if not Focus.grab_first(_body):
 		Focus.grab_first(_close)
 
 
@@ -68,13 +77,15 @@ func _gui_input(event: InputEvent) -> void:
 	var click := event as InputEventMouseButton
 	if click != null and click.pressed and click.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
 		accept_event()
-		close()
+		if dismissable:
+			close()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()
-		close()
+		if dismissable:
+			close()
 	elif event is InputEventKey or event.is_action_type():
 		# Rouleau ouvert : les touches et boutons de la partie (jouer, defausser...) n'agissent pas derriere lui.
 		get_viewport().set_input_as_handled()

@@ -22,7 +22,8 @@ static func first_in(root: Node) -> Control:
 	if control != null:
 		if not control.is_visible_in_tree():
 			return null
-		if control.focus_mode != Control.FOCUS_NONE:
+		# Avec la surcharge : un voile par-dessus (Focus.trap) coupe le focus de tout ce qui est dessous.
+		if control.get_focus_mode_with_override() != Control.FOCUS_NONE:
 			return control
 	for child: Node in root.get_children(true):
 		var found := first_in(child)

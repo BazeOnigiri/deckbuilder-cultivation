@@ -12,6 +12,7 @@ const BALANCE_PATH := "res://content/rules/equilibrage.tres"
 const BOTTLENECKS_DIR := "res://content/bottlenecks"
 const DIFFICULTIES_DIR := "res://content/difficulties"
 const CHALLENGES_DIR := "res://content/challenges"
+const OMENS_DIR := "res://content/omens"
 
 var starter_deck: DeckDefinition
 var round_rules: RoundRules
@@ -33,6 +34,8 @@ var tribulations: Array[BottleneckDefinition]
 ## Tries par niveau.
 var difficulties: Array[DifficultyDefinition]
 var challenges: Array[ChallengeDefinition]
+## Presages gagnes en passant un goulot.
+var omens: Array[OmenDefinition]
 var balance: BalanceRules
 ## Croissance de l'objectif d'un royaume genere au suivant (mode sans fin).
 var endless_growth: float = 1.0
@@ -62,6 +65,8 @@ static func load_default() -> GameContent:
 	content.difficulties.sort_custom(func(a: DifficultyDefinition, b: DifficultyDefinition) -> bool: return a.level < b.level)
 	content.challenges.assign(ContentLoader.load_all(CHALLENGES_DIR).filter(func(res: Resource) -> bool:
 		return res is ChallengeDefinition))
+	content.omens.assign(ContentLoader.load_all(OMENS_DIR).filter(func(res: Resource) -> bool:
+		return res is OmenDefinition))
 	content.endless_growth = content.compute_endless_growth()
 	return content
 
@@ -90,6 +95,8 @@ func new_run(rng: RandomNumberGenerator, setup: RunSetup = RunSetup.new()) -> Ru
 func equip(run: RunState) -> RunState:
 	run.pill_pool = pills
 	run.shop_base = shop_rules
+	run.omen_pool = omens
+	run.card_modifiers = modifiers
 	return run
 
 
@@ -181,6 +188,10 @@ func legacy_by_id(id: StringName) -> LegacyDefinition:
 
 func pill_by_id(id: StringName) -> PillDefinition:
 	return _find(pills, id) as PillDefinition
+
+
+func omen_by_id(id: StringName) -> OmenDefinition:
+	return _find(omens, id) as OmenDefinition
 
 
 ## Artefact, pilule, heritage ou sceau de cet id (le contenu qui peut etre verrouille). null s'il n'existe pas.

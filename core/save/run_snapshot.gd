@@ -4,15 +4,17 @@ extends RefCounted
 ## Tout est reference par id ; un contenu retire du jeu est ignore a la restauration.
 
 ## 2 : ameliorations, auras et talismans des cartes, auras des artefacts (v1.2.0).
-const VERSION := 2
+## 3 : annonce du goulot (on y reprend) et presages tires ou en attente.
+const VERSION := 3
 const DEFAULT_PATH := "user://run.json"
 ## migrations[n] : Callable qui fait passer une sauvegarde de la version n a n + 1 (SaveMigrator).
-static var migrations: Dictionary = {1: func(save: Dictionary) -> Dictionary: return _v1_to_v2(save)}
+static var migrations: Dictionary = {1: func(save: Dictionary) -> Dictionary: return _v1_to_v2(save),
+	2: func(save: Dictionary) -> Dictionary: return _v2_to_v3(save)}
 
 
-## Sauvegardable pendant un round en cours, ou entre deux goulots. Pas une run terminee.
+## Sauvegardable pendant un round en cours, entre deux goulots ou sur l'annonce d'un goulot. Pas une run terminee.
 static func can_capture(run: RunState) -> bool:
-	if run.status == RunState.Status.BETWEEN_ROUNDS:
+	if run.status == RunState.Status.BETWEEN_ROUNDS or run.status == RunState.Status.ANNOUNCING:
 		return true
 	return (run.status == RunState.Status.IN_ROUND and run.current_round != null
 		and run.current_round.status == RoundState.Status.PLAYING)
@@ -46,8 +48,14 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 		"stats": run.stats.to_dict(),
 		"setup": run.setup.to_dict(),
 		"endless": run.endless,
+		"omen_offers": run.omen_offers.map(func(omen: OmenDefinition) -> String:
+			return "" if omen == null else String(omen.id)),
+		"omen_offers_realm": run.omen_offers_realm,
+		"omens": SaveData.ids(run.pending_omens),
 	}
-	if run.status == RunState.Status.IN_ROUND:
+	if run.status == RunState.Status.ANNOUNCING:
+		data["announce"] = true
+	elif run.status == RunState.Status.IN_ROUND:
 		var round_state := run.current_round
 		data["round"] = {
 			"score": round_state.score,
@@ -106,6 +114,14 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 	run.legacy_offer_realm = SaveData.int_of(save, "legacy_offer_realm")
 	run.hand_levels = HandLevels.from_dict(save.get("hand_levels"))
 	run.stats = RunStats.from_dict(save.get("stats"))
+	# Presage retire du jeu : son goulot reste passable, sans presage.
+	for id: String in SaveData.string_list(save.get("omen_offers")):
+		run.omen_offers.append(content.omen_by_id(StringName(id)))
+	run.omen_offers_realm = SaveData.int_of(save, "omen_offers_realm")
+	for id: String in SaveData.string_list(save.get("omens")):
+		var omen := content.omen_by_id(StringName(id))
+		if omen != null:
+			run.pending_omens.append(omen)
 	# Champ ajoute apres la v1 des sauvegardes : absent, la graine reste inconnue (0).
 	var seed_text := str(save.get("seed", ""))
 	run.seed_value = seed_text.to_int() if seed_text.is_valid_int() else 0
@@ -120,6 +136,13 @@ static func resume_round(data: Dictionary, run: RunState) -> bool:
 		return false
 	run.resume_round(SaveData.int_of(saved, "score"), SaveData.int_of(saved, "hands_left", 1), SaveData.int_of(saved, "discards_left"))
 	return true
+
+
+## Reprend sur l'annonce du goulot si la sauvegarde y a ete prise. A appeler apres avoir branche les signaux.
+static func resume_announce(data: Dictionary, run: RunState) -> bool:
+	if migrate(data).get("announce") != true:
+		return false
+	return run.announce()
 
 
 ## La boutique sauvegardee de cette run, avec ses offres d'origine.
@@ -141,6 +164,13 @@ static func _v1_to_v2(old: Dictionary) -> Dictionary:
 			if entry is Dictionary:
 				entry.merge({"enhancement": "", "edition": "", "talisman": ""})
 	save["artifact_editions"] = {}
+	return save
+
+
+## v2 -> v3 : ni annonce, ni presage.
+static func _v2_to_v3(old: Dictionary) -> Dictionary:
+	var save := old.duplicate(true)
+	save.merge({"omen_offers": [], "omen_offers_realm": 0, "omens": []})
 	return save
 
 
