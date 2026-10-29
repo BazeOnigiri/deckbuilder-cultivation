@@ -30,6 +30,22 @@ static func name_of(action: StringName) -> String:
 	return ""
 
 
+## Texte d'une aide qui cite des touches : les %s sont remplis avec les noms lus dans l'InputMap.
+static func text_of(text_key: String) -> String:
+	var text := TranslationServer.translate(text_key)
+	match text_key:
+		"UI_KEYS_SELECT":
+			var last := 1
+			while InputMap.has_action(SELECT_PREFIX + str(last + 1)):
+				last += 1
+			return text % [name_of(&"select_card_1"), name_of(StringName(SELECT_PREFIX + str(last)))]
+		"UI_KEYS_DESELECT":
+			return text % name_of(&"deselect_cards")
+		"UI_DECK_VIEW_CLOSE":
+			return text % name_of(&"ui_cancel")
+	return text
+
+
 ## Place (0 = premiere carte) choisie par cet evenement, ou -1.
 static func card_index(event: InputEvent, count: int) -> int:
 	for i: int in count:

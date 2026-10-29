@@ -31,7 +31,10 @@ static func _keys() -> GridContainer:
 		key.text = Keys.name_of(entry[0])
 		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		grid.add_child(key)
-		grid.add_child(SideColumn.make_label(&"ScrollText", entry[1]))
+		var text := SideColumn.make_label(&"ScrollText")
+		text.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		text.text = Keys.text_of(entry[1])
+		grid.add_child(text)
 	return grid
 
 
@@ -71,7 +74,7 @@ static func _tablet(hand: HandDefinition, level: int, played: int) -> PanelConta
 	column.add_child(_example(hand))
 	var pips := LevelPips.new()
 	pips.level = level
-	pips.tooltip_text = "%s %d" % [tr_key("UI_INFO_LEVEL"), level]
+	pips.tooltip_text = tr_key("UI_INFO_LEVEL_N") % level
 	column.add_child(pips)
 	var value := HBoxContainer.new()
 	var qi := SideColumn.make_label(&"QiPill")
@@ -124,7 +127,7 @@ static func _path(run: RunState) -> VBoxContainer:
 		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var state := SideColumn.make_label(&"ScrollCaption", POSITION_KEYS[position + 1])
 		var extra: Array[Control] = [state]
-		text.add_child(ScrollRows.row(bottleneck.name_key, tr_key("UI_INFO_TARGET") + " " + str(RunProgress.target_for(realm, bottleneck)), extra))
+		text.add_child(ScrollRows.row(bottleneck.name_key, tr_key("UI_INFO_TARGET_N") % RunProgress.target_for(realm, bottleneck), extra))
 		if bottleneck.constraint != null:
 			var constraint := SideColumn.make_label(&"ScrollWarning", bottleneck.constraint.description_key)
 			constraint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

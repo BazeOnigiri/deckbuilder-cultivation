@@ -21,7 +21,7 @@ func _ready() -> void:
 	%Scroll.unroll(get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 	%Grid.add_child(ScrollTiles.stat(str(profile.runs_started), "UI_STATS_RUNS"))
 	%Grid.add_child(ScrollTiles.stat(str(profile.runs_won), "UI_STATS_WINS", WIN_GLYPH))
-	%Grid.add_child(ScrollTiles.stat("%d %%" % _win_rate(), "UI_STATS_WIN_RATE"))
+	%Grid.add_child(ScrollTiles.stat(tr("UI_STATS_PERCENT") % _win_rate(), "UI_STATS_WIN_RATE"))
 	%Grid.add_child(ScrollTiles.stat(str(profile.best_hand_score), "UI_STATS_BEST_HAND_SCORE"))
 	%BestRealm.text = _realm_name(profile.best_realm)
 	_add_bars()

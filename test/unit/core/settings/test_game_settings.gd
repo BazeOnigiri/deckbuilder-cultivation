@@ -65,3 +65,39 @@ func test_volume_hors_bornes_ou_absent() -> void:
 	assert_eq(settings.music_volume, defaults.music_volume, "mauvais type : valeur par defaut")
 	assert_eq(settings.effects_volume, defaults.effects_volume, "ancien fichier sans volume")
 
+
+
+func test_langue_sauvee_et_relue() -> void:
+	var storage := SaveStorage.new(PATH)
+	var settings := GameSettings.new()
+	settings.language = "fr" if GameSettings.default_language() == "en" else "en"
+	assert_true(settings.save_to(storage))
+	assert_eq(GameSettings.load_from(storage).language, settings.language)
+
+
+func test_langue_invalide_ou_absente_donne_le_defaut() -> void:
+	assert_eq(GameSettings.from_dict({"language": "de"}).language, GameSettings.default_language())
+	assert_eq(GameSettings.from_dict({"language": 3}).language, GameSettings.default_language())
+	assert_eq(GameSettings.from_dict({}).language, GameSettings.default_language())
+	assert_true(GameSettings.LANGUAGES.has(GameSettings.default_language()))
+
+
+func test_contraste_eleve_sauve_et_relu() -> void:
+	var storage := SaveStorage.new(PATH)
+	var settings := GameSettings.new()
+	settings.high_contrast = true
+	assert_true(settings.save_to(storage))
+	assert_true(GameSettings.load_from(storage).high_contrast)
+	assert_false(GameSettings.from_dict({"high_contrast": "oui"}).high_contrast)
+	assert_false(GameSettings.from_dict({}).high_contrast)
+
+
+func test_plein_ecran_refuse_decoche_la_case() -> void:
+	var settings := GameSettings.new()
+	settings.fullscreen = true
+	watch_signals(settings)
+	assert_false(settings.sync_fullscreen(true))
+	assert_signal_not_emitted(settings, "fullscreen_lost")
+	assert_true(settings.sync_fullscreen(false))
+	assert_false(settings.fullscreen)
+	assert_signal_emitted(settings, "fullscreen_lost")

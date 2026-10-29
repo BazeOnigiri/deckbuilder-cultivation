@@ -74,7 +74,7 @@ func _ready() -> void:
 	var values := HBoxContainer.new()
 	_qi_box = _stat_box(_qi, "UI_SIDE_QI")
 	values.add_child(_qi_box)
-	values.add_child(make_label(&"SideTitle", "x"))
+	values.add_child(make_label(&"SideTitle", "UI_INFO_TIMES"))
 	_comprehension_box = _stat_box(_comprehension, "UI_SIDE_COMPREHENSION")
 	values.add_child(_comprehension_box)
 	preview.add_child(values)

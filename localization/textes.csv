@@ -34,8 +34,7 @@ UI_NEW_RUN,Nouvelle partie,New run
 UI_CONTINUE,Continuer,Continue
 UI_MENU,Menu principal,Main menu
 UI_RUN_WON,Tu as atteint le sommet de la cultivation !,You reached the peak of cultivation!
-UI_RUN_LOST,Échec de la percée. La run est terminée.,Breakthrough failed. The run is over.
-UI_STONES,Pierres spirituelles : %d,Spirit stones: %d
+UI_RUN_LOST,Échec de la percée. La partie est terminée.,Breakthrough failed. The run is over.
 ARTIFACT_EPEE_VOLANTE,Épée volante de jade,Flying Jade Sword
 ARTIFACT_EPEE_VOLANTE_DESC,+15 Qi à chaque main jouée.,+15 Qi on every hand played.
 ARTIFACT_GOURDE_ELIXIR,Gourde d'élixir,Elixir Gourd
@@ -57,12 +56,12 @@ PILL_EAU_PROFONDE_DESC,Change jusqu'à 3 cartes sélectionnées en Eau.,Turns up
 PILL_RAFFINEMENT,Pilule de raffinement,Refining Pill
 PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (jusqu'au Souverain).,+1 rank to up to 2 selected cards (up to the Sovereign).
 PILL_PURIFICATION,Pilule de purification,Purification Pill
-PILL_PURIFICATION_DESC,Détruit jusqu'à 2 cartes sélectionnées pour le reste de la run.,Destroys up to 2 selected cards for the rest of the run.
+PILL_PURIFICATION_DESC,Détruit jusqu'à 2 cartes sélectionnées pour le reste de la partie.,Destroys up to 2 selected cards for the rest of the run.
 BOTTLENECK_TRIBULATION_FLAMMES,Tribulation des flammes célestes,Tribulation of Celestial Flames
 BOTTLENECK_TRIBULATION_VENT_NOIR,Tribulation du vent noir,Tribulation of the Black Wind
 BOTTLENECK_TRIBULATION_DEMON,Tribulation du démon intérieur,Tribulation of the Inner Demon
 TRIB_FLAMMES_DESC,Les cartes Feu ne comptent pas.,Fire cards do not score.
-TRIB_VENT_NOIR_DESC,Une main de moins pour ce goulot.,One less hand for this bottleneck.
+TRIB_VENT_NOIR_DESC,Une main de moins pour ce goulot.,One hand fewer for this bottleneck.
 TRIB_DEMON_DESC,Ta main contient 2 cartes de moins.,Your hand holds 2 fewer cards.
 UI_STATS_BUTTON,Statistiques,Statistics
 UI_STATS_TITLE,Statistiques,Statistics
@@ -74,11 +73,15 @@ UI_STATS_BEST_HAND_SCORE,Meilleur score d'une main,Best hand score
 UI_STATS_HANDS_PLAYED,Mains jouées,Hands played
 UI_STATS_FAVORITE_HAND,Main favorite,Favorite hand
 UI_BACK,Retour,Back
-UI_RUN_INFO,Infos de la run,Run info
+UI_RUN_INFO,Voie de cultivation,Cultivation path
 UI_INFO_TAB_HANDS,Mains,Hands
 UI_INFO_TAB_PATH,Parcours,Path
-UI_INFO_TAB_RUN,Run,Run
+UI_INFO_TAB_RUN,Partie,Run
 UI_INFO_LEVEL,Niveau,Level
+UI_INFO_LEVEL_N,Niveau %d,Level %d
+UI_INFO_TARGET_N,Objectif %d,Target %d
+UI_STATS_PERCENT,%d %%,%d%%
+UI_DECIMAL_SEPARATOR,",",.
 UI_INFO_TARGET,Objectif,Target
 UI_INFO_CLEARED,Franchi,Cleared
 UI_INFO_CURRENT,En cours,Current
@@ -98,6 +101,10 @@ UI_OPTIONS_REDUCE_MOTION,Réduire les animations,Reduce motion
 UI_OPTIONS_GAME_SPEED,Vitesse de jeu,Game speed
 UI_OPTIONS_SPEED_ITEM,x%s,x%s
 UI_OPTIONS_FULLSCREEN,Plein écran,Fullscreen
+UI_OPTIONS_HIGH_CONTRAST,Contraste élevé,High contrast
+UI_OPTIONS_LANGUAGE,Langue,Language
+UI_LANGUAGE_FR,Français,Français
+UI_LANGUAGE_EN,English,English
 UI_OPTIONS_MENU,Retour au menu,Back to menu
 UI_OPTIONS_NEW_RUN,Nouvelle partie,New run
 UI_OPTIONS_NEW_RUN_CONFIRM,Abandonner la partie en cours et en commencer une nouvelle ?,Abandon the current run and start a new one?
@@ -122,7 +129,7 @@ UI_SORT_RANK,Rang,Rank
 UI_SORT_ELEMENT,Élément,Element
 UI_DECK,Paquet,Deck
 UI_DECK_VIEW,Tout le paquet,Full deck
-UI_DECK_VIEW_CLOSE,Cliquer ou Échap pour fermer,Click or Esc to close
+UI_DECK_VIEW_CLOSE,Cliquer ou %s pour fermer,Click or %s to close
 UI_SHOP_LEVEL_UP,%s passe au niveau %d : %d x %d devient %d x %d,%s reaches level %d: %d x %d becomes %d x %d
 UI_QUIT,Quitter le jeu,Quit game
 UI_INFO_TIMES,x,x
@@ -168,10 +175,10 @@ CARD_RANK_13,Immortel,Immortal
 CARD_RANK_14,Souverain du Dao,Sovereign of the Dao
 UI_KEY_HINT,Touche : %s,Key: %s
 UI_INFO_TAB_KEYS,Touches,Keys
-UI_KEYS_SELECT,"Choisir une carte (1 à 8, de gauche à droite)","Pick a card (1 to 8, left to right)"
+UI_KEYS_SELECT,"Choisir une carte (%s à %s, de gauche à droite)","Pick a card (%s to %s, left to right)"
 UI_KEYS_PLAY,"Jouer la main, ou continuer après la boutique","Play the hand, or continue after the shop"
 UI_KEYS_DISCARD,Défausser la sélection,Discard the selection
-UI_KEYS_DESELECT,"Tout désélectionner (aussi clic droit)",Deselect all (also right click)
+UI_KEYS_DESELECT,Tout désélectionner (%s ou clic droit),Deselect all (%s or right click)
 UI_KEYS_SORT_RANK,Trier par rang,Sort by rank
 UI_KEYS_SORT_ELEMENT,Trier par élément,Sort by element
 UI_KEYS_DECK,Voir tout le paquet,View the full deck
@@ -258,9 +265,9 @@ ARTIFACT_CRAPAUD_JADE_DESC,+1 pierre par main restante quand le goulot est franc
 ARTIFACT_BALAI_BAMBOU,Balai de bambou,Bamboo Broom
 ARTIFACT_BALAI_BAMBOU_DESC,+1 pierre par carte Bois défaussée.,+1 stone for each Wood card discarded.
 ARTIFACT_BAMBOU_CELESTE,Bambou céleste,Celestial Bamboo
-ARTIFACT_BAMBOU_CELESTE_DESC,Gagne +4 Qi à chaque main pour chaque Paire jouée pendant la run.,Gains +4 Qi on every hand for each Pair played during the run.
+ARTIFACT_BAMBOU_CELESTE_DESC,Gagne +4 Qi à chaque main pour chaque Paire jouée pendant la partie.,Gains +4 Qi on every hand for each Pair played during the run.
 ARTIFACT_PIERRE_EVEIL,Pierre d'éveil,Awakening Stone
-ARTIFACT_PIERRE_EVEIL_DESC,"x1 Compréhension, +0,05 pour chaque carte défaussée pendant la run.","x1 Comprehension, +0.05 for each card discarded during the run."
+ARTIFACT_PIERRE_EVEIL_DESC,"x1 Compréhension, +0,05 pour chaque carte défaussée pendant la partie.","x1 Comprehension, +0.05 for each card discarded during the run."
 ARTIFACT_ARBRE_MILLENAIRE,Arbre millénaire,Millennial Tree
 ARTIFACT_ARBRE_MILLENAIRE_DESC,"+0,25 Compréhension à chaque main pour chaque goulot franchi depuis son achat.",+0.25 Comprehension on every hand for each bottleneck cleared since you got it.
 UI_ARTIFACT_STACKS,A grandi %d fois.,Has grown %d times.
@@ -273,7 +280,7 @@ PILL_MONTAGNE_DESC,Change jusqu'à 3 cartes sélectionnées en Terre.,Turns up t
 PILL_LAME,Pilule de la lame,Blade Pill
 PILL_LAME_DESC,Change jusqu'à 3 cartes sélectionnées en Métal.,Turns up to 3 selected cards into Metal.
 PILL_ROUE,Pilule de la roue,Wheel Pill
-PILL_ROUE_DESC,Jusqu'à 3 cartes sélectionnées prennent l'élément que le leur engendre.,Up to 3 selected cards take the element theirs generates.
+PILL_ROUE_DESC,Jusqu'à 3 cartes sélectionnées prennent l'élément que le leur engendre.,Up to 3 selected cards take on the element that follows theirs in the generating cycle.
 PILL_DEDOUBLEMENT,Pilule de dédoublement,Splitting Pill
 PILL_DEDOUBLEMENT_DESC,Ajoute au paquet une copie de la carte sélectionnée.,Adds a copy of the selected card to the deck.
 PILL_FUSION,Pilule de fusion,Fusion Pill

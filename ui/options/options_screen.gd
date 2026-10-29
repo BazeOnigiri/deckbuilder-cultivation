@@ -22,14 +22,17 @@ func _ready() -> void:
 	# Avant de brancher les signaux : afficher la valeur ne doit pas compter comme un changement.
 	%ReduceMotion.button_pressed = settings.reduce_motion
 	%Fullscreen.button_pressed = settings.fullscreen
-	for speed: float in GameSettings.GAME_SPEEDS:
-		%GameSpeed.add_item(tr("UI_OPTIONS_SPEED_ITEM") % str(speed).trim_suffix(".0"))
-	%GameSpeed.select(maxi(GameSettings.GAME_SPEEDS.find(settings.game_speed), 0))
+	%HighContrast.button_pressed = settings.high_contrast
+	_fill_options()
 	_bind_volume(%MasterVolume, "master_volume")
 	_bind_volume(%MusicVolume, "music_volume")
 	_bind_volume(%EffectsVolume, "effects_volume")
 	%ReduceMotion.toggled.connect(_on_reduce_motion_toggled)
 	%Fullscreen.toggled.connect(_on_fullscreen_toggled)
+	# Plein ecran refuse ou quitte (Echap) : la case se decoche sans repasser par toggled.
+	settings.fullscreen_lost.connect(func() -> void: %Fullscreen.set_pressed_no_signal(false))
+	%HighContrast.toggled.connect(_on_high_contrast_toggled)
+	%Language.item_selected.connect(_on_language_selected)
 	%GameSpeed.item_selected.connect(_on_game_speed_selected)
 	%BackButton.pressed.connect(back_requested.emit)
 	%RunButtons.visible = in_run
@@ -37,6 +40,23 @@ func _ready() -> void:
 	%NewRunButton.pressed.connect(_ask_new_run)
 	%BackButton.reduce_motion = settings.reduce_motion
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
+
+
+## Items construits en code : refaits quand la langue change, leur texte depend d'elle.
+func _fill_options() -> void:
+	%GameSpeed.clear()
+	for speed: float in GameSettings.GAME_SPEEDS:
+		%GameSpeed.add_item(tr("UI_OPTIONS_SPEED_ITEM") % str(speed).trim_suffix(".0").replace(".", tr("UI_DECIMAL_SEPARATOR")))
+	%GameSpeed.select(maxi(GameSettings.GAME_SPEEDS.find(settings.game_speed), 0))
+	%Language.clear()
+	for code: String in GameSettings.LANGUAGES:
+		%Language.add_item(tr("UI_LANGUAGE_" + code.to_upper()))
+	%Language.select(maxi(GameSettings.LANGUAGES.find(settings.language), 0))
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		_fill_options()
 
 
 ## Le curseur montre le reglage puis l'ecrit a chaque cran (step 0.05 : une vingtaine d'ecritures au plus par glisse).
@@ -87,4 +107,14 @@ func _on_fullscreen_toggled(on: bool) -> void:
 
 func _on_game_speed_selected(index: int) -> void:
 	settings.game_speed = GameSettings.GAME_SPEEDS[index]
+	settings_changed.emit()
+
+
+func _on_high_contrast_toggled(on: bool) -> void:
+	settings.high_contrast = on
+	settings_changed.emit()
+
+
+func _on_language_selected(index: int) -> void:
+	settings.language = GameSettings.LANGUAGES[index]
 	settings_changed.emit()

@@ -34,7 +34,8 @@ func show_deck(cards: Array[CardInstance], in_draw_pile: Callable) -> void:
 		of_element.sort_custom(func(a: CardInstance, b: CardInstance) -> bool: return a.rank < b.rank)
 		var left: int = of_element.filter(in_draw_pile).size()
 		_rows.add_child(_row(element, of_element, left, in_draw_pile))
-	var hint := SideColumn.make_label(&"SideCaption", "UI_DECK_VIEW_CLOSE")
+	var hint := SideColumn.make_label(&"SideCaption")
+	hint.text = Keys.text_of("UI_DECK_VIEW_CLOSE")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_rows.add_child(hint)
 

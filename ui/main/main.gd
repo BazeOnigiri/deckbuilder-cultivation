@@ -10,6 +10,8 @@ const OPTIONS_SCENE := preload("res://ui/options/options_screen.tscn")
 const MOTION_SCALE := &"motion_scale"
 ## Ambiance du menu et des ecrans hors run.
 const MENU_AMBIANCE := &"menu"
+## Surcharges de couleurs du mode contraste eleve : posees sur la racine, le Theme du projet reste dessous.
+const CONTRAST_THEME := preload("res://ui/theme/contraste.tres")
 
 ## Les tests les remplacent pour ne pas toucher aux vraies sauvegardes.
 @export var profile_path: String = ProfileStats.DEFAULT_PATH
@@ -29,6 +31,10 @@ var _settings_storage: SaveStorage
 func _ready() -> void:
 	_settings_storage = SaveStorage.new(settings_path)
 	_settings = GameSettings.load_from(_settings_storage)
+	# En web le navigateur refuse le plein ecran sans geste du joueur : jamais applique au demarrage.
+	if OS.has_feature("web"):
+		_settings.fullscreen = false
+	get_window().size_changed.connect(_confirm_fullscreen)
 	_apply_settings()
 	_content = GameContent.load_default()
 	_profile_storage = SaveStorage.new(profile_path)
@@ -91,6 +97,10 @@ func _options_screen() -> Node:
 
 func _on_settings_changed() -> void:
 	_apply_settings()
+	_on_settings_saved()
+
+
+func _on_settings_saved() -> void:
 	if not _settings.save_to(_settings_storage):
 		push_warning("Reglages non sauvegardes : %s" % _settings_storage.last_error)
 
@@ -101,10 +111,20 @@ func _apply_settings() -> void:
 	Sons.apply_volumes(_settings)
 	# Accelere tout ce qui suit le temps du moteur (tweens, minuteurs), pas les shaders.
 	Engine.time_scale = _settings.game_speed
+	TranslationServer.set_locale(_settings.language)
+	theme = CONTRAST_THEME if _settings.high_contrast else null
 	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if _settings.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
-	# En web, le plein ecran n'est accepte qu'apres un clic : au demarrage le navigateur peut le refuser.
 	if DisplayServer.window_get_mode() != mode:
 		DisplayServer.window_set_mode(mode)
+		if _settings.fullscreen:
+			# Delai ignorant l'acceleration du jeu : si la fenetre n'est pas passee en plein ecran, la case se decoche.
+			get_tree().create_timer(GameSettings.FULLSCREEN_CONFIRM_SECONDS, true, false, true).timeout.connect(_confirm_fullscreen)
+
+
+## Echap ou refus du navigateur : la case suit l'etat reel de la fenetre.
+func _confirm_fullscreen() -> void:
+	if _settings.sync_fullscreen(DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN):
+		_on_settings_saved()
 
 
 func _show_stats() -> void:
