@@ -301,6 +301,8 @@ func test_victoire_puis_boutique() -> void:
 	assert_false(screen.get_node("%HandRow").visible, "la main laisse la place a la boutique")
 	assert_eq(ids.back(), &"boutique")
 	assert_eq(screen._last_hand.text, "", "pas de texte de victoire dans la boutique : les cristaux montrent le gain")
+	# Sans rencontre : l'annonce suit directement la boutique.
+	screen._run.event_rules = null
 	screen.get_node("%ContinueButton").pressed.emit()
 	assert_eq(ids.back(), screen._run.progress.current_bottleneck().id, "ambiance du goulot suivant")
 	assert_true(screen.get_node("%HandRow").visible, "main revenue au round suivant")
@@ -503,6 +505,7 @@ func test_continuer_sans_fin_ouvre_la_boutique() -> void:
 	assert_eq(run.progress.realm_count(), count + 1)
 	assert_true(screen.get_node("%ShopPanel").visible)
 	assert_true(screen.get_node("%ContinueButton").visible)
+	run.event_rules = null
 	screen.get_node("%ContinueButton").pressed.emit()
 	assert_eq(run.status, RunState.Status.ANNOUNCING, "le goulot s'annonce avant le round")
 	assert_eq(run.progress.current_realm().number, 1)
@@ -594,3 +597,52 @@ func test_reprise_sur_l_annonce() -> void:
 	var screen := _resume(RunSnapshot.capture(run, null, rng))
 	assert_not_null(_announce(screen))
 	assert_eq(screen._run.status, RunState.Status.ANNOUNCING)
+
+
+func _press(overlay: ScrollOverlay, text: String) -> void:
+	for button: Button in overlay.find_children("*", "Button", true, false):
+		if button.text == text and not button.disabled:
+			button.pressed.emit()
+			return
+	fail_test("sceau introuvable : %s" % text)
+
+
+## Boutique quittee, rencontre certaine : choix, issue, puis l'annonce du goulot suivant. Sauvegardee a chaque etape.
+func test_rencontre_apres_la_boutique() -> void:
+	var content := GameContent.load_default()
+	var rng := RandomNumberGenerator.new()
+	var run := content.new_run(rng)
+	run.status = RunState.Status.BETWEEN_ROUNDS
+	var screen := _resume(RunSnapshot.capture(run, content.new_shop(run, rng), rng))
+	var rules := EventRules.new()
+	rules.chance = 1.0
+	screen._run.event_rules = rules
+	screen.get_node("%ContinueButton").pressed.emit()
+	assert_eq(screen._run.status, RunState.Status.ENCOUNTER)
+	var overlay := _announce(screen)
+	assert_not_null(overlay)
+	assert_false(overlay.dismissable)
+	_press(overlay, "EVENT_LEAVE")
+	assert_eq(screen._run.event_choice, screen._run.current_event.choices.size() - 1)
+	_press(_announce(screen), "UI_EVENT_CONTINUE")
+	assert_eq(screen._run.status, RunState.Status.ANNOUNCING)
+	assert_has(_buttons(_announce(screen)), "UI_ANNOUNCE_FIGHT")
+
+
+func test_choix_impossible_grise_avec_sa_raison() -> void:
+	var content := GameContent.load_default()
+	var rng := RandomNumberGenerator.new()
+	var run := content.new_run(rng)
+	run.status = RunState.Status.BETWEEN_ROUNDS
+	run.stones = 0
+	run.start_event(content.event_by_id(&"evenement_marche_noir"))
+	var screen := _resume(RunSnapshot.capture(run, null, rng))
+	var overlay := _announce(screen)
+	var buy: Button
+	for button: Button in overlay.find_children("*", "Button", true, false):
+		if button.text == "EVENT_MARCHE_C1":
+			buy = button
+	assert_not_null(buy)
+	assert_true(buy.disabled, "pas assez de pierres")
+	var texts: Array = overlay.find_children("*", "Label", true, false).map(func(label: Label) -> String: return label.text)
+	assert_has(texts, "EVENT_BLOCK_STONES")

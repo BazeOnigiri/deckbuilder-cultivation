@@ -38,7 +38,7 @@ func test_reprise_sur_l_annonce() -> void:
 	run.take_omen(_content.omen_by_id(&"presage_don_celeste"))
 	assert_true(RunSnapshot.can_capture(run))
 	var data := _through_json(RunSnapshot.capture(run, null, rng))
-	assert_eq(int(data["version"]), 3)
+	assert_eq(int(data["version"]), RunSnapshot.VERSION)
 	var restored := RunSnapshot.restore(data, _content, _rng(1))
 	assert_not_null(restored)
 	assert_false(RunSnapshot.resume_round(data, restored))
@@ -70,7 +70,7 @@ func test_boutique_garde_ses_presages() -> void:
 
 func test_migration_v2_vers_v3() -> void:
 	var migrated := RunSnapshot.migrate({"version": 2, "cards": []})
-	assert_eq(migrated["version"], 3)
+	assert_eq(migrated["version"], RunSnapshot.VERSION)
 	assert_eq(migrated["omens"], [])
 	assert_eq(migrated["omen_offers"], [])
 	assert_eq(migrated["omen_offers_realm"], 0)

@@ -1,0 +1,87 @@
+[gd_resource type="Resource" script_class="EventDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/events/event_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/events/artifact_event_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/events/event_outcome.gd" id="3"]
+[ext_resource type="Script" path="res://core/events/event_effect.gd" id="4"]
+[ext_resource type="Script" path="res://core/events/omen_event_effect.gd" id="5"]
+[ext_resource type="Resource" path="res://content/omens/presage_relance_offerte.tres" id="6"]
+[ext_resource type="Script" path="res://core/events/event_cost.gd" id="7"]
+[ext_resource type="Script" path="res://core/events/event_choice.gd" id="8"]
+[ext_resource type="Script" path="res://core/events/run_event_effect.gd" id="9"]
+[ext_resource type="Script" path="res://core/omens/card_omen_effect.gd" id="10"]
+
+[sub_resource type="Resource" id="r1"]
+script = ExtResource("2")
+
+[sub_resource type="Resource" id="r2"]
+script = ExtResource("3")
+weight = 1.0
+text_key = "EVENT_MENDIANT_C1_O1"
+effects = Array[ExtResource("4")]([SubResource("r1")])
+
+[sub_resource type="Resource" id="r3"]
+script = ExtResource("5")
+omen = ExtResource("6")
+
+[sub_resource type="Resource" id="r4"]
+script = ExtResource("3")
+weight = 1.0
+text_key = "EVENT_MENDIANT_C1_O2"
+effects = Array[ExtResource("4")]([SubResource("r3")])
+
+[sub_resource type="Resource" id="r5"]
+script = ExtResource("7")
+kind = 0
+amount = 3
+
+[sub_resource type="Resource" id="r6"]
+script = ExtResource("8")
+label_key = "EVENT_MENDIANT_C1"
+cost = SubResource("r5")
+outcomes = Array[ExtResource("3")]([SubResource("r2"), SubResource("r4")])
+
+[sub_resource type="Resource" id="r7"]
+script = ExtResource("10")
+
+[sub_resource type="Resource" id="r8"]
+script = ExtResource("9")
+effect = SubResource("r7")
+
+[sub_resource type="Resource" id="r9"]
+script = ExtResource("3")
+weight = 1.0
+text_key = "EVENT_MENDIANT_C2_O1"
+effects = Array[ExtResource("4")]([SubResource("r8")])
+
+[sub_resource type="Resource" id="r10"]
+script = ExtResource("7")
+kind = 1
+amount = 1
+
+[sub_resource type="Resource" id="r11"]
+script = ExtResource("8")
+label_key = "EVENT_MENDIANT_C2"
+cost = SubResource("r10")
+outcomes = Array[ExtResource("3")]([SubResource("r9")])
+
+[sub_resource type="Resource" id="r12"]
+script = ExtResource("3")
+weight = 1.0
+text_key = "EVENT_LEAVE_TEXT"
+effects = Array[ExtResource("4")]([])
+
+[sub_resource type="Resource" id="r13"]
+script = ExtResource("8")
+label_key = "EVENT_LEAVE"
+outcomes = Array[ExtResource("3")]([SubResource("r12")])
+
+[resource]
+script = ExtResource("1")
+id = &"evenement_mendiant"
+title_key = "EVENT_MENDIANT_TITLE"
+text_key = "EVENT_MENDIANT_TEXT"
+glyph = "丐"
+min_realm = 1
+min_artifacts = 0
+choices = Array[ExtResource("8")]([SubResource("r6"), SubResource("r11"), SubResource("r13")])

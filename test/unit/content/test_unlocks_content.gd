@@ -42,7 +42,7 @@ func test_les_artefacts_de_depart_restent_ouverts() -> void:
 
 func test_succes_valides_uniques_et_en_bon_nombre() -> void:
 	var achievements := UnlockCatalog.load_achievements()
-	assert_between(achievements.size(), 15, 20)
+	assert_between(achievements.size(), 15, 25)
 	var ids: Dictionary = {}
 	var glyphs: Dictionary = {}
 	for achievement: AchievementDefinition in achievements:

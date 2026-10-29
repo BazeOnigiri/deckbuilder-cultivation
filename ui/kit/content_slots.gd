@@ -52,6 +52,11 @@ static func of(item: Resource) -> ItemSlot:
 			slot.kind = ItemSlot.Kind.OMEN
 			slot.glyph = omen.glyph
 			slot.set_info(_tr(omen.name_key), _tr(omen.description_key))
+		Compendium.Kind.EVENT:
+			var event := item as EventDefinition
+			slot.kind = ItemSlot.Kind.EVENT
+			slot.glyph = event.glyph
+			slot.set_info(_tr(event.title_key), _tr(event.text_key))
 		_:
 			slot.free()
 			return null
@@ -69,6 +74,7 @@ static func hidden(kind: Compendium.Kind, lock_text: String = "") -> ItemSlot:
 		Compendium.Kind.PACK: ItemSlot.Kind.PACK,
 		Compendium.Kind.TRIBULATION: ItemSlot.Kind.TRIBULATION,
 		Compendium.Kind.OMEN: ItemSlot.Kind.OMEN,
+		Compendium.Kind.EVENT: ItemSlot.Kind.EVENT,
 	}.get(kind, ItemSlot.Kind.ARTIFACT)
 	slot.glyph = HIDDEN_GLYPH
 	slot.disabled = true

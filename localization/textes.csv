@@ -534,3 +534,113 @@ OMEN_CARD_NAME,Talisman inscrit,Inscribed Talisman
 OMEN_CARD_DESC,Une copie améliorée d’une carte de votre paquet le rejoint.,An enhanced copy of a card from your deck joins it.
 OMEN_MARKET_NAME,Marché florissant,Thriving Market
 OMEN_MARKET_DESC,La prochaine boutique propose une offre de plus.,The next shop shows one more offer.
+EVENT_LEAVE,Passer votre chemin,Go on your way
+EVENT_LEAVE_TEXT,Vous reprenez la route sans vous retourner.,You set off again without looking back.
+EVENT_ERMITE_TITLE,Le vieil ermite,The Old Hermit
+EVENT_ERMITE_TEXT,"Un vieillard assis sur un rocher ouvre un œil. « Tu marches vite, disciple. Assieds-toi un instant. »","An old man sitting on a rock opens one eye. “You walk fast, disciple. Sit a moment.”"
+EVENT_ERMITE_C1,Écouter son enseignement,Listen to his teaching
+EVENT_ERMITE_C1_O1,Ses paroles éclairent votre technique favorite.,His words shed light on your favorite technique.
+EVENT_ERMITE_C2,Lui offrir des pierres,Offer him stones
+EVENT_ERMITE_C2_O1,Il fouille sa manche et vous tend une pilule.,He rummages in his sleeve and hands you a pill.
+EVENT_GROTTE_TITLE,La grotte de l'immortel déchu,The Fallen Immortal's Cave
+EVENT_GROTTE_TEXT,Au fond d'une grotte scellée repose la dépouille d'un immortel tombé du ciel. Son aura pèse encore sur la roche.,At the back of a sealed cave lie the remains of an immortal fallen from the heavens. Their aura still weighs on the stone.
+EVENT_GROTTE_C1,Fouiller la dépouille,Search the remains
+EVENT_GROTTE_C1_O1,"Entre ses doigts froids, un artefact intact.","Between cold fingers, an intact artifact."
+EVENT_GROTTE_C1_O2,Une malédiction s'éveille et ronge l'une de vos cartes.,A curse awakens and gnaws at one of your cards.
+EVENT_GROTTE_C2,Se recueillir,Pay your respects
+EVENT_GROTTE_C2_O1,"Dans le silence, une compréhension vous traverse.","In the silence, an insight runs through you."
+EVENT_MARCHE_TITLE,Le marché noir des pilules,The Black Pill Market
+EVENT_MARCHE_TEXT,"Sous un pont, un marchand masqué entrouvre son manteau doublé de fioles sans étiquette.","Under a bridge, a masked merchant opens a coat lined with unlabeled vials."
+EVENT_MARCHE_C1,Acheter une fiole,Buy a vial
+EVENT_MARCHE_C1_O1,La fiole contient bien une pilule… reste à savoir laquelle.,The vial does hold a pill… which one remains to be seen.
+EVENT_MARCHE_C2,Lui vendre une carte,Sell him a card
+EVENT_MARCHE_C2_O1,Il glisse la carte dans sa manche et compte les pierres.,He slips the card into his sleeve and counts out the stones.
+EVENT_BETE_TITLE,La bête blessée,The Wounded Beast
+EVENT_BETE_TEXT,"Un tigre des nuages gît dans les fougères, une flèche brisée dans le flanc. Il vous regarde sans gronder.","A cloud tiger lies in the ferns, a broken arrow in its side. It watches you without growling."
+EVENT_BETE_C1,Soigner la bête,Heal the beast
+EVENT_BETE_C1_O1,"Guéri, le tigre dépose à vos pieds un trésor de son repaire.","Healed, the tiger lays a treasure from its lair at your feet."
+EVENT_BETE_C2,Recueillir son souffle,Gather its breath
+EVENT_BETE_C2_O1,Son souffle spirituel imprègne vos cartes.,Its spirit breath seeps into your cards.
+EVENT_BETE_C2_O2,Le tigre s'enfuit dans la brume avant que vous n'approchiez.,The tiger flees into the mist before you come near.
+EVENT_DUEL_TITLE,Le duel amical,The Friendly Duel
+EVENT_DUEL_TEXT,"Un disciple d'une secte voisine vous salue, poing contre paume. « Un échange de techniques ? Le perdant paie le thé. »","A disciple from a neighboring sect salutes you, fist to palm. “An exchange of techniques? The loser pays for tea.”"
+EVENT_DUEL_C1,Accepter le duel,Accept the duel
+EVENT_DUEL_C1_O1,"Victoire ! Il rit, paie le thé et vous confie une astuce.","Victory! He laughs, pays for tea and shares a trick."
+EVENT_DUEL_C1_O2,Défaite honorable. Le thé était bon.,An honorable defeat. The tea was good.
+EVENT_CASCADE_TITLE,Méditation sous la cascade,Meditation under the Waterfall
+EVENT_CASCADE_TEXT,"Une cascade glacée martèle un rocher plat, poli par des siècles de disciples.","An icy waterfall pounds a flat rock, polished by centuries of disciples."
+EVENT_CASCADE_C1,Méditer jusqu'à l'aube,Meditate until dawn
+EVENT_CASCADE_C1_O1,Le froid aiguise votre esprit : un talisman se forme sur une carte.,The cold sharpens your mind: a talisman forms on a card.
+EVENT_CASCADE_C2,Boire à la source,Drink from the spring
+EVENT_CASCADE_C2_O1,L'eau vive coule dans vos méridiens.,Living water flows through your meridians.
+EVENT_TABLETTE_TITLE,La tablette ancienne,The Ancient Tablet
+EVENT_TABLETTE_TEXT,Une stèle couverte de caractères à demi effacés se dresse au bord du chemin.,A stele covered in half-erased characters stands by the roadside.
+EVENT_TABLETTE_C1,Déchiffrer les caractères,Decipher the characters
+EVENT_TABLETTE_C1_O1,Les traits s'assemblent en une technique oubliée.,The strokes come together into a forgotten technique.
+EVENT_TABLETTE_C1_O2,Les caractères se brouillent sous vos yeux.,The characters blur before your eyes.
+EVENT_TABLETTE_C2,Recopier sur une carte,Copy onto a card
+EVENT_TABLETTE_C2_O1,L'encre fraîche devient un talisman.,The fresh ink becomes a talisman.
+EVENT_MENDIANT_TITLE,Le mendiant mystérieux,The Mysterious Beggar
+EVENT_MENDIANT_TEXT,Un mendiant en haillons tend son bol fêlé. Ses yeux brillent d'une lueur qui n'a rien de mortel.,A beggar in rags holds out a cracked bowl. His eyes shine with a light that is nothing mortal.
+EVENT_MENDIANT_C1,Donner des pierres,Give stones
+EVENT_MENDIANT_C1_O1,C'était un immortel déguisé ! Il vous laisse un artefact.,It was an immortal in disguise! He leaves you an artifact.
+EVENT_MENDIANT_C1_O2,Il sourit et murmure : « Le destin tourne. »,He smiles and whispers: “Fate turns.”
+EVENT_MENDIANT_C2,Lui donner une carte,Give him a card
+EVENT_MENDIANT_C2_O1,"Il souffle sur votre paquet : une carte s'y ajoute, transformée.","He blows on your deck: a card joins it, transformed."
+EVENT_GO_TITLE,La partie de go,The Game of Go
+EVENT_GO_TEXT,"Sous un pin, deux vieillards jouent au go depuis, dit-on, cent ans. L'un d'eux vous tend une pierre noire.","Under a pine, two old men have been playing go for a hundred years, they say. One of them hands you a black stone."
+EVENT_GO_C1,Jouer un coup,Play a move
+EVENT_GO_C1_O1,Coup de maître ! Ils vous paient en pierres spirituelles.,A masterstroke! They pay you in spirit stones.
+EVENT_GO_C1_O2,Coup honnête. On vous remercie d'une poignée de pierres.,An honest move. They thank you with a handful of stones.
+EVENT_GO_C2,Observer en silence,Watch in silence
+EVENT_GO_C2_O1,Vous comprenez soudain l'art de l'échange.,You suddenly grasp the art of trade.
+EVENT_RENARDE_TITLE,La renarde des brumes,The Mist Fox
+EVENT_RENARDE_TEXT,Une renarde à trois queues vous suit depuis l'aube. Elle fixe l'un de vos artefacts avec envie.,A three-tailed fox has followed you since dawn. She stares longingly at one of your artifacts.
+EVENT_RENARDE_C1,Lui céder un artefact,Give her an artifact
+EVENT_RENARDE_C1_O1,Elle s'incline et souffle sur vos cartes une aura irisée.,She bows and breathes an iridescent aura onto your cards.
+EVENT_RENARDE_C2,Partager votre repas,Share your meal
+EVENT_RENARDE_C2_O1,"Rassasiée, elle vous promet une faveur du ciel.","Sated, she promises you a favor from the heavens."
+EVENT_PONT_TITLE,Le pont de lianes,The Vine Bridge
+EVENT_PONT_TEXT,Un pont de lianes enjambe un gouffre. De l'autre côté poussent des herbes spirituelles.,A vine bridge spans a chasm. Spirit herbs grow on the other side.
+EVENT_PONT_C1,Traverser,Cross
+EVENT_PONT_C1_O1,Vous atteignez l'autre rive et cueillez les herbes.,You reach the far side and gather the herbs.
+EVENT_PONT_C1_O2,Une liane cède : une carte tombe dans le gouffre.,A vine snaps: a card falls into the chasm.
+EVENT_PONT_C2,Faire le grand détour,Take the long way round
+EVENT_PONT_C2_O1,"Le détour est long, mais les herbes sont là.","The detour is long, but the herbs are there."
+EVENT_REVE_TITLE,Le rêve prophétique,The Prophetic Dream
+EVENT_REVE_TEXT,"Dans votre sommeil, un dragon de jade vous montre trois chemins qui s'éloignent dans les nuages.","In your sleep, a jade dragon shows you three paths fading into the clouds."
+EVENT_REVE_C1,Le chemin du feu,The path of fire
+EVENT_REVE_C1_O1,Vos cartes s'embrasent d'une vigueur nouvelle.,Your cards blaze with new vigor.
+EVENT_REVE_C2,Le chemin de l'or,The path of gold
+EVENT_REVE_C2_O1,"Au réveil, votre bourse est plus lourde.","On waking, your purse is heavier."
+EVENT_REVE_C3,Le chemin de l'esprit,The path of the spirit
+EVENT_REVE_C3_O1,Vous vous éveillez en connaissant mieux vos cartes.,You wake knowing your cards better.
+EVENT_FX_STONES,Gagnez %d pierres,Gain %d stones
+EVENT_FX_LEVEL,Votre main la plus jouée monte de %d niveau(x),Your most played hand gains %d level(s)
+EVENT_FX_CARD_COPY,Une copie améliorée d’une carte rejoint votre paquet,An enhanced copy of a card joins your deck
+EVENT_FX_OMEN,Présage : %s,Omen: %s
+EVENT_FX_IMBUE,%s sur %d carte(s) au hasard,%s on %d random card(s)
+EVENT_FX_DESTROY,%d carte(s) de votre paquet détruite(s) au hasard,%d random card(s) destroyed from your deck
+EVENT_FX_COPY,%d carte(s) au hasard copiée(s) dans votre paquet,%d random card(s) copied into your deck
+EVENT_FX_RANK,Rang +%d sur %d carte(s) au hasard,Rank +%d on %d random card(s)
+EVENT_FX_ARTIFACT,"Un artefact, tiré selon sa rareté","An artifact, drawn by rarity"
+EVENT_FX_PILL,Une pilule au hasard,A random pill
+EVENT_FX_PILL_NAMED,Pilule : %s,Pill: %s
+EVENT_FX_NOTHING,Rien,Nothing
+EVENT_COST_STONES,Coût : %d pierres,Cost: %d stones
+EVENT_COST_CARDS,"Coût : %d carte(s) de votre paquet, au hasard",Cost: %d random card(s) from your deck
+EVENT_COST_ARTIFACT,Coût : %d artefact(s) au hasard,Cost: %d random artifact(s)
+EVENT_COST_HANDS,Coût : %d main(s) de moins au prochain goulot,Cost: %d fewer hand(s) at the next bottleneck
+EVENT_BLOCK_STONES,Pas assez de pierres,Not enough stones
+EVENT_BLOCK_CARDS,Paquet trop mince,Deck too thin
+EVENT_BLOCK_ARTIFACT,Aucun artefact à céder,No artifact to give
+EVENT_BLOCK_ARTIFACT_SLOT,Emplacements d’artefact pleins,Artifact slots full
+EVENT_BLOCK_NO_ARTIFACT,Plus aucun artefact à trouver,No artifact left to find
+EVENT_BLOCK_PILL_SLOT,Emplacements de pilule pleins,Pill slots full
+UI_EVENT_CONTINUE,Reprendre la route,Continue on
+UI_EVENT_CHANCE,%d %% : %s,%d%%: %s
+UI_KIND_EVENT,Rencontre,Encounter
+UI_COMPENDIUM_EVENTS,Rencontres,Encounters
+UNLOCK_EVENTS_SEEN,Vivre %d rencontres différentes,Experience %d different encounters
+ACH_CINQ_RENCONTRES_NAME,Pèlerin des cinq monts,Pilgrim of the Five Peaks
+ACH_CINQ_RENCONTRES_DESC,"Vivre 5 rencontres différentes, toutes parties confondues.","Experience 5 different encounters, across all runs."

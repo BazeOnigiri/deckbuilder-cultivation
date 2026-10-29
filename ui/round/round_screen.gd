@@ -67,17 +67,22 @@ func _ready() -> void:
 	if not resume_data.is_empty():
 		_run = RunSnapshot.restore(resume_data, content, _rng)
 	var resumed: bool = _run != null
+	if resumed and profile != null:
+		content.restrict_to_unlocked(_run, profile)
 	if not resumed:
 		if setup.seed_text.is_empty():
 			setup.seed_text = RunSetup.random_code(_rng)
 		_run = content.new_run(_rng, setup)
 		_run.seed_value = _rng.seed
+		if profile != null:
+			content.restrict_to_unlocked(_run, profile)
 		if OS.is_debug_build():
 			_run.artifacts.append_array(debug_artifacts)
 	_run.round_started.connect(_on_round_started)
 	_run.round_won.connect(_on_round_won)
 	_run.finished.connect(_on_run_finished)
 	_run.announced.connect(_show_announce)
+	_run.encountered.connect(_show_event)
 	_play_button.pressed.connect(_on_play_pressed)
 	_discard_button.pressed.connect(_on_discard_pressed)
 	_continue_button.pressed.connect(_on_continue_pressed)
@@ -128,7 +133,8 @@ func _ready() -> void:
 	run_created.emit(_run, resumed)
 	if not resumed:
 		_run.announce()
-	elif RunSnapshot.resume_round(resume_data, _run) or RunSnapshot.resume_announce(resume_data, _run):
+	elif (RunSnapshot.resume_round(resume_data, _run) or RunSnapshot.resume_announce(resume_data, _run)
+			or RunSnapshot.resume_event(resume_data, _run, content)):
 		pass
 	else:
 		# Sauvegarde prise dans la boutique : on la rouvre avec ses offres d'origine.
@@ -312,7 +318,26 @@ func _on_continue_pressed() -> void:
 	# Le focus etait dans la boutique : il revient sur la nouvelle main.
 	get_viewport().gui_release_focus()
 	_shop = null
-	_run.announce()
+	_run.leave_shop()
+	_refresh()
+
+
+## Rouleau de la rencontre : ses choix, puis (meme rouleau rouvert) l'issue tiree.
+func _show_event() -> void:
+	_round = null
+	EventScroll.open(self, _run, _on_event_choice, _on_event_done, not settings.reduce_motion)
+
+
+func _on_event_choice(index: int) -> void:
+	if _run.choose(index):
+		Sons.play(&"pierres")
+	_refresh()
+	EventScroll.open(self, _run, _on_event_choice, _on_event_done, not settings.reduce_motion)
+
+
+## Le goulot suivant s'annonce (signal announced).
+func _on_event_done() -> void:
+	_run.end_event()
 	_refresh()
 
 

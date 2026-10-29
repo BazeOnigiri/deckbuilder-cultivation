@@ -5,16 +5,19 @@ extends RefCounted
 
 ## 2 : ameliorations, auras et talismans des cartes, auras des artefacts (v1.2.0).
 ## 3 : annonce du goulot (on y reprend) et presages tires ou en attente.
-const VERSION := 3
+## 4 : rencontres (vecues, en cours avec leur choix) et mains de moins au prochain goulot.
+const VERSION := 4
 const DEFAULT_PATH := "user://run.json"
 ## migrations[n] : Callable qui fait passer une sauvegarde de la version n a n + 1 (SaveMigrator).
 static var migrations: Dictionary = {1: func(save: Dictionary) -> Dictionary: return _v1_to_v2(save),
-	2: func(save: Dictionary) -> Dictionary: return _v2_to_v3(save)}
+	2: func(save: Dictionary) -> Dictionary: return _v2_to_v3(save),
+	3: func(save: Dictionary) -> Dictionary: return _v3_to_v4(save)}
 
 
-## Sauvegardable pendant un round en cours, entre deux goulots ou sur l'annonce d'un goulot. Pas une run terminee.
+## Sauvegardable pendant un round en cours, entre deux goulots, pendant une rencontre ou sur l'annonce d'un goulot.
+## Pas une run terminee.
 static func can_capture(run: RunState) -> bool:
-	if run.status == RunState.Status.BETWEEN_ROUNDS or run.status == RunState.Status.ANNOUNCING:
+	if run.status in [RunState.Status.BETWEEN_ROUNDS, RunState.Status.ANNOUNCING, RunState.Status.ENCOUNTER]:
 		return true
 	return (run.status == RunState.Status.IN_ROUND and run.current_round != null
 		and run.current_round.status == RoundState.Status.PLAYING)
@@ -52,9 +55,14 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 			return "" if omen == null else String(omen.id)),
 		"omen_offers_realm": run.omen_offers_realm,
 		"omens": SaveData.ids(run.pending_omens),
+		"seen_events": run.seen_events.map(func(id: StringName) -> String: return String(id)),
+		"event_realm": run.event_realm,
+		"hand_penalty": run.hand_penalty,
 	}
 	if run.status == RunState.Status.ANNOUNCING:
 		data["announce"] = true
+	elif run.status == RunState.Status.ENCOUNTER:
+		data["event"] = {"id": String(run.current_event.id), "choice": run.event_choice, "outcome": run.event_outcome}
 	elif run.status == RunState.Status.IN_ROUND:
 		var round_state := run.current_round
 		data["round"] = {
@@ -122,6 +130,10 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 		var omen := content.omen_by_id(StringName(id))
 		if omen != null:
 			run.pending_omens.append(omen)
+	for id: String in SaveData.string_list(save.get("seen_events")):
+		run.seen_events.append(StringName(id))
+	run.event_realm = SaveData.int_of(save, "event_realm")
+	run.hand_penalty = maxi(0, SaveData.int_of(save, "hand_penalty"))
 	# Champ ajoute apres la v1 des sauvegardes : absent, la graine reste inconnue (0).
 	var seed_text := str(save.get("seed", ""))
 	run.seed_value = seed_text.to_int() if seed_text.is_valid_int() else 0
@@ -143,6 +155,25 @@ static func resume_announce(data: Dictionary, run: RunState) -> bool:
 	if migrate(data).get("announce") != true:
 		return false
 	return run.announce()
+
+
+## Reprend la rencontre sauvegardee, avec son choix et son issue s'ils etaient faits. A appeler apres avoir branche
+## les signaux. Rencontre retiree du jeu : le goulot suivant s'annonce. Faux : pas de rencontre sauvegardee.
+static func resume_event(data: Dictionary, run: RunState, content: GameContent) -> bool:
+	var saved: Variant = migrate(data).get("event")
+	if not saved is Dictionary:
+		return false
+	var event := content.event_by_id(StringName(str(saved.get("id", ""))))
+	if event == null:
+		return run.announce()
+	var choice := SaveData.int_of(saved, "choice", -1)
+	var outcome := SaveData.int_of(saved, "outcome", -1)
+	# Choix ou issue hors des bornes (contenu change) : la rencontre reprend avant le choix.
+	if choice < 0 or choice >= event.choices.size() or outcome < 0 or outcome >= event.choices[choice].outcomes.size():
+		choice = -1
+		outcome = -1
+	run.start_event(event, choice, outcome)
+	return true
 
 
 ## La boutique sauvegardee de cette run, avec ses offres d'origine.
@@ -171,6 +202,13 @@ static func _v1_to_v2(old: Dictionary) -> Dictionary:
 static func _v2_to_v3(old: Dictionary) -> Dictionary:
 	var save := old.duplicate(true)
 	save.merge({"omen_offers": [], "omen_offers_realm": 0, "omens": []})
+	return save
+
+
+## v3 -> v4 : ni rencontre, ni main de moins.
+static func _v3_to_v4(old: Dictionary) -> Dictionary:
+	var save := old.duplicate(true)
+	save.merge({"seen_events": [], "event_realm": 0, "hand_penalty": 0})
 	return save
 
 

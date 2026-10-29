@@ -382,20 +382,25 @@ func _draw_kinds(available: Array[int]) -> Array[int]:
 		counts[_rng.rand_weighted(weights)] += 1
 	return counts
 
-## count artefacts distincts : une rarete tiree selon rarity_weights (parmi celles qui en ont encore), puis un
-## artefact de cette rarete au hasard.
 func _draw_artifacts(pool: Array[ArtifactDefinition], count: int) -> Array[ArtifactDefinition]:
-	RngUtils.shuffle(pool, _rng)
-	if _rules.rarity_weights.is_empty():
+	return draw_artifacts(pool, count, _rules.rarity_weights, _rng)
+
+
+## count artefacts distincts : une rarete tiree selon rarity_weights (parmi celles qui en ont encore), puis un
+## artefact de cette rarete au hasard. Partage avec les rencontres. Melange pool.
+static func draw_artifacts(pool: Array[ArtifactDefinition], count: int, rarity_weights: PackedFloat32Array,
+		rng: RandomNumberGenerator) -> Array[ArtifactDefinition]:
+	RngUtils.shuffle(pool, rng)
+	if rarity_weights.is_empty():
 		return pool.slice(0, count)
 	var drawn: Array[ArtifactDefinition] = []
 	while drawn.size() < count and not pool.is_empty():
 		var weights := PackedFloat32Array()
-		weights.resize(_rules.rarity_weights.size())
+		weights.resize(rarity_weights.size())
 		for artifact: ArtifactDefinition in pool:
 			var available := mini(artifact.rarity, weights.size() - 1)
-			weights[available] = _rules.rarity_weights[available]
-		var tier := _rng.rand_weighted(weights)
+			weights[available] = rarity_weights[available]
+		var tier := rng.rand_weighted(weights)
 		# Le melange a deja mis les artefacts dans un ordre au hasard : le premier de la rarete tiree.
 		for i: int in pool.size():
 			if mini(pool[i].rarity, weights.size() - 1) == tier:

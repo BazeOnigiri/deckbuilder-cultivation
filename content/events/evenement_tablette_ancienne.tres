@@ -1,0 +1,85 @@
+[gd_resource type="Resource" script_class="EventDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/events/event_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/omens/level_hand_omen_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/events/run_event_effect.gd" id="3"]
+[ext_resource type="Script" path="res://core/events/event_outcome.gd" id="4"]
+[ext_resource type="Script" path="res://core/events/event_effect.gd" id="5"]
+[ext_resource type="Script" path="res://core/events/event_choice.gd" id="6"]
+[ext_resource type="Script" path="res://core/pills/imbue_pill_effect.gd" id="7"]
+[ext_resource type="Resource" path="res://content/talismans/talisman_echo.tres" id="8"]
+[ext_resource type="Script" path="res://core/events/cards_event_effect.gd" id="9"]
+[ext_resource type="Script" path="res://core/events/event_cost.gd" id="10"]
+
+[sub_resource type="Resource" id="r1"]
+script = ExtResource("2")
+amount = 1
+fallback_hand = &"main_paire"
+
+[sub_resource type="Resource" id="r2"]
+script = ExtResource("3")
+effect = SubResource("r1")
+
+[sub_resource type="Resource" id="r3"]
+script = ExtResource("4")
+weight = 7.0
+text_key = "EVENT_TABLETTE_C1_O1"
+effects = Array[ExtResource("5")]([SubResource("r2")])
+
+[sub_resource type="Resource" id="r4"]
+script = ExtResource("4")
+weight = 3.0
+text_key = "EVENT_TABLETTE_C1_O2"
+effects = Array[ExtResource("5")]([])
+
+[sub_resource type="Resource" id="r5"]
+script = ExtResource("6")
+label_key = "EVENT_TABLETTE_C1"
+outcomes = Array[ExtResource("4")]([SubResource("r3"), SubResource("r4")])
+
+[sub_resource type="Resource" id="r6"]
+script = ExtResource("7")
+talisman = ExtResource("8")
+
+[sub_resource type="Resource" id="r7"]
+script = ExtResource("9")
+effect = SubResource("r6")
+count = 1
+
+[sub_resource type="Resource" id="r8"]
+script = ExtResource("4")
+weight = 1.0
+text_key = "EVENT_TABLETTE_C2_O1"
+effects = Array[ExtResource("5")]([SubResource("r7")])
+
+[sub_resource type="Resource" id="r9"]
+script = ExtResource("10")
+kind = 0
+amount = 2
+
+[sub_resource type="Resource" id="r10"]
+script = ExtResource("6")
+label_key = "EVENT_TABLETTE_C2"
+cost = SubResource("r9")
+outcomes = Array[ExtResource("4")]([SubResource("r8")])
+
+[sub_resource type="Resource" id="r11"]
+script = ExtResource("4")
+weight = 1.0
+text_key = "EVENT_LEAVE_TEXT"
+effects = Array[ExtResource("5")]([])
+
+[sub_resource type="Resource" id="r12"]
+script = ExtResource("6")
+label_key = "EVENT_LEAVE"
+outcomes = Array[ExtResource("4")]([SubResource("r11")])
+
+[resource]
+script = ExtResource("1")
+id = &"evenement_tablette_ancienne"
+title_key = "EVENT_TABLETTE_TITLE"
+text_key = "EVENT_TABLETTE_TEXT"
+glyph = "碑"
+min_realm = 1
+min_artifacts = 0
+choices = Array[ExtResource("6")]([SubResource("r5"), SubResource("r10"), SubResource("r12")])
