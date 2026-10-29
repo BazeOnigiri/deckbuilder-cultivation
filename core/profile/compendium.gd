@@ -62,6 +62,16 @@ func total(kind: Kind) -> int:
 	return entries(kind).size()
 
 
+## Verrouille et pas encore debloque par ce profil (voir Unlocks). Un contenu sans regle n'est jamais verrouille.
+func is_locked(item: Resource) -> bool:
+	return _content.unlocks != null and _content.unlocks.is_locked(item.id, _profile)
+
+
+## Condition de deblocage de ce contenu, null s'il n'en a pas.
+func unlock_condition(item: Resource) -> UnlockCondition:
+	return null if _content.unlocks == null else _content.unlocks.condition_of(item.id)
+
+
 func is_seen(kind: Kind, item: Resource) -> bool:
 	return _profile.is_seen(KEYS[kind], item.id)
 

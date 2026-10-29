@@ -38,8 +38,19 @@ func test_tout_est_masque_sans_profil() -> void:
 	var screen := _screen(ProfileStats.new())
 	for slot: ItemSlot in _slots(screen, Compendium.Kind.ARTIFACT):
 		assert_eq(slot.glyph, ContentSlots.HIDDEN_GLYPH)
-		assert_eq(slot.title, tr("UI_COMPENDIUM_UNKNOWN"))
+		var locked := _content.unlocks.is_locked(_content.artifacts[_slots(screen, Compendium.Kind.ARTIFACT).find(slot)].id, ProfileStats.new())
+		assert_eq(slot.title, tr("UI_COMPENDIUM_LOCKED" if locked else "UI_COMPENDIUM_UNKNOWN"))
 		assert_true(slot.disabled)
+
+
+func test_un_contenu_verrouille_montre_sa_condition() -> void:
+	var index := _content.artifacts.find(_content.artifact_by_id(&"artefact_boussole"))
+	var slot := _slots(_screen(ProfileStats.new()), Compendium.Kind.ARTIFACT)[index]
+	assert_eq(slot.title, tr("UI_COMPENDIUM_LOCKED"))
+	assert_eq(slot.description, _content.unlocks.condition_of(&"artefact_boussole").describe(_content.hands))
+	var opened := ProfileStats.new()
+	opened.unlock(&"artefact_boussole")
+	assert_eq(_slots(_screen(opened), Compendium.Kind.ARTIFACT)[index].title, tr("UI_COMPENDIUM_UNKNOWN"))
 
 
 func test_un_contenu_vu_est_revele_avec_son_prix() -> void:

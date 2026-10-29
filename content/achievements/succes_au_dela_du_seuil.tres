@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/profile/achievement_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/profile/unlock_condition.gd" id="2"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("2")
+kind = 1
+count = 2
+
+[resource]
+script = ExtResource("1")
+id = &"succes_au_dela_du_seuil"
+name_key = "ACH_AU_DELA_DU_SEUIL_NAME"
+description_key = "ACH_AU_DELA_DU_SEUIL_DESC"
+glyph = "门"
+condition = SubResource("condition")

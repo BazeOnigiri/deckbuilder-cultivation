@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/profile/achievement_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/profile/unlock_condition.gd" id="2"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("2")
+kind = 0
+count = 10
+
+[resource]
+script = ExtResource("1")
+id = &"succes_voie_accomplie"
+name_key = "ACH_VOIE_ACCOMPLIE_NAME"
+description_key = "ACH_VOIE_ACCOMPLIE_DESC"
+glyph = "成"
+condition = SubResource("condition")

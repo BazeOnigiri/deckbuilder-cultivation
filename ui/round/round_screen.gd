@@ -25,6 +25,9 @@ var run_storage: SaveStorage
 var resume_data: Dictionary = {}
 ## Injecte par main. Par defaut des reglages neufs (scene lancee seule, tests).
 var settings: GameSettings = GameSettings.new()
+## Injectes par main. null (scene lancee seule, tests) : boutique sur tout le contenu, ni succes ni deblocages.
+var profile: ProfileStats
+var tracker: ProfileTracker
 
 ## Debug : artefacts donnes au debut d'une nouvelle run (inspecteur). Ignores dans une build release.
 @export var debug_artifacts: Array[ArtifactDefinition] = []
@@ -115,12 +118,14 @@ func _ready() -> void:
 	_hint(_discard_button, &"discard_hand")
 	_hint(%SortRank, &"sort_by_rank")
 	_hint(%SortElement, &"sort_by_element")
+	if tracker != null:
+		tracker.achieved.connect(_on_achieved)
 	run_created.emit(_run, resumed)
 	if not resumed:
 		_run.start()
 	elif not RunSnapshot.resume_round(resume_data, _run):
 		# Sauvegarde prise dans la boutique : on la rouvre avec ses offres d'origine.
-		_shop = RunSnapshot.restore_shop(resume_data, _run, content, _rng)
+		_shop = RunSnapshot.restore_shop(resume_data, _run, content, _rng, profile)
 		shop_created.emit(_shop)
 		_show_stage()
 		_open_shop()
@@ -306,13 +311,17 @@ func _on_continue_pressed() -> void:
 
 func _on_round_won(reward: RoundReward) -> void:
 	# Boutique creee tout de suite (meme tirage, et sauvegardee avec le coup), affichee apres la sequence.
-	_shop = content.new_shop(_run, _rng)
+	_shop = content.new_shop(_run, _rng, {}, profile)
 	shop_created.emit(_shop)
 	await _after_score()
 	_round_end.stones(reward.total(), _side.stones_center(), _side.bump_stones.bind(_round_end.feel.stones_bump))
 	await _round_end.victory()
 	_open_shop()
 	_continue_button.show()
+
+
+func _on_achieved(achievement: AchievementDefinition) -> void:
+	Toast.achievement(self, tr(achievement.name_key), tr(achievement.description_key))
 
 
 func _on_run_finished(won: bool) -> void:
@@ -355,7 +364,28 @@ func _run_summary() -> ScrollContainer:
 	for legacy: LegacyDefinition in _run.legacies:
 		legacies.add_child(ContentSlots.of(legacy))
 	rows.add_child(legacies)
+	_add_news(rows)
 	return scroll
+
+
+## Deblocages et succes gagnes depuis le dernier bilan, puis la liste est videe.
+func _add_news(rows: VBoxContainer) -> void:
+	if tracker == null:
+		return
+	if not tracker.pending_unlocks.is_empty():
+		rows.add_child(ScrollRows.row("UI_SUMMARY_UNLOCKED", ""))
+		var unlocked := HFlowContainer.new()
+		for id: StringName in tracker.pending_unlocks:
+			var slot := ContentSlots.of(content.item_by_id(id))
+			if slot != null:
+				unlocked.add_child(slot)
+		rows.add_child(unlocked)
+	if not tracker.pending_achievements.is_empty():
+		rows.add_child(ScrollRows.row("UI_SUMMARY_ACHIEVEMENTS", ""))
+		for achievement: AchievementDefinition in tracker.pending_achievements:
+			rows.add_child(ScrollRows.row(achievement.name_key, achievement.glyph))
+	tracker.pending_unlocks.clear()
+	tracker.pending_achievements.clear()
 
 
 ## La main du round gagne laisse la place a la boutique : l'ecran ne deborde pas en hauteur.

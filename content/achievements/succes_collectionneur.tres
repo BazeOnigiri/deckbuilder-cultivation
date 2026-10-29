@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/profile/achievement_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/profile/unlock_condition.gd" id="2"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("2")
+kind = 3
+count = 25
+
+[resource]
+script = ExtResource("1")
+id = &"succes_collectionneur"
+name_key = "ACH_COLLECTIONNEUR_NAME"
+description_key = "ACH_COLLECTIONNEUR_DESC"
+glyph = "藏"
+condition = SubResource("condition")

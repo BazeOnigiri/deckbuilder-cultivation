@@ -34,7 +34,12 @@ func _add_tab(compendium: Compendium, kind: Compendium.Kind) -> void:
 	var grid := HFlowContainer.new()
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for item: Resource in compendium.entries(kind):
-		var slot: ItemSlot = ContentSlots.of(item) if compendium.is_seen(kind, item) else ContentSlots.hidden(kind)
+		var slot: ItemSlot
+		if compendium.is_seen(kind, item):
+			slot = ContentSlots.of(item)
+		else:
+			var condition := compendium.unlock_condition(item) if compendium.is_locked(item) else null
+			slot = ContentSlots.hidden(kind, "" if condition == null else condition.describe(content.hands))
 		grid.add_child(slot)
 	page.add_child(grid)
 	var scroll := ScrollContainer.new()
