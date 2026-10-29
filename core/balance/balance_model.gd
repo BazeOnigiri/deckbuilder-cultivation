@@ -91,7 +91,7 @@ static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: Econo
 	var stone := stone_value(rules, economy, first_rewards)
 	var prices := {}
 	for artifact: ArtifactDefinition in artifacts:
-		prices[artifact.id] = price(rules, measures.gains.get(artifact.id, 0.0), stone)
+		prices[artifact.id] = price(rules, equivalent_gain(measures, artifact.id, stone), stone)
 	for manual: ManualDefinition in manuals:
 		prices[manual.id] = price(rules, measures.gains.get(manual.id, 0.0), stone)
 	var bases: Array[int] = []
@@ -99,7 +99,61 @@ static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: Econo
 	for rewards: Array[int] in realm_rewards:
 		bases.append(realm_base_score(rules, measures, growths))
 		growths.append(realm_growth(rules, economy, stone, rewards))
-	return {"stone": stone, "prices": prices, "bottlenecks": bottlenecks, "realms": bases, "growths": growths}
+	return {"stone": stone, "prices": prices, "bottlenecks": bottlenecks, "realms": bases, "growths": growths,
+		"rarities": rarities(rules, measures, artifacts, stone)}
+
+
+## Gain d'un artefact en score, plus ses pierres converties en gain (une pierre vaut stone).
+static func equivalent_gain(measures: BalanceMeasures, id: StringName, stone: float) -> float:
+	return measures.gains.get(id, 0.0) + measures.stone_yields.get(id, 0.0) * stone
+
+
+## Pierres qu'un artefact rapporte pendant yield_bottlenecks goulots : en franchissant (une fois, par main restante
+## du joueur de reference, par defausse restante) et en defaussant (cartes defaussees x part du paquet qui
+## remplit la condition).
+static func stone_yield(rules: BalanceRules, round_rules: RoundRules, deck: DeckDefinition, artifact: ArtifactDefinition) -> float:
+	var per_bottleneck := 0.0
+	for effect: ArtifactEffect in artifact.effects:
+		match effect.trigger:
+			ArtifactEffect.Trigger.ROUND_WON:
+				var counts := {ArtifactEffect.Per.ONCE: 1, ArtifactEffect.Per.HAND_LEFT: rules.reference_hands_left,
+					ArtifactEffect.Per.DISCARD_LEFT: round_rules.discards_per_round}
+				per_bottleneck += effect.stones * counts[effect.per]
+			ArtifactEffect.Trigger.CARD_DISCARDED:
+				per_bottleneck += effect.stones * rules.reference_discarded_cards * _deck_share(effect, deck)
+	return per_bottleneck * rules.yield_bottlenecks
+
+
+## Part des cartes du paquet qui remplissent la condition de l'effet.
+static func _deck_share(effect: ArtifactEffect, deck: DeckDefinition) -> float:
+	if effect.condition == null or deck.cards.is_empty():
+		return 1.0
+	var matching := 0
+	for i: int in deck.cards.size():
+		if effect.condition.matches(null, CardInstance.new(i, deck.cards[i], deck.ranks)):
+			matching += 1
+	return float(matching) / deck.cards.size()
+
+
+## Rarete de chaque artefact, par id : classes par gain croissant (a gain egal, par id), le milieu de sa place
+## (i + 0,5) / n tombe dans une part de rarity_shares. 18 artefacts en 50/30/15/5 % : 9, 5, 3 et 1.
+static func rarities(rules: BalanceRules, measures: BalanceMeasures, artifacts: Array[ArtifactDefinition],
+		stone: float = 0.0) -> Dictionary:
+	var sorted := artifacts.duplicate()
+	sorted.sort_custom(func(a: ArtifactDefinition, b: ArtifactDefinition) -> bool:
+		var gain_a: float = equivalent_gain(measures, a.id, stone)
+		var gain_b: float = equivalent_gain(measures, b.id, stone)
+		return gain_a < gain_b if gain_a != gain_b else String(a.id) < String(b.id))
+	var result := {}
+	for i: int in sorted.size():
+		var place := (i + 0.5) / sorted.size()
+		var tier := 0
+		var cumulative := rules.rarity_shares[0]
+		while place > cumulative and tier < rules.rarity_shares.size() - 1:
+			tier += 1
+			cumulative += rules.rarity_shares[tier]
+		result[sorted[i].id] = tier
+	return result
 
 
 ## Surprise d'une main, en nats : -ln(rarete). 0 pour une main toujours la, +2,3 chaque fois qu'elle est 10 fois
@@ -152,7 +206,7 @@ static func solve_hands(rules: BalanceRules, measures: BalanceMeasures, hands: A
 
 
 ## Proprietes que l'outil ecrit (des resultats) ou qui ne changent que l'affichage : hors de l'empreinte.
-const NOT_MEASURED := ["price", "priority", "base_qi", "base_comprehension", "level_qi", "level_comprehension",
+const NOT_MEASURED := ["price", "rarity", "sell_fraction", "priority", "base_qi", "base_comprehension", "level_qi", "level_comprehension",
 	"score_multiplier", "reward", "base_score", "name_key", "description_key", "glyph", "icon", "example", "tier",
 	"pattern", "resource_local_to_scene", "resource_name", "resource_path", "resource_scene_unique_id", "script"]
 

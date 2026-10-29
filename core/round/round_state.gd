@@ -4,7 +4,8 @@ extends RefCounted
 
 signal hand_played(result: HandResult, score: ScoreContext)
 signal finished(won: bool)
-signal discarded
+## stones : pierres gagnees par les artefacts sur cette defausse.
+signal discarded(stones: int)
 
 enum Status {PLAYING, WON, LOST}
 
@@ -21,10 +22,14 @@ var _artifacts: Array[ArtifactDefinition]
 var _levels: HandLevels
 var _constraint: TribulationConstraint
 var _hand_size: int
+var _max_selected: int
+## Crans des artefacts qui grandissent, partages avec la run (meme dictionnaire).
+var _stacks: Dictionary
 
 
-func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition], levels: HandLevels, constraint: TribulationConstraint) -> void:
+func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition], levels: HandLevels, constraint: TribulationConstraint, stacks: Dictionary = {}) -> void:
 	_deck = deck
+	_stacks = stacks
 	_rules = rules
 	_evaluator = evaluator
 	_artifacts = artifacts
@@ -34,6 +39,7 @@ func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_targe
 	hands_left = constraint.hands_per_round(rules.hands_per_round)
 	discards_left = constraint.discards_per_round(rules.discards_per_round)
 	_hand_size = constraint.hand_size(rules.hand_size)
+	_max_selected = constraint.max_selected_cards(rules.max_selected_cards)
 
 
 ## A appeler apres avoir connecte les signaux : remelange et pioche la premiere main.
@@ -64,6 +70,16 @@ func in_draw_pile(card: CardInstance) -> bool:
 	return _deck.draw_pile.has(card)
 
 
+## Cartes jouees ou defaussees en une fois, contrainte de la tribulation comprise.
+func max_selected() -> int:
+	return _max_selected
+
+
+## Faux si la defausse est refusee : plus de defausse, ou la tribulation la fait payer d'une main qu'on n'a pas.
+func can_discard() -> bool:
+	return status == Status.PLAYING and discards_left > 0 and hands_left > _constraint.discard_hand_cost()
+
+
 ## Faux si la tribulation scelle cette carte : jouee, elle ne compte pas.
 func counts(card: CardInstance) -> bool:
 	return _constraint.counts(card)
@@ -90,9 +106,12 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 		if counts(card):
 			counted.append(card)
 	result.scoring_cards = counted
-	var effects := ArtifactResolver.triggered_for(_artifacts, result)
-	var context := ScoringPipeline.score_triggered(result, effects, _levels.level_of(result.definition.id))
+	# Les cartes jouees sont deja defaussees : la main ne contient plus que les cartes gardees.
+	var effects := ArtifactResolver.triggered_for(_artifacts, result, _deck.hand, _stacks)
+	var context := ScoringPipeline.score_triggered(result, effects, _levels.level_of(result.definition.id),
+		_constraint.card_qi_scale())
 	score += context.total()
+	ArtifactResolver.after_hand(_artifacts, _stacks, result, _deck.hand)
 	hands_left -= 1
 	hand_played.emit(result, context)
 	if score >= target_score:
@@ -105,12 +124,13 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 
 
 func discard(cards: Array[CardInstance]) -> bool:
-	if status != Status.PLAYING or discards_left <= 0 or not _valid_selection(cards):
+	if not can_discard() or not _valid_selection(cards):
 		return false
 	if not _deck.discard(cards):
 		return false
 	discards_left -= 1
-	discarded.emit()
+	hands_left -= _constraint.discard_hand_cost()
+	discarded.emit(ArtifactResolver.after_discard(_artifacts, _stacks, cards))
 	_refill()
 	return true
 
@@ -121,7 +141,7 @@ func ensure_playable() -> void:
 		_refill()
 
 func _valid_selection(cards: Array[CardInstance]) -> bool:
-	return not cards.is_empty() and cards.size() <= _rules.max_selected_cards
+	return not cards.is_empty() and cards.size() <= _max_selected
 
 
 func _refill() -> void:

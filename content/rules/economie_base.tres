@@ -9,3 +9,4 @@ starting_stones = 4
 stones_per_hand_left = 1
 interest_step = 5
 interest_cap = 5
+sell_fraction = 0.5

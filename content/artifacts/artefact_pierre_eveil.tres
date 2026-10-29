@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/pierre_eveil.svg" id="icon"]
+
+[sub_resource type="Resource" id="score_1"]
+script = ExtResource("3")
+phase = 2
+amount = 1.0
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+score_effect = SubResource("score_1")
+
+[sub_resource type="Resource" id="effect_2"]
+script = ExtResource("2")
+trigger = 4
+grows = true
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_pierre_eveil"
+name_key = "ARTIFACT_PIERRE_EVEIL"
+description_key = "ARTIFACT_PIERRE_EVEIL_DESC"
+glyph = "悟"
+icon = ExtResource("icon")
+price = 8
+effects = Array[ExtResource("2")]([SubResource("effect_1"), SubResource("effect_2")])
+growth_step = 0.05
+rarity = 1

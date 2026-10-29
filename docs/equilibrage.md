@@ -67,6 +67,19 @@ seule unité, et le prix suit cette valeur. Un objet deux fois plus utile coûte
   Un manuel de main rare coûte peu, parce que le joueur moyen la joue rarement. Un joueur qui construit son paquet
   autour de cette main en tire plus : c'est une récompense de la stratégie.
 
+Un artefact qui rapporte des **pierres** vaut ce qu'il rapporte pendant `yield_bottlenecks` goulots (3, la durée
+moyenne où on le garde) : chaque pierre compte pour k de gain. Le joueur de référence ne défausse pas : on suppose
+`reference_discarded_cards` cartes défaussées par goulot, dont la part du paquet qui remplit la condition.
+Un artefact qui **grandit** est mesuré avec `reference_growth_stacks` crans (6), sa valeur moyenne sur la durée.
+
+## 3 bis. Les raretés des artefacts : plus fort, plus rare
+
+Comme dans Balatro, la boutique tire d'abord une **rareté**, puis un artefact de cette rareté. La rareté n'est pas
+choisie à la main : l'outil classe les artefacts par gain mesuré (section 2) et les répartit selon
+`rarity_shares` (50 / 30 / 15 / 5 % : avec 18 artefacts, 9 Mortels 凡, 5 Spirituels 灵, 3 Célestes 仙, 1 Divin 神).
+Les poids de tirage sont dans la boutique (`rarity_weights` de content/rules/boutique_base.tres : 70 / 22 / 7 / 1).
+Un artefact Divin coûte déjà cher (son prix suit son gain) ; sa rareté le rend en plus difficile à trouver.
+
 ## 4. Les goulots d'un royaume
 
 > multiplicateur = 1 + `bottleneck_step` × rang du goulot  →  ×1, ×1,5, ×2 (comme les blinds de Balatro)
@@ -159,6 +172,10 @@ Après tout changement de paramètre, de main, de paquet ou d'objet : relancer l
   de niveau et sa priorité, puis remesure objectifs et prix.
 
 ## 8. Limites connues (dites, pas cachées)
+
+- Les prix des sceaux-trésor (content/packs/) et des héritages (content/legacies/) sont des données posées à la main :
+  le joueur de référence n'ouvre pas de sceau et n'achète pas d'héritage. Un héritage qui ajoute une main ou une
+  défausse rend la suite plus facile que ce que les objectifs supposent ; à régler après des parties (section 6).
 
 - Chaque objet est mesuré **seul** : les combos entre artefacts ne sont pas mesurés.
 - Le joueur de référence ne défausse pas et n'achète rien pendant la mesure. La croissance du joueur entre les royaumes

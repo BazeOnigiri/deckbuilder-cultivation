@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="LegacyDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/legacies/legacy_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/legacies/rule_modifier.gd" id="2"]
+
+[sub_resource type="Resource" id="modifier"]
+script = ExtResource("2")
+property = &"offer_count"
+amount = 1
+
+[resource]
+script = ExtResource("1")
+id = &"heritage_etal"
+name_key = "LEGACY_STALL_NAME"
+description_key = "LEGACY_STALL_DESC"
+glyph = "集"
+price = 10
+requires = &""
+modifiers = Array[ExtResource("2")]([SubResource("modifier")])

@@ -33,3 +33,17 @@ func test_main_reduite_jamais_sous_un() -> void:
 	assert_eq(constraint.hand_size(8), 6)
 	constraint.amount = 20
 	assert_eq(constraint.hand_size(8), 1)
+
+func test_contrainte_neutre_garde_cartes_qi_et_defausses() -> void:
+	var neutral := TribulationConstraint.new()
+	assert_eq(neutral.max_selected_cards(5), 5)
+	assert_eq(neutral.card_qi_scale(), 1.0)
+	assert_eq(neutral.discard_hand_cost(), 0)
+
+
+func test_limite_de_cartes_entre_un_et_la_base() -> void:
+	var constraint := MaxCardsConstraint.new()
+	constraint.amount = 9
+	assert_eq(constraint.max_selected_cards(5), 5)
+	constraint.amount = 0
+	assert_eq(constraint.max_selected_cards(5), 1)

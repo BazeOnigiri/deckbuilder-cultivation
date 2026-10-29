@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PackDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/shop/pack_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"sceau_alchimiste"
+name_key = "PACK_ALCHEMIST_NAME"
+description_key = "PACK_ALCHEMIST_DESC"
+glyph = "丹"
+kind = 2
+choices = 3
+picks = 1
+price = 4

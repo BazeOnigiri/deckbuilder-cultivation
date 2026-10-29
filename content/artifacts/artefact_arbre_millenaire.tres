@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/arbre_millenaire.svg" id="icon"]
+
+[sub_resource type="Resource" id="score_1"]
+script = ExtResource("3")
+phase = 1
+amount = 0.0
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+score_effect = SubResource("score_1")
+
+[sub_resource type="Resource" id="effect_2"]
+script = ExtResource("2")
+trigger = 3
+grows = true
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_arbre_millenaire"
+name_key = "ARTIFACT_ARBRE_MILLENAIRE"
+description_key = "ARTIFACT_ARBRE_MILLENAIRE_DESC"
+glyph = "树"
+icon = ExtResource("icon")
+price = 11
+effects = Array[ExtResource("2")]([SubResource("effect_1"), SubResource("effect_2")])
+growth_step = 0.25
+rarity = 2

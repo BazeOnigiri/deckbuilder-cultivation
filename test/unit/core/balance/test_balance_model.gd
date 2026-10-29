@@ -188,3 +188,46 @@ func test_empreinte_suit_le_contenu_mesure_pas_les_resultats() -> void:
 	card.rank += 1
 	assert_ne(BalanceModel.content_signature(content, rules), signature, "un paquet change rend les mesures perimees")
 	card.rank -= 1
+
+
+## 18 artefacts en 50/30/15/5 % : 9 Mortels, 5 Spirituels, 3 Celestes, 1 Divin ; le plus fort est le plus rare.
+func test_raretes_par_gain_mesure() -> void:
+	var measures := _measures([1.0])
+	var artifacts: Array[ArtifactDefinition] = []
+	for i: int in 18:
+		var artifact := ArtifactDefinition.new()
+		artifact.id = StringName("a%02d" % i)
+		artifacts.append(artifact)
+		measures.gains[artifact.id] = 0.01 * (18 - i)
+	var rarities := BalanceModel.rarities(_rules(), measures, artifacts)
+	var counts := [0, 0, 0, 0]
+	for tier: int in rarities.values():
+		counts[tier] += 1
+	assert_eq(counts, [9, 5, 3, 1])
+	assert_eq(rarities[&"a00"], 3, "gain le plus fort : Divin")
+	assert_eq(rarities[&"a17"], 0, "gain le plus faible : Mortel")
+
+
+## Pierres : 3 par goulot sur 3 goulots = 9 ; par carte Bois defaussee : 4 cartes x 1/5 du paquet x 3 goulots.
+func test_pierres_d_un_artefact_sur_sa_duree() -> void:
+	var rules := _rules()
+	rules.yield_bottlenecks = 3
+	rules.reference_discarded_cards = 4
+	var round_rules := RoundRules.new()
+	var deck := DeckDefinition.new()
+	for element: int in Element.Type.values():
+		deck.cards.append(CardData.create(StringName("c%d" % element), element as Element.Type, 1))
+	var artifact := ArtifactDefinition.new()
+	var round_won := ArtifactEffect.new()
+	round_won.trigger = ArtifactEffect.Trigger.ROUND_WON
+	round_won.stones = 3
+	artifact.effects.append(round_won)
+	assert_almost_eq(BalanceModel.stone_yield(rules, round_rules, deck, artifact), 9.0, 1e-6)
+	var discard := ArtifactEffect.new()
+	discard.trigger = ArtifactEffect.Trigger.CARD_DISCARDED
+	discard.stones = 1
+	var wood := CardElementCondition.new()
+	wood.element = Element.Type.BOIS
+	discard.condition = wood
+	artifact.effects.assign([discard])
+	assert_almost_eq(BalanceModel.stone_yield(rules, round_rules, deck, artifact), 4 * 0.2 * 3, 1e-6)

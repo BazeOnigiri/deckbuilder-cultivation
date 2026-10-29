@@ -32,7 +32,11 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 		"cards": cards,
 		"piles": run.piles(),
 		"artifacts": SaveData.ids(run.artifacts),
+		"artifact_stacks": run.artifact_stacks.duplicate(),
 		"pills": SaveData.ids(run.pills),
+		"legacies": SaveData.ids(run.legacies),
+		"legacy_offer": "" if run.legacy_offer == null else String(run.legacy_offer.id),
+		"legacy_offer_realm": run.legacy_offer_realm,
 		"hand_levels": run.hand_levels.to_dict(),
 		"stats": run.stats.to_dict(),
 	}
@@ -77,6 +81,18 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 		var pill := content.pill_by_id(StringName(id))
 		if pill != null:
 			run.pills.append(pill)
+	var stacks: Variant = save.get("artifact_stacks", {})
+	if stacks is Dictionary:
+		for artifact: ArtifactDefinition in run.artifacts:
+			var count := SaveData.int_of(stacks, String(artifact.id))
+			if count > 0:
+				run.artifact_stacks[artifact.id] = count
+	for id: String in SaveData.string_list(save.get("legacies")):
+		var legacy := content.legacy_by_id(StringName(id))
+		if legacy != null:
+			run.legacies.append(legacy)
+	run.legacy_offer = content.legacy_by_id(StringName(str(save.get("legacy_offer", ""))))
+	run.legacy_offer_realm = SaveData.int_of(save, "legacy_offer_realm")
 	run.hand_levels = HandLevels.from_dict(save.get("hand_levels"))
 	run.stats = RunStats.from_dict(save.get("stats"))
 	return run

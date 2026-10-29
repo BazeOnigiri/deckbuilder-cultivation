@@ -61,3 +61,12 @@ func test_chaque_royaume_finit_par_une_tribulation() -> void:
 	for realm: RealmDefinition in _realms:
 		var last: BottleneckDefinition = realm.bottlenecks[realm.bottlenecks.size() - 1]
 		assert_not_null(last.constraint, "pas de contrainte a la fin de %s" % realm.id)
+
+## Huit royaumes, chacun avec sa tribulation propre.
+func test_huit_royaumes_aux_tribulations_differentes() -> void:
+	assert_eq(_realms.size(), 8)
+	var tribulations: Dictionary = {}
+	for realm: RealmDefinition in _realms:
+		var last: BottleneckDefinition = realm.bottlenecks.back()
+		assert_false(tribulations.has(last.id), "tribulation en double : %s" % last.id)
+		tribulations[last.id] = true

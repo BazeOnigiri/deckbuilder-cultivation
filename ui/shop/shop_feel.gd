@@ -12,3 +12,5 @@ extends Resource
 ## Les lanternes de l'enseigne se balancent : angle maximal (radians) et duree d'un aller.
 @export var lantern_swing: float = 0.08
 @export var lantern_time: float = 1.6
+## Taille des cartes proposees par un sceau de disciples (1 = taille d'une carte en main).
+@export var pack_card_scale: float = 0.6

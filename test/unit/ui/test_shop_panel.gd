@@ -29,7 +29,8 @@ func test_un_emplacement_par_offre() -> void:
 	var parts := _panel(0)
 	var shop: ShopState = parts[1]
 	var slots := _slots(parts[0])
-	assert_eq(slots.size(), shop.offers.size() + shop.manual_offers.size() + shop.pill_offers.size())
+	assert_eq(slots.size(), shop.offers.size() + shop.manual_offers.size() + shop.pill_offers.size() + shop.pack_offers.size()
+		+ (1 if shop.legacy_offer() != null else 0))
 	for slot: ItemSlot in slots:
 		assert_false(slot.glyph.is_empty())
 		assert_true(slot.disabled, "pas de pierres : rien d'achetable")
@@ -39,6 +40,9 @@ func test_clic_achete_l_artefact() -> void:
 	var parts := _panel(100)
 	var panel: ShopPanel = parts[0]
 	var run: RunState = parts[2]
+	if parts[1].offers.is_empty():
+		pass_test("pas d'artefact dans ce tirage")
+		return
 	var before := run.artifacts.size()
 	watch_signals(panel)
 	_slots(panel)[0].pressed.emit()
@@ -117,3 +121,22 @@ func test_manuel_dessine_en_livre() -> void:
 	assert_eq(slot.glyph, manual.glyph)
 	assert_eq(slot.cover_tier, manual.tier)
 	assert_eq(slot.cover_pattern, manual.pattern)
+
+
+## Un sceau achete s'ouvre dans un rouleau ; prendre son seul choix le referme.
+func test_sceau_ouvert_dans_un_rouleau() -> void:
+	var parts := _panel(100)
+	var panel: ShopPanel = parts[0]
+	var shop: ShopState = parts[1]
+	var pack_slot: ItemSlot
+	for slot: ItemSlot in _slots(panel):
+		if slot.kind == ItemSlot.Kind.PACK:
+			pack_slot = slot
+	assert_not_null(pack_slot)
+	pack_slot.pressed.emit()
+	assert_not_null(shop.opening)
+	assert_not_null(panel._pack_scroll)
+	panel._on_take_pressed(0)
+	assert_null(shop.opening)
+	assert_null(panel._pack_scroll)
+	await wait_process_frames(1)

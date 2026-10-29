@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Eventail plie ouvert en demi-cercle, baleines vers le pivot. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M8 40 Q32 4 56 40 L32 56 Z" stroke-width="2.6" fill="#ffffff" fill-opacity="0.25"/>
+    <path d="M32 56 L16 26 M32 56 L24 18 M32 56 L32 16 M32 56 L40 18 M32 56 L48 26" stroke-width="1.6"/>
+    <circle cx="32" cy="56" r="2.4" fill="#ffffff"/>
+  </g>
+</svg>

@@ -97,6 +97,7 @@ func _ready() -> void:
 	_round_end.menu_requested.connect(menu_requested.emit)
 	add_child(_round_end)
 	_items.pill_pressed.connect(_on_pill_pressed)
+	_items.artifact_sell_requested.connect(_on_artifact_sell_requested)
 	%SortRank.toggled.connect(_on_sort_toggled)
 	%SortElement.toggled.connect(_on_sort_toggled)
 	_side.settings = settings
@@ -132,7 +133,8 @@ func _refresh() -> void:
 	if _round != null:
 		_deck_pile.show_count(_round.draw_count(), _round.deck_size())
 	_on_selection_changed()
-	_items.show_artifacts(_run.artifacts, content.shop_rules.max_artifacts)
+	_items.show_artifacts(_run.artifacts, _run.shop_rules(content.shop_rules).max_artifacts, _run.artifacts.map(_run.sell_price),
+		_run.artifact_stacks)
 	_save_run()
 
 
@@ -178,9 +180,9 @@ func _selected() -> Array[CardInstance]:
 func _on_selection_changed() -> void:
 	var count: int = _selected().size()
 	var can_act: bool = (not _scoring and _round != null and _round.status == RoundState.Status.PLAYING
-		and count > 0 and count <= _rules.max_selected_cards)
+		and count > 0 and count <= _round.max_selected())
 	_play_button.disabled = not can_act
-	_discard_button.disabled = not can_act or _round.discards_left == 0
+	_discard_button.disabled = not can_act or not _round.can_discard()
 	# Pendant la sequence, la main du round est deja repiochee : la retrier montrerait les nouvelles cartes trop tot.
 	%SortRank.disabled = _scoring
 	_deck_pile.enabled = not _scoring
@@ -198,7 +200,16 @@ func _refresh_pills() -> void:
 	var usable: Array[bool] = []
 	for i: int in _run.pills.size():
 		usable.append(not _scoring and _run.can_use_pill(i, selected))
-	_items.show_pills(_run.pills, content.shop_rules.max_pills, usable)
+	_items.show_pills(_run.pills, _run.shop_rules(content.shop_rules).max_pills, usable)
+
+
+## Vente d'un artefact, en round comme en boutique (jamais pendant la sequence de score).
+func _on_artifact_sell_requested(index: int) -> void:
+	if _scoring or not _run.sell_artifact(index):
+		return
+	Sons.play(&"pierres")
+	_shop_panel.refresh()
+	_refresh()
 
 
 func _on_pill_pressed(index: int) -> void:
@@ -329,7 +340,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _scoring or not event.is_pressed() or event.is_echo():
 		return
 	var handled := true
-	var card := Keys.card_index(event, _rules.hand_size)
+	var card := Keys.card_index(event, _run.round_rules().hand_size)
 	if card >= 0:
 		handled = _round != null and _hand_view.toggle_at(card)
 	elif event.is_action_pressed(&"play_hand"):
@@ -346,6 +357,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_show_deck()
 	elif event.is_action_pressed(&"show_path"):
 		_show_run_info()
+	elif event.is_action_pressed(&"sell_artifact"):
+		handled = _items.press_hovered_artifact()
 	else:
 		handled = false
 	if handled:

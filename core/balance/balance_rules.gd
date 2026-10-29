@@ -34,6 +34,19 @@ extends Resource
 @export var reward_base: float = 1.0
 @export var reward_per_difficulty: float = 2.0
 
+@export_group("Artefacts a pierres et qui grandissent")
+## Goulots pendant lesquels le joueur garde un artefact en moyenne : un artefact a pierres vaut ce qu'il rapporte
+## sur cette duree.
+@export var yield_bottlenecks: int = 3
+## Cartes defaussees par goulot en moyenne (le joueur de reference ne defausse pas).
+@export var reference_discarded_cards: int = 4
+## Crans d'un artefact qui grandit, en moyenne sur la duree ou on le garde : il est mesure avec ces crans.
+@export var reference_growth_stacks: int = 6
+
+@export_group("Raretes des artefacts")
+## Part des artefacts dans chaque rarete, du gain le plus faible au plus fort (Mortel, Spirituel, Celeste, Divin).
+@export var rarity_shares: PackedFloat32Array = [0.5, 0.3, 0.15, 0.05]
+
 @export_group("Mains")
 ## Cartes d'un tirage pour mesurer la rarete d'une main : la taille d'une main jouee.
 @export var hand_draw_size: int = 5
@@ -55,4 +68,5 @@ func is_valid() -> bool:
 		and first_bottleneck_success > 0.0 and first_bottleneck_success < 1.0 and pressure > 0.0
 		and bottleneck_step >= 0.0 and significant_digits > 0 and power_per_realm > 1.0 and min_price > 0
 		and hand_draw_size > 0 and weakest_hand_strength > 0.0 and strongest_hand_strength > weakest_hand_strength
-		and level_fraction >= 0.0 and priority_step > 0)
+		and level_fraction >= 0.0 and priority_step > 0 and not rarity_shares.is_empty()
+		and is_equal_approx(Array(rarity_shares).reduce(func(sum: float, share: float) -> float: return sum + share, 0.0), 1.0))

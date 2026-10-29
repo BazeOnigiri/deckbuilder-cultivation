@@ -45,7 +45,12 @@ func _initialize() -> void:
 		measures.hand_frequencies[hand_id] = counts[hand_id] / float(rounds * content.round_rules.hands_per_round)
 	for artifact: ArtifactDefinition in content.artifacts:
 		var with_artifact: Array[ArtifactDefinition] = [artifact]
-		measures.gains[artifact.id] = _mean(player.round_scores(rounds, rules.random_seed, with_artifact)) / base_mean - 1.0
+		var stacks := {artifact.id: rules.reference_growth_stacks} if artifact.growth_step != 0.0 else {}
+		measures.gains[artifact.id] = _mean(player.round_scores(rounds, rules.random_seed, with_artifact, HandLevels.new(),
+			{}, stacks)) / base_mean - 1.0
+		var stones := BalanceModel.stone_yield(rules, content.round_rules, content.starter_deck, artifact)
+		if stones > 0.0:
+			measures.stone_yields[artifact.id] = stones
 		print("%-32s %+.3f" % [artifact.id, measures.gains[artifact.id]])
 	for manual: ManualDefinition in content.manuals:
 		var levels := HandLevels.new()
@@ -60,6 +65,7 @@ func _initialize() -> void:
 	var solved := BalanceModel.solve(rules, measures, content.economy, realms, content.artifacts, content.manuals)
 	for artifact: ArtifactDefinition in content.artifacts:
 		_set_value(artifact.resource_path, "price", str(solved["prices"][artifact.id]))
+		_set_value(artifact.resource_path, "rarity", str(solved["rarities"][artifact.id]))
 	for manual: ManualDefinition in content.manuals:
 		_set_value(manual.resource_path, "price", str(solved["prices"][manual.id]))
 	for r: int in realms.size():
@@ -116,11 +122,12 @@ func _write_report(rules: BalanceRules, measures: BalanceMeasures, solved: Dicti
 		for row: Array in solved["bottlenecks"][r]:
 			cells.append("%d (%d)" % [roundi(solved["realms"][r] * row[0]), row[1]])
 		lines.append("| %d | %d | %s | x%.2f |" % [realms[r].order, solved["realms"][r], ", ".join(cells), solved["growths"][r]])
-	lines.append_array(["", "## Objets (gain mesure, prix)", "", "| Objet | Gain | Prix |", "| --- | --- | --- |"])
+	lines.append_array(["", "## Objets (gain mesure, prix)", "", "| Objet | Gain | Prix | Rarete |", "| --- | --- | --- | --- |"])
 	for item: Resource in content.artifacts:
-		lines.append("| %s | %+.1f %% | %d |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
+		lines.append("| %s | %+.1f %% | %d | %d |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id],
+			solved["rarities"][item.id]])
 	for item: Resource in content.manuals:
-		lines.append("| %s | %+.1f %% | %d |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
+		lines.append("| %s | %+.1f %% | %d | |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
 	lines.append_array(["", "## Mains (rarete exacte sur %d cartes, valeurs ecrites)" % rules.hand_draw_size, "",
 		"| Main | Rarete | Surprise | Qi x Comprehension | Niveau | Priorite |", "| --- | --- | --- | --- | --- | --- |"])
 	var by_priority := content.hands.duplicate()

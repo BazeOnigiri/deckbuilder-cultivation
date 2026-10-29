@@ -242,3 +242,41 @@ func test_carte_scellee_reconnue_avant_de_jouer() -> void:
 	assert_true(r.counts(card), "carte de bois : pas scellee")
 	card.element = Element.Type.FEU
 	assert_false(r.counts(card))
+
+
+func test_tribulation_limite_les_cartes_jouees() -> void:
+	var constraint := MaxCardsConstraint.new()
+	constraint.amount = 2
+	var round_state := _round([1, 2, 3, 4, 5], 5, 1000, 3, 1, [], null, constraint)
+	assert_eq(round_state.max_selected(), 2)
+	assert_null(round_state.play(round_state.hand().slice(0, 3)))
+	assert_false(round_state.discard(round_state.hand().slice(0, 3)))
+	assert_not_null(round_state.play(round_state.hand().slice(0, 2)))
+
+
+## Le Qi d'une carte est divise par deux, arrondi au plus proche : rang 9 -> 5 (base de la main : 0).
+func test_tribulation_divise_le_qi_des_cartes() -> void:
+	var constraint := CardQiScaleConstraint.new()
+	constraint.scale = 0.5
+	var round_state := _round([9], 1, 1000, 3, 1, [], null, constraint)
+	var context := round_state.play(round_state.hand())
+	assert_eq(context.qi, 5)
+
+
+func test_tribulation_scelle_les_figures() -> void:
+	var constraint := RankSealConstraint.new()
+	constraint.min_rank = 11
+	var round_state := _round([12, 3], 2, 1000, 3, 1, [], null, constraint)
+	for card: CardInstance in round_state.hand():
+		assert_eq(round_state.counts(card), card.rank < 11)
+
+
+func test_defausse_qui_coute_une_main() -> void:
+	var constraint := DiscardCostConstraint.new()
+	constraint.amount = 1
+	var round_state := _round([1, 2, 3, 4, 5, 6], 2, 1000, 2, 2, [], null, constraint)
+	assert_true(round_state.discard([round_state.hand()[0]]))
+	assert_eq(round_state.hands_left, 1)
+	assert_false(round_state.can_discard(), "jamais la derniere main")
+	assert_false(round_state.discard([round_state.hand()[0]]))
+	assert_eq(round_state.discards_left, 1)

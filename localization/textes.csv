@@ -55,7 +55,7 @@ PILL_FEU_CELESTE_DESC,Change jusqu'à 3 cartes sélectionnées en Feu.,Turns up 
 PILL_EAU_PROFONDE,Pilule de l'eau profonde,Deep Water Pill
 PILL_EAU_PROFONDE_DESC,Change jusqu'à 3 cartes sélectionnées en Eau.,Turns up to 3 selected cards into Water.
 PILL_RAFFINEMENT,Pilule de raffinement,Refining Pill
-PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (9 maximum).,+1 rank to up to 2 selected cards (9 maximum).
+PILL_RAFFINEMENT_DESC,+1 rang à jusqu'à 2 cartes sélectionnées (jusqu'au Souverain).,+1 rank to up to 2 selected cards (up to the Sovereign).
 PILL_PURIFICATION,Pilule de purification,Purification Pill
 PILL_PURIFICATION_DESC,Détruit jusqu'à 2 cartes sélectionnées pour le reste de la run.,Destroys up to 2 selected cards for the rest of the run.
 BOTTLENECK_TRIBULATION_FLAMMES,Tribulation des flammes célestes,Tribulation of Celestial Flames
@@ -177,3 +177,108 @@ UI_KEYS_SORT_ELEMENT,Trier par élément,Sort by element
 UI_KEYS_DECK,Voir tout le paquet,View the full deck
 UI_KEYS_PATH,Voie de cultivation,Cultivation path
 UI_KEYS_CLOSE,Fermer un rouleau,Close a scroll
+UI_RARITY_0,Mortel 凡,Mortal 凡
+UI_RARITY_1,Spirituel 灵,Spiritual 灵
+UI_RARITY_2,Céleste 仙,Celestial 仙
+UI_RARITY_3,Divin 神,Divine 神
+UI_SELL,Vendre (%d),Sell (%d)
+UI_KEYS_SELL,"Vendre l'artefact sous la souris (appuyer deux fois)","Sell the artifact under the mouse (press twice)"
+PACK_LIBRARY_NAME,Bibliothèque,Library
+PACK_LIBRARY_DESC,"Choisir 1 manuel de technique parmi 3, appris tout de suite","Choose 1 of 3 technique manuals, learned at once"
+PACK_ALCHEMIST_NAME,Coffret d'alchimiste,Alchemist's Case
+PACK_ALCHEMIST_DESC,Choisir 1 pilule parmi 3,Choose 1 of 3 pills
+PACK_BEASTS_NAME,Cage aux bêtes,Beast Cage
+PACK_BEASTS_DESC,Choisir 1 artefact parmi 2,Choose 1 of 2 artifacts
+PACK_DISCIPLES_NAME,Rouleau de disciples,Disciple Scroll
+PACK_DISCIPLES_DESC,"Ajouter 1 carte parmi 3 au paquet","Add 1 of 3 cards to the deck"
+UI_KIND_PACK,Sceau-trésor,Treasure Seal
+UI_PACK_SKIP,Passer,Skip
+UI_PACK_PICKS,"Encore %d à choisir","%d left to choose"
+LEGACY_MERIDIAN_NAME,Méridien ouvert,Opened Meridian
+LEGACY_MERIDIAN_DESC,+1 main par round,+1 hand per round
+LEGACY_GREAT_MERIDIAN_NAME,Grand méridien,Great Meridian
+LEGACY_GREAT_MERIDIAN_DESC,Encore +1 main par round,Another +1 hand per round
+LEGACY_BREATH_NAME,Souffle retenu,Held Breath
+LEGACY_BREATH_DESC,+1 défausse par round,+1 discard per round
+LEGACY_DEEP_BREATH_NAME,Souffle profond,Deep Breath
+LEGACY_DEEP_BREATH_DESC,Encore +1 défausse par round,Another +1 discard per round
+LEGACY_POUCH_NAME,Bourse qiankun,Qiankun Pouch
+LEGACY_POUCH_DESC,+1 emplacement d'artefact,+1 artifact slot
+LEGACY_WORLDS_POUCH_NAME,Bourse des mille mondes,Pouch of a Thousand Worlds
+LEGACY_WORLDS_POUCH_DESC,Encore +1 emplacement d'artefact,Another +1 artifact slot
+LEGACY_STALL_NAME,Étal du marché,Market Stall
+LEGACY_STALL_DESC,+1 offre en boutique,+1 shop offer
+LEGACY_CELESTIAL_MARKET_NAME,Marché céleste,Celestial Market
+LEGACY_CELESTIAL_MARKET_DESC,La relance coûte 2 pierres de moins,Rerolls cost 2 fewer stones
+UI_KIND_LEGACY,Héritage,Legacy
+UI_INFO_LEGACIES,Héritages,Legacies
+BOTTLENECK_TRIBULATION_FOUDRE,Tribulation de la foudre pourpre,Tribulation of Purple Lightning
+TRIB_FOUDRE_DESC,On ne joue ni ne défausse plus de 4 cartes à la fois.,You cannot play or discard more than 4 cards at once.
+BOTTLENECK_TRIBULATION_GEL,Tribulation du gel éternel,Tribulation of Eternal Frost
+TRIB_GEL_DESC,Les cartes ne rapportent que la moitié de leur Qi.,Cards give only half their Qi.
+BOTTLENECK_TRIBULATION_NEANT,Tribulation du néant,Tribulation of the Void
+TRIB_NEANT_DESC,Les figures ne comptent pas.,Face cards do not score.
+BOTTLENECK_TRIBULATION_KARMA,Tribulation des chaînes du karma,Tribulation of Karmic Chains
+TRIB_KARMA_DESC,Chaque défausse coûte aussi une main.,Each discard also costs a hand.
+BOTTLENECK_TRIBULATION_EPEES,Tribulation des mille épées,Tribulation of a Thousand Swords
+TRIB_EPEES_DESC,Les cartes Métal ne comptent pas.,Metal cards do not score.
+REALM_AME_NAISSANTE,Âme naissante,Nascent Soul
+REALM_TRANSFORMATION_DIVINE,Transformation divine,Spirit Transformation
+REALM_RAFFINEMENT_VIDE,Raffinement du vide,Void Refining
+REALM_INTEGRATION,Intégration,Body Integration
+REALM_GRANDE_ASCENSION,Grande Ascension,Great Ascension
+ARTIFACT_GINSENG,Racine de ginseng,Ginseng Root
+ARTIFACT_GINSENG_DESC,+3 Qi pour chaque carte gardée en main.,+3 Qi for each card held in hand.
+ARTIFACT_SCEAU_JADE,Sceau de jade,Jade Seal
+ARTIFACT_SCEAU_JADE_DESC,"x1,3 Compréhension pour chaque figure gardée en main.",x1.3 Comprehension for each face card held in hand.
+ARTIFACT_LANTERNE,Lanterne d'esprit,Spirit Lantern
+ARTIFACT_LANTERNE_DESC,+1 Compréhension pour chaque carte Feu gardée en main.,+1 Comprehension for each Fire card held in hand.
+ARTIFACT_SOURCE_CACHEE,Source cachée,Hidden Spring
+ARTIFACT_SOURCE_CACHEE_DESC,+8 Qi pour chaque carte Eau gardée en main.,+8 Qi for each Water card held in hand.
+ARTIFACT_EVENTAIL,Éventail du vent,Wind Fan
+ARTIFACT_EVENTAIL_DESC,+25 Qi si la main est un Souffle.,+25 Qi if the hand is a Breath.
+ARTIFACT_CLOCHE,Cloche de bronze,Bronze Bell
+ARTIFACT_CLOCHE_DESC,+2 Compréhension si la main est une Paire.,+2 Comprehension if the hand is a Pair.
+ARTIFACT_BOUSSOLE,Boussole géomantique,Geomantic Compass
+ARTIFACT_BOUSSOLE_DESC,x2 Compréhension si la main est une Double paire ou un Full.,x2 Comprehension if the hand is a Two Pair or a Full House.
+ARTIFACT_PINCEAU,Pinceau de calligraphe,Calligrapher's Brush
+ARTIFACT_PINCEAU_DESC,+4 Qi pour chaque carte de rang 4 à 7 qui compte.,+4 Qi for each scoring card of rank 4 to 7.
+ARTIFACT_MONTAGNE,Montagne sacrée,Sacred Mountain
+ARTIFACT_MONTAGNE_DESC,+1 Compréhension pour chaque carte Terre qui compte.,+1 Comprehension for each scoring Earth card.
+ARTIFACT_HACHE,Hache de l'immortel,Immortal's Axe
+ARTIFACT_HACHE_DESC,+6 Qi pour chaque carte Métal qui compte.,+6 Qi for each scoring Metal card.
+ARTIFACT_GRUE,Grue céleste,Celestial Crane
+ARTIFACT_GRUE_DESC,"x1,6 Compréhension si 5 cartes comptent.",x1.6 Comprehension if 5 cards score.
+ARTIFACT_NUAGE_POURPRE,Nuage pourpre,Purple Cloud
+ARTIFACT_NUAGE_POURPRE_DESC,x3 Compréhension si la main est un Carré ou Cinq Souverains.,x3 Comprehension if the hand is a Four of a Kind or Five Sovereigns.
+ARTIFACT_ARBRE_SAPEQUES,Arbre à sapèques,Coin Tree
+ARTIFACT_ARBRE_SAPEQUES_DESC,+3 pierres à chaque goulot franchi.,+3 stones for each bottleneck cleared.
+ARTIFACT_CRAPAUD_JADE,Crapaud de jade,Jade Toad
+ARTIFACT_CRAPAUD_JADE_DESC,+1 pierre par main restante quand le goulot est franchi.,+1 stone per hand left when the bottleneck is cleared.
+ARTIFACT_BALAI_BAMBOU,Balai de bambou,Bamboo Broom
+ARTIFACT_BALAI_BAMBOU_DESC,+1 pierre par carte Bois défaussée.,+1 stone for each Wood card discarded.
+ARTIFACT_BAMBOU_CELESTE,Bambou céleste,Celestial Bamboo
+ARTIFACT_BAMBOU_CELESTE_DESC,Gagne +4 Qi à chaque main pour chaque Paire jouée pendant la run.,Gains +4 Qi on every hand for each Pair played during the run.
+ARTIFACT_PIERRE_EVEIL,Pierre d'éveil,Awakening Stone
+ARTIFACT_PIERRE_EVEIL_DESC,"x1 Compréhension, +0,05 pour chaque carte défaussée pendant la run.","x1 Comprehension, +0.05 for each card discarded during the run."
+ARTIFACT_ARBRE_MILLENAIRE,Arbre millénaire,Millennial Tree
+ARTIFACT_ARBRE_MILLENAIRE_DESC,"+0,25 Compréhension à chaque main pour chaque goulot franchi depuis son achat.",+0.25 Comprehension on every hand for each bottleneck cleared since you got it.
+UI_ARTIFACT_STACKS,A grandi %d fois.,Has grown %d times.
+PILL_REGRESSION,Pilule de régression,Regression Pill
+PILL_REGRESSION_DESC,-1 rang à jusqu'à 2 cartes sélectionnées (1 minimum).,-1 rank to up to 2 selected cards (1 minimum).
+PILL_FORET,Pilule de la forêt,Forest Pill
+PILL_FORET_DESC,Change jusqu'à 3 cartes sélectionnées en Bois.,Turns up to 3 selected cards into Wood.
+PILL_MONTAGNE,Pilule de la montagne,Mountain Pill
+PILL_MONTAGNE_DESC,Change jusqu'à 3 cartes sélectionnées en Terre.,Turns up to 3 selected cards into Earth.
+PILL_LAME,Pilule de la lame,Blade Pill
+PILL_LAME_DESC,Change jusqu'à 3 cartes sélectionnées en Métal.,Turns up to 3 selected cards into Metal.
+PILL_ROUE,Pilule de la roue,Wheel Pill
+PILL_ROUE_DESC,Jusqu'à 3 cartes sélectionnées prennent l'élément que le leur engendre.,Up to 3 selected cards take the element theirs generates.
+PILL_DEDOUBLEMENT,Pilule de dédoublement,Splitting Pill
+PILL_DEDOUBLEMENT_DESC,Ajoute au paquet une copie de la carte sélectionnée.,Adds a copy of the selected card to the deck.
+PILL_FUSION,Pilule de fusion,Fusion Pill
+PILL_FUSION_DESC,"La plus haute des 2 cartes sélectionnées prend le rang de l'autre en plus, l'autre est détruite.","The higher of the 2 selected cards adds the other's rank, the other is destroyed."
+PILL_DISSOLUTION,Pilule de dissolution,Dissolving Pill
+PILL_DISSOLUTION_DESC,"Détruit jusqu'à 2 cartes sélectionnées, +2 pierres par carte.","Destroys up to 2 selected cards, +2 stones per card."
+PILL_ILLUMINATION,Pilule d'illumination,Illumination Pill
+PILL_ILLUMINATION_DESC,La main que forment les cartes sélectionnées monte d'un niveau.,The hand formed by the selected cards gains a level.

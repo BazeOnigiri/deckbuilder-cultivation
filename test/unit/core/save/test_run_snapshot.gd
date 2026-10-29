@@ -206,3 +206,27 @@ func test_boutique_et_round_lus_apres_migration() -> void:
 	round_data.erase("round")
 	assert_true(RunSnapshot.resume_round(round_data, RunSnapshot.restore(round_data, _content, _rng())))
 	RunSnapshot.migrations = {}
+
+
+func test_heritages_et_offre_du_royaume_sauvegardes() -> void:
+	var rng := _rng()
+	var run := _run_in_shop(rng)
+	run.legacies.append(_content.legacies[0])
+	run.legacy_offer = _content.legacies[1]
+	run.legacy_offer_realm = 1
+	var shop := _content.new_shop(run, rng)
+	var restored := RunSnapshot.restore(_through_json(RunSnapshot.capture(run, shop, rng)), _content, _rng())
+	assert_eq(restored.legacies, run.legacies)
+	assert_eq(restored.legacy_offer, _content.legacies[1])
+	assert_eq(restored.legacy_offer_realm, 1)
+
+
+func test_crans_des_artefacts_sauvegardes() -> void:
+	var rng := _rng()
+	var run := _run_in_shop(rng)
+	var artifact := _content.artifact_by_id(&"artefact_bambou_celeste")
+	run.artifacts.append(artifact)
+	run.artifact_stacks[artifact.id] = 5
+	var shop := _content.new_shop(run, rng)
+	var restored := RunSnapshot.restore(_through_json(RunSnapshot.capture(run, shop, rng)), _content, _rng())
+	assert_eq(restored.artifact_stacks.get(artifact.id, 0), 5)

@@ -83,3 +83,8 @@ func test_progression_croissante() -> void:
 		var previous := _realms[r - 1]
 		var last := previous.base_score * previous.bottlenecks[-1].score_multiplier
 		assert_gt(_realms[r].base_score * _realms[r].bottlenecks[0].score_multiplier, last, String(_realms[r].id))
+
+
+func test_raretes_issues_du_gain() -> void:
+	for artifact: ArtifactDefinition in _content.artifacts:
+		assert_eq(artifact.rarity, _solved["rarities"][artifact.id], "rarete de %s%s" % [artifact.id, HINT])

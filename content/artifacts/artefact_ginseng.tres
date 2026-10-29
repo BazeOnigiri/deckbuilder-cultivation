@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ArtifactDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_effect.gd" id="2"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="3"]
+[ext_resource type="Texture2D" path="res://content/artifacts/icones/ginseng.svg" id="icon"]
+
+[sub_resource type="Resource" id="score_1"]
+script = ExtResource("3")
+amount = 3.0
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2")
+trigger = 2
+score_effect = SubResource("score_1")
+
+[resource]
+script = ExtResource("1")
+id = &"artefact_ginseng"
+name_key = "ARTIFACT_GINSENG"
+description_key = "ARTIFACT_GINSENG_DESC"
+glyph = "参"
+icon = ExtResource("icon")
+price = 3
+effects = Array[ExtResource("2")]([SubResource("effect_1")])
+rarity = 0

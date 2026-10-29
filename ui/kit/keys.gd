@@ -8,6 +8,7 @@ const LISTED := [
 	[&"select_card_1", "UI_KEYS_SELECT"], [&"play_hand", "UI_KEYS_PLAY"], [&"discard_hand", "UI_KEYS_DISCARD"],
 	[&"deselect_cards", "UI_KEYS_DESELECT"], [&"sort_by_rank", "UI_KEYS_SORT_RANK"],
 	[&"sort_by_element", "UI_KEYS_SORT_ELEMENT"], [&"show_deck", "UI_KEYS_DECK"], [&"show_path", "UI_KEYS_PATH"],
+	[&"sell_artifact", "UI_KEYS_SELL"],
 	[&"ui_cancel", "UI_KEYS_CLOSE"],
 ]
 ## Selection d'une carte par sa place dans la main : select_card_1, select_card_2...

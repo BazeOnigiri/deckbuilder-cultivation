@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Trois pics, le plus haut au centre, un nuage en travers. -->
+  <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M6 54 L20 30 L28 40 L36 14 L46 34 L52 26 L60 54 Z" stroke-width="2.6" fill="#ffffff" fill-opacity="0.3"/>
+    <path d="M14 38 Q22 34 30 38 Q38 42 46 38" stroke-width="1.8" stroke-opacity="0.8"/>
+  </g>
+</svg>
