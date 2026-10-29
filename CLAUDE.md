@@ -43,6 +43,7 @@ sont écrits par tools/equilibrage.gd depuis la rareté exacte de chaque main : 
 ## Scope v1
 
 - 3 royaumes, toutes les mains ci-dessus, 15 à 20 artefacts, 1 seul paquet.
+- État actuel (v1.1.0) : 8 royaumes, 36 artefacts, 13 pilules, 8 héritages, 4 sceaux-trésor.
 - Hors scope v1 : multijoueur, decks alternatifs, monétisation, carte du monde. Ne pas les coder, mais l'architecture ne doit pas les bloquer.
 - Signale toute feature hors scope et demande si elle sert un pilier du jeu.
 
@@ -67,7 +68,7 @@ sont écrits par tools/equilibrage.gd depuis la rareté exacte de chaque main : 
 - Seul le merge commit est autorisé (équivalent de merge --no-ff), squash et rebase merge désactivés.
 - La branche distante est supprimée automatiquement après merge de la PR.
 - Définition du ruleset dans $HOME\ruleset.json. Modification : gh api --method PUT "repos/{owner}/{repo}/rulesets/25345004" --input "$HOME\ruleset.json".
-- CI : workflow .github/workflows/tests.yml, job "gut", obligatoire pour merger (required_status_checks, branche à jour avec la base exigée). Renommer le job impose de mettre à jour le ruleset.
+- CI : workflow .github/workflows/test.yml, job "gut", obligatoire pour merger (required_status_checks, branche à jour avec la base exigée). Renommer le job impose de mettre à jour le ruleset.
 
 ### Merge d'une feature ou d'un fix dans Develop
 
