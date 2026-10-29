@@ -97,6 +97,7 @@ func _ready() -> void:
 	_round_end.menu_requested.connect(menu_requested.emit)
 	add_child(_round_end)
 	_items.pill_pressed.connect(_on_pill_pressed)
+	_items.pill_sell_requested.connect(_on_pill_sell_requested)
 	_items.artifact_sell_requested.connect(_on_artifact_sell_requested)
 	%SortRank.toggled.connect(_on_sort_toggled)
 	%SortElement.toggled.connect(_on_sort_toggled)
@@ -200,12 +201,20 @@ func _refresh_pills() -> void:
 	var usable: Array[bool] = []
 	for i: int in _run.pills.size():
 		usable.append(not _scoring and _run.can_use_pill(i, selected))
-	_items.show_pills(_run.pills, _run.shop_rules(content.shop_rules).max_pills, usable)
+	_items.show_pills(_run.pills, _run.shop_rules(content.shop_rules).max_pills, usable, _run.pills.map(_run.sell_pill_price))
 
 
 ## Vente d'un artefact, en round comme en boutique (jamais pendant la sequence de score).
 func _on_artifact_sell_requested(index: int) -> void:
 	if _scoring or not _run.sell_artifact(index):
+		return
+	Sons.play(&"pierres")
+	_shop_panel.refresh()
+	_refresh()
+
+
+func _on_pill_sell_requested(index: int) -> void:
+	if _scoring or not _run.sell_pill(index):
 		return
 	Sons.play(&"pierres")
 	_shop_panel.refresh()
@@ -358,7 +367,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed(&"show_path"):
 		_show_run_info()
 	elif event.is_action_pressed(&"sell_artifact"):
-		handled = _items.press_hovered_artifact()
+		handled = _items.press_hovered_item()
 	else:
 		handled = false
 	if handled:

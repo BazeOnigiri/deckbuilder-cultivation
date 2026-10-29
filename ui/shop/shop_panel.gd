@@ -49,20 +49,21 @@ func _ready() -> void:
 	header.add_child(sign)
 	header.add_child(_lantern(-1.0))
 	layout.add_child(header)
-	# Le sceau Relancer est pose a droite des offres : la boutique tient dans la hauteur de l'ecran.
+	# Une seule rangee : jusqu'a six etoffes (heritage Etal comprise) tiennent en 1152 px de large, le sceau
+	# Relancer passe dessous. Une seconde rangee d'offres ferait deborder la boutique en hauteur.
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_child(_offers)
 	layout.add_child(row)
+	_reroll.theme_type_variation = &"SealButton"
+	_reroll.icon = get_theme_icon(&"icon", &"StoneIcon")
+	_reroll.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_reroll.size_flags_horizontal = SIZE_SHRINK_CENTER
+	layout.add_child(_reroll)
 	_level_up.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	# Retour a la ligne : le message prend la largeur des offres au lieu d'elargir la boutique.
 	_level_up.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	layout.add_child(_level_up)
-	_reroll.theme_type_variation = &"SealButton"
-	_reroll.icon = get_theme_icon(&"icon", &"StoneIcon")
-	_reroll.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_reroll.size_flags_vertical = SIZE_SHRINK_CENTER
-	row.add_child(_reroll)
 	_reroll.pressed.connect(_on_reroll_pressed)
 
 
@@ -300,6 +301,7 @@ func _choice(kind: PackDefinition.Kind, item: Resource) -> BaseButton:
 		var frame := Button.new()
 		frame.flat = true
 		frame.focus_mode = FOCUS_NONE
+		frame.tooltip_text = CardView.tip_text(card)
 		var small := CardView.small(card, feel.pack_card_scale)
 		frame.custom_minimum_size = small.custom_minimum_size
 		frame.add_child(small)

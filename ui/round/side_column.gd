@@ -42,6 +42,7 @@ var _flicker: Tween
 
 func _ready() -> void:
 	theme_type_variation = &"SidePanel"
+	custom_minimum_size.x = get_theme_constant(&"width", &"SidePanel")
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override(&"separation", get_theme_constant(&"separation", &"SidePanel"))
 	add_child(layout)
@@ -83,7 +84,9 @@ func _ready() -> void:
 	var round_counters := HBoxContainer.new()
 	round_counters.add_child(_stat_box(_hands, "UI_SIDE_HANDS"))
 	round_counters.add_child(_stat_box(_discards, "UI_SIDE_DISCARDS"))
-	round_counters.add_child(_stat_box(_stones, "", StoneIcon.new()))
+	var stones_box := _stat_box(_stones, "", StoneIcon.new())
+	stones_box.tooltip_text = tr("UI_SIDE_STONES_TIP")
+	round_counters.add_child(stones_box)
 	layout.add_child(round_counters)
 	var path_counters := HBoxContainer.new()
 	path_counters.add_child(_stat_box(_realm, "UI_SIDE_REALM"))
@@ -211,8 +214,8 @@ func stones_center() -> Vector2:
 func bump_stones(peak: float) -> void:
 	_stones.pivot_offset = _stones.size / 2
 	var tween := _stones.create_tween()
-	tween.tween_property(_stones, "scale", Vector2.ONE * peak, 0.08)
-	tween.tween_property(_stones, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_stones, "scale", Vector2.ONE * peak, feel.stones_bump_up)
+	tween.tween_property(_stones, "scale", Vector2.ONE, feel.stones_bump_down).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 ## Ou le total d'un coup s'envole a la fin de la sequence.

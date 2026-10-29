@@ -10,12 +10,20 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 - Choix de la langue (francais ou anglais) dans les Options : par defaut la langue du systeme si elle est proposee, sinon l'anglais. Appliquee au demarrage et a chaud, sauvegardee avec les reglages (les anciens fichiers restent valides).
 - Mode contraste eleve dans les Options : couleurs de Qi, de Comprehension, de tribulation et textes secondaires renforces par un Theme de surcharge (ui/theme/contraste.tres).
+- Vente des pilules, en round comme en boutique : S sur la pilule sous la souris montre le sceau « Vendre (n) », S une seconde fois (ou un clic sur le sceau) la vend pour la moitie de son prix arrondie en dessous. Un clic sur une pilule l'utilise toujours.
+- Heritages possedes en emplacements avec infobulle (nom et description) dans l'onglet Run de la Voie de cultivation et dans le rouleau de la partie sauvegardee du menu.
+- Infobulle sur les cartes d'un sceau de disciples (rang, element, Qi) et sur le compteur de pierres de la colonne laterale.
 
 ### Corrigé
 
 - Textes en dur passes dans les traductions : signe x des mains, Niveau, Objectif, pourcentage de victoires, vitesse x1,5 (virgule en francais), touches citees par l'aide (lues dans l'InputMap). Cle UI_STONES inutilisee supprimee.
 - Vocabulaire : « partie » partout en francais, titre du rouleau de run aligne sur « Voie de cultivation », formulations anglaises de la pilule de la roue et de la tribulation du vent noir.
 - Plein ecran en web : applique seulement au clic sur la case (jamais au demarrage), et la case se decoche si le navigateur refuse ou si on quitte avec Echap.
+- Boutique : six etoffes (heritage Etal comprise) tiennent en 1152 px de large, le sceau Relancer passe sous les offres.
+- Niveau d'une main au-dela de 9 : le nombre s'affiche apres les pastilles.
+- La meteo des ambiances (escarbilles, volutes, poussiere) couvre toute la largeur reelle de la fenetre, pas seulement 1152x648.
+- Les statistiques deroulent leur rouleau d'un coup avec « Reduire les animations ».
+- Largeurs, marges, separations et durees de la colonne laterale, du menu, de la Voie de cultivation et de l'ecran de round deplacees dans le Theme et score_feel.tres.
 
 ## [1.1.0] - 2026-10-28
 

@@ -130,6 +130,7 @@ func _confirm_fullscreen() -> void:
 func _show_stats() -> void:
 	var stats := STATS_SCENE.instantiate()
 	stats.profile = _profile
+	stats.settings = _settings
 	stats.content = _content
 	stats.back_requested.connect(_show_menu)
 	_swap(stats)

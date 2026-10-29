@@ -28,3 +28,11 @@ func test_barres_des_mains_les_plus_jouees() -> void:
 func test_aucune_main_jouee() -> void:
 	var screen: Control = add_child_autofree(SCREEN.instantiate())
 	assert_eq(screen.get_node("%Bars").get_child_count(), 1)
+
+
+func test_rouleau_deja_deroule_si_on_reduit_les_animations() -> void:
+	var screen: Control = SCREEN.instantiate()
+	screen.settings = GameSettings.new()
+	screen.settings.reduce_motion = true
+	add_child_autofree(screen)
+	assert_eq(screen.get_node("%Scroll")._open, 1.0)

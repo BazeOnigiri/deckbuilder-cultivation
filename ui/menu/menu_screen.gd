@@ -27,6 +27,8 @@ func _ready() -> void:
 	for button: InkButton in [%ContinueButton, %StartButton, %StatsButton, %OptionsButton, %CreditsButton, %QuitButton]:
 		button.reduce_motion = settings.reduce_motion
 	%Orbit.reduce_motion = settings.reduce_motion
+	%Scroll.custom_minimum_size.x = get_theme_constant(&"menu_width", &"ScrollPanel")
+	%Gap.custom_minimum_size.y = get_theme_constant(&"menu_gap", &"ScrollPanel")
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 
 
@@ -46,6 +48,12 @@ func _show_play_scroll() -> void:
 		icons.append(_artifact_icon(artifact))
 	body.add_child(ScrollRows.row("UI_SAVED_ARTIFACTS", "" if not icons.is_empty() else tr("UI_NONE"), icons))
 	body.add_child(ScrollRows.row("UI_SAVED_PILLS", _names(saved_run.pills)))
+	if not saved_run.legacies.is_empty():
+		body.add_child(ScrollRows.row("UI_SAVED_LEGACIES", ""))
+		var legacy_row := HFlowContainer.new()
+		for slot: ItemSlot in RunInfo.legacy_slots(saved_run.legacies):
+			legacy_row.add_child(slot)
+		body.add_child(legacy_row)
 	var warning := SideColumn.make_label(&"ScrollCaption", "UI_NEW_RUN_WARNING")
 	warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	warning.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
@@ -91,7 +99,7 @@ func _names(list: Array) -> String:
 func _show_credits() -> void:
 	var text := RichTextLabel.new()
 	text.theme_type_variation = &"ScrollRichText"
-	text.custom_minimum_size = Vector2(get_theme_constant(&"text_width", &"ScrollPanel") * 1.4,
+	text.custom_minimum_size = Vector2(get_theme_constant(&"credits_width", &"ScrollPanel"),
 		get_theme_constant(&"tab_height", &"ScrollPanel"))
 	text.text = tr("UI_CREDITS_GAME") + "\n\n" + tr("UI_CREDITS_FONTS") + "\n\n" + tr("UI_CREDITS_INTRO") + "\n\n" + Engine.get_license_text()
 	ScrollOverlay.open(self, "UI_CREDITS", text, not settings.reduce_motion)

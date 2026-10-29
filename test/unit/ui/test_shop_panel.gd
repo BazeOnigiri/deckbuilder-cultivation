@@ -140,3 +140,11 @@ func test_sceau_ouvert_dans_un_rouleau() -> void:
 	assert_null(shop.opening)
 	assert_null(panel._pack_scroll)
 	await wait_process_frames(1)
+
+
+## Les cartes d'un sceau de disciples ont une infobulle : rang, element, Qi.
+func test_carte_du_sceau_avec_infobulle() -> void:
+	var card := CardInstance.new(-1, GameContent.load_default().starter_deck.cards[0], GameContent.load_default().starter_deck.ranks)
+	var tip := CardView.tip_text(card)
+	assert_true(tip.contains(CardView.name_of(card)))
+	assert_true(tip.contains(tr("ELEMENT_" + Element.to_id(card.element).to_upper())))

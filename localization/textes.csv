@@ -95,6 +95,8 @@ UI_SAVED_STAGE,Prochain goulot,Next bottleneck
 UI_SAVED_STONES,Pierres spirituelles,Spirit stones
 UI_SAVED_ARTIFACTS,Artefacts,Artifacts
 UI_SAVED_PILLS,Pilules,Pills
+UI_SAVED_LEGACIES,Héritages,Legacies
+UI_SIDE_STONES_TIP,Pierres spirituelles,Spirit stones
 UI_OPTIONS_BUTTON,Options,Options
 UI_OPTIONS_TITLE,Options,Options
 UI_OPTIONS_REDUCE_MOTION,Réduire les animations,Reduce motion
@@ -189,7 +191,7 @@ UI_RARITY_1,Spirituel 灵,Spiritual 灵
 UI_RARITY_2,Céleste 仙,Celestial 仙
 UI_RARITY_3,Divin 神,Divine 神
 UI_SELL,Vendre (%d),Sell (%d)
-UI_KEYS_SELL,"Vendre l'artefact sous la souris (appuyer deux fois)","Sell the artifact under the mouse (press twice)"
+UI_KEYS_SELL,"Vendre l'artefact ou la pilule sous la souris (appuyer deux fois)","Sell the artifact or pill under the mouse (press twice)"
 PACK_LIBRARY_NAME,Bibliothèque,Library
 PACK_LIBRARY_DESC,"Choisir 1 manuel de technique parmi 3, appris tout de suite","Choose 1 of 3 technique manuals, learned at once"
 PACK_ALCHEMIST_NAME,Coffret d'alchimiste,Alchemist's Case

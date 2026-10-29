@@ -160,9 +160,22 @@ func _draw_stamp(seal: Rect2, glyph: String, color: Color, text_color: Color) ->
 		SEAL_SIZE, font_size, text_color)
 
 
+## Texte brut « Rang 7, Bois, Qi 7 » pour une carte sans CardView interactive (choix d'un sceau de disciples).
+static func tip_text(card_instance: CardInstance) -> String:
+	return "%s, %s, %s" % [name_of(card_instance),
+		TranslationServer.translate("ELEMENT_" + Element.to_id(card_instance.element).to_upper()),
+		TranslationServer.translate("UI_CARD_QI") % card_instance.qi()]
+
+
+static func name_of(card_instance: CardInstance) -> String:
+	if FIGURE_GLYPHS.has(card_instance.rank):
+		return TranslationServer.translate("CARD_RANK_%d" % card_instance.rank)
+	return TranslationServer.translate("UI_CARD_RANK") % card_instance.rank
+
+
 ## « Rang 7 », « Disciple » : l'element est dans le badge de l'infobulle.
 func _name() -> String:
-	return tr("CARD_RANK_%d" % card.rank) if FIGURE_GLYPHS.has(card.rank) else tr("UI_CARD_RANK") % card.rank
+	return name_of(card)
 
 
 func _make_custom_tooltip(_for_text: String) -> Object:

@@ -30,14 +30,11 @@ theme_override_constants/separation = 0
 [node name="Margin" type="MarginContainer" parent="Root" unique_id=2021611695]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 32
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 32
+theme_type_variation = &"RoundMargin"
 
 [node name="Layout" type="VBoxContainer" parent="Root/Margin" unique_id=393699733]
 layout_mode = 2
-theme_override_constants/separation = 24
+theme_type_variation = &"RoundLayout"
 
 [node name="ItemRow" type="HBoxContainer" parent="Root/Margin/Layout" unique_id=1459133971]
 unique_name_in_owner = true
@@ -115,6 +112,5 @@ script = ExtResource("deck_pile")
 
 [node name="SideColumn" type="PanelContainer" parent="Root" unique_id=1823826109]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 script = ExtResource("side_column")

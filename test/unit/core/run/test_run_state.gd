@@ -335,3 +335,41 @@ func test_pilule_d_illumination_monte_la_main_formee() -> void:
 	var cards: Array[CardInstance] = [run.current_round.hand()[0]]
 	assert_true(run.use_pill(0, cards))
 	assert_eq(run.hand_levels.level_of("test"), 2)
+
+
+func _pill_priced(price: int) -> PillDefinition:
+	var pill := _pill(CopyPillEffect.new())
+	pill.price = price
+	return pill
+
+
+func test_vente_d_une_pilule_rend_la_moitie_arrondie_en_dessous() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.pills.assign([_pill_priced(5), _pill_priced(4)])
+	assert_eq(run.sell_pill_price(run.pills[0]), 2)
+	assert_true(run.sell_pill(0))
+	assert_eq(run.stones, 4 + 2)
+	assert_eq(run.pills.size(), 1)
+	assert_eq(run.pills[0].price, 4)
+
+
+func test_vente_de_pilule_refusee_hors_des_pilules() -> void:
+	var run := _run([_realm(1, 100, [1.0])])
+	run.pills.assign([_pill_priced(5)])
+	assert_false(run.sell_pill(1))
+	assert_false(run.sell_pill(-1))
+	assert_eq(run.stones, 4)
+	assert_eq(run.pills.size(), 1)
+
+
+## Les pilules vendues disparaissent de la sauvegarde sans changer son format.
+func test_pilule_vendue_absente_de_la_sauvegarde() -> void:
+	var content := GameContent.load_default()
+	var rng := RandomNumberGenerator.new()
+	var run := content.new_run(rng)
+	run.status = RunState.Status.BETWEEN_ROUNDS
+	run.pills.assign([content.pills[0], content.pills[1]])
+	run.sell_pill(0)
+	var data: Dictionary = JSON.parse_string(JSON.stringify(RunSnapshot.capture(run, content.new_shop(run, rng), rng)))
+	assert_eq(data["version"], RunSnapshot.VERSION)
+	assert_eq(data["pills"], [str(content.pills[1].id)])
