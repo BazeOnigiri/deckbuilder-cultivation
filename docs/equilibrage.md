@@ -6,7 +6,7 @@ ce qu'elle veut dire, et comment la régler.
 
 - Paramètres (les seuls nombres à toucher) : `content/rules/equilibrage.tres`.
 - Formules : `core/balance/balance_model.gd`, testées dans `test/unit/core/balance/`.
-- Mesures et écriture des valeurs : `tools/equilibrage.gd` (environ 2 min 30), qui produit aussi `docs/equilibrage-rapport.md`.
+- Mesures et écriture des valeurs : `tools/equilibrage.gd` (environ 17 minutes), qui produit aussi `docs/equilibrage-rapport.md`.
 - Garde-fou : `test/unit/content/test_balance_content.gd` échoue si une valeur du contenu ne correspond plus aux formules.
 
 ```
@@ -43,7 +43,7 @@ main se comparent tous en « % de score ».
 
 Exemple que la mesure a révélé : la Gourde d'élixir à +4 Compréhension faisait **+120 %**. La Compréhension de base
 d'une main vaut environ 3, donc +4 la double. Elle est passée à +1, soit +30 %, comme les autres. De même, la Couronne
-d'immortel (+1 par carte de rang 7 à 9) faisait +49 % : elle est passée à +0,5, soit +25 %.
+d'immortel (+1 par carte de rang 11 à 14) faisait +49 % : elle est passée à +0,5, soit +25 %.
 
 ## 3. Les prix : la courbe de coût
 
@@ -76,7 +76,7 @@ Un artefact qui **grandit** est mesuré avec `reference_growth_stacks` crans (6)
 
 Comme dans Balatro, la boutique tire d'abord une **rareté**, puis un artefact de cette rareté. La rareté n'est pas
 choisie à la main : l'outil classe les artefacts par gain mesuré (section 2) et les répartit selon
-`rarity_shares` (50 / 30 / 15 / 5 % : avec 18 artefacts, 9 Mortels 凡, 5 Spirituels 灵, 3 Célestes 仙, 1 Divin 神).
+`rarity_shares` (50 / 30 / 15 / 5 % : avec 36 artefacts : 18 Mortels 凡, 11 Spirituels 灵, 5 Célestes 仙, 2 Divins 神).
 Les poids de tirage sont dans la boutique (`rarity_weights` de content/rules/boutique_base.tres : 70 / 22 / 7 / 1).
 Un artefact Divin coûte déjà cher (son prix suit son gain) ; sa rareté le rend en plus difficile à trouver.
 
@@ -117,8 +117,8 @@ suivent la même courbe sans qu'on écrive un seul nombre.
 ## 5 bis. Les mains : plus rare, plus fort
 
 Une main rare doit rapporter plus, mais de combien ? On mesure d'abord sa **rareté exacte** `q` : la part des
-tirages de 5 cartes du paquet qui la contiennent. L'outil énumère les 8 259 888 tirages possibles (5 cartes parmi
-65) avec les vrais détecteurs du jeu : pas de hasard, pas d'estimation. Une main ajoutée ou un paquet changé est
+tirages de 5 cartes du paquet qui la contiennent. L'outil énumère les 12 103 014 tirages possibles (5 cartes parmi
+70) avec les vrais détecteurs du jeu : pas de hasard, pas d'estimation. Une main ajoutée ou un paquet changé est
 remesuré tel quel.
 
 La rareté devient une **surprise** (la quantité d'information de la théorie de Shannon, en nats) :
