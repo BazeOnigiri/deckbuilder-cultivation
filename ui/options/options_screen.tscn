@@ -63,6 +63,26 @@ layout_mode = 2
 theme_type_variation = &"ScrollCheck"
 text = "UI_OPTIONS_FULLSCREEN"
 
+[node name="HighContrast" type="CheckButton" parent="Center/Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ScrollCheck"
+text = "UI_OPTIONS_HIGH_CONTRAST"
+
+[node name="LanguageRow" type="HBoxContainer" parent="Center/Scroll/Layout"]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="Center/Scroll/Layout/LanguageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"ScrollText"
+text = "UI_OPTIONS_LANGUAGE"
+
+[node name="Language" type="OptionButton" parent="Center/Scroll/Layout/LanguageRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ScrollOption"
+
 [node name="MasterVolumeRow" type="HBoxContainer" parent="Center/Scroll/Layout"]
 layout_mode = 2
 

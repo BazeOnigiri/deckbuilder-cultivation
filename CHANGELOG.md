@@ -6,6 +6,17 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Ajouté
+
+- Choix de la langue (francais ou anglais) dans les Options : par defaut la langue du systeme si elle est proposee, sinon l'anglais. Appliquee au demarrage et a chaud, sauvegardee avec les reglages (les anciens fichiers restent valides).
+- Mode contraste eleve dans les Options : couleurs de Qi, de Comprehension, de tribulation et textes secondaires renforces par un Theme de surcharge (ui/theme/contraste.tres).
+
+### Corrigé
+
+- Textes en dur passes dans les traductions : signe x des mains, Niveau, Objectif, pourcentage de victoires, vitesse x1,5 (virgule en francais), touches citees par l'aide (lues dans l'InputMap). Cle UI_STONES inutilisee supprimee.
+- Vocabulaire : « partie » partout en francais, titre du rouleau de run aligne sur « Voie de cultivation », formulations anglaises de la pilule de la roue et de la tribulation du vent noir.
+- Plein ecran en web : applique seulement au clic sur la case (jamais au demarrage), et la case se decoche si le navigateur refuse ou si on quitte avec Echap.
+
 ## [1.1.0] - 2026-10-28
 
 ### Ajouté

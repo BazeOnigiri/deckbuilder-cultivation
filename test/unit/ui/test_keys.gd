@@ -21,3 +21,9 @@ func test_place_de_la_carte_choisie() -> void:
 	assert_eq(Keys.card_index(event, 8), 2)
 	event.action = &"play_hand"
 	assert_eq(Keys.card_index(event, 8), -1)
+
+
+func test_aides_avec_noms_de_touches() -> void:
+	assert_string_contains(Keys.text_of("UI_DECK_VIEW_CLOSE"), Keys.name_of(&"ui_cancel"))
+	assert_string_contains(Keys.text_of("UI_KEYS_DESELECT"), Keys.name_of(&"deselect_cards"))
+	assert_string_contains(Keys.text_of("UI_KEYS_SELECT"), Keys.name_of(&"select_card_8"))
