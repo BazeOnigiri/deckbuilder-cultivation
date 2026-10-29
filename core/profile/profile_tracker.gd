@@ -54,7 +54,10 @@ func track_shop(shop: ShopState) -> void:
 
 func _on_round_started(round_state: RoundState, run: RunState) -> void:
 	round_state.hand_played.connect(_on_hand_played)
-	_stats.best_realm = maxi(_stats.best_realm, run.progress.current_realm().order)
+	if run.endless:
+		_stats.best_endless_realm = maxi(_stats.best_endless_realm, run.progress.current_realm().number)
+	else:
+		_stats.best_realm = maxi(_stats.best_realm, run.progress.current_realm().order)
 	_round_hands = 0
 	var bottleneck := run.progress.current_bottleneck()
 	_mark(bottleneck)
@@ -88,9 +91,10 @@ func _on_artifact_bought(artifact: ArtifactDefinition) -> void:
 	changed.emit()
 
 
+## En mode sans fin, la run est deja comptee gagnee : sa fin entre dans l'historique, sans seconde victoire.
 func _on_finished(won: bool, run: RunState) -> void:
-	if won:
-		_stats.runs_won += 1
+	if won and not run.endless:
+		_stats.record_win(run.setup)
 	_stats.add_game(_record_of(run, won), _rules.history_size)
 	_evaluate(won)
 	changed.emit()
@@ -125,7 +129,9 @@ func _record_of(run: RunState, won: bool) -> GameRecord:
 	record.favorite_hand_id = run.stats.hands.most_played()
 	record.artifacts = SaveData.ids(run.artifacts)
 	record.legacies = SaveData.ids(run.legacies)
-	record.seed_text = "" if run.seed_value == 0 else str(run.seed_value)
+	record.seed_text = run.setup.seed_text
+	if record.seed_text.is_empty() and run.seed_value != 0:
+		record.seed_text = str(run.seed_value)
 	return record
 
 

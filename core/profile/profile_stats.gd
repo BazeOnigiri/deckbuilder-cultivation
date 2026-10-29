@@ -31,6 +31,12 @@ var help_offered: bool = false
 ## Premiere partie du profil, et l'aide pas encore proposee.
 func should_offer_help() -> bool:
 	return runs_started == 0 and not help_offered
+## Plus haut niveau de difficulte ouvert : gagner au niveau N ouvre N + 1.
+var difficulty_unlocked: int = 1
+## Plus loin atteint en mode sans fin : numero du royaume genere (Royaume celeste N).
+var best_endless_realm: int = 0
+## Ids des defis gagnes au moins une fois.
+var challenges_won: Array[String] = []
 
 
 func to_dict() -> Dictionary:
@@ -52,6 +58,9 @@ func to_dict() -> Dictionary:
 		"unlocked": _sorted_ids(unlocked),
 		"achievements": _sorted_ids(achievements),
 		"games": games.map(func(game: GameRecord) -> Dictionary: return game.to_dict()),
+		"difficulty_unlocked": difficulty_unlocked,
+		"best_endless_realm": best_endless_realm,
+		"challenges_won": challenges_won.duplicate(),
 	}
 
 
@@ -93,7 +102,20 @@ static func from_dict(data: Dictionary) -> ProfileStats:
 		for game: Variant in saved_games:
 			if game is Dictionary:
 				stats.games.append(GameRecord.from_dict(game))
+	stats.difficulty_unlocked = maxi(1, _count(data, "difficulty_unlocked"))
+	stats.best_endless_realm = _count(data, "best_endless_realm")
+	stats.challenges_won = SaveData.string_list(data.get("challenges_won"))
 	return stats
+
+
+## Victoire hors mode sans fin : ouvre la difficulte suivante, note le defi gagne.
+func record_win(setup: RunSetup) -> void:
+	runs_won += 1
+	if setup.challenge != null:
+		if not challenges_won.has(String(setup.challenge.id)):
+			challenges_won.append(String(setup.challenge.id))
+	else:
+		difficulty_unlocked = maxi(difficulty_unlocked, setup.difficulty + 1)
 
 
 static func load_from(storage: SaveStorage) -> ProfileStats:

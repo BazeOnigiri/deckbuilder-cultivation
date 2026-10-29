@@ -35,6 +35,12 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - 14 pilules qui posent une amelioration, une aura ou un talisman ; le Rouleau de disciples propose parfois des cartes ameliorees (chances dans sceau_disciples.tres).
 - Cartes dessinees avec leur amelioration (fond teinte et caractere en filigrane), leur aura (reflet anime, fige par Reduire les animations) et leur talisman (cachet a gauche), decrits dans l'infobulle ; liseret et badge de l'aura sur un artefact.
 - Sauvegarde en version 2 (ameliorations, auras, talismans, auras d'artefact) avec migration : les sauvegardes precedentes restent valides.
+- Rouleau Nouvelle partie : graine saisissable (texte, sans casse) ou tiree au hasard, affichee dans la Voie de cultivation et le bilan de fin ; meme graine et memes options donnent la meme partie.
+- Partie du jour : graine tiree de la date UTC, la meme pour tous ce jour-la, indiquee comme telle.
+- Tribulations tirees au hasard dans le pool des tribulations a chaque partie (sans doublon, sauvegardees, listees dans l'onglet Parcours), ou dans l'ordre classique en option.
+- Mode sans fin : apres la victoire au dernier royaume, « Continuer sans fin » ajoute des royaumes celestes generes (objectifs par la formule de croissance de l'equilibrage, tribulation tiree). Meilleur royaume celeste au profil.
+- Huit niveaux de difficulte (content/difficulties) aux modificateurs cumules : mains, defausses, objectifs (nouvelle regle target_percent), interets, relance. Gagner au niveau N ouvre le niveau N+1.
+- Cinq defis (content/challenges) : Ermite des cimes, Deux souffles (paquet feu et eau), Lame unique, Heritier du clan, Graine du destin. Defis gagnes notes au profil.
 
 ### Corrigé
 

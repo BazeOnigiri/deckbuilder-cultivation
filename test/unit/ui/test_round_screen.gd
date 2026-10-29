@@ -471,6 +471,31 @@ func test_rouleau_ouvert_garde_les_touches() -> void:
 	assert_true(screen.get_viewport().is_input_handled(), "la touche s'arrete au rouleau")
 
 
+## Graine tiree au hasard quand le joueur n'en saisit pas, reprise par la run.
+func test_nouvelle_run_avec_les_options_choisies() -> void:
+	var instance := SCREEN.instantiate()
+	instance.setup = RunSetup.custom("", 3, true, "")
+	var screen: Control = add_child_autofree(instance)
+	assert_eq(screen._run.setup.seed_text.length(), RunSetup.CODE_LENGTH)
+	assert_eq(screen._run.setup.difficulty, 3)
+
+
+## Apres la victoire au dernier royaume, continuer ouvre la boutique d'un royaume genere.
+func test_continuer_sans_fin_ouvre_la_boutique() -> void:
+	var screen: Control = add_child_autofree(SCREEN.instantiate())
+	var run: RunState = screen._run
+	run.status = RunState.Status.WON
+	var count := run.progress.realm_count()
+	screen._continue_endless()
+	assert_true(run.endless)
+	assert_eq(run.progress.realm_count(), count + 1)
+	assert_true(screen.get_node("%ShopPanel").visible)
+	assert_true(screen.get_node("%ContinueButton").visible)
+	screen.get_node("%ContinueButton").pressed.emit()
+	assert_eq(run.status, RunState.Status.IN_ROUND)
+	assert_eq(run.progress.current_realm().number, 1)
+
+
 func test_focus_initial_sur_la_premiere_carte() -> void:
 	var screen: Control = add_child_autofree(SCREEN.instantiate())
 	var hand: Node = screen.get_node("%HandRow")
@@ -491,7 +516,6 @@ func test_bilan_de_fin_de_partie_complet() -> void:
 	screen.settings = GameSettings.new()
 	add_child_autofree(screen)
 	var run: RunState = screen._run
-	run.seed_value = 777
 	run.artifacts.append(screen.content.artifacts[0])
 	run.legacies.append(screen.content.legacies[0])
 	run.stats.record_hand(screen.content.hands[0].id, 321)
@@ -499,6 +523,6 @@ func test_bilan_de_fin_de_partie_complet() -> void:
 	add_child_autofree(summary)
 	var texts: Array = summary.find_children("*", "Label", true, false).map(func(label: Label) -> String: return label.text)
 	assert_has(texts, "UI_SUMMARY_REACHED")
-	assert_has(texts, "777")
+	assert_has(texts, run.setup.seed_text, "graine de la partie")
 	assert_has(texts, "321 (%s)" % tr(screen.content.hands[0].name_key))
 	assert_eq(summary.find_children("*", "ItemSlot", true, false).size(), 2, "l'artefact et l'heritage")

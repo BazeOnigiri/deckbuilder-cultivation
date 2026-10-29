@@ -107,7 +107,7 @@ func _ready() -> void:
 
 ## Goulot fige au debut du round par round_screen (la progression avance des la victoire).
 func show_stage(realm: RealmDefinition, bottleneck: BottleneckDefinition) -> void:
-	_stage.text = tr("UI_STAGE") % [tr(realm.name_key), tr(bottleneck.name_key)]
+	_stage.text = tr("UI_STAGE") % [realm.title(), tr(bottleneck.name_key)]
 	var constraint := bottleneck.constraint
 	_constraint.text = tr(constraint.description_key) if constraint != null else ""
 	_constraint.visible = constraint != null

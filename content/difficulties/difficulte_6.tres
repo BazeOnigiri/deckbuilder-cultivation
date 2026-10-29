@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DifficultyDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/modes/difficulty_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/legacies/rule_modifier.gd" id="2"]
+
+[sub_resource type="Resource" id="modifier_0"]
+script = ExtResource("2")
+property = &"interest_cap"
+amount = -3
+
+[resource]
+script = ExtResource("1")
+id = &"difficulte_6"
+name_key = "DIFFICULTY_6"
+description_key = "DIFFICULTY_6_DESC"
+level = 6
+modifiers = Array[ExtResource("2")]([SubResource("modifier_0")])

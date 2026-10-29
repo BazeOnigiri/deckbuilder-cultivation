@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DifficultyDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/modes/difficulty_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/legacies/rule_modifier.gd" id="2"]
+
+[sub_resource type="Resource" id="modifier_0"]
+script = ExtResource("2")
+property = &"reroll_base_cost"
+amount = 2
+
+[resource]
+script = ExtResource("1")
+id = &"difficulte_5"
+name_key = "DIFFICULTY_5"
+description_key = "DIFFICULTY_5_DESC"
+level = 5
+modifiers = Array[ExtResource("2")]([SubResource("modifier_0")])

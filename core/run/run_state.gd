@@ -34,6 +34,12 @@ var legacy_offer_realm: int = 0
 ## GameContent ; vides, aucun talisman ne cree de pilule.
 var pill_pool: Array[PillDefinition] = []
 var shop_base: ShopRules
+## Options de la partie (graine, difficulte, defi) : sauvegardees, affichees dans la Voie de cultivation.
+var setup := RunSetup.new()
+## Modificateurs de la difficulte et du defi (GameContent.modifiers_for), appliques avant ceux des heritages.
+var modifiers: Array[RuleModifier] = []
+## Vrai des que le joueur continue apres la victoire au dernier royaume.
+var endless: bool = false
 
 var _deck: DeckState
 var _rules: RoundRules
@@ -74,15 +80,33 @@ func shop_rules(base: ShopRules) -> ShopRules:
 	return _with_legacies(base) as ShopRules
 
 
-## Copie des regles de base, chaque modificateur de chaque heritage applique dans l'ordre d'achat.
+## Copie des regles de base : modificateurs de la partie, puis ceux de chaque heritage dans l'ordre d'achat.
 func _with_legacies(base: Resource) -> Resource:
-	if legacies.is_empty():
+	if legacies.is_empty() and modifiers.is_empty():
 		return base
 	var rules := base.duplicate()
+	for modifier: RuleModifier in modifiers:
+		modifier.apply_to(rules)
 	for legacy: LegacyDefinition in legacies:
 		for modifier: RuleModifier in legacy.modifiers:
 			modifier.apply_to(rules)
 	return rules
+
+
+## Objectif d'un goulot, avec le pourcentage des regles (difficulte).
+func target_for(realm: RealmDefinition, bottleneck: BottleneckDefinition) -> int:
+	return roundi(RunProgress.target_for(realm, bottleneck) * round_rules().target_percent / 100.0)
+
+
+## Mode sans fin, apres la victoire : un royaume genere (tribulation tiree dans pool) s'ajoute et la run revient
+## entre deux goulots, boutique comprise. Faux si la run n'est pas gagnee.
+func continue_endless(pool: Array[BottleneckDefinition], rng: RandomNumberGenerator) -> bool:
+	if status != Status.WON:
+		return false
+	progress.add_endless_realm(pool, rng)
+	endless = true
+	status = Status.BETWEEN_ROUNDS
+	return true
 
 
 ## Prix de vente d'un artefact : la part sell_fraction de son prix, arrondie en dessous.
@@ -201,8 +225,8 @@ func _create_round() -> void:
 	var constraint: TribulationConstraint = progress.current_bottleneck().constraint
 	if constraint == null:
 		constraint = TribulationConstraint.new()
-	current_round = RoundState.new(_deck, round_rules(), _evaluator, progress.current_target(), artifacts, hand_levels, constraint,
-		artifact_stacks, artifact_editions)
+	current_round = RoundState.new(_deck, round_rules(), _evaluator, target_for(progress.current_realm(), progress.current_bottleneck()),
+		artifacts, hand_levels, constraint, artifact_stacks, artifact_editions)
 	current_round.finished.connect(_on_round_finished)
 	current_round.hand_played.connect(_on_hand_played)
 	current_round.discarded.connect(_on_discarded)

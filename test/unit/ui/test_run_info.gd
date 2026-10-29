@@ -30,7 +30,8 @@ func test_parcours_du_royaume_en_cours() -> void:
 	var run: RunState = data[0]
 	var tabs: TabContainer = add_child_autofree(RunInfo.build(run, data[1].hands))
 	var path: VBoxContainer = tabs.get_child(1).get_child(0)
-	var lines := path.get_children().filter(func(node: Node) -> bool: return node is HBoxContainer)
+	var lines := path.get_children().filter(func(node: Node) -> bool:
+		return node is HBoxContainer and node.get_child(0) is RunInfo.PathNode)
 	assert_eq(lines.size(), run.progress.current_realm().bottlenecks.size())
 	var first: RunInfo.PathNode = lines[-1].get_child(0)
 	assert_eq(first.position_state, 0, "le premier goulot, en bas du chemin, est en cours")

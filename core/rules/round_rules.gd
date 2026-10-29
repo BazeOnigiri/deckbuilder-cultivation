@@ -8,8 +8,10 @@ extends Resource
 @export var discards_per_round: int = 0
 ## Nombre max de cartes jouees ou defaussees d'un coup.
 @export var max_selected_cards: int = 0
+## Objectifs des goulots en pourcentage de leur valeur de base (difficultes : RuleModifier +25 = objectifs x1,25).
+@export var target_percent: int = 100
 
 
 func is_valid() -> bool:
 	return (not id.is_empty() and hand_size > 0 and hands_per_round > 0
-		and discards_per_round >= 0 and max_selected_cards > 0 and max_selected_cards <= hand_size)
+		and discards_per_round >= 0 and max_selected_cards > 0 and max_selected_cards <= hand_size and target_percent > 0)

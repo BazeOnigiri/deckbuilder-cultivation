@@ -134,7 +134,11 @@ func test_nouvelle_partie_depuis_la_run_apres_confirmation() -> void:
 	options._confirm_button.pressed.emit()
 	await wait_physics_frames(1)
 	assert_false(is_instance_valid(old_run), "ancienne run fermee")
+	var panels: Array[Node] = main._screen.find_children("*", "NewRunPanel", true, false)
+	assert_eq(panels.size(), 1, "le menu ouvre le rouleau Nouvelle partie")
+	(panels[0] as NewRunPanel).start_requested.emit(RunSetup.custom("ABC", 1, true, "X"))
 	assert_not_null(main._screen.get_node_or_null("%SideColumn"), "nouvelle run")
+	assert_eq(main._screen._run.setup.seed_text, "ABC")
 
 
 func test_compendium_depuis_le_menu_et_retour() -> void:
@@ -148,7 +152,7 @@ func test_compendium_depuis_le_menu_et_retour() -> void:
 
 func test_boutique_ouverte_enregistre_le_contenu_vu_dans_le_profil() -> void:
 	var main := _main()
-	main._start_new_run()
+	main._start_new_run(RunSetup.new())
 	var run_screen := _current_screen(main)
 	var content := GameContent.load_default()
 	var rng := RandomNumberGenerator.new()

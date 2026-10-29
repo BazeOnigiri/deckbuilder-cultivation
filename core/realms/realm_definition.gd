@@ -8,6 +8,13 @@ extends Resource
 @export var order: int = 0
 @export var base_score: int = 0
 @export var bottlenecks: Array[BottleneckDefinition] = []
+## Royaume genere du mode sans fin : son numero remplace le %d de name_key. 0 : royaume du contenu.
+var number: int = 0
+
+
+## Nom affiche, traduit.
+func title() -> String:
+	return tr(name_key) % number if number > 0 else tr(name_key)
 
 
 func is_valid() -> bool:
