@@ -215,3 +215,17 @@ func test_defi_gagne_note_une_fois() -> void:
 	stats.record_win(setup)
 	assert_eq(stats.challenges_won, ["defi_test"])
 	assert_eq(stats.difficulty_unlocked, 1, "un defi n'ouvre pas de difficulte")
+
+
+func test_partie_du_jour_deja_jouee() -> void:
+	var stats := ProfileStats.new()
+	var today := 1_800_000_000
+	assert_false(stats.played_daily(today))
+	var game := GameRecord.new()
+	game.seed_text = RunSetup.daily_code(today - 86400 * 2)
+	stats.add_game(game, 10)
+	assert_false(stats.played_daily(today), "une autre date")
+	var done := GameRecord.new()
+	done.seed_text = RunSetup.daily_code(today)
+	stats.add_game(done, 10)
+	assert_true(stats.played_daily(today))

@@ -77,3 +77,13 @@ func test_onglet_run_montre_les_heritages_possedes() -> void:
 	var tabs: TabContainer = add_child_autofree(RunInfo.build(run, data[1].hands))
 	var found := tabs.get_child(2).find_children("*", "ItemSlot", true, false)
 	assert_eq(found.size(), 1)
+
+
+func test_main_de_moins_montree_dans_l_onglet_run() -> void:
+	var data := _run()
+	var run: RunState = data[0]
+	var plain: TabContainer = add_child_autofree(RunInfo.build(run, data[1].hands))
+	var before: int = plain.get_child(2).get_child(0).get_child_count()
+	run.hand_penalty = 2
+	var tabs: TabContainer = add_child_autofree(RunInfo.build(run, data[1].hands))
+	assert_eq(tabs.get_child(2).get_child(0).get_child_count(), before + 1)

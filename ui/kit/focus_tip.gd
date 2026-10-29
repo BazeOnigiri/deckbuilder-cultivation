@@ -83,12 +83,25 @@ func show_tip() -> void:
 	panel.theme_type_variation = &"TooltipPanel"
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(bubble)
+	# Le CanvasLayer coupe l'heritage du Theme : la bulle reprend celui de la racine (mode contraste eleve).
+	panel.theme = _inherited_theme()
 	_layer = CanvasLayer.new()
 	_layer.layer = LAYER
 	_layer.add_child(panel)
 	add_child(_layer)
 	panel.reset_size()
 	panel.position = _place(panel.size)
+
+
+## Le premier Theme pose sur un parent du Control (null : celui du projet).
+func _inherited_theme() -> Theme:
+	var node: Node = _target
+	while node != null:
+		var control := node as Control
+		if control != null and control.theme != null:
+			return control.theme
+		node = node.get_parent()
+	return null
 
 
 func hide_tip() -> void:

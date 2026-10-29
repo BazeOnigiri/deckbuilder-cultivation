@@ -644,3 +644,9 @@ UI_COMPENDIUM_EVENTS,Rencontres,Encounters
 UNLOCK_EVENTS_SEEN,Vivre %d rencontres différentes,Experience %d different encounters
 ACH_CINQ_RENCONTRES_NAME,Pèlerin des cinq monts,Pilgrim of the Five Peaks
 ACH_CINQ_RENCONTRES_DESC,"Vivre 5 rencontres différentes, toutes parties confondues.","Experience 5 different encounters, across all runs."
+UI_INFO_HAND_PENALTY,Mains de moins au prochain goulot,Fewer hands at the next bottleneck
+UI_ANNOUNCE_HAND_PENALTY,Mains de moins à ce goulot : %d,Fewer hands at this bottleneck: %d
+UI_SETUP_DAILY_PLAYED,Partie du jour déjà jouée aujourd'hui (vous pouvez la rejouer).,Daily run already played today (you can play it again).
+UI_TOAST_PILL_MADE,Une pilule est créée,A pill is created
+UI_TOAST_JADE_BROKEN,Cartes brisées : %d,Shattered cards: %d
+UI_TOAST_LEVEL_UP,Niveau gagné : %s,Level gained: %s

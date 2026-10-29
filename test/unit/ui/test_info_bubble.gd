@@ -61,3 +61,13 @@ func test_infobulle_d_une_figure() -> void:
 	var bubble: InfoBubble = autofree(view._make_custom_tooltip(""))
 	var text: RichTextLabel = bubble.find_children("*", "RichTextLabel", true, false)[0]
 	assert_string_contains(text.text, "+10 %s" % tr("UI_SIDE_QI"))
+
+
+func test_bulle_reprend_les_couleurs_du_contraste_eleve() -> void:
+	var root: Control = add_child_autofree(Control.new())
+	root.theme = load("res://ui/theme/contraste.tres")
+	var bubble := InfoBubble.build("Titre", "+5 %s" % tr("UI_SIDE_QI"))
+	root.add_child(bubble)
+	var text: RichTextLabel = bubble.find_children("*", "RichTextLabel", true, false)[0]
+	var qi := root.theme.get_color(&"qi_color", &"InfoBubble").to_html(false)
+	assert_string_contains(text.text, "[color=#%s]" % qi)

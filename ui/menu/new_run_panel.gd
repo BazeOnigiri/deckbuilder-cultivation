@@ -49,6 +49,11 @@ func _ready() -> void:
 	actions.add_child(_seal("UI_SETUP_DAILY", _start_daily))
 	actions.add_child(_seal("UI_SETUP_CHALLENGES", _show_challenges))
 	add_child(actions)
+	if profile.played_daily(int(Time.get_unix_time_from_system())):
+		var played := SideColumn.make_label(&"ScrollCaption", "UI_SETUP_DAILY_PLAYED")
+		played.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		played.custom_minimum_size.x = width
+		add_child(played)
 
 
 func chosen_level() -> int:

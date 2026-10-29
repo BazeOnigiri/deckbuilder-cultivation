@@ -304,9 +304,10 @@ func continue_endless(pool: Array[BottleneckDefinition], rng: RandomNumberGenera
 	return true
 
 
-## Prix de vente d'un artefact : la part sell_fraction de son prix, arrondie en dessous.
+## Prix de vente d'un artefact : la part sell_fraction de son prix, supplement de son aura compris, arrondie en dessous.
 func sell_price(artifact: ArtifactDefinition) -> int:
-	return floori(artifact.price * economy().sell_fraction)
+	var edition: EditionDefinition = artifact_editions.get(artifact.id)
+	return floori((artifact.price + (edition.price_bonus if edition != null else 0)) * economy().sell_fraction)
 
 
 ## Vend l'artefact a cet index : rend ses pierres et libere l'emplacement, des la main suivante. Faux si

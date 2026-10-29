@@ -14,6 +14,11 @@ static func open(parent: Node, run: RunState, on_fight: Callable, on_skip: Calla
 	for b: int in realm.bottlenecks.size():
 		tablets.add_child(_tablet(run, realm, b))
 	body.add_child(tablets)
+	if run.hand_penalty > 0:
+		var penalty := SideColumn.make_label(&"ScrollWarning")
+		penalty.text = RunInfo.tr_key("UI_ANNOUNCE_HAND_PENALTY") % run.hand_penalty
+		penalty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		body.add_child(penalty)
 	var actions := HBoxContainer.new()
 	actions.alignment = BoxContainer.ALIGNMENT_CENTER
 	body.add_child(actions)

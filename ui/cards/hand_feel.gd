@@ -32,3 +32,5 @@ extends Resource
 @export var transmute_time: float = 0.6
 ## Intensite de l'eclat au debut (multiplie la couleur de l'element).
 @export var transmute_glow: float = 1.8
+## Carte de jade qui se brise : teinte prise par la carte jouee avant de se dissoudre (blanc = aucune).
+@export var shatter_tint: Color = Color(1.0, 0.55, 0.5)

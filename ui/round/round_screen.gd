@@ -294,6 +294,9 @@ func _on_play_pressed() -> void:
 	_hand_view.play_out(cards)
 	_on_selection_changed()
 	await _sequence.play(context, _round.target_score)
+	for card: CardInstance in context.broken:
+		_hand_view.shatter(card)
+	_toast_play_effects(context)
 	_hand_view.clear_played()
 	_scoring = false
 	_score_shown.emit()
@@ -307,8 +310,19 @@ func _after_score() -> void:
 
 
 func _on_discard_pressed() -> void:
+	var pills_before := _run.pills.size()
 	_round.discard(_selected())
+	if _run.pills.size() > pills_before:
+		Toast.achievement(self, tr("UI_TOAST_PILL_MADE"), "", "UI_KIND_TALISMAN")
 	_refresh()
+
+
+## Carte de jade brisee et niveau gagne par un talisman d'eveil : rien d'autre ne les montre a l'ecran.
+func _toast_play_effects(context: ScoreContext) -> void:
+	if not context.broken.is_empty():
+		Toast.achievement(self, tr("UI_TOAST_JADE_BROKEN") % context.broken.size(), "", "UI_KIND_ENHANCEMENT")
+	if context.level_ups > 0:
+		Toast.achievement(self, tr("UI_TOAST_LEVEL_UP") % tr(context.hand.definition.name_key), "", "UI_KIND_TALISMAN")
 
 
 func _on_continue_pressed() -> void:

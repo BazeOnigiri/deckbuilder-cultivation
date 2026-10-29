@@ -91,3 +91,36 @@ func test_saut_hors_des_royaumes_refuse() -> void:
 func test_saut_refuse_apres_la_fin_de_la_run() -> void:
 	_run.status = RunState.Status.LOST
 	assert_false(DebugActions.jump_to(_run, 1, 1))
+
+
+func test_rencontre_ouverte_seulement_entre_deux_goulots() -> void:
+	var event := _content.events[0]
+	assert_false(DebugActions.start_event(_run, event), "pas pendant un round")
+	DebugActions.win_round(_run)
+	assert_true(DebugActions.start_event(_run, event))
+	assert_eq(_run.status, RunState.Status.ENCOUNTER)
+	assert_eq(_run.current_event, event)
+
+
+func test_presage_donne() -> void:
+	for omen: OmenDefinition in _content.omens:
+		var run := _content.new_run(RandomNumberGenerator.new())
+		run.start()
+		DebugActions.give_omen(run, omen)
+		var pending := omen.effect.timing() != OmenEffect.Timing.NOW
+		assert_eq(run.pending_omens.has(omen), pending, String(omen.id))
+
+
+func test_modificateurs_poses_sur_une_carte_de_la_main() -> void:
+	var card: CardInstance = _run.current_round.hand()[0]
+	var modifiers := _content.modifiers
+	assert_true(DebugActions.imbue_card(card, modifiers.enhancements[0]))
+	assert_true(DebugActions.imbue_card(card, modifiers.card_editions()[0]))
+	assert_true(DebugActions.imbue_card(card, modifiers.talismans[0]))
+	assert_eq(card.enhancement, modifiers.enhancements[0])
+	assert_eq(card.edition, modifiers.card_editions()[0])
+	assert_eq(card.talisman, modifiers.talismans[0])
+	assert_false(DebugActions.imbue_card(null, modifiers.talismans[0]))
+	for edition: EditionDefinition in modifiers.artifact_editions():
+		if not edition.for_cards:
+			assert_false(DebugActions.imbue_card(card, edition))
