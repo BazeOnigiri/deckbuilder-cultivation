@@ -25,6 +25,9 @@ extends Resource
 @export var hit_flash: Color = Color(1.6, 1.6, 1.6, 1)
 @export var hit_scale: float = 1.25
 @export var hit_time: float = 0.3
+## Le compteur de pierres de la colonne saute quand les cristaux arrivent : montee puis retour.
+@export var stones_bump_up: float = 0.08
+@export var stones_bump_down: float = 0.2
 @export var qi_color: Color = Color(0.372549, 0.658824, 0.541176, 1)
 @export var comprehension_color: Color = Color(0.788235, 0.635294, 0.305882, 1)
 ## Tremblement maximal, en pixels, quand la main atteint a elle seule l'objectif du goulot.

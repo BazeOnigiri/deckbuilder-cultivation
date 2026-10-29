@@ -41,7 +41,7 @@ static func _keys() -> GridContainer:
 static func _add_tab(tabs: TabContainer, title_key: String, content: Control) -> void:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(tabs.get_theme_constant(&"text_width", &"ScrollPanel") * 1.6,
+	scroll.custom_minimum_size = Vector2(tabs.get_theme_constant(&"info_width", &"ScrollPanel"),
 		tabs.get_theme_constant(&"tab_height", &"ScrollPanel"))
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(content)
@@ -149,11 +149,25 @@ static func _run_tiles(run: RunState, hands: Array[HandDefinition]) -> VBoxConta
 	tiles.add_child(ScrollTiles.stat(str(stats.stones_earned), "UI_INFO_STONES"))
 	column.add_child(tiles)
 	column.add_child(ScrollRows.row("UI_STATS_FAVORITE_HAND", hand_name(stats.hands.most_played(), hands)))
-	var legacy_names: PackedStringArray = []
-	for legacy: LegacyDefinition in run.legacies:
-		legacy_names.append(tr_key(legacy.name_key))
-	column.add_child(ScrollRows.row("UI_INFO_LEGACIES", ", ".join(legacy_names) if not legacy_names.is_empty() else tr_key("UI_NONE")))
+	column.add_child(ScrollRows.row("UI_INFO_LEGACIES", "" if not run.legacies.is_empty() else tr_key("UI_NONE")))
+	if not run.legacies.is_empty():
+		var slots := HFlowContainer.new()
+		for slot: ItemSlot in legacy_slots(run.legacies):
+			slots.add_child(slot)
+		column.add_child(slots)
 	return column
+
+
+## Un emplacement par heritage, avec son infobulle (nom et description), comme en boutique.
+static func legacy_slots(legacies: Array[LegacyDefinition]) -> Array[ItemSlot]:
+	var slots: Array[ItemSlot] = []
+	for legacy: LegacyDefinition in legacies:
+		var slot := ItemSlot.new()
+		slot.kind = ItemSlot.Kind.LEGACY
+		slot.glyph = legacy.glyph
+		slot.set_info(tr_key(legacy.name_key), tr_key(legacy.description_key))
+		slots.append(slot)
+	return slots
 
 
 static func hand_name(hand_id: String, hands: Array[HandDefinition]) -> String:
@@ -178,6 +192,12 @@ class LevelPips extends Control:
 		for i: int in count:
 			var color := get_theme_color(&"pip_on" if i < level else &"pip_off", &"HandTablet")
 			draw_circle(Vector2(radius + i * (radius * 2 + gap), size.y / 2), radius, color)
+		# Au-dela de pip_max les pastilles ne disent plus rien : le niveau exact suit en chiffres.
+		if level > count:
+			var font := get_theme_font(&"font", &"ScrollCaption")
+			var font_size := get_theme_font_size(&"font_size", &"ScrollCaption")
+			draw_string(font, Vector2(count * (radius * 2 + gap) + gap, size.y / 2 + font.get_ascent(font_size) / 2),
+				str(level), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, get_theme_color(&"pip_on", &"HandTablet"))
 
 
 ## Etape du chemin : rond vide a venir, meditant sur le goulot en cours, sceau 破 sur un goulot franchi.
@@ -190,7 +210,7 @@ class PathNode extends Control:
 
 	func _ready() -> void:
 		var marker: float = get_theme_constant(&"marker_size", &"PathNode")
-		custom_minimum_size = Vector2(marker, marker * 1.6)
+		custom_minimum_size = Vector2(marker, marker * get_theme_constant(&"height_percent", &"PathNode") / 100.0)
 		size_flags_vertical = Control.SIZE_FILL
 		var rect := Rect2(Vector2.ZERO, Vector2(marker, marker))
 		if position_state < 0:
@@ -208,8 +228,9 @@ class PathNode extends Control:
 			meditant.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			meditant.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			add_child(meditant)
-			meditant.position = rect.position + rect.size * 0.15
-			meditant.size = rect.size * 0.7
+			var inset: float = get_theme_constant(&"meditant_inset_percent", &"PathNode") / 100.0
+			meditant.position = rect.position + rect.size * inset
+			meditant.size = rect.size * (1.0 - 2.0 * inset)
 
 	func _draw() -> void:
 		var marker: float = get_theme_constant(&"marker_size", &"PathNode")
@@ -217,14 +238,15 @@ class PathNode extends Control:
 		var center := Vector2(size.x / 2, marker / 2)
 		var radius := marker / 2 - width
 		var line := get_theme_color(&"line", &"PathNode")
+		var arc_points: int = get_theme_constant(&"arc_points", &"PathNode")
 		if line_up:
 			draw_line(Vector2(center.x, 0), center - Vector2(0, radius), line, width)
 		if line_down:
 			draw_line(center + Vector2(0, radius), Vector2(center.x, size.y), line, width)
 		match position_state:
 			-1:
-				draw_arc(center, radius, 0, TAU, 32, get_theme_color(&"cleared", &"PathNode"), width, true)
+				draw_arc(center, radius, 0, TAU, arc_points, get_theme_color(&"cleared", &"PathNode"), width, true)
 			0:
 				draw_circle(center, radius, get_theme_color(&"current", &"PathNode"))
 			_:
-				draw_arc(center, radius, 0, TAU, 32, get_theme_color(&"upcoming", &"PathNode"), width, true)
+				draw_arc(center, radius, 0, TAU, arc_points, get_theme_color(&"upcoming", &"PathNode"), width, true)

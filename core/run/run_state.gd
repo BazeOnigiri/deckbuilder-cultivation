@@ -92,6 +92,20 @@ func sell_artifact(index: int) -> bool:
 	return true
 
 
+## Prix de vente d'une pilule : meme part sell_fraction de son prix que pour un artefact.
+func sell_pill_price(pill: PillDefinition) -> int:
+	return floori(pill.price * economy().sell_fraction)
+
+
+## Vend la pilule a cet index, en round comme en boutique. Faux si l'index n'existe pas.
+func sell_pill(index: int) -> bool:
+	if index < 0 or index >= pills.size():
+		return false
+	stones += sell_pill_price(pills[index])
+	pills.remove_at(index)
+	return true
+
+
 ## Ajoute une carte au paquet de la run (sceau de disciples), avec un uid neuf, dans la pioche : le melange du
 ## prochain round la place.
 func add_card(data: CardData, ranks: RankRules) -> CardInstance:

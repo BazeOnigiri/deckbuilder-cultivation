@@ -177,3 +177,19 @@ func test_apply_lance_la_nappe_de_l_ambiance() -> void:
 	assert_eq(Sons.music_id(), &"musique_boutique")
 	Sons.play_music(&"", 0.0)
 
+
+
+## Les particules de meteo suivent la taille reelle du viewport, pas seulement 1152x648.
+func test_meteo_etalee_sur_la_taille_du_viewport() -> void:
+	var ambiance: Node = add_child_autofree(SCENE.instantiate())
+	var particles := CPUParticles2D.new()
+	particles.position = Vector2(576, 700)
+	particles.emission_rect_extents = Vector2(700, 20)
+	ambiance.get_node("Fond/Meteo").add_child(particles)
+	var base := Vector2(ProjectSettings.get_setting("display/window/size/viewport_width", 1152),
+		ProjectSettings.get_setting("display/window/size/viewport_height", 648))
+	ambiance.fit_weather(base * 2.0)
+	assert_eq(particles.position, Vector2(1152, 1400))
+	assert_eq(particles.emission_rect_extents, Vector2(1400, 40))
+	ambiance.fit_weather(base)
+	assert_eq(particles.position, Vector2(576, 700), "retour a la taille d'origine, sans cumul")

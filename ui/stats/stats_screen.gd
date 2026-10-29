@@ -10,6 +10,8 @@ const WIN_GLYPH := "破"
 
 ## Injecte par main avant l'ajout a l'arbre. Par defaut un profil vide (scene lancee seule, tests).
 var profile: ProfileStats = ProfileStats.new()
+## Injecte par main avant l'ajout a l'arbre.
+var settings: GameSettings = GameSettings.new()
 ## Injecte par main avant l'ajout a l'arbre. Vide : contenu charge par defaut.
 var content: GameContent
 
@@ -18,7 +20,7 @@ func _ready() -> void:
 	if content == null:
 		content = GameContent.load_default()
 	%BackButton.pressed.connect(back_requested.emit)
-	%Scroll.unroll(get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
+	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 	%Grid.add_child(ScrollTiles.stat(str(profile.runs_started), "UI_STATS_RUNS"))
 	%Grid.add_child(ScrollTiles.stat(str(profile.runs_won), "UI_STATS_WINS", WIN_GLYPH))
 	%Grid.add_child(ScrollTiles.stat(tr("UI_STATS_PERCENT") % _win_rate(), "UI_STATS_WIN_RATE"))

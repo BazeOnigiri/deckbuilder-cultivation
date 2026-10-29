@@ -54,3 +54,25 @@ func test_exemple_de_main_en_petites_cartes() -> void:
 		if view.modulate != Color.WHITE:
 			pale += 1
 	assert_eq(pale, 3, "paire : trois cartes ne comptent pas")
+
+
+## Un heritage possede est un emplacement avec infobulle (nom et description), comme en boutique.
+func test_heritages_en_emplacements_avec_infobulle() -> void:
+	var data := _run()
+	var content: GameContent = data[1]
+	var legacies: Array[LegacyDefinition] = [content.legacies[0]]
+	var slots := RunInfo.legacy_slots(legacies)
+	assert_eq(slots.size(), 1)
+	assert_eq(slots[0].kind, ItemSlot.Kind.LEGACY)
+	assert_eq(slots[0].title, tr(legacies[0].name_key))
+	assert_eq(slots[0].description, tr(legacies[0].description_key))
+	(slots[0] as Node).free()
+
+
+func test_onglet_run_montre_les_heritages_possedes() -> void:
+	var data := _run()
+	var run: RunState = data[0]
+	run.legacies.assign([data[1].legacies[0]])
+	var tabs: TabContainer = add_child_autofree(RunInfo.build(run, data[1].hands))
+	var found := tabs.get_child(2).find_children("*", "ItemSlot", true, false)
+	assert_eq(found.size(), 1)

@@ -85,3 +85,13 @@ func test_credits_en_rouleau_avec_la_licence_de_godot() -> void:
 	assert_not_null(overlay)
 	var text: RichTextLabel = overlay.find_children("*", "RichTextLabel", true, false)[0]
 	assert_string_contains(text.text, Engine.get_license_text().substr(0, 40))
+
+
+## Les heritages de la partie sauvegardee sont listes avec leur infobulle, comme les artefacts.
+func test_rouleau_de_partie_liste_les_heritages() -> void:
+	var menu := _menu(true)
+	menu.saved_run.legacies.assign([GameContent.load_default().legacies[0]])
+	menu.get_node("%StartButton").pressed.emit()
+	var slots := _overlay(menu).find_children("*", "ItemSlot", true, false)
+	assert_eq(slots.size(), 1)
+	assert_eq((slots[0] as ItemSlot).kind, ItemSlot.Kind.LEGACY)

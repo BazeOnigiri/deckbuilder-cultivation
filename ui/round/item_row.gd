@@ -6,6 +6,8 @@ extends HBoxContainer
 signal pill_pressed(index: int)
 ## Second clic sur un artefact (ou clic sur son sceau « Vendre ») : le vendre.
 signal artifact_sell_requested(index: int)
+## Idem pour une pilule : un clic sur sa tablette l'utilise, on la vend donc avec la touche de vente (sceau « Vendre »).
+signal pill_sell_requested(index: int)
 
 ## Bond d'un artefact qui se declenche : meme rythme que la sequence de score.
 var feel: ScoreFeel = preload("res://ui/round/score_feel.tres")
@@ -17,9 +19,12 @@ var _pill_caption := SideColumn.make_label(&"SideCaption")
 var _pill_slots := HBoxContainer.new()
 ## Emplacement de chaque artefact affiche, pour le faire bondir pendant la sequence.
 var _slot_of: Dictionary[ArtifactDefinition, ItemSlot] = {}
-## Artefact dont le sceau « Vendre (n) » est montre, -1 si aucun ; prix de vente de chaque artefact affiche.
+## Objet dont le sceau « Vendre (n) » est montre, -1 si aucun (_selling_pill : c'est une pilule) ; prix de vente
+## de chaque artefact et de chaque pilule affiches.
 var _selling: int = -1
+var _selling_pill := false
 var _sell_prices: Array = []
+var _pill_sell_prices: Array = []
 var _seal: Button
 
 
@@ -37,8 +42,7 @@ func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int, sell_p
 	_artifact_caption.text = tr("UI_ITEMS_ARTIFACTS") % [artifacts.size(), max_count]
 	_clear(_artifact_slots)
 	_slot_of.clear()
-	_selling = -1
-	_seal = null
+	_drop_seal()
 	_sell_prices = sell_prices
 	for i: int in maxi(max_count, artifacts.size()):
 		var slot := _slot(ItemSlot.Kind.ARTIFACT, _artifact_slots)
@@ -53,10 +57,12 @@ func show_artifacts(artifacts: Array[ArtifactDefinition], max_count: int, sell_p
 				slot.pressed.connect(press_artifact.bind(i))
 
 
-## usable[i] : la pilule i peut servir sur la selection actuelle.
-func show_pills(pills: Array[PillDefinition], max_count: int, usable: Array[bool]) -> void:
+## usable[i] : la pilule i peut servir sur la selection actuelle. sell_prices[i] : pierres rendues par sa vente.
+func show_pills(pills: Array[PillDefinition], max_count: int, usable: Array[bool], sell_prices: Array = []) -> void:
 	_pill_caption.text = tr("UI_ITEMS_PILLS") % [pills.size(), max_count]
 	_clear(_pill_slots)
+	_drop_seal()
+	_pill_sell_prices = sell_prices
 	for i: int in maxi(max_count, pills.size()):
 		var slot := _slot(ItemSlot.Kind.PILL, _pill_slots)
 		if i < pills.size():
@@ -67,34 +73,52 @@ func show_pills(pills: Array[PillDefinition], max_count: int, usable: Array[bool
 
 ## Premier appui : montre le sceau « Vendre (n) » sous l'artefact. Second appui sur le meme : le vend.
 func press_artifact(index: int) -> void:
-	if index < 0 or index >= _sell_prices.size():
+	_press_sale(index, false)
+
+
+func press_pill_sale(index: int) -> void:
+	_press_sale(index, true)
+
+
+func _press_sale(index: int, pill: bool) -> void:
+	var prices := _pill_sell_prices if pill else _sell_prices
+	if index < 0 or index >= prices.size():
 		return
-	if _seal != null:
-		_seal.queue_free()
-		_seal = null
-	if _selling == index:
-		_selling = -1
-		artifact_sell_requested.emit(index)
+	var confirmed := _selling == index and _selling_pill == pill
+	_drop_seal()
+	if confirmed:
+		(pill_sell_requested if pill else artifact_sell_requested).emit(index)
 		return
 	_selling = index
-	var slot: ItemSlot = _artifact_slots.get_child(index)
+	_selling_pill = pill
+	var slot: ItemSlot = (_pill_slots if pill else _artifact_slots).get_child(index)
 	_seal = Button.new()
 	_seal.theme_type_variation = &"SellSeal"
 	_seal.focus_mode = FOCUS_NONE
-	_seal.text = tr("UI_SELL") % _sell_prices[index]
-	_seal.pressed.connect(press_artifact.bind(index))
+	_seal.text = tr("UI_SELL") % prices[index]
+	_seal.pressed.connect(_press_sale.bind(index, pill))
 	slot.add_child(_seal)
 	_seal.reset_size()
 	_seal.position = Vector2((slot.size.x - _seal.size.x) / 2.0, slot.size.y)
 
 
-## Clavier : appuie sur l'artefact sous la souris. Faux s'il n'y en a pas.
-func press_hovered_artifact() -> bool:
-	for i: int in _sell_prices.size():
-		var slot: ItemSlot = _artifact_slots.get_child(i)
-		if slot.get_global_rect().has_point(slot.get_global_mouse_position()):
-			press_artifact(i)
-			return true
+func _drop_seal() -> void:
+	if _seal != null:
+		_seal.queue_free()
+		_seal = null
+	_selling = -1
+	_selling_pill = false
+
+
+## Clavier : appuie sur l'artefact ou la pilule sous la souris. Faux s'il n'y en a pas.
+func press_hovered_item() -> bool:
+	for pill: bool in [false, true]:
+		var prices := _pill_sell_prices if pill else _sell_prices
+		for i: int in prices.size():
+			var slot: ItemSlot = (_pill_slots if pill else _artifact_slots).get_child(i)
+			if slot.get_global_rect().has_point(slot.get_global_mouse_position()):
+				_press_sale(i, pill)
+				return true
 	return false
 
 

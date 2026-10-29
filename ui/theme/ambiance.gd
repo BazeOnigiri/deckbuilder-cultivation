@@ -31,6 +31,7 @@ func _ready() -> void:
 	($Fond/Lavis as ColorRect).material = _lavis
 	_papier = _papier.duplicate()
 	($Dessus/Papier as ColorRect).material = _papier
+	get_viewport().size_changed.connect(func() -> void: fit_weather(get_viewport().get_visible_rect().size))
 	for resource: Resource in ContentLoader.load_all(AMBIANCES_DIR):
 		var ambiance := resource as AmbianceTheme
 		if ambiance != null:
@@ -81,6 +82,21 @@ func _set_weather(ambiance: AmbianceTheme) -> void:
 		child.queue_free()
 	if ambiance != null and ambiance.weather != null and not reduce_motion:
 		_weather.add_child(ambiance.weather.instantiate())
+		fit_weather(get_viewport().get_visible_rect().size)
+
+
+## Les scenes de meteo sont dessinees pour la taille de base de la fenetre (reglages du projet) : positions et
+## etendues d'emission sont etalees sur la taille reelle du viewport, a partir des valeurs d'origine gardees en meta.
+func fit_weather(viewport_size: Vector2) -> void:
+	var base := Vector2(ProjectSettings.get_setting("display/window/size/viewport_width", 1152),
+		ProjectSettings.get_setting("display/window/size/viewport_height", 648))
+	var ratio := viewport_size / base
+	for particles: CPUParticles2D in _weather.find_children("*", "CPUParticles2D", true, false):
+		if not particles.has_meta(&"base_position"):
+			particles.set_meta(&"base_position", particles.position)
+			particles.set_meta(&"base_extents", particles.emission_rect_extents)
+		particles.position = (particles.get_meta(&"base_position") as Vector2) * ratio
+		particles.emission_rect_extents = (particles.get_meta(&"base_extents") as Vector2) * ratio
 
 
 func _process(delta: float) -> void:

@@ -88,3 +88,17 @@ func test_sans_prix_pas_de_vente() -> void:
 	row.press_artifact(0)
 	row.press_artifact(0)
 	assert_signal_not_emitted(row, "artifact_sell_requested")
+
+
+func test_deux_appuis_pour_vendre_une_pilule() -> void:
+	var row := _row()
+	var pills: Array[PillDefinition] = [PillDefinition.new(), PillDefinition.new()]
+	var usable: Array[bool] = [true, true]
+	row.show_pills(pills, 2, usable, [1, 4])
+	watch_signals(row)
+	row.press_pill_sale(1)
+	assert_eq(row._seal.text, tr("UI_SELL") % 4)
+	assert_signal_not_emitted(row, "pill_sell_requested")
+	row.press_pill_sale(1)
+	assert_signal_emitted_with_parameters(row, "pill_sell_requested", [1])
+	assert_null(row._seal)
