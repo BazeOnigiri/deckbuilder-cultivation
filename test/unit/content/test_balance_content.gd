@@ -52,7 +52,8 @@ func test_goulots_et_royaumes_issus_des_formules() -> void:
 		assert_eq(_realms[r].base_score, _solved["realms"][r], "score de base de %s%s" % [_realms[r].id, HINT])
 		for b: int in _realms[r].bottlenecks.size():
 			var bottleneck := _realms[r].bottlenecks[b]
-			assert_eq(bottleneck.score_multiplier, _solved["bottlenecks"][r][b][0], "multiplicateur de %s%s" % [bottleneck.id, HINT])
+			# A peu pres : 17 x 0,1 ne tombe pas pile sur 1.7 ecrit dans le .tres.
+			assert_almost_eq(bottleneck.score_multiplier, _solved["bottlenecks"][r][b][0], 1e-6, "multiplicateur de %s%s" % [bottleneck.id, HINT])
 			assert_eq(bottleneck.reward, _solved["bottlenecks"][r][b][1], "recompense de %s%s" % [bottleneck.id, HINT])
 
 
@@ -88,3 +89,9 @@ func test_progression_croissante() -> void:
 func test_raretes_issues_du_gain() -> void:
 	for artifact: ArtifactDefinition in _content.artifacts:
 		assert_eq(artifact.rarity, _solved["rarities"][artifact.id], "rarete de %s%s" % [artifact.id, HINT])
+
+
+## Les tribulations sont tirees au hasard : chacune a sa difficulte mesuree, et son objectif en tient compte.
+func test_chaque_tribulation_est_mesuree() -> void:
+	for tribulation: BottleneckDefinition in _content.tribulations:
+		assert_true(_measures.tribulation_factors.has(tribulation.id), "tribulation non mesuree : %s%s" % [tribulation.id, HINT])

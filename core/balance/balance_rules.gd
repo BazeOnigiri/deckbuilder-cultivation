@@ -14,6 +14,9 @@ extends Resource
 @export var reference_hands_left: int = 1
 ## Pierres qu'il garde d'une boutique a l'autre (elles rapportent des interets).
 @export var reference_savings: int = 10
+## Tribulations seulement : il defausse quand sa meilleure main a au plus cette priorite (20 : Souffle et Paire),
+## pour que les contraintes sur les defausses (karma, foudre) pesent dans la mesure.
+@export var reference_discard_priority: int = 20
 
 @export_group("Objectifs")
 ## Part des joueurs de reference qui franchissent le premier goulot sans objet ni defausse.

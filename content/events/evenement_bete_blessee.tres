@@ -22,7 +22,7 @@ effects = Array[ExtResource("4")]([SubResource("r1")])
 [sub_resource type="Resource" id="r3"]
 script = ExtResource("5")
 kind = 0
-amount = 6
+amount = 4
 
 [sub_resource type="Resource" id="r4"]
 script = ExtResource("6")

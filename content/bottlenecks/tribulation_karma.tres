@@ -12,6 +12,6 @@ amount = 1
 script = ExtResource("1")
 id = &"tribulation_karma"
 name_key = "BOTTLENECK_TRIBULATION_KARMA"
-score_multiplier = 2.0
+score_multiplier = 1.5
 reward = 5
 constraint = SubResource("constraint")

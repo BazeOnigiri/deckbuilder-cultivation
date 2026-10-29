@@ -12,6 +12,6 @@ min_rank = 11
 script = ExtResource("1")
 id = &"tribulation_neant"
 name_key = "BOTTLENECK_TRIBULATION_NEANT"
-score_multiplier = 2.0
+score_multiplier = 1.7
 reward = 5
 constraint = SubResource("constraint")

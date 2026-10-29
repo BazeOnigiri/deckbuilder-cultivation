@@ -12,7 +12,7 @@ hand_ids = Array[String](["main_ascension", "main_ascension_pure"])
 
 [sub_resource type="Resource" id="score_1"]
 script = ExtResource("3")
-amount = 30.0
+amount = 60.0
 
 [sub_resource type="Resource" id="effect_1"]
 script = ExtResource("2")
@@ -26,6 +26,6 @@ name_key = "ARTIFACT_ECHELLE_CELESTE"
 description_key = "ARTIFACT_ECHELLE_CELESTE_DESC"
 glyph = "梯"
 icon = ExtResource("icon")
-price = 1
+price = 3
 effects = Array[ExtResource("2")]([SubResource("effect_1")])
 rarity = 0

@@ -17,10 +17,12 @@ extends Resource
 @export var effects: Array[ArtifactEffect] = []
 ## Artefact qui grandit : chaque cran (effet grows) ajoute ce montant a chacun de ses effets de score.
 @export var growth_step: float = 0.0
+## Crans au plus (0 : sans plafond). Un artefact qui grandit a chaque carte defaussee exploserait sur une run.
+@export var growth_cap: int = 0
 
 
 func is_valid() -> bool:
-	if id.is_empty() or name_key.is_empty() or description_key.is_empty() or price <= 0 or effects.is_empty():
+	if id.is_empty() or name_key.is_empty() or description_key.is_empty() or price <= 0 or effects.is_empty() or growth_cap < 0:
 		return false
 	for effect: ArtifactEffect in effects:
 		if effect == null or not effect.is_valid():

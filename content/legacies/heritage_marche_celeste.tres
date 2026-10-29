@@ -14,6 +14,6 @@ id = &"heritage_marche_celeste"
 name_key = "LEGACY_CELESTIAL_MARKET_NAME"
 description_key = "LEGACY_CELESTIAL_MARKET_DESC"
 glyph = "市"
-price = 12
+price = 8
 requires = &"heritage_etal"
 modifiers = Array[ExtResource("2")]([SubResource("modifier")])

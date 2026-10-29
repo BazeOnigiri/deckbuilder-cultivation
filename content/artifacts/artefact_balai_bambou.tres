@@ -23,6 +23,6 @@ name_key = "ARTIFACT_BALAI_BAMBOU"
 description_key = "ARTIFACT_BALAI_BAMBOU_DESC"
 glyph = "帚"
 icon = ExtResource("icon")
-price = 2
+price = 5
 effects = Array[ExtResource("2")]([SubResource("effect_1")])
 rarity = 0

@@ -11,5 +11,5 @@ script = ExtResource("1")
 id = &"royaume_integration"
 name_key = "REALM_INTEGRATION"
 order = 7
-base_score = 110000
+base_score = 16000
 bottlenecks = Array[ExtResource("2")]([ExtResource("3"), ExtResource("4"), ExtResource("5")])

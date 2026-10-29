@@ -57,6 +57,13 @@ func _initialize() -> void:
 		levels.level_up(manual.hand.id)
 		measures.gains[manual.id] = _mean(player.round_scores(rounds, rules.random_seed, [], levels)) / base_mean - 1.0
 		print("%-32s %+.3f" % [manual.id, measures.gains[manual.id]])
+	# Tribulations : meme joueur, sous chaque contrainte, avec une defausse naive des deux cotes.
+	player.discard_priority = rules.reference_discard_priority
+	var free := _mean(player.round_scores(rounds, rules.random_seed))
+	for tribulation: BottleneckDefinition in content.tribulations:
+		player.constraint = tribulation.constraint
+		measures.tribulation_factors[tribulation.id] = _mean(player.round_scores(rounds, rules.random_seed)) / free
+		print("%-32s x%.2f" % [tribulation.id, measures.tribulation_factors[tribulation.id]])
 	measures.content_signature = BalanceModel.content_signature(content, rules)
 	_save(measures, MEASURES_PATH)
 
@@ -71,6 +78,7 @@ func _initialize() -> void:
 	for r: int in realms.size():
 		for b: int in realms[r].bottlenecks.size():
 			var path: String = realms[r].bottlenecks[b].resource_path
+			realms[r].bottlenecks[b].score_multiplier = solved["bottlenecks"][r][b][0]
 			_set_value(path, "score_multiplier", str(float(solved["bottlenecks"][r][b][0])))
 			_set_value(path, "reward", str(solved["bottlenecks"][r][b][1]))
 		_set_value(realms[r].resource_path, "base_score", str(solved["realms"][r]))
@@ -128,6 +136,11 @@ func _write_report(rules: BalanceRules, measures: BalanceMeasures, solved: Dicti
 			solved["rarities"][item.id]])
 	for item: Resource in content.manuals:
 		lines.append("| %s | %+.1f %% | %d | |" % [item.id, measures.gains[item.id] * 100.0, solved["prices"][item.id]])
+	lines.append_array(["", "## Tribulations (score sous la contrainte / sans, defausse naive)", "",
+		"| Tribulation | Difficulte propre | Multiplicateur d'objectif |", "| --- | --- | --- |"])
+	for tribulation: BottleneckDefinition in content.tribulations:
+		lines.append("| %s | x%.2f | x%s |" % [tribulation.id, measures.tribulation_factors.get(tribulation.id, 1.0),
+			String.num(tribulation.score_multiplier, 2)])
 	lines.append_array(["", "## Mains (rarete exacte sur %d cartes, valeurs ecrites)" % rules.hand_draw_size, "",
 		"| Main | Rarete | Surprise | Qi x Comprehension | Niveau | Priorite |", "| --- | --- | --- | --- | --- | --- |"])
 	var by_priority := content.hands.duplicate()

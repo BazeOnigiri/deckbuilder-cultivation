@@ -15,24 +15,24 @@ gains = Dictionary[StringName, float]({
 &"artefact_bassin_purete": 0.14235074293275152,
 &"artefact_boussole": 0.40603599334847207,
 &"artefact_chaudron_alchimique": 0.2150906538881041,
-&"artefact_cloche": 0.04298460493142864,
+&"artefact_cloche": 0.10811638385752853,
 &"artefact_couronne_immortel": 0.17881792336438584,
 &"artefact_crapaud_jade": 0.0,
 &"artefact_dragon_azur": 0.062487707189729624,
-&"artefact_echelle_celeste": 0.04889856419976035,
+&"artefact_echelle_celeste": 0.09710649596795817,
 &"artefact_epee_volante": 0.21034115901085326,
 &"artefact_ermite": 0.08066095088240033,
-&"artefact_eventail": -0.010726035725141636,
+&"artefact_eventail": 0.06661138627138952,
 &"artefact_ginseng": 0.1261130580935863,
 &"artefact_gourde_elixir": 0.26147254456702496,
 &"artefact_grain_riz": 0.07125806855365036,
 &"artefact_grue": 0.4332433350617768,
 &"artefact_hache": 0.07587793015895716,
 &"artefact_lanterne": 0.2812438535948647,
-&"artefact_lotus_flamme": 0.04941486223112257,
+&"artefact_lotus_flamme": 0.09370250505122746,
 &"artefact_miroir_jumeau": 0.29892314982030155,
 &"artefact_montagne": 0.2378547034527152,
-&"artefact_nuage_pourpre": 0.051880129454467516,
+&"artefact_nuage_pourpre": 0.10376025890893481,
 &"artefact_oiseau_vermillon": 0.2445978686502046,
 &"artefact_pagode": 0.12922425662023707,
 &"artefact_perle_marees": 0.23773401040642272,
@@ -68,11 +68,11 @@ hand_frequencies = Dictionary[String, float]({
 "main_purete": 0.0295,
 "main_souffle": 0.062
 })
-content_signature = "ff9d469f24af8271815e8f505750f859"
+content_signature = "4cadefc9f97fbf42743510227781af35"
 stone_yields = {
-&"artefact_arbre_sapeques": 9.0,
-&"artefact_balai_bambou": 2.4000000000000004,
-&"artefact_crapaud_jade": 3.0
+&"artefact_arbre_sapeques": 18.0,
+&"artefact_balai_bambou": 4.800000000000001,
+&"artefact_crapaud_jade": 6.0
 }
 hand_rarities = Dictionary[String, float]({
 "main_ascension": 0.0028402016225049396,
@@ -87,4 +87,14 @@ hand_rarities = Dictionary[String, float]({
 "main_paire": 0.483083304704101,
 "main_purete": 0.0008270667124734384,
 "main_souffle": 1.0
+})
+tribulation_factors = Dictionary[StringName, float]({
+&"tribulation_demon": 0.5514998961415354,
+&"tribulation_epees": 0.9161314275713965,
+&"tribulation_flammes": 0.9157765096686507,
+&"tribulation_foudre": 0.6417978799788685,
+&"tribulation_gel": 0.813393325907862,
+&"tribulation_karma": 0.7567798315039523,
+&"tribulation_neant": 0.8265596352032764,
+&"tribulation_vent_noir": 0.7587081642566595
 })

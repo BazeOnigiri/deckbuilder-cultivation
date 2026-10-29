@@ -52,6 +52,12 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Corrigé
 
+- Equilibrage : les royaumes 5 a 8 etaient hors de portee (objectifs x2,5 par royaume, x609 du royaume 1 au 8). Pression ramenee de 1,25 a 0,9 (x1,8 par royaume, docs/equilibrage.md) apres simulation de constructions de run ; le mode sans fin suit la meme courbe.
+- Equilibrage des tribulations : chaque contrainte est mesuree par le joueur de reference (appliquee comme en round, avec une defausse naive) et l'objectif de la tribulation suit sa difficulte propre, pour qu'une tribulation tiree au hasard soit aussi dure qu'une autre (la tribulation du demon interieur, main de 6 cartes, demande bien moins que celle des flammes celestes).
+- Pierre d'eveil plafonnee a x1,5 (10 crans, nouveau champ growth_cap des artefacts) : elle grandissait sans fin a chaque carte defaussee.
+- Artefacts trop faibles renforces : Eventail +80 Qi, Cloche +5 Comprehension, Nuage pourpre x5, Lotus de flamme +8 Qi par carte Feu, Echelle celeste +60 Qi. Arbre a sapeques et Crapaud de jade valorises sur 6 goulots au lieu de 3.
+- Prix : heritages Meridien 14 et Grand Meridien 16 (une main de plus vaut plus qu'une defausse), Marche celeste 8, Cage aux betes 5 ; supplement des auras d'artefact Brume 5 et Cinq couleurs 7 ; rencontres ramenees a l'echelle d'un goulot (bete blessee 4 pierres, carte vendue au marche noir 4, reve prophetique 6, faveur de la renarde 4).
+- Difficulte 2 renommee « Paume vide » (Empty Palm) : son effet est de ne plus gagner de pierre par main restante.
 - Vente d'un artefact avec aura : le supplement de l'aura entre dans le prix de vente.
 - Carte au focus ou survolee : dessinee par-dessus sa voisine de droite dans l'eventail.
 - Onglets de la Voie de cultivation (Touches, Aide...) : defilent au clavier et a la manette (haut et bas).

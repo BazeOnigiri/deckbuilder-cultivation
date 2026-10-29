@@ -29,4 +29,5 @@ icon = ExtResource("icon")
 price = 8
 effects = Array[ExtResource("2")]([SubResource("effect_1"), SubResource("effect_2")])
 growth_step = 0.05
+growth_cap = 10
 rarity = 1

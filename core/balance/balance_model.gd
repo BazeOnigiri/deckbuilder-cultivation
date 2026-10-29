@@ -42,6 +42,16 @@ static func bottleneck_multiplier(rules: BalanceRules, index: int) -> float:
 	return 1.0 + rules.bottleneck_step * index
 
 
+## Multiplicateur d'objectif d'un goulot : celui de son rang, fois la difficulte propre de sa contrainte
+## (tribulation_factors) pour qu'une tribulation tiree au hasard soit aussi dure qu'une autre. Arrondi a
+## significant_digits chiffres ; un goulot sans contrainte ou une tribulation non mesuree garde son multiplicateur.
+static func tribulation_multiplier(rules: BalanceRules, measures: BalanceMeasures, bottleneck: BottleneckDefinition,
+		multiplier: float) -> float:
+	if bottleneck == null or bottleneck.constraint == null or not measures.tribulation_factors.has(bottleneck.id):
+		return multiplier
+	return round_to_digits(multiplier * measures.tribulation_factors[bottleneck.id], rules.significant_digits)
+
+
 ## Pierres de base d'un goulot : une part fixe et une part qui suit sa difficulte.
 static func reward(rules: BalanceRules, multiplier: float) -> int:
 	return roundi(rules.reward_base + rules.reward_per_difficulty * multiplier)
@@ -83,7 +93,7 @@ static func solve(rules: BalanceRules, measures: BalanceMeasures, economy: Econo
 		for index: int in realm.bottlenecks.size():
 			var multiplier := bottleneck_multiplier(rules, index)
 			rewards.append(reward(rules, multiplier))
-			row.append([multiplier, rewards[-1]])
+			row.append([tribulation_multiplier(rules, measures, realm.bottlenecks[index], multiplier), rewards[-1]])
 		bottlenecks.append(row)
 		realm_rewards.append(rewards)
 	# La pierre se regle sur le premier royaume, celui ou le joueur commence a acheter.

@@ -20,4 +20,4 @@ takes_slot = true
 for_cards = true
 for_artifacts = true
 weight = 50.0
-price_bonus = 2
+price_bonus = 5
