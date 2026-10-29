@@ -31,7 +31,7 @@ outcomes = Array[ExtResource("3")]([SubResource("r2")])
 
 [sub_resource type="Resource" id="r5"]
 script = ExtResource("7")
-amount = 7
+amount = 4
 
 [sub_resource type="Resource" id="r6"]
 script = ExtResource("8")

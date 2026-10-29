@@ -17,6 +17,9 @@ extends Resource
 @export var stone_yields: Dictionary = {}
 ## Rarete exacte de chaque main, par id : part des tirages de hand_draw_size cartes qui la contiennent.
 @export var hand_rarities: Dictionary[String, float] = {}
+## Difficulte propre de chaque tribulation, par id : score du joueur de reference sous sa contrainte / sans
+## (defausse naive des deux cotes). 0,5 : la contrainte divise le score par deux.
+@export var tribulation_factors: Dictionary[StringName, float] = {}
 
 
 ## Score d'un round atteint par la part success des joueurs (quantile 1 - success).

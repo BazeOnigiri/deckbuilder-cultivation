@@ -24,6 +24,9 @@ pipeline de score). À chaque main, il joue la meilleure combinaison de 5 cartes
 - On simule 2 000 mains (500 rounds). L'erreur d'une moyenne baisse en 1/√n : 4 fois plus de mains
   donnent une mesure 2 fois plus précise.
 - La graine est fixe : mêmes mesures à chaque lancement (vérifié).
+- Pour les tribulations seulement (section 5 ter), il défausse naïvement : quand sa meilleure main est un Souffle ou
+  une Paire (`reference_discard_priority` = 20), il jette ses cartes qui ne comptent pas, les plus basses d'abord.
+  Sans cela, une contrainte sur les défausses (Karma) ne lui coûterait rien.
 
 **La méthode s'appelle Monte-Carlo** : quand une probabilité est trop compliquée à calculer à la main
 (ici, « quel score fait-on avec 8 cartes tirées au hasard ? »), on la fait jouer des milliers de fois et on regarde les moyennes.
@@ -67,10 +70,15 @@ seule unité, et le prix suit cette valeur. Un objet deux fois plus utile coûte
   Un manuel de main rare coûte peu, parce que le joueur moyen la joue rarement. Un joueur qui construit son paquet
   autour de cette main en tire plus : c'est une récompense de la stratégie.
 
-Un artefact qui rapporte des **pierres** vaut ce qu'il rapporte pendant `yield_bottlenecks` goulots (3, la durée
-moyenne où on le garde) : chaque pierre compte pour k de gain. Le joueur de référence ne défausse pas : on suppose
+Un artefact qui rapporte des **pierres** vaut ce qu'il rapporte pendant `yield_bottlenecks` goulots : chaque pierre
+compte pour k de gain. L'horizon est de 6 goulots (deux royaumes). Une run en compte 24 ; acheté vers le royaume 2
+ou 3, un Arbre à sapèques en a encore 15 à 18 devant lui. On n'en compte qu'un tiers : une pierre gagnée tard achète
+moins (emplacements pleins), et l'artefact occupe un emplacement qu'un artefact de score aurait pris. Avec 3 goulots,
+l'Arbre (3 pierres par goulot) était remboursé en un royaume puis rapportait le reste de la run gratuitement. Le joueur de référence ne défausse pas : on suppose
 `reference_discarded_cards` cartes défaussées par goulot, dont la part du paquet qui remplit la condition.
 Un artefact qui **grandit** est mesuré avec `reference_growth_stacks` crans (6), sa valeur moyenne sur la durée.
+Un artefact qui grandit à chaque carte défaussée peut gagner 12 crans par goulot : il a un plafond (`growth_cap`,
+10 pour la Pierre d'éveil, soit x1,5 au plus). Sans plafond, elle atteignait x6 après 100 cartes défaussées.
 
 ## 3 bis. Les raretés des artefacts : plus fort, plus rare
 
@@ -103,9 +111,16 @@ prend le 50e plus petit. Le premier goulot est réussi par presque tout le monde
 - `W_b` = pierres gagnées au goulot b : récompense, plus 1 pierre par main restante (le joueur de référence en garde 1),
   plus les intérêts de son épargne (10 pierres, soit 2 d'intérêt).
 - `1 + k × W_b` est le facteur dont le joueur grandit en dépensant ces pierres. `Π` est le produit sur les goulots du royaume,
-  qui vaut `power_per_realm` par construction (section 3) : G = π × 2 = 2,5 avec les réglages actuels.
-- **π, la pression** (1,25) : la difficulté va 25 % plus vite que le joueur à chaque royaume. Sans elle, un joueur
-  moyen resterait toujours pile au niveau. Avec elle, il doit jouer mieux que la moyenne (défausses, combos) pour suivre.
+  qui vaut `power_per_realm` par construction (section 3) : G = π × 2 = 1,8 avec les réglages actuels.
+- **π, la pression** (0,9) : l'écart entre la difficulté et la puissance que la formule prête au joueur. Elle valait
+  1,25 (G = 2,5, objectifs ×609 du royaume 1 au royaume 8). Mais la formule suppose que le joueur double sa puissance
+  à chaque royaume, ce qui n'est vrai qu'au début : ensuite les emplacements (5 à 7) sont pleins et les récompenses
+  fixes. Des constructions simulées (artefacts achetés avec les pierres d'une run, niveaux de main, défausse naïve)
+  donnent, en score moyen d'un round : 2 400 au royaume 2, 5 300 au 3, 9 300 au 4, 17 600 au 6, 40 000 au 8.
+  Leur croissance tombe de ×2 à ×1,5 par royaume. Avec G = 2,5, le royaume 5 demandait déjà 27 000 et la dernière
+  tribulation 560 000 : injouable. Avec G = 1,8, le grand goulot du royaume 8 demande 42 000 : la construction
+  simulée ne passe pas tout à fait, il faut mieux jouer (défausses, pilules, artefacts qui grandissent, combos).
+  Le début reste large (marge ×1,7 à ×2), la fin serrée : c'est voulu, la tension monte avec la run.
 
 **Pourquoi une exponentielle ?** Les maths des jeux « idle » (Kongregate) le montrent : une exponentielle finit
 toujours par dépasser une croissance plus lente. La puissance du joueur, elle, est limitée (5 emplacements d'artefact).
@@ -113,6 +128,27 @@ Une run reste donc tendue jusqu'au bout. C'est aussi ce qui rend le modèle **pr
 suivent la même courbe sans qu'on écrive un seul nombre.
 
 `arrondi_2_chiffres` sert la lisibilité : 1 117 devient 1 100.
+
+Le **mode sans fin** prolonge la même courbe (même G, `GameContent.compute_endless_growth`) et les **difficultés**
+la décalent : objectifs +20 % puis +50 % au total (`target_percent`), moins d'un royaume de croissance (×1,8).
+
+## 5 ter. Les tribulations : une difficulté propre mesurée
+
+Chaque royaume tire sa tribulation au hasard. Une contrainte ne pèse pas pareil : jouer avec 6 cartes en main
+divise presque le score par deux, sceller le feu le baisse de 10 %. L'outil mesure donc chaque contrainte avec le
+joueur de référence, appliquée comme en round (mains, taille de main, cartes jouées, cartes qui comptent, Qi des
+cartes, coût d'une défausse), défausse naïve des deux côtés :
+
+> difficulté propre f = E[score sous la contrainte] / E[score sans]
+
+> multiplicateur de la tribulation = arrondi_2_chiffres(2 × f)
+
+L'objectif de la tribulation est donc celui d'un goulot ×2 pour le joueur de référence, quelle que soit la
+contrainte. La récompense reste celle d'un goulot ×2. Mesures actuelles : démon intérieur (main de 6) 0,55,
+foudre (4 cartes) 0,64, vent noir et karma 0,76, gel 0,81, néant 0,83, flammes et épées 0,92. L'objectif affiché
+d'une tribulation dure (démon : ×1,1) peut donc être plus bas que celui du grand goulot (×1,5) : la contrainte
+fait le reste. Mesure faite au départ, sans artefact : une construction peut souffrir plus (foudre et un paquet
+qui joue 5 cartes de même élément) ou moins qu'elle.
 
 ## 5 bis. Les mains : plus rare, plus fort
 
@@ -155,7 +191,7 @@ Le tableau des mains du rapport (`docs/equilibrage-rapport.md`) donne rareté, s
 | Ressenti | Paramètre (`equilibrage.tres`) | Effet |
 | --- | --- | --- |
 | Le début est trop dur ou trop facile | `first_bottleneck_success` (0,9) | 0,95 : plus facile, 0,8 : plus dur |
-| La fin est trop dure ou trop facile | `pressure` (1,25) | 1,15 : plus doux, 1,4 : plus raide |
+| La fin est trop dure ou trop facile | `pressure` (0,9) | 0,85 : plus doux, 1 : plus raide (G = 2) |
 | Tout coûte trop cher ou pas assez | `power_per_realm` (2) | 2,5 : pierres plus précieuses, prix plus bas, mais objectifs plus raides |
 | Pas assez de pierres | `reward_base`, `reward_per_difficulty` | récompenses des goulots |
 | Les mains rares ne valent pas l'effort | `strongest_hand_strength` (1 800) | plus haut : toutes les mains rares montent |
@@ -174,8 +210,19 @@ Après tout changement de paramètre, de main, de paquet ou d'objet : relancer l
 ## 8. Limites connues (dites, pas cachées)
 
 - Les prix des sceaux-trésor (content/packs/) et des héritages (content/legacies/) sont des données posées à la main :
-  le joueur de référence n'ouvre pas de sceau et n'achète pas d'héritage. Un héritage qui ajoute une main ou une
-  défausse rend la suite plus facile que ce que les objectifs supposent ; à régler après des parties (section 6).
+  le joueur de référence n'ouvre pas de sceau et n'achète pas d'héritage. Repères : une main de plus vaut environ
+  +25 % de score et des pierres de main restante (Méridien 14, Grand Méridien 16, plus cher qu'une défausse à 10 et
+  12) ; une relance moins chère ne rapporte que si l'on relance (Marché céleste 8) ; le sceau des bêtes (1 artefact
+  parmi 2) coûte 5, moins que l'artefact moyen qu'il donne.
+- Hors modèle, posés à la main avec un raisonnement chiffré (repères : environ 7 pierres par goulot, prix moyens des
+  artefacts par rareté 2 / 7 / 10 / 13) : pilules d'amélioration, d'aura et de talisman (3 à 5 pierres, une ou deux
+  cartes sur 70), présages (environ ce que rapporte le goulot passé : 6 pierres), issues des rencontres, difficultés
+  et défis. Les rencontres ont été ramenées à l'échelle d'un goulot : 4 pierres pour un artefact tiré au hasard
+  (la bête blessée), 4 pierres pour une carte vendue au marché noir, 6 pierres dans le rêve prophétique, 4 pierres
+  pour un artefact gratuit (la renarde).
+- Supplément de prix des auras d'artefact (content/editions/, `price_bonus`, 6 % des offres) : une simulation
+  d'audit mesure +38 % de score pour la Brume (+30 Qi) et +50 % pour les Cinq couleurs (x1,5), soit 10 et 13
+  pierres. Le supplément en vaut la moitié (5 et 7) : c'est une trouvaille de chance, pas un choix.
 
 - Chaque objet est mesuré **seul** : les combos entre artefacts ne sont pas mesurés.
 - Le joueur de référence ne défausse pas et n'achète rien pendant la mesure. La croissance du joueur entre les royaumes

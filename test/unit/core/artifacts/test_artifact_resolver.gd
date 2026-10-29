@@ -181,6 +181,23 @@ func test_artefact_qui_grandit() -> void:
 	assert_eq(artifacts[0].effects[0].score_effect.amount, 0.0, "la ressource partagee ne change pas")
 
 
+## Bug : la Pierre d'eveil grandissait sans fin (x6 a 100 cartes defaussees). growth_cap borne les crans,
+## comptes et appliques, meme si la sauvegarde en porte plus.
+func test_artefact_qui_grandit_plafonne() -> void:
+	var grow := ArtifactEffect.new()
+	grow.trigger = ArtifactEffect.Trigger.CARD_DISCARDED
+	grow.grows = true
+	var artifacts := _artifacts([_effect(ArtifactEffect.Trigger.HAND_PLAYED, null, 0.0), grow])
+	artifacts[0].id = &"pierre"
+	artifacts[0].growth_step = 4.0
+	artifacts[0].growth_cap = 3
+	var stacks := {}
+	ArtifactResolver.after_discard(artifacts, stacks, C.hand([[C.FEU, 2], [C.EAU, 3], [C.BOIS, 4], [C.METAL, 5]]))
+	assert_eq(stacks[&"pierre"], 3)
+	var result := _result("main_paire", [[C.FEU, 4]])
+	assert_eq(ArtifactResolver.effects_for(artifacts, result, [], {&"pierre": 50})[0].amount, 12.0)
+
+
 func test_condition_de_main_sans_main_ne_plante_pas() -> void:
 	var hand := HandIsCondition.new()
 	hand.hand_ids = ["main_paire"]

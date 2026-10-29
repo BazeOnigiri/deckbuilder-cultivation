@@ -48,11 +48,14 @@ func test_tous_les_goulots_valides() -> void:
 			assert_true(bottleneck.is_valid(), "goulot invalide : %s" % res.resource_path)
 
 
-## La difficulte ne doit jamais baisser d'un goulot au suivant.
+## La difficulte ne doit jamais baisser d'un goulot au suivant. Une tribulation est a part : son objectif suit sa
+## difficulte propre mesuree (BalanceModel.tribulation_multiplier), il peut etre plus bas sous une contrainte dure.
 func test_objectifs_strictement_croissants() -> void:
 	var progress := RunProgress.new(_realms)
 	var previous: int = progress.current_target()
 	while progress.advance():
+		if progress.current_bottleneck().constraint != null:
+			continue
 		assert_gt(progress.current_target(), previous, "objectif non croissant : %s" % progress.current_realm().id)
 		previous = progress.current_target()
 

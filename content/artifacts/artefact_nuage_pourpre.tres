@@ -13,7 +13,7 @@ hand_ids = Array[String](["main_carre", "main_cinq_souverains"])
 [sub_resource type="Resource" id="score_1"]
 script = ExtResource("3")
 phase = 2
-amount = 3.0
+amount = 5.0
 
 [sub_resource type="Resource" id="effect_1"]
 script = ExtResource("2")
@@ -27,6 +27,6 @@ name_key = "ARTIFACT_NUAGE_POURPRE"
 description_key = "ARTIFACT_NUAGE_POURPRE_DESC"
 glyph = "云"
 icon = ExtResource("icon")
-price = 1
+price = 3
 effects = Array[ExtResource("2")]([SubResource("effect_1")])
 rarity = 0

@@ -12,6 +12,6 @@ scale = 0.5
 script = ExtResource("1")
 id = &"tribulation_gel"
 name_key = "BOTTLENECK_TRIBULATION_GEL"
-score_multiplier = 2.0
+score_multiplier = 1.6
 reward = 5
 constraint = SubResource("constraint")

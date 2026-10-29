@@ -49,3 +49,33 @@ func test_un_niveau_de_main_compte() -> void:
 	for i: int in 5:
 		levels.level_up("main_double_paire")
 	assert_gt(_total_gain(_player.round_scores(10, 7), _player.round_scores(10, 7, [], levels)), 0.0)
+
+
+func _mean(scores: PackedFloat32Array) -> float:
+	var total := 0.0
+	for score: float in scores:
+		total += score
+	return total / scores.size()
+
+
+## La contrainte s'applique comme en round : une main de moins baisse le score, l'element scelle aussi.
+func test_contrainte_de_tribulation_appliquee() -> void:
+	var player := ReferencePlayer.new(_content.starter_deck, _content.round_rules, _content.hands)
+	var free := _mean(player.round_scores(20, 3))
+	player.constraint = ReducedHandsConstraint.new()
+	assert_lt(_mean(player.round_scores(20, 3)), free, "une main de moins")
+	var seal := ElementSealConstraint.new()
+	seal.element = Element.Type.FEU
+	player.constraint = seal
+	assert_lt(_mean(player.round_scores(20, 3)), free, "feu scelle")
+
+
+## Defausse naive : elle aide sans contrainte, et une defausse qui coute une main (karma) la rend chere.
+func test_defausse_naive_et_karma() -> void:
+	var player := ReferencePlayer.new(_content.starter_deck, _content.round_rules, _content.hands)
+	var without := _mean(player.round_scores(20, 3))
+	player.discard_priority = 20
+	var with_discard := _mean(player.round_scores(20, 3))
+	assert_gt(with_discard, without, "defausser Souffle et Paire aide")
+	player.constraint = DiscardCostConstraint.new()
+	assert_lt(_mean(player.round_scores(20, 3)), with_discard, "karma : chaque defausse coute une main")

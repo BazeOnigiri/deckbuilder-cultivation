@@ -66,7 +66,7 @@ static func _settle(artifacts: Array[ArtifactDefinition], stacks: Dictionary, tr
 				continue
 			var hits := _hits(effect, result, held, discarded).size()
 			if effect.grows and hits > 0:
-				stacks[artifact.id] = stacks.get(artifact.id, 0) + hits
+				stacks[artifact.id] = _capped(artifact, stacks.get(artifact.id, 0) + hits)
 			stones += effect.stones * hits * per_counts.get(effect.per, 1)
 	return stones
 
@@ -91,12 +91,16 @@ static func _hits(effect: ArtifactEffect, result: HandResult, held: Array[CardIn
 
 ## L'effet de score avec les crans de l'artefact : une copie, la ressource partagee ne change pas.
 static func _grown(artifact: ArtifactDefinition, score: ScoreEffect, stacks: Dictionary) -> ScoreEffect:
-	var count: int = stacks.get(artifact.id, 0)
+	var count := _capped(artifact, stacks.get(artifact.id, 0))
 	if artifact.growth_step == 0.0 or count == 0:
 		return score
 	var grown := score.duplicate() as ScoreEffect
 	grown.amount += artifact.growth_step * count
 	return grown
+
+
+static func _capped(artifact: ArtifactDefinition, count: int) -> int:
+	return mini(count, artifact.growth_cap) if artifact.growth_cap > 0 else count
 
 
 static func _is_neutral(score: ScoreEffect) -> bool:

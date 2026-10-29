@@ -11,6 +11,12 @@ var _evaluator: HandEvaluator
 var _combinations: Dictionary = {}
 ## Cartes du dernier best_play : le round les defausse avant de repiocher.
 var last_played: Array[CardInstance] = []
+## Contrainte de tribulation appliquee comme RoundState.play (mains, taille de main, cartes jouees, cartes qui
+## comptent, Qi des cartes, cout d'une defausse). Neutre par defaut.
+var constraint: TribulationConstraint = TribulationConstraint.new()
+## Defausse naive : quand sa meilleure main a une priorite au plus egale, il defausse ses cartes qui ne comptent
+## pas (les plus basses d'abord) au lieu de jouer. 0 : jamais.
+var discard_priority: int = 0
 
 
 func _init(deck: DeckDefinition, rules: RoundRules, hands: Array[HandDefinition]) -> void:
@@ -25,21 +31,41 @@ func round_scores(rounds: int, first_seed: int, artifacts: Array[ArtifactDefinit
 		levels: HandLevels = HandLevels.new(), hand_counts: Dictionary = {}, stacks: Dictionary = {}) -> PackedFloat32Array:
 	var scores := PackedFloat32Array()
 	var rng := RandomNumberGenerator.new()
+	var hand_size := constraint.hand_size(_rules.hand_size)
+	var max_selected := constraint.max_selected_cards(_rules.max_selected_cards)
 	for i: int in rounds:
 		rng.seed = first_seed + i
 		var deck := DeckState.new(_deck, rng)
 		var total := 0
-		for hand: int in _rules.hands_per_round:
-			deck.fill_hand(_rules.hand_size)
+		var hands_left := constraint.hands_per_round(_rules.hands_per_round)
+		var discards_left := constraint.discards_per_round(_rules.discards_per_round)
+		while hands_left > 0:
+			deck.fill_hand(hand_size)
 			if deck.hand.is_empty():
 				break
 			var best := best_play(deck.hand, artifacts, levels, stacks)
+			if (best.hand.definition.priority <= discard_priority and discards_left > 0
+					and hands_left > constraint.discard_hand_cost() and not deck.draw_pile.is_empty()):
+				var junk := _junk(deck.hand, best.hand.scoring_cards, max_selected)
+				if not junk.is_empty():
+					deck.discard(junk)
+					discards_left -= 1
+					hands_left -= constraint.discard_hand_cost()
+					continue
 			total += best.total()
 			var hand_id: String = best.hand.definition.id
 			hand_counts[hand_id] = hand_counts.get(hand_id, 0) + 1
 			deck.discard(last_played)
+			hands_left -= 1
 		scores.append(total)
 	return scores
+
+
+## Cartes a defausser : celles qui ne comptent pas, les plus basses d'abord, au plus max_selected.
+func _junk(hand: Array[CardInstance], kept: Array[CardInstance], max_selected: int) -> Array[CardInstance]:
+	var junk: Array[CardInstance] = hand.filter(func(card: CardInstance) -> bool: return not kept.has(card))
+	junk.sort_custom(func(a: CardInstance, b: CardInstance) -> bool: return a.rank < b.rank)
+	return junk.slice(0, max_selected)
 
 
 ## Meilleur coup parmi les cartes en main (score le plus haut). Les cartes jouees vont dans last_played.
@@ -47,14 +73,16 @@ func round_scores(rounds: int, first_seed: int, artifacts: Array[ArtifactDefinit
 func best_play(hand: Array[CardInstance], artifacts: Array[ArtifactDefinition] = [],
 		levels: HandLevels = HandLevels.new(), stacks: Dictionary = {}) -> ScoreContext:
 	var best: ScoreContext = null
-	for combination: PackedInt32Array in _combinations_of(hand.size(), mini(_rules.max_selected_cards, hand.size())):
+	var size := mini(constraint.max_selected_cards(_rules.max_selected_cards), hand.size())
+	for combination: PackedInt32Array in _combinations_of(hand.size(), size):
 		var cards: Array[CardInstance] = []
 		for index: int in combination:
 			cards.append(hand[index])
 		var result := _evaluator.evaluate(cards)
+		result.scoring_cards = result.scoring_cards.filter(constraint.counts)
 		var held: Array[CardInstance] = hand.filter(func(card: CardInstance) -> bool: return not cards.has(card))
 		var context := ScoringPipeline.score_triggered(result, ArtifactResolver.triggered_for(artifacts, result, held, stacks),
-			levels.level_of(result.definition.id))
+			levels.level_of(result.definition.id), constraint.card_qi_scale())
 		if best == null or context.total() > best.total():
 			best = context
 			last_played = cards

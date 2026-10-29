@@ -231,3 +231,19 @@ func test_pierres_d_un_artefact_sur_sa_duree() -> void:
 	discard.condition = wood
 	artifact.effects.assign([discard])
 	assert_almost_eq(BalanceModel.stone_yield(rules, round_rules, deck, artifact), 4 * 0.2 * 3, 1e-6)
+
+
+## Tribulations tirees au hasard : l'objectif d'une tribulation suit sa difficulte propre mesuree.
+func test_multiplicateur_de_tribulation() -> void:
+	var rules := _rules()
+	var measures := _measures([])
+	measures.tribulation_factors[&"demon"] = 0.54
+	var plain := BottleneckDefinition.new()
+	plain.id = &"demon"
+	assert_eq(BalanceModel.tribulation_multiplier(rules, measures, plain, 2.0), 2.0, "sans contrainte : inchange")
+	var tribulation := BottleneckDefinition.new()
+	tribulation.id = &"demon"
+	tribulation.constraint = ReducedHandSizeConstraint.new()
+	assert_almost_eq(BalanceModel.tribulation_multiplier(rules, measures, tribulation, 2.0), 1.1, 1e-6, "2 x 0,54 arrondi")
+	tribulation.id = &"inconnue"
+	assert_eq(BalanceModel.tribulation_multiplier(rules, measures, tribulation, 2.0), 2.0, "non mesuree : inchange")

@@ -11,5 +11,5 @@ script = ExtResource("1")
 id = &"royaume_grande_ascension"
 name_key = "REALM_GRANDE_ASCENSION"
 order = 8
-base_score = 280000
+base_score = 28000
 bottlenecks = Array[ExtResource("2")]([ExtResource("3"), ExtResource("4"), ExtResource("5")])
