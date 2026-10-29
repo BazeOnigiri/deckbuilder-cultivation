@@ -1,9 +1,11 @@
-[gd_resource type="FontVariation" format=3 uid="uid://ccq5750jeimq6"]
+[gd_resource type="FontVariation" load_steps=3 format=3 uid="uid://ccq5750jeimq6"]
 
 [ext_resource type="FontFile" uid="uid://bd88vcaktv4ja" path="res://ui/fonts/NotoSerif-Bold.ttf" id="1_ugufp"]
+[ext_resource type="FontFile" path="res://ui/fonts/MaShanZheng-Sceaux.ttf" id="2_sceau"]
 
 [resource]
 base_font = ExtResource("1_ugufp")
+fallbacks = [ExtResource("2_sceau")]
 opentype_features = {
 1819178349: 1,
 1953396077: 1

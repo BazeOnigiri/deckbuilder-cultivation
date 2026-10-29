@@ -12,6 +12,8 @@ const MOTION_SCALE := &"motion_scale"
 const MENU_AMBIANCE := &"menu"
 ## Surcharges de couleurs du mode contraste eleve : posees sur la racine, le Theme du projet reste dessous.
 const CONTRAST_THEME := preload("res://ui/theme/contraste.tres")
+## Titre de la fenetre et de l'onglet web (config/name reste le nom stable des dossiers de sauvegarde).
+const WINDOW_TITLE := "五行 Wu Xing"
 
 ## Les tests les remplacent pour ne pas toucher aux vraies sauvegardes.
 @export var profile_path: String = ProfileStats.DEFAULT_PATH
@@ -29,6 +31,7 @@ var _settings_storage: SaveStorage
 
 
 func _ready() -> void:
+	DisplayServer.window_set_title(WINDOW_TITLE)
 	_settings_storage = SaveStorage.new(settings_path)
 	_settings = GameSettings.load_from(_settings_storage)
 	# En web le navigateur refuse le plein ecran sans geste du joueur : jamais applique au demarrage.

@@ -8,6 +8,9 @@ signal stats_requested
 signal options_requested
 signal quit_requested
 
+## Les licences OFL imposent d'accompagner les polices ; export_presets.cfg les inclut dans le pck.
+const FONT_LICENSES: Array[String] = ["res://ui/fonts/OFL-NotoSerif.txt", "res://ui/fonts/OFL-MaShanZheng.txt"]
+
 ## Apercu de la run sauvegardee, null si aucune. Injecte par main avant add_child.
 var saved_run: RunState
 ## Injecte par main avant add_child. Par defaut des reglages neufs (scene lancee seule, tests).
@@ -101,5 +104,11 @@ func _show_credits() -> void:
 	text.theme_type_variation = &"ScrollRichText"
 	text.custom_minimum_size = Vector2(get_theme_constant(&"credits_width", &"ScrollPanel"),
 		get_theme_constant(&"tab_height", &"ScrollPanel"))
-	text.text = tr("UI_CREDITS_GAME") + "\n\n" + tr("UI_CREDITS_FONTS") + "\n\n" + tr("UI_CREDITS_INTRO") + "\n\n" + Engine.get_license_text()
+	var parts: Array[String] = [tr("UI_CREDITS_GAME"), tr("UI_CREDITS_FONTS"), tr("UI_CREDITS_SOUNDS")]
+	for path in FONT_LICENSES:
+		parts.append(FileAccess.get_file_as_string(path))
+	parts.append(tr("UI_CREDITS_INTRO"))
+	parts.append(Engine.get_license_text())
+	parts.append(ThirdPartyCredits.build(Engine.get_copyright_info(), Engine.get_license_info()))
+	text.text = "\n\n".join(parts)
 	ScrollOverlay.open(self, "UI_CREDITS", text, not settings.reduce_motion)
