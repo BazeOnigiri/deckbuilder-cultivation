@@ -11,13 +11,21 @@
 
 ## Polices (incluses dans le projet)
 
-- Noto Serif, Google, SIL Open Font License 1.1, <https://fonts.google.com/specimen/Noto+Serif> (sous-ensemble latin)
-- Ma Shan Zheng, Ma Shan Zheng, SIL Open Font License 1.1, <https://fonts.google.com/specimen/Ma+Shan+Zheng> (sous-ensemble de 32 caractères)
+- Noto Serif, Google, SIL Open Font License 1.1, <https://fonts.google.com/specimen/Noto+Serif> (sous-ensemble latin, texte de licence : `ui/fonts/OFL-NotoSerif.txt`)
+- Ma Shan Zheng, Ma Shan Zheng, SIL Open Font License 1.1, <https://fonts.google.com/specimen/Ma+Shan+Zheng> (sous-ensemble de 86 sinogrammes, texte de licence : `ui/fonts/OFL-MaShanZheng.txt`)
 
-## Images
+## Conception et usage d'IA
 
-- Les icônes des artefacts (`content/artifacts/icones/*.svg`) sont des SVG écrits à la main avec l'aide d'une IA
-  (Claude) : à signaler sur la page itch.io.
+- Conception du jeu : BazeOnigiri.
+- Le code, les dessins SVG, les shaders, les sons et les textes ont été réalisés avec l'aide d'une IA
+  (Claude, Anthropic). La maquette visuelle a été générée avec Claude Design. À signaler sur la page itch.io.
+
+## Images et shaders
+
+- Tous les SVG sont écrits par l'IA (Claude) à partir des consignes de BazeOnigiri : `icon.svg`,
+  `content/artifacts/icones/` (artefacts), `ui/cards/figures/`, `ui/cards/icons/`, `ui/kit/`, `ui/icons/`,
+  `ui/round/`, `ui/shop/`. Aucun asset graphique externe.
+- Les shaders (`*.gdshader`) sont écrits par l'IA (Claude).
 
 ## Sons
 

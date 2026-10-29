@@ -13,6 +13,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Vente des pilules, en round comme en boutique : S sur la pilule sous la souris montre le sceau « Vendre (n) », S une seconde fois (ou un clic sur le sceau) la vend pour la moitie de son prix arrondie en dessous. Un clic sur une pilule l'utilise toujours.
 - Heritages possedes en emplacements avec infobulle (nom et description) dans l'onglet Run de la Voie de cultivation et dans le rouleau de la partie sauvegardee du menu.
 - Infobulle sur les cartes d'un sceau de disciples (rang, element, Qi) et sur le compteur de pierres de la colonne laterale.
+- Icone originale (cinq elements en pentagone dans un cercle dore) a la place du logo Godot, icon.ico pour l'exe Windows (applique seulement avec rcedit et modify_resources). Titre de fenetre et d'onglet « 五行 Wu Xing » (config/name inchange pour garder les sauvegardes), config/version.
+- Credits : composants tiers du moteur et leurs licences, textes des licences OFL des polices, ligne des sons, declaration d'usage d'IA corrigee (code, SVG, shaders, sons, textes). README.md et LICENSE (code MIT, assets tous droits reserves).
 
 ### Corrigé
 
@@ -32,6 +34,8 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Boutique : plus de relance pendant qu'un sceau est ouvert, et la relance ne propose plus un artefact deja dans les choix du sceau.
 - Heritages : un modificateur sur une propriete decimale (ex : sell_fraction) garde sa partie decimale.
 - Description de la pilule de fusion : le rang est plafonne au Souverain.
+- Les sinogrammes des badges de rarete (凡 灵 神) s'affichent : ils sont ajoutes a la police des sceaux, qui sert de police de secours aux polices Noto Serif. Un test verifie que chaque sinogramme de textes.csv y figure.
+- .gutconfig.json exclu de l'export, licences OFL incluses dans l'export.
 
 ## [1.1.0] - 2026-10-28
 

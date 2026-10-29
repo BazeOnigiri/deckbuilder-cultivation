@@ -95,3 +95,12 @@ func test_rouleau_de_partie_liste_les_heritages() -> void:
 	var slots := _overlay(menu).find_children("*", "ItemSlot", true, false)
 	assert_eq(slots.size(), 1)
 	assert_eq((slots[0] as ItemSlot).kind, ItemSlot.Kind.LEGACY)
+
+
+func test_credits_incluent_les_licences_ofl_et_les_composants_tiers() -> void:
+	var menu := _menu(false)
+	menu.get_node("%CreditsButton").pressed.emit()
+	var text: RichTextLabel = _overlay(menu).find_children("*", "RichTextLabel", true, false)[0]
+	for path in menu.FONT_LICENSES:
+		assert_string_contains(text.text, FileAccess.get_file_as_string(path).substr(0, 40))
+	assert_string_contains(text.text, Engine.get_copyright_info()[0].name)

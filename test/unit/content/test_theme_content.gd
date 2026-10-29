@@ -35,3 +35,24 @@ func test_contraste_texte_suffisant() -> void:
 	var bouton: StyleBoxFlat = theme.get_stylebox("normal", "Button")
 	assert_gt(Contrast.ratio(theme.get_color("font_color", "Label"), fond), 4.5, "texte sur fond")
 	assert_gt(Contrast.ratio(theme.get_color("font_color", "Button"), bouton.bg_color), 4.5, "texte de bouton")
+
+func test_polices_noto_ont_les_sceaux_en_secours() -> void:
+	for path: String in ["res://ui/fonts/noto_serif_regular_tnum.tres", BOLD_PATH]:
+		var font: FontVariation = load(path)
+		assert_eq(font.fallbacks.size(), 1, "pas de police de secours : %s" % path)
+		if font.fallbacks.size() == 1:
+			assert_eq(font.fallbacks[0].resource_path, "res://ui/fonts/MaShanZheng-Sceaux.ttf")
+
+
+func test_chaque_sinogramme_des_textes_est_dans_la_police_des_sceaux() -> void:
+	var seals: FontFile = load("res://ui/fonts/MaShanZheng-Sceaux.ttf")
+	var file := FileAccess.open("res://localization/textes.csv", FileAccess.READ)
+	var missing := {}
+	while not file.eof_reached():
+		var line := file.get_csv_line()
+		for column in range(1, mini(line.size(), 3)):
+			for character in line[column]:
+				# 0x2E80 : debut des blocs CJK, tout ce qui est en dessous est du latin
+				if character.unicode_at(0) >= 0x2E80 and not seals.has_char(character.unicode_at(0)):
+					missing[character] = true
+	assert_eq(missing.keys(), [], "sinogrammes absents de la police des sceaux")
