@@ -21,6 +21,8 @@ var manuals: Array[ManualDefinition]
 var pills: Array[PillDefinition]
 var packs: Array[PackDefinition]
 var legacies: Array[LegacyDefinition]
+## Ameliorations, auras et talismans des cartes.
+var modifiers := CardModifierCatalog.new()
 
 
 static func load_default() -> GameContent:
@@ -37,16 +39,25 @@ static func load_default() -> GameContent:
 	content.pills = PillCatalog.load_definitions()
 	content.packs = PackCatalog.load_definitions()
 	content.legacies = LegacyCatalog.load_definitions()
+	content.modifiers = CardModifierCatalog.load_default()
 	return content
 
 
 func new_run(rng: RandomNumberGenerator) -> RunState:
-	return RunState.new(DeckState.new(starter_deck, rng), round_rules, HandEvaluator.new(hands), RunProgress.new(realms), economy)
+	return equip(RunState.new(DeckState.new(starter_deck, rng), round_rules, HandEvaluator.new(hands), RunProgress.new(realms),
+		economy))
+
+
+## Donne a la run le contenu qu'elle tire elle-meme (pilules creees par un talisman).
+func equip(run: RunState) -> RunState:
+	run.pill_pool = pills
+	run.shop_base = shop_rules
+	return run
 
 
 ## saved : offres d'une boutique sauvegardee. Vide : nouvelles offres tirees au hasard.
 func new_shop(run: RunState, rng: RandomNumberGenerator, saved: Dictionary = {}) -> ShopState:
-	return ShopState.new(run, artifacts, manuals, pills, packs, legacies, starter_deck, shop_rules, rng, saved)
+	return ShopState.new(run, artifacts, manuals, pills, packs, legacies, starter_deck, shop_rules, rng, saved, modifiers)
 
 ## Recherches par id pour la sauvegarde. Contenu retire du jeu : null.
 func card_by_id(id: StringName) -> CardData:

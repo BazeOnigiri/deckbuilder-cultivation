@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TalismanDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/talisman_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"talisman_alchimie"
+name_key = "TALISMAN_ALCHIMIE"
+description_key = "TALISMAN_ALCHIMIE_DESC"
+glyph = "炉"
+color = Color(0.62, 0.4, 0.8, 1)
+discard_pill = true

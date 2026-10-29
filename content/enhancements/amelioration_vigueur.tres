@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EnhancementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/enhancement_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="score"]
+
+[sub_resource type="Resource" id="scored"]
+script = ExtResource("score")
+phase = 0
+amount = 30.0
+
+[resource]
+script = ExtResource("1")
+id = &"amelioration_vigueur"
+name_key = "ENH_VIGUEUR"
+description_key = "ENH_VIGUEUR_DESC"
+glyph = "劲"
+color = Color(0.45, 0.82, 0.62, 1)
+scored_effect = SubResource("scored")

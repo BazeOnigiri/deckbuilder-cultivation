@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EditionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/edition_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="score"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("score")
+phase = 1
+amount = 6.0
+
+[resource]
+script = ExtResource("1")
+id = &"aura_aurore"
+name_key = "AURA_AURORE"
+description_key = "AURA_AURORE_DESC"
+glyph = "霞"
+color = Color(0.98, 0.62, 0.45, 1)
+score_effect = SubResource("effect")
+takes_slot = true
+for_cards = true
+for_artifacts = false
+weight = 35.0
+price_bonus = 3

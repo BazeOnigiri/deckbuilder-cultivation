@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EditionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/edition_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="score"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("score")
+phase = 2
+amount = 1.5
+
+[resource]
+script = ExtResource("1")
+id = &"aura_cinq_couleurs"
+name_key = "AURA_CINQ_COULEURS"
+description_key = "AURA_CINQ_COULEURS_DESC"
+glyph = "彩"
+color = Color(0.95, 0.5, 0.85, 1)
+score_effect = SubResource("effect")
+takes_slot = true
+for_cards = true
+for_artifacts = true
+weight = 15.0
+price_bonus = 5

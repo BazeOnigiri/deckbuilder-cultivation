@@ -6,4 +6,4 @@ extends TribulationConstraint
 
 
 func counts(card: CardInstance) -> bool:
-	return card.rank < min_rank
+	return card.is_rankless() or card.rank < min_rank

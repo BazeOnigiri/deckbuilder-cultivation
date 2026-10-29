@@ -13,6 +13,8 @@ var offers: Array[ArtifactDefinition] = []
 var manual_offers: Array[ManualDefinition] = []
 var pill_offers: Array[PillDefinition] = []
 var pack_offers: Array[PackDefinition] = []
+## Aura des artefacts proposes, par id (les offres sont distinctes).
+var offer_editions: Dictionary = {}
 ## Sceau ouvert, en attente des choix du joueur. null si aucun.
 var opening: PackOpening
 var reroll_cost: int
@@ -29,10 +31,12 @@ var _base_rules: ShopRules
 var _deck: DeckDefinition
 var _rules: ShopRules
 var _rng: RandomNumberGenerator
+var _modifiers: CardModifierCatalog
 
 
-func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[ManualDefinition], pills: Array[PillDefinition], packs: Array[PackDefinition], legacies: Array[LegacyDefinition], deck: DeckDefinition, rules: ShopRules, rng: RandomNumberGenerator, saved: Dictionary = {}) -> void:
+func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[ManualDefinition], pills: Array[PillDefinition], packs: Array[PackDefinition], legacies: Array[LegacyDefinition], deck: DeckDefinition, rules: ShopRules, rng: RandomNumberGenerator, saved: Dictionary = {}, modifiers: CardModifierCatalog = null) -> void:
 	_run = run
+	_modifiers = modifiers if modifiers != null else CardModifierCatalog.new()
 	_catalog = catalog
 	_manuals = manuals
 	_pills = pills
@@ -56,21 +60,35 @@ func _init(run: RunState, catalog: Array[ArtifactDefinition], manuals: Array[Man
 		_restore(saved)
 
 
+## Prix de l'artefact propose, aura comprise.
+func price_of(index: int) -> int:
+	var edition: EditionDefinition = offer_editions.get(offers[index].id)
+	return offers[index].price + (edition.price_bonus if edition != null else 0)
+
+
+## Un artefact dont l'aura ne prend pas d'emplacement s'achete meme emplacements pleins.
 func can_buy(index: int) -> bool:
-	return (index >= 0 and index < offers.size()
-		and _run.artifacts.size() < _rules.max_artifacts
-		and _run.stones >= offers[index].price)
+	if index < 0 or index >= offers.size():
+		return false
+	var edition: EditionDefinition = offer_editions.get(offers[index].id)
+	return ((_has_artifact_slot() or (edition != null and not edition.takes_slot))
+		and _run.stones >= price_of(index))
 
 
 func buy(index: int) -> bool:
 	if not can_buy(index):
 		return false
 	var artifact: ArtifactDefinition = offers[index]
-	_run.stones -= artifact.price
-	_run.artifacts.append(artifact)
+	_run.stones -= price_of(index)
+	_run.add_artifact(artifact, offer_editions.get(artifact.id))
+	offer_editions.erase(artifact.id)
 	offers.remove_at(index)
 	artifact_bought.emit(artifact)
 	return true
+
+
+func _has_artifact_slot() -> bool:
+	return _run.artifact_slots_used() < _rules.max_artifacts
 
 
 ## Un manuel n'occupe pas d'emplacement d'artefact.
@@ -158,6 +176,11 @@ func buy_pack(index: int) -> bool:
 ## Ouvre le sceau : ses choix sont tires tout de suite. Le prix se paie avant (achat), ou jamais (menu debug).
 func open_pack(pack: PackDefinition) -> void:
 	opening = PackOpening.new(pack, _pack_choices(pack))
+	if pack.kind == PackDefinition.Kind.CARD:
+		for data: Resource in opening.choices:
+			var card := CardInstance.new(-1, data as CardData, _deck.ranks)
+			_modifiers.roll_onto(card, _rng, pack.enhancement_chance, pack.edition_chance, pack.talisman_chance)
+			opening.cards.append(card)
 	offers_changed.emit()
 
 
@@ -167,7 +190,7 @@ func can_take(index: int) -> bool:
 		return false
 	match opening.pack.kind:
 		PackDefinition.Kind.ARTIFACT:
-			return _run.artifacts.size() < _rules.max_artifacts
+			return _has_artifact_slot()
 		PackDefinition.Kind.PILL:
 			return _run.pills.size() < _rules.max_pills
 	return true
@@ -180,13 +203,16 @@ func take(index: int) -> bool:
 	var choice: Resource = opening.choices[index]
 	match opening.pack.kind:
 		PackDefinition.Kind.ARTIFACT:
-			_run.artifacts.append(choice)
+			_run.add_artifact(choice)
 		PackDefinition.Kind.MANUAL:
 			_run.hand_levels.level_up((choice as ManualDefinition).hand.id)
 		PackDefinition.Kind.PILL:
 			_run.pills.append(choice)
 		PackDefinition.Kind.CARD:
-			_run.add_card(choice as CardData, _deck.ranks)
+			var card := _run.add_card(choice as CardData, _deck.ranks)
+			if index < opening.cards.size():
+				card.copy_modifiers_from(opening.cards[index])
+				opening.cards.remove_at(index)
 	opening.choices.remove_at(index)
 	opening.picks_left -= 1
 	if opening.is_done():
@@ -254,6 +280,18 @@ func _roll_offers() -> void:
 	offers.assign(_draw_artifacts(pool, counts[ShopRules.OfferKind.ARTIFACT]))
 	manual_offers.assign(manual_pool.slice(0, counts[ShopRules.OfferKind.MANUAL]))
 	pill_offers.assign(pill_pool.slice(0, counts[ShopRules.OfferKind.PILL]))
+	_roll_editions()
+
+
+## Chaque artefact propose porte rarement une aura. Chance nulle : la RNG ne bouge pas.
+func _roll_editions() -> void:
+	offer_editions.clear()
+	var pool := _modifiers.artifact_editions()
+	if _rules.artifact_edition_chance <= 0.0 or pool.is_empty():
+		return
+	for artifact: ArtifactDefinition in offers:
+		if _rng.randf() < _rules.artifact_edition_chance:
+			offer_editions[artifact.id] = CardModifierCatalog.pick_edition(pool, _rng)
 
 
 ## Choix d'un sceau : distincts, et pour les artefacts ni possedes ni deja en vente, tires selon leur rarete.
@@ -324,8 +362,10 @@ func to_dict() -> Dictionary:
 		"manuals": SaveData.ids(manual_offers),
 		"pills": SaveData.ids(pill_offers),
 		"packs": SaveData.ids(pack_offers),
+		"artifact_editions": edition_ids(offer_editions),
 		"opening": {} if opening == null else {"pack": String(opening.pack.id), "choices": SaveData.ids(opening.choices),
-			"picks_left": opening.picks_left},
+			"picks_left": opening.picks_left, "cards": opening.cards.map(func(card: CardInstance) -> Dictionary:
+				return CardModifierCatalog.to_dict(card))},
 		"reroll_cost": reroll_cost,
 	}
 
@@ -336,6 +376,7 @@ func _restore(saved: Dictionary) -> void:
 	manual_offers.assign(_pick(_manuals, saved.get("manuals")))
 	pill_offers.assign(_pick(_pills, saved.get("pills")))
 	pack_offers.assign(_pick(_packs, saved.get("packs")))
+	offer_editions = editions_of(saved.get("artifact_editions"), offers, _modifiers)
 	# Sceau ouvert au moment de la sauvegarde : rouvert avec les memes choix.
 	var saved_opening: Variant = saved.get("opening")
 	if saved_opening is Dictionary and not saved_opening.is_empty():
@@ -348,8 +389,35 @@ func _restore(saved: Dictionary) -> void:
 			choices.assign(_pick(lists[pack.kind], saved_opening.get("choices")))
 			opening = PackOpening.new(pack, choices)
 			opening.picks_left = clampi(SaveData.int_of(saved_opening, "picks_left", pack.picks), 1, pack.picks)
+			if pack.kind == PackDefinition.Kind.CARD:
+				var saved_cards: Variant = saved_opening.get("cards")
+				for i: int in choices.size():
+					var card := CardInstance.new(-1, choices[i] as CardData, _deck.ranks)
+					if saved_cards is Array and i < saved_cards.size() and saved_cards[i] is Dictionary:
+						_modifiers.apply_dict(card, saved_cards[i])
+					opening.cards.append(card)
 			if opening.is_done():
 				opening = null
+
+
+## Id d'aura de chaque artefact, par id d'artefact (sauvegarde).
+static func edition_ids(editions: Dictionary) -> Dictionary:
+	var ids: Dictionary = {}
+	for id: StringName in editions:
+		ids[String(id)] = String((editions[id] as EditionDefinition).id)
+	return ids
+
+
+## Auras sauvegardees des artefacts listes ; une aura inconnue ou qui ne va pas sur un artefact est ignoree.
+static func editions_of(saved: Variant, artifacts: Array, modifiers: CardModifierCatalog) -> Dictionary:
+	var editions: Dictionary = {}
+	if not saved is Dictionary:
+		return editions
+	for artifact: ArtifactDefinition in artifacts:
+		var edition := modifiers.edition_by_id(saved.get(String(artifact.id)))
+		if edition != null and edition.for_artifacts:
+			editions[artifact.id] = edition
+	return editions
 
 
 ## Contenus du catalogue dont l'id est dans la liste sauvegardee, dans l'ordre sauvegarde.

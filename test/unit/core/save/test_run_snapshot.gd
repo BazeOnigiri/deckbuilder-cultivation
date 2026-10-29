@@ -183,13 +183,14 @@ func test_capture_selon_l_etat_de_la_run() -> void:
 ## Bug : resume_round et restore_shop lisaient la sauvegarde brute, sans migration.
 ## Ici une fausse version 0 rangeait les offres sous « objets » et le round sous « manche ».
 func test_boutique_et_round_lus_apres_migration() -> void:
-	RunSnapshot.migrations = {0: func(old: Dictionary) -> Dictionary:
+	var real_migrations := RunSnapshot.migrations
+	RunSnapshot.migrations = real_migrations.merged({0: func(old: Dictionary) -> Dictionary:
 		var save := old.duplicate(true)
 		if save.has("manche"):
 			save["round"] = save["manche"]
 		if save.has("shop"):
 			save["shop"]["artifacts"] = save["shop"]["objets"]
-		return save}
+		return save})
 	var rng := _rng()
 	var run := _run_in_shop(rng)
 	var shop := _content.new_shop(run, rng)
@@ -205,7 +206,7 @@ func test_boutique_et_round_lus_apres_migration() -> void:
 	round_data["manche"] = round_data["round"]
 	round_data.erase("round")
 	assert_true(RunSnapshot.resume_round(round_data, RunSnapshot.restore(round_data, _content, _rng())))
-	RunSnapshot.migrations = {}
+	RunSnapshot.migrations = real_migrations
 
 
 func test_heritages_et_offre_du_royaume_sauvegardes() -> void:

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EnhancementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/enhancement_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"amelioration_roc"
+name_key = "ENH_ROC"
+description_key = "ENH_ROC_DESC"
+glyph = "岩"
+color = Color(0.6, 0.56, 0.5, 1)
+rankless = true
+fixed_qi = 50

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EnhancementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/enhancement_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="score"]
+
+[sub_resource type="Resource" id="held"]
+script = ExtResource("score")
+phase = 2
+amount = 1.5
+
+[resource]
+script = ExtResource("1")
+id = &"amelioration_fer_noir"
+name_key = "ENH_FER_NOIR"
+description_key = "ENH_FER_NOIR_DESC"
+glyph = "铁"
+color = Color(0.62, 0.66, 0.74, 1)
+held_effect = SubResource("held")

@@ -138,8 +138,10 @@ func _refresh() -> void:
 	if _round != null:
 		_deck_pile.show_count(_round.draw_count(), _round.deck_size())
 	_on_selection_changed()
-	_items.show_artifacts(_run.artifacts, _run.shop_rules(content.shop_rules).max_artifacts, _run.artifacts.map(_run.sell_price),
-		_run.artifact_stacks)
+	# Un artefact a l'aura du vide ajoute son propre emplacement.
+	var free_slots := _run.artifacts.size() - _run.artifact_slots_used()
+	_items.show_artifacts(_run.artifacts, _run.shop_rules(content.shop_rules).max_artifacts + free_slots,
+		_run.artifacts.map(_run.sell_price), _run.artifact_stacks, _run.artifact_editions)
 	_keep_focus()
 	_save_run()
 

@@ -18,8 +18,10 @@ static func effects_for(artifacts: Array[ArtifactDefinition], result: HandResult
 
 
 ## Les memes effets, avec l'artefact et la carte qui les ont declenches. held : cartes restees en main.
+## editions : aura de chaque artefact, par id (RunState.artifact_editions) ; son effet suit ceux de l'artefact, une
+## fois par main jouee.
 static func triggered_for(artifacts: Array[ArtifactDefinition], result: HandResult, held: Array[CardInstance] = [],
-		stacks: Dictionary = {}) -> Array[TriggeredEffect]:
+		stacks: Dictionary = {}, editions: Dictionary = {}) -> Array[TriggeredEffect]:
 	var triggered: Array[TriggeredEffect] = []
 	for artifact: ArtifactDefinition in artifacts:
 		for effect: ArtifactEffect in artifact.effects:
@@ -31,6 +33,9 @@ static func triggered_for(artifacts: Array[ArtifactDefinition], result: HandResu
 				continue
 			for card: Variant in _hits(effect, result, held, []):
 				triggered.append(TriggeredEffect.new(score, artifact, card))
+		var edition: EditionDefinition = editions.get(artifact.id)
+		if edition != null and edition.score_effect != null and result != null:
+			triggered.append(TriggeredEffect.new(edition.score_effect, artifact))
 	return triggered
 
 
@@ -72,7 +77,7 @@ static func _hits(effect: ArtifactEffect, result: HandResult, held: Array[CardIn
 		ArtifactEffect.Trigger.HAND_PLAYED:
 			return [null] if result != null and _matches(effect, result, null) else []
 		ArtifactEffect.Trigger.CARD_SCORED:
-			return [] if result == null else result.scoring_cards.filter(func(card: CardInstance) -> bool:
+			return [] if result == null else result.scoring_sequence().filter(func(card: CardInstance) -> bool:
 				return _matches(effect, result, card))
 		ArtifactEffect.Trigger.CARD_HELD:
 			return [] if result == null else held.filter(func(card: CardInstance) -> bool:

@@ -3,10 +3,11 @@ extends RefCounted
 ## Sauvegarde d'une run, a tout moment jouable : pendant un round (piles exactes) ou dans la boutique.
 ## Tout est reference par id ; un contenu retire du jeu est ignore a la restauration.
 
-const VERSION := 1
+## 2 : ameliorations, auras et talismans des cartes, auras des artefacts (v1.2.0).
+const VERSION := 2
 const DEFAULT_PATH := "user://run.json"
 ## migrations[n] : Callable qui fait passer une sauvegarde de la version n a n + 1 (SaveMigrator).
-static var migrations: Dictionary = {}
+static var migrations: Dictionary = {1: func(save: Dictionary) -> Dictionary: return _v1_to_v2(save)}
 
 
 ## Sauvegardable pendant un round en cours, ou entre deux goulots. Pas une run terminee.
@@ -22,7 +23,9 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 	assert(can_capture(run), "capture() d'une run terminee")
 	var cards: Array = []
 	for card: CardInstance in run.cards():
-		cards.append({"uid": card.uid, "card": String(card.data.id), "element": card.element, "rank": card.rank})
+		var entry := {"uid": card.uid, "card": String(card.data.id), "element": card.element, "rank": card.rank}
+		entry.merge(CardModifierCatalog.to_dict(card))
+		cards.append(entry)
 	var data := {
 		"version": VERSION,
 		# En texte : un entier 64 bits perdrait sa precision en nombre JSON (float).
@@ -34,6 +37,7 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 		"piles": run.piles(),
 		"artifacts": SaveData.ids(run.artifacts),
 		"artifact_stacks": run.artifact_stacks.duplicate(),
+		"artifact_editions": ShopState.edition_ids(run.artifact_editions),
 		"pills": SaveData.ids(run.pills),
 		"legacies": SaveData.ids(run.legacies),
 		"legacy_offer": "" if run.legacy_offer == null else String(run.legacy_offer.id),
@@ -71,7 +75,7 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 		return null
 	rng.state = rng_state.to_int()
 	var deck := _restore_deck(save.get("piles"), cards, rng)
-	var run := RunState.new(deck, content.round_rules, HandEvaluator.new(content.hands), progress, content.economy)
+	var run := content.equip(RunState.new(deck, content.round_rules, HandEvaluator.new(content.hands), progress, content.economy))
 	run.status = RunState.Status.BETWEEN_ROUNDS
 	run.stones = maxi(0, SaveData.int_of(save, "stones"))
 	for id: String in SaveData.string_list(save.get("artifacts")):
@@ -88,6 +92,7 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 			var count := SaveData.int_of(stacks, String(artifact.id))
 			if count > 0:
 				run.artifact_stacks[artifact.id] = count
+	run.artifact_editions = ShopState.editions_of(save.get("artifact_editions"), run.artifacts, content.modifiers)
 	for id: String in SaveData.string_list(save.get("legacies")):
 		var legacy := content.legacy_by_id(StringName(id))
 		if legacy != null:
@@ -123,6 +128,17 @@ static func migrate(data: Dictionary) -> Dictionary:
 	return SaveMigrator.migrate(data, VERSION, migrations)
 
 
+## v1 -> v2 : les cartes et les artefacts n'avaient ni amelioration, ni aura, ni talisman.
+static func _v1_to_v2(old: Dictionary) -> Dictionary:
+	var save := old.duplicate(true)
+	if save.get("cards") is Array:
+		for entry: Variant in save["cards"]:
+			if entry is Dictionary:
+				entry.merge({"enhancement": "", "edition": "", "talisman": ""})
+	save["artifact_editions"] = {}
+	return save
+
+
 static func _restore_cards(data: Variant, content: GameContent) -> Array[CardInstance]:
 	var cards: Array[CardInstance] = []
 	if not data is Array:
@@ -147,6 +163,7 @@ static func _restore_cards(data: Variant, content: GameContent) -> Array[CardIns
 		var card := CardInstance.new(uid, card_data, content.starter_deck.ranks)
 		card.element = clampi(SaveData.int_of(entry, "element"), 0, Element.Type.size() - 1) as Element.Type
 		card.rank = clampi(SaveData.int_of(entry, "rank", card_data.rank), 1, content.starter_deck.ranks.max_rank)
+		content.modifiers.apply_dict(card, entry)
 		cards.append(card)
 	return cards
 

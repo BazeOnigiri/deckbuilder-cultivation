@@ -20,6 +20,8 @@ enum OfferKind {ARTIFACT, MANUAL, PILL}
 ## Poids de tirage de chaque rarete d'artefact (ArtifactDefinition.rarity), comme Balatro : la boutique tire une
 ## rarete puis un artefact de cette rarete. Vide : tous les artefacts ont la meme chance.
 @export var rarity_weights: PackedFloat32Array = []
+## Chance qu'un artefact propose porte une aura (tiree selon EditionDefinition.weight). Rare, comme Balatro.
+@export_range(0.0, 1.0) var artifact_edition_chance: float = 0.0
 
 
 func is_valid() -> bool:
@@ -27,4 +29,5 @@ func is_valid() -> bool:
 		and Array(kind_weights).all(func(weight: float) -> bool: return weight >= 0.0)
 		and Array(kind_weights).any(func(weight: float) -> bool: return weight > 0.0)
 		and max_pills >= 0 and reroll_base_cost >= 0 and reroll_cost_step >= 0
-		and max_artifacts > 0 and pack_count >= 0 and Array(rarity_weights).all(func(weight: float) -> bool: return weight >= 0.0))
+		and max_artifacts > 0 and pack_count >= 0 and Array(rarity_weights).all(func(weight: float) -> bool: return weight >= 0.0)
+		and artifact_edition_chance >= 0.0 and artifact_edition_chance <= 1.0)

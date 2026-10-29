@@ -12,3 +12,6 @@ kind = 3
 choices = 3
 picks = 1
 price = 4
+enhancement_chance = 0.3
+edition_chance = 0.06
+talisman_chance = 0.15

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TalismanDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/talisman_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"talisman_eveil"
+name_key = "TALISMAN_EVEIL"
+description_key = "TALISMAN_EVEIL_DESC"
+glyph = "觉"
+color = Color(0.35, 0.6, 0.92, 1)
+scored_level_ups = 1

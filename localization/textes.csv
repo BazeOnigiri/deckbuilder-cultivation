@@ -342,3 +342,64 @@ UI_HISTORY_LOST,Défaite,Defeat
 UI_HISTORY_STAGE,Goulot atteint,Bottleneck reached
 UI_HISTORY_SEED,Graine,Seed
 UI_SUMMARY_REACHED,Royaume atteint,Realm reached
+ENH_VIGUEUR,Carte de vigueur,Vigor Card
+ENH_VIGUEUR_DESC,+30 Qi quand elle compte.,+30 Qi when it scores.
+ENH_ESPRIT,Carte d'esprit,Spirit Card
+ENH_ESPRIT_DESC,+4 Compréhension quand elle compte.,+4 Comprehension when it scores.
+ENH_TRESOR,Carte de trésor,Treasure Card
+ENH_TRESOR_DESC,+2 pierres quand elle compte.,+2 stones when it scores.
+ENH_JADE,Carte de jade,Jade Card
+ENH_JADE_DESC,x2 Compréhension quand elle compte. 1 chance sur 4 de se briser ensuite.,x2 Comprehension when it scores. 1 in 4 chance to shatter afterwards.
+ENH_FER_NOIR,Carte de fer noir,Black Iron Card
+ENH_FER_NOIR_DESC,x1.5 Compréhension tant qu'elle reste en main pendant une main jouée.,x1.5 Comprehension while it stays in hand during a played hand.
+ENH_CHAOS,Carte du chaos originel,Primordial Chaos Card
+ENH_CHAOS_DESC,Compte pour les cinq éléments à la fois.,Counts as all five elements at once.
+ENH_ROC,Carte de roc,Rock Card
+ENH_ROC_DESC,"Sans rang ni élément : ne forme aucune combinaison, mais compte toujours. 50 Qi.","No rank, no element: forms no combination but always scores. 50 Qi."
+AURA_BRUME,Aura de brume,Mist Aura
+AURA_BRUME_DESC,"+30 Qi quand la carte compte, ou à chaque main pour un artefact.","+30 Qi when the card scores, or on every hand for an artifact."
+AURA_AURORE,Aura d'aurore,Dawn Aura
+AURA_AURORE_DESC,+6 Compréhension quand la carte compte.,+6 Comprehension when the card scores.
+AURA_CINQ_COULEURS,Aura des cinq couleurs,Five Colors Aura
+AURA_CINQ_COULEURS_DESC,"x1.5 Compréhension quand la carte compte, ou à chaque main pour un artefact.","x1.5 Comprehension when the card scores, or on every hand for an artifact."
+AURA_VIDE,Aura du vide,Void Aura
+AURA_VIDE_DESC,L'artefact ne prend pas d'emplacement.,The artifact takes no slot.
+TALISMAN_ECHO,Talisman d'écho,Echo Talisman
+TALISMAN_ECHO_DESC,La carte compte une seconde fois.,The card scores a second time.
+TALISMAN_FORTUNE,Talisman de fortune,Fortune Talisman
+TALISMAN_FORTUNE_DESC,+3 pierres si la carte est encore en main quand le goulot est franchi.,+3 stones if the card is still in hand when the bottleneck is cleared.
+TALISMAN_ALCHIMIE,Talisman d'alchimie,Alchemy Talisman
+TALISMAN_ALCHIMIE_DESC,"Défaussée, la carte crée une pilule au hasard (s'il reste une place).","When discarded, the card creates a random pill (if there is room)."
+TALISMAN_EVEIL,Talisman d'éveil,Awakening Talisman
+TALISMAN_EVEIL_DESC,"Si la carte compte, la main jouée monte d'un niveau.","If the card scores, the played hand gains a level."
+PILL_VIGUEUR,Pilule de vigueur,Vigor Pill
+PILL_VIGUEUR_DESC,Jusqu'à 2 cartes sélectionnées deviennent des cartes de vigueur (+30 Qi quand elles comptent).,Up to 2 selected cards become Vigor Cards (+30 Qi when they score).
+PILL_ESPRIT,Pilule d'esprit,Spirit Pill
+PILL_ESPRIT_DESC,Jusqu'à 2 cartes sélectionnées deviennent des cartes d'esprit (+4 Compréhension quand elles comptent).,Up to 2 selected cards become Spirit Cards (+4 Comprehension when they score).
+PILL_TRESOR,Pilule de trésor,Treasure Pill
+PILL_TRESOR_DESC,Jusqu'à 2 cartes sélectionnées deviennent des cartes de trésor (+2 pierres quand elles comptent).,Up to 2 selected cards become Treasure Cards (+2 stones when they score).
+PILL_JADE,Pilule de jade,Jade Pill
+PILL_JADE_DESC,"La carte sélectionnée devient une carte de jade (x2 Compréhension, peut se briser).","The selected card becomes a Jade Card (x2 Comprehension, may shatter)."
+PILL_FER_NOIR,Pilule de fer noir,Black Iron Pill
+PILL_FER_NOIR_DESC,Jusqu'à 2 cartes sélectionnées deviennent des cartes de fer noir (x1.5 Compréhension gardées en main).,Up to 2 selected cards become Black Iron Cards (x1.5 Comprehension while held).
+PILL_CHAOS,Pilule du chaos,Chaos Pill
+PILL_CHAOS_DESC,Jusqu'à 2 cartes sélectionnées comptent pour les cinq éléments.,Up to 2 selected cards count as all five elements.
+PILL_ROC,Pilule de roc,Rock Pill
+PILL_ROC_DESC,"Jusqu'à 2 cartes sélectionnées deviennent des cartes de roc (sans rang, 50 Qi, comptent toujours).","Up to 2 selected cards become Rock Cards (no rank, 50 Qi, always score)."
+PILL_BRUME,Pilule de brume,Mist Pill
+PILL_BRUME_DESC,La carte sélectionnée prend l'aura de brume (+30 Qi quand elle compte).,The selected card gains the Mist Aura (+30 Qi when it scores).
+PILL_AURORE,Pilule d'aurore,Dawn Pill
+PILL_AURORE_DESC,La carte sélectionnée prend l'aura d'aurore (+6 Compréhension quand elle compte).,The selected card gains the Dawn Aura (+6 Comprehension when it scores).
+PILL_CINQ_COULEURS,Pilule des cinq couleurs,Five Colors Pill
+PILL_CINQ_COULEURS_DESC,La carte sélectionnée prend l'aura des cinq couleurs (x1.5 Compréhension quand elle compte).,The selected card gains the Five Colors Aura (x1.5 Comprehension when it scores).
+PILL_ECHO,Pilule d'écho,Echo Pill
+PILL_ECHO_DESC,Colle un talisman d'écho sur la carte sélectionnée : elle compte deux fois.,Sticks an Echo Talisman on the selected card: it scores twice.
+PILL_FORTUNE,Pilule de fortune,Fortune Pill
+PILL_FORTUNE_DESC,Colle un talisman de fortune sur la carte sélectionnée (+3 pierres gardée en main en fin de goulot).,Sticks a Fortune Talisman on the selected card (+3 stones if held when the bottleneck ends).
+PILL_ALCHIMIE,Pilule d'alchimie,Alchemy Pill
+PILL_ALCHIMIE_DESC,Colle un talisman d'alchimie sur la carte sélectionnée (crée une pilule quand elle est défaussée).,Sticks an Alchemy Talisman on the selected card (creates a pill when discarded).
+PILL_EVEIL,Pilule d'éveil,Awakening Pill
+PILL_EVEIL_DESC,Colle un talisman d'éveil sur la carte sélectionnée (la main jouée monte d'un niveau quand elle compte).,Sticks an Awakening Talisman on the selected card (the played hand gains a level when it scores).
+UI_KIND_ENHANCEMENT,Amélioration,Enhancement
+UI_KIND_AURA,Aura,Aura
+UI_KIND_TALISMAN,Talisman,Talisman

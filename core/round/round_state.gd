@@ -4,8 +4,8 @@ extends RefCounted
 
 signal hand_played(result: HandResult, score: ScoreContext)
 signal finished(won: bool)
-## stones : pierres gagnees par les artefacts sur cette defausse.
-signal discarded(stones: int)
+## stones : pierres gagnees par les artefacts sur cette defausse. cards : les cartes defaussees.
+signal discarded(stones: int, cards: Array[CardInstance])
 
 enum Status {PLAYING, WON, LOST}
 
@@ -25,11 +25,14 @@ var _hand_size: int
 var _max_selected: int
 ## Crans des artefacts qui grandissent, partages avec la run (meme dictionnaire).
 var _stacks: Dictionary
+## Aura de chaque artefact par id, partagee avec la run.
+var _editions: Dictionary
 
 
-func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition], levels: HandLevels, constraint: TribulationConstraint, stacks: Dictionary = {}) -> void:
+func _init(deck: DeckState, rules: RoundRules, evaluator: HandEvaluator, p_target_score: int, artifacts: Array[ArtifactDefinition], levels: HandLevels, constraint: TribulationConstraint, stacks: Dictionary = {}, editions: Dictionary = {}) -> void:
 	_deck = deck
 	_stacks = stacks
+	_editions = editions
 	_rules = rules
 	_evaluator = evaluator
 	_artifacts = artifacts
@@ -107,11 +110,19 @@ func play(cards: Array[CardInstance]) -> ScoreContext:
 			counted.append(card)
 	result.scoring_cards = counted
 	# Les cartes jouees sont deja defaussees : la main ne contient plus que les cartes gardees.
-	var effects := ArtifactResolver.triggered_for(_artifacts, result, _deck.hand, _stacks)
+	var effects := CardEffects.triggered_for(result, _deck.hand)
+	effects.append_array(ArtifactResolver.triggered_for(_artifacts, result, _deck.hand, _stacks, _editions))
 	var context := ScoringPipeline.score_triggered(result, effects, _levels.level_of(result.definition.id),
 		_constraint.card_qi_scale())
 	score += context.total()
 	ArtifactResolver.after_hand(_artifacts, _stacks, result, _deck.hand)
+	# Apres le score : le niveau gagne et la carte brisee valent pour les coups suivants.
+	context.stones = CardEffects.stones_for(result)
+	context.level_ups = CardEffects.level_ups(result)
+	for i: int in context.level_ups:
+		_levels.level_up(result.definition.id)
+	context.broken = CardEffects.roll_breaks(result, _deck.rng())
+	_deck.remove(context.broken)
 	hands_left -= 1
 	hand_played.emit(result, context)
 	if score >= target_score:
@@ -130,7 +141,7 @@ func discard(cards: Array[CardInstance]) -> bool:
 		return false
 	discards_left -= 1
 	hands_left -= _constraint.discard_hand_cost()
-	discarded.emit(ArtifactResolver.after_discard(_artifacts, _stacks, cards))
+	discarded.emit(ArtifactResolver.after_discard(_artifacts, _stacks, cards), cards)
 	_refill()
 	return true
 

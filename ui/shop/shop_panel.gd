@@ -116,8 +116,10 @@ func _refresh() -> void:
 		child.queue_free()
 	for i: int in _shop.offers.size():
 		var artifact: ArtifactDefinition = _shop.offers[i]
-		_add_offer(ItemSlot.Kind.ARTIFACT, artifact.glyph, artifact.name_key, tr(artifact.description_key),
-			artifact.price, _shop.can_buy(i), _on_buy_pressed.bind(i), artifact.icon, null, artifact.rarity)
+		var edition: EditionDefinition = _shop.offer_editions.get(artifact.id)
+		_add_offer(ItemSlot.Kind.ARTIFACT, artifact.glyph, artifact.name_key,
+			tr(artifact.description_key) + ItemRow.edition_text(edition, self),
+			_shop.price_of(i), _shop.can_buy(i), _on_buy_pressed.bind(i), artifact.icon, null, artifact.rarity, edition)
 	for i: int in _shop.manual_offers.size():
 		var manual: ManualDefinition = _shop.manual_offers[i]
 		var hand: HandDefinition = manual.hand
@@ -146,7 +148,8 @@ func _refresh() -> void:
 
 ## buy(slot) : achete l'offre ; le slot sert de point de depart a l'envol.
 func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, description: String, price: int,
-		can_buy: bool, buy: Callable, icon: Texture2D = null, manual: ManualDefinition = null, rarity: int = -1) -> void:
+		can_buy: bool, buy: Callable, icon: Texture2D = null, manual: ManualDefinition = null, rarity: int = -1,
+		edition: EditionDefinition = null) -> void:
 	var cloth := PanelContainer.new()
 	cloth.theme_type_variation = &"ShopCloth"
 	var offer := VBoxContainer.new()
@@ -156,6 +159,7 @@ func _add_offer(kind: ItemSlot.Kind, glyph: String, name_key: String, descriptio
 	slot.glyph = glyph
 	slot.picture = icon
 	slot.rarity = rarity
+	slot.edition = edition
 	if manual != null:
 		slot.cover_tier = manual.tier
 		slot.cover_pattern = manual.pattern
@@ -286,7 +290,7 @@ func _show_opening(animated: bool = true) -> void:
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	for i: int in opening.choices.size():
-		var choice := _choice(opening.pack.kind, opening.choices[i])
+		var choice := _choice(opening.pack.kind, opening.choices[i], opening.cards[i] if i < opening.cards.size() else null)
 		choice.disabled = not _shop.can_take(i)
 		choice.pressed.connect(_on_take_pressed.bind(i))
 		row.add_child(choice)
@@ -304,10 +308,11 @@ func _show_opening(animated: bool = true) -> void:
 	_pack_scroll.closed.connect(_on_pack_closed)
 
 
-## Un choix de sceau, cliquable : emplacement d'objet, ou carte dans un cadre.
-func _choice(kind: PackDefinition.Kind, item: Resource) -> BaseButton:
+## Un choix de sceau, cliquable : emplacement d'objet, ou carte dans un cadre (offered : la carte proposee, avec ses
+## ameliorations).
+func _choice(kind: PackDefinition.Kind, item: Resource, offered: CardInstance = null) -> BaseButton:
 	if kind == PackDefinition.Kind.CARD:
-		var card := CardInstance.new(-1, item as CardData, _shop.card_ranks())
+		var card := offered if offered != null else CardInstance.new(-1, item as CardData, _shop.card_ranks())
 		var frame := Button.new()
 		frame.flat = true
 		frame.tooltip_text = CardView.tip_text(card)

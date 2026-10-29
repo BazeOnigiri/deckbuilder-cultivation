@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EditionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/edition_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"aura_vide"
+name_key = "AURA_VIDE"
+description_key = "AURA_VIDE_DESC"
+glyph = "虚"
+color = Color(0.35, 0.3, 0.55, 1)
+takes_slot = false
+for_cards = false
+for_artifacts = true
+weight = 15.0
+price_bonus = 5

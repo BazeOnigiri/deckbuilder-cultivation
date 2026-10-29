@@ -16,6 +16,10 @@ enum Kind {ARTIFACT, MANUAL, PILL, CARD}
 @export var choices: int = 3
 @export var picks: int = 1
 @export var price: int = 0
+## Sceau de cartes : chance que chaque carte proposee porte une amelioration, une aura, un talisman.
+@export_range(0.0, 1.0) var enhancement_chance: float = 0.0
+@export_range(0.0, 1.0) var edition_chance: float = 0.0
+@export_range(0.0, 1.0) var talisman_chance: float = 0.0
 
 
 func is_valid() -> bool:
