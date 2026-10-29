@@ -1,0 +1,784 @@
+{
+  "artifact_editions": {},
+  "artifact_stacks": {},
+  "artifacts": [],
+  "cards": [
+    {
+      "card": "carte_eau_4",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 4,
+      "talisman": "",
+      "uid": 59
+    },
+    {
+      "card": "carte_terre_14",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 14,
+      "talisman": "",
+      "uid": 41
+    },
+    {
+      "card": "carte_bois_2",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 2,
+      "talisman": "",
+      "uid": 1
+    },
+    {
+      "card": "carte_terre_10",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 10,
+      "talisman": "",
+      "uid": 37
+    },
+    {
+      "card": "carte_bois_10",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 10,
+      "talisman": "",
+      "uid": 9
+    },
+    {
+      "card": "carte_terre_8",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 8,
+      "talisman": "",
+      "uid": 35
+    },
+    {
+      "card": "carte_bois_12",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 12,
+      "talisman": "",
+      "uid": 11
+    },
+    {
+      "card": "carte_metal_1",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 1,
+      "talisman": "",
+      "uid": 42
+    },
+    {
+      "card": "carte_metal_9",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 9,
+      "talisman": "",
+      "uid": 50
+    },
+    {
+      "card": "carte_metal_6",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 6,
+      "talisman": "",
+      "uid": 47
+    },
+    {
+      "card": "carte_terre_1",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 1,
+      "talisman": "",
+      "uid": 28
+    },
+    {
+      "card": "carte_terre_4",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 4,
+      "talisman": "",
+      "uid": 31
+    },
+    {
+      "card": "carte_metal_2",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 2,
+      "talisman": "",
+      "uid": 43
+    },
+    {
+      "card": "carte_eau_14",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 14,
+      "talisman": "",
+      "uid": 69
+    },
+    {
+      "card": "carte_metal_14",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 14,
+      "talisman": "",
+      "uid": 55
+    },
+    {
+      "card": "carte_eau_7",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 7,
+      "talisman": "",
+      "uid": 62
+    },
+    {
+      "card": "carte_eau_6",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 6,
+      "talisman": "",
+      "uid": 61
+    },
+    {
+      "card": "carte_bois_6",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 6,
+      "talisman": "",
+      "uid": 5
+    },
+    {
+      "card": "carte_feu_5",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 5,
+      "talisman": "",
+      "uid": 18
+    },
+    {
+      "card": "carte_eau_5",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 5,
+      "talisman": "",
+      "uid": 60
+    },
+    {
+      "card": "carte_feu_11",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 11,
+      "talisman": "",
+      "uid": 24
+    },
+    {
+      "card": "carte_terre_3",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 3,
+      "talisman": "",
+      "uid": 30
+    },
+    {
+      "card": "carte_bois_4",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 4,
+      "talisman": "",
+      "uid": 3
+    },
+    {
+      "card": "carte_bois_13",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 13,
+      "talisman": "",
+      "uid": 12
+    },
+    {
+      "card": "carte_feu_2",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 2,
+      "talisman": "",
+      "uid": 15
+    },
+    {
+      "card": "carte_feu_3",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 3,
+      "talisman": "",
+      "uid": 16
+    },
+    {
+      "card": "carte_terre_9",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 9,
+      "talisman": "",
+      "uid": 36
+    },
+    {
+      "card": "carte_bois_9",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 9,
+      "talisman": "",
+      "uid": 8
+    },
+    {
+      "card": "carte_feu_13",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 13,
+      "talisman": "",
+      "uid": 26
+    },
+    {
+      "card": "carte_feu_7",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 7,
+      "talisman": "",
+      "uid": 20
+    },
+    {
+      "card": "carte_feu_6",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 6,
+      "talisman": "",
+      "uid": 19
+    },
+    {
+      "card": "carte_metal_13",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 13,
+      "talisman": "",
+      "uid": 54
+    },
+    {
+      "card": "carte_metal_10",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 10,
+      "talisman": "",
+      "uid": 51
+    },
+    {
+      "card": "carte_bois_14",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 14,
+      "talisman": "",
+      "uid": 13
+    },
+    {
+      "card": "carte_terre_7",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 7,
+      "talisman": "",
+      "uid": 34
+    },
+    {
+      "card": "carte_feu_8",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 8,
+      "talisman": "",
+      "uid": 21
+    },
+    {
+      "card": "carte_bois_7",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 7,
+      "talisman": "",
+      "uid": 6
+    },
+    {
+      "card": "carte_eau_1",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 1,
+      "talisman": "",
+      "uid": 56
+    },
+    {
+      "card": "carte_eau_11",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 11,
+      "talisman": "",
+      "uid": 66
+    },
+    {
+      "card": "carte_eau_10",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 10,
+      "talisman": "",
+      "uid": 65
+    },
+    {
+      "card": "carte_eau_3",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 3,
+      "talisman": "",
+      "uid": 58
+    },
+    {
+      "card": "carte_feu_10",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 10,
+      "talisman": "",
+      "uid": 23
+    },
+    {
+      "card": "carte_eau_8",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 8,
+      "talisman": "",
+      "uid": 63
+    },
+    {
+      "card": "carte_bois_5",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 5,
+      "talisman": "",
+      "uid": 4
+    },
+    {
+      "card": "carte_eau_12",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 12,
+      "talisman": "",
+      "uid": 67
+    },
+    {
+      "card": "carte_bois_8",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 8,
+      "talisman": "",
+      "uid": 7
+    },
+    {
+      "card": "carte_feu_14",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 14,
+      "talisman": "",
+      "uid": 27
+    },
+    {
+      "card": "carte_bois_3",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 3,
+      "talisman": "",
+      "uid": 2
+    },
+    {
+      "card": "carte_terre_6",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 6,
+      "talisman": "",
+      "uid": 33
+    },
+    {
+      "card": "carte_bois_11",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 11,
+      "talisman": "",
+      "uid": 10
+    },
+    {
+      "card": "carte_eau_9",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 9,
+      "talisman": "",
+      "uid": 64
+    },
+    {
+      "card": "carte_terre_5",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 5,
+      "talisman": "",
+      "uid": 32
+    },
+    {
+      "card": "carte_metal_12",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 12,
+      "talisman": "",
+      "uid": 53
+    },
+    {
+      "card": "carte_eau_2",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 2,
+      "talisman": "",
+      "uid": 57
+    },
+    {
+      "card": "carte_terre_2",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 2,
+      "talisman": "",
+      "uid": 29
+    },
+    {
+      "card": "carte_metal_5",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 5,
+      "talisman": "",
+      "uid": 46
+    },
+    {
+      "card": "carte_feu_1",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 1,
+      "talisman": "",
+      "uid": 14
+    },
+    {
+      "card": "carte_terre_13",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 13,
+      "talisman": "",
+      "uid": 40
+    },
+    {
+      "card": "carte_bois_1",
+      "edition": "",
+      "element": 0,
+      "enhancement": "",
+      "rank": 1,
+      "talisman": "",
+      "uid": 0
+    },
+    {
+      "card": "carte_feu_4",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 4,
+      "talisman": "",
+      "uid": 17
+    },
+    {
+      "card": "carte_terre_12",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 12,
+      "talisman": "",
+      "uid": 39
+    },
+    {
+      "card": "carte_eau_13",
+      "edition": "",
+      "element": 4,
+      "enhancement": "",
+      "rank": 13,
+      "talisman": "",
+      "uid": 68
+    },
+    {
+      "card": "carte_metal_11",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 11,
+      "talisman": "",
+      "uid": 52
+    },
+    {
+      "card": "carte_metal_3",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 3,
+      "talisman": "",
+      "uid": 44
+    },
+    {
+      "card": "carte_terre_11",
+      "edition": "",
+      "element": 2,
+      "enhancement": "",
+      "rank": 11,
+      "talisman": "",
+      "uid": 38
+    },
+    {
+      "card": "carte_feu_9",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 9,
+      "talisman": "",
+      "uid": 22
+    },
+    {
+      "card": "carte_metal_4",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 4,
+      "talisman": "",
+      "uid": 45
+    },
+    {
+      "card": "carte_metal_8",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 8,
+      "talisman": "",
+      "uid": 49
+    },
+    {
+      "card": "carte_metal_7",
+      "edition": "",
+      "element": 3,
+      "enhancement": "",
+      "rank": 7,
+      "talisman": "",
+      "uid": 48
+    },
+    {
+      "card": "carte_feu_12",
+      "edition": "",
+      "element": 1,
+      "enhancement": "",
+      "rank": 12,
+      "talisman": "",
+      "uid": 25
+    }
+  ],
+  "endless": false,
+  "hand_levels": {},
+  "legacies": [],
+  "legacy_offer": "heritage_etal",
+  "legacy_offer_realm": 1,
+  "omen_offers": [
+    "presage_interets_doubles",
+    "presage_pluie_de_pierres",
+    ""
+  ],
+  "omen_offers_realm": 1,
+  "omens": [],
+  "piles": {
+    "discard": [
+      22,
+      45,
+      49,
+      48,
+      25
+    ],
+    "draw": [
+      59,
+      41,
+      1,
+      37,
+      9,
+      35,
+      11,
+      42,
+      50,
+      47,
+      28,
+      31,
+      43,
+      69,
+      55,
+      62,
+      61,
+      5,
+      18,
+      60,
+      24,
+      30,
+      3,
+      12,
+      15,
+      16,
+      36,
+      8,
+      26,
+      20,
+      19,
+      54,
+      51,
+      13,
+      34,
+      21,
+      6,
+      56,
+      66,
+      65,
+      58,
+      23,
+      63,
+      4,
+      67,
+      7,
+      27,
+      2,
+      33,
+      10,
+      64,
+      32,
+      53,
+      57,
+      29,
+      46,
+      14,
+      40,
+      0,
+      17,
+      39,
+      68
+    ],
+    "hand": [
+      52,
+      44,
+      38
+    ]
+  },
+  "pills": [],
+  "progress": {
+    "bottleneck": 1,
+    "endless": 0,
+    "realm": 0,
+    "tribulations": [
+      "tribulation_flammes",
+      "tribulation_vent_noir",
+      "tribulation_demon",
+      "tribulation_foudre",
+      "tribulation_gel",
+      "tribulation_neant",
+      "tribulation_karma",
+      "tribulation_epees"
+    ]
+  },
+  "rng_state": "-1710703592147804803",
+  "seed": "3235692716",
+  "setup": {
+    "challenge": "",
+    "daily": false,
+    "difficulty": 1,
+    "random_tribulations": false,
+    "seed": "FIXTURE"
+  },
+  "shop": {
+    "artifact_editions": {},
+    "artifacts": [
+      "artefact_pinceau",
+      "artefact_grain_riz"
+    ],
+    "bonus": [],
+    "free_artifacts": 0,
+    "free_packs": 0,
+    "free_rerolls": 0,
+    "manuals": [],
+    "opening": {},
+    "packs": [
+      "sceau_betes",
+      "sceau_bibliotheque"
+    ],
+    "pills": [],
+    "reroll_cost": 5
+  },
+  "stats": {
+    "best_hand_id": "main_souffle",
+    "best_hand_score": 15,
+    "bottlenecks_cleared": 1,
+    "bottlenecks_skipped": 0,
+    "discards_used": 0,
+    "hand_counts": {
+      "main_souffle": 1
+    },
+    "stones_earned": 6
+  },
+  "stones": 10,
+  "version": 3
+}
