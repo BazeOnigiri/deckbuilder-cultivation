@@ -101,6 +101,35 @@ func test_une_main_jouee_signale_le_changement() -> void:
 	assert_gt(emitted[0], 0, "le profil doit etre ecrit apres une main")
 
 
+func test_victoire_ouvre_la_difficulte_suivante() -> void:
+	var stats := ProfileStats.new()
+	var run := _run(1, 1)
+	run.setup.difficulty = 2
+	_tracker = ProfileTracker.new(stats)
+	_tracker.track(run)
+	run.start()
+	_play_highest(run)
+	assert_eq(stats.difficulty_unlocked, 3)
+
+
+## En mode sans fin, la run est deja gagnee : une nouvelle fin ne compte pas une seconde victoire.
+func test_mode_sans_fin_compte_une_seule_victoire() -> void:
+	var stats := ProfileStats.new()
+	var run := _run(1, 1)
+	_tracker = ProfileTracker.new(stats)
+	_tracker.track(run)
+	run.start()
+	_play_highest(run)
+	assert_eq(stats.runs_won, 1)
+	var pool: Array[BottleneckDefinition] = []
+	assert_true(run.continue_endless(pool, RandomNumberGenerator.new()))
+	run.next_round()
+	assert_eq(stats.best_endless_realm, 1)
+	assert_eq(stats.best_realm, 1, "le meilleur royaume reste celui du contenu")
+	run.finished.emit(true)
+	assert_eq(stats.runs_won, 1)
+
+
 
 func test_chaque_partie_terminee_entre_dans_l_historique() -> void:
 	var stats := ProfileStats.new()

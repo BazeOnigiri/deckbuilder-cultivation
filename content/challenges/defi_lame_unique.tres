@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="ChallengeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/modes/challenge_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/legacies/rule_modifier.gd" id="2"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="3"]
+[ext_resource type="Script" path="res://core/pills/pill_definition.gd" id="4"]
+[ext_resource type="Script" path="res://core/legacies/legacy_definition.gd" id="5"]
+[ext_resource type="Resource" path="res://content/artifacts/artefact_epee_volante.tres" id="10"]
+
+[sub_resource type="Resource" id="modifier_0"]
+script = ExtResource("2")
+property = &"hands_per_round"
+amount = -2
+
+[sub_resource type="Resource" id="modifier_1"]
+script = ExtResource("2")
+property = &"discards_per_round"
+amount = 2
+
+[resource]
+script = ExtResource("1")
+id = &"defi_lame_unique"
+name_key = "CHALLENGE_LAME_UNIQUE"
+description_key = "CHALLENGE_LAME_UNIQUE_DESC"
+seed_text = ""
+difficulty = 1
+random_tribulations = true
+artifacts = Array[ExtResource("3")]([ExtResource("10")])
+pills = Array[ExtResource("4")]([])
+legacies = Array[ExtResource("5")]([])
+modifiers = Array[ExtResource("2")]([SubResource("modifier_0"), SubResource("modifier_1")])

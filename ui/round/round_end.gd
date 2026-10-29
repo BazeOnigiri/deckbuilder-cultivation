@@ -84,8 +84,9 @@ func stones(count: int, to: Vector2, bump: Callable) -> void:
 
 
 ## Fin de la run : victoire, un voile puis le rouleau du bilan ; echec, les fissures et l'encre noire d'abord.
-## Le rouleau porte le titre, le bilan (summary) et le sceau du menu. Reste a l'ecran.
-func run_over(won: bool, summary: Control) -> void:
+## Le rouleau porte le titre, le bilan (summary), d'eventuels sceaux (actions, ex. continuer sans fin) et le sceau
+## du menu. Reste a l'ecran jusqu'a clear().
+func run_over(won: bool, summary: Control, actions: Array[Button] = []) -> void:
 	# Le rouleau couvre l'ecran : il prend les clics, son propre sceau mene au menu.
 	mouse_filter = MOUSE_FILTER_STOP
 	Sons.play_music(feel.victory_music if won else feel.defeat_music, feel.music_fade)
@@ -124,7 +125,12 @@ func run_over(won: bool, summary: Control) -> void:
 	button.text = "UI_MENU"
 	button.size_flags_horizontal = SIZE_SHRINK_CENTER
 	button.pressed.connect(menu_requested.emit)
-	column.add_child(button)
+	var seals := HFlowContainer.new()
+	seals.alignment = FlowContainer.ALIGNMENT_CENTER
+	for action: Button in actions:
+		seals.add_child(action)
+	seals.add_child(button)
+	column.add_child(seals)
 	scroll.add_child(column)
 	center.add_child(scroll)
 	add_child(center)
@@ -144,6 +150,13 @@ func run_over(won: bool, summary: Control) -> void:
 		await tween.finished
 	else:
 		scroll.unroll(get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
+
+
+## Retire le rouleau de fin (la run continue en mode sans fin).
+func clear() -> void:
+	mouse_filter = MOUSE_FILTER_IGNORE
+	for child: Node in get_children():
+		child.queue_free()
 
 
 func _wave() -> void:

@@ -11,13 +11,14 @@ const MEDITANT := preload("res://ui/round/meditant.svg")
 const HAND_COLUMNS := 3
 
 
-## content : si donne, un cinquieme signet Aide reprend les regles du jeu (HelpPages).
+## content : si donne, un cinquieme signet Aide reprend les regles du jeu (HelpPages) et la difficulte
+## est nommee.
 static func build(run: RunState, hands: Array[HandDefinition], content: GameContent = null) -> TabContainer:
 	var tabs := TabContainer.new()
 	tabs.theme_type_variation = &"ScrollTabs"
 	_add_tab(tabs, "UI_INFO_TAB_HANDS", _hand_tablets(run, hands))
 	_add_tab(tabs, "UI_INFO_TAB_PATH", _path(run))
-	_add_tab(tabs, "UI_INFO_TAB_RUN", _run_tiles(run, hands))
+	_add_tab(tabs, "UI_INFO_TAB_RUN", _run_tiles(run, hands, content))
 	_add_tab(tabs, "UI_INFO_TAB_KEYS", _keys())
 	if content != null:
 		_add_tab(tabs, "UI_INFO_TAB_HELP", HelpPages.build(content))
@@ -108,12 +109,29 @@ static func _example(hand: HandDefinition) -> HBoxContainer:
 	return row
 
 
-## Les goulots du royaume en cours seulement, la tribulation en haut : les royaumes suivants restent une surprise.
+## Lignes [cle, valeur] du mode de la partie : graine, partie du jour, difficulte, defi, sans fin.
+## Partagees par l'onglet Partie et le bilan de fin.
+static func mode_lines(run: RunState, content: GameContent = null) -> Array:
+	var setup := run.setup
+	var lines: Array = [["UI_INFO_SEED", setup.seed_text if not setup.seed_text.is_empty() else tr_key("UI_NONE")]]
+	if setup.daily:
+		lines.append(["UI_INFO_DAILY", setup.seed_text])
+	var difficulty := content.difficulty_of(setup.difficulty) if content != null else null
+	lines.append(["UI_INFO_DIFFICULTY", tr_key(difficulty.name_key) if difficulty != null else str(setup.difficulty)])
+	if setup.challenge != null:
+		lines.append(["UI_INFO_CHALLENGE", tr_key(setup.challenge.name_key)])
+	if run.endless:
+		lines.append(["UI_INFO_ENDLESS", str(run.progress.current_realm().number)])
+	return lines
+
+
+## Les goulots du royaume en cours, la tribulation en haut, puis la tribulation tiree pour chaque royaume.
 static func _path(run: RunState) -> VBoxContainer:
 	var realm: RealmDefinition = run.progress.current_realm()
 	var path := VBoxContainer.new()
 	path.add_theme_constant_override(&"separation", 0)
-	var title := SideColumn.make_label(&"ScrollTitle", realm.name_key)
+	var title := SideColumn.make_label(&"ScrollTitle")
+	title.text = realm.title()
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	path.add_child(title)
 	var last: int = realm.bottlenecks.size() - 1
@@ -130,17 +148,23 @@ static func _path(run: RunState) -> VBoxContainer:
 		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var state := SideColumn.make_label(&"ScrollCaption", POSITION_KEYS[position + 1])
 		var extra: Array[Control] = [state]
-		text.add_child(ScrollRows.row(bottleneck.name_key, tr_key("UI_INFO_TARGET_N") % RunProgress.target_for(realm, bottleneck), extra))
+		text.add_child(ScrollRows.row(bottleneck.name_key, tr_key("UI_INFO_TARGET_N") % run.target_for(realm, bottleneck), extra))
 		if bottleneck.constraint != null:
 			var constraint := SideColumn.make_label(&"ScrollWarning", bottleneck.constraint.description_key)
 			constraint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			text.add_child(constraint)
 		line.add_child(text)
 		path.add_child(line)
+	path.add_child(SideColumn.make_label(&"ScrollText", "UI_INFO_TRIBULATIONS"))
+	var realms := run.progress.realms()
+	var tribulations := run.progress.tribulations()
+	for i: int in realms.size():
+		if tribulations[i] != null:
+			path.add_child(ScrollRows.row(realms[i].title(), tr_key(tribulations[i].name_key)))
 	return path
 
 
-static func _run_tiles(run: RunState, hands: Array[HandDefinition]) -> VBoxContainer:
+static func _run_tiles(run: RunState, hands: Array[HandDefinition], content: GameContent) -> VBoxContainer:
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override(&"separation", column.get_theme_constant(&"separation", &"ScrollPanel"))
 	var tiles := HFlowContainer.new()
@@ -151,6 +175,8 @@ static func _run_tiles(run: RunState, hands: Array[HandDefinition]) -> VBoxConta
 	tiles.add_child(ScrollTiles.stat(str(stats.discards_used), "UI_INFO_DISCARDS"))
 	tiles.add_child(ScrollTiles.stat(str(stats.stones_earned), "UI_INFO_STONES"))
 	column.add_child(tiles)
+	for line: Array in mode_lines(run, content):
+		column.add_child(ScrollRows.row(line[0], line[1]))
 	column.add_child(ScrollRows.row("UI_STATS_FAVORITE_HAND", hand_name(stats.hands.most_played(), hands)))
 	column.add_child(ScrollRows.row("UI_INFO_LEGACIES", "" if not run.legacies.is_empty() else tr_key("UI_NONE")))
 	if not run.legacies.is_empty():

@@ -49,7 +49,8 @@ func _ready() -> void:
 	_show_menu()
 
 
-func _show_menu() -> void:
+## open_new_run : le rouleau Nouvelle partie s'ouvre aussitot (nouvelle partie demandee depuis la run).
+func _show_menu(open_new_run: bool = false) -> void:
 	var menu := MENU_SCENE.instantiate()
 	menu.saved_run = _saved_run_preview()
 	menu.settings = _settings
@@ -58,6 +59,8 @@ func _show_menu() -> void:
 	menu.help_offered.connect(func() -> void:
 		_profile.help_offered = true
 		_save_profile())
+	menu.profile = _profile
+	menu.open_new_run = open_new_run
 	menu.start_requested.connect(_start_new_run)
 	menu.continue_requested.connect(_continue_run)
 	menu.stats_requested.connect(_show_stats)
@@ -87,7 +90,7 @@ func _show_options_over_run() -> void:
 		_show_menu())
 	options.new_run_requested.connect(func() -> void:
 		veil.queue_free()
-		_start_new_run())
+		_show_menu(true))
 	add_child(veil)
 	# Avant d'y poser les reglages : la run dessous ne prend plus le focus, et le retrouve a la fermeture.
 	Focus.trap(veil)
@@ -163,17 +166,18 @@ func _show_compendium() -> void:
 	_swap(compendium)
 
 
-func _start_new_run() -> void:
+func _start_new_run(setup: RunSetup) -> void:
 	_run_storage.delete()
-	_show_run({})
+	_show_run({}, setup)
 
 
 func _continue_run() -> void:
 	_show_run(_run_storage.load_data())
 
 
-func _show_run(resume_data: Dictionary) -> void:
+func _show_run(resume_data: Dictionary, setup: RunSetup = RunSetup.new()) -> void:
 	var run_screen := RUN_SCENE.instantiate()
+	run_screen.setup = setup
 	run_screen.content = _content
 	run_screen.run_storage = _run_storage
 	run_screen.resume_data = resume_data

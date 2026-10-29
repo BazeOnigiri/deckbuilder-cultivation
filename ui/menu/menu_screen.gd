@@ -1,8 +1,9 @@
 extends Control
 ## Menu principal « 五行 Wu Xing » : rouleau suspendu des choix a gauche, lune et meditant entoure des cinq phases a droite.
-## Nouvelle partie avec une run sauvegardee : un rouleau resume la run et propose de la continuer ou de recommencer.
+## Nouvelle partie : rouleau des options (NewRunPanel). Avec une run sauvegardee, un rouleau la resume d'abord et
+## propose de la continuer ou de recommencer.
 
-signal start_requested
+signal start_requested(setup: RunSetup)
 signal continue_requested
 signal stats_requested
 signal compendium_requested
@@ -22,6 +23,10 @@ var settings: GameSettings = GameSettings.new()
 var content: GameContent
 ## Vrai a la toute premiere partie : Nouvelle partie propose d'abord l'aide, une seule fois.
 var offer_help: bool = false
+## Injecte par main. Par defaut un profil neuf.
+var profile: ProfileStats = ProfileStats.new()
+## Vrai : le rouleau Nouvelle partie s'ouvre des l'affichage (nouvelle partie demandee depuis une run).
+var open_new_run: bool = false
 
 
 func _ready() -> void:
@@ -43,20 +48,38 @@ func _ready() -> void:
 	%Gap.custom_minimum_size.y = get_theme_constant(&"menu_gap", &"ScrollPanel")
 	%Scroll.unroll(0.0 if settings.reduce_motion else get_theme_constant(&"unroll_ms", &"ScrollPanel") / 1000.0)
 	Focus.grab_first(%Scroll)
+	if open_new_run:
+		show_new_run()
 
 
-## Sans run sauvegardee, rien a confirmer : la partie commence.
+## Rouleau des options de la nouvelle partie. Ferme les autres rouleaux ouverts (confirmation).
+func show_new_run() -> void:
+	for child: Node in get_children():
+		if child is ScrollOverlay:
+			(child as ScrollOverlay).close()
+	if content == null:
+		content = GameContent.load_default()
+	var panel := NewRunPanel.new()
+	panel.content = content
+	panel.profile = profile
+	panel.settings = settings
+	panel.overlay_parent = self
+	panel.start_requested.connect(start_requested.emit)
+	ScrollOverlay.open(self, "UI_NEW_RUN", panel, not settings.reduce_motion)
+
+
+## Sans run sauvegardee, rien a confirmer : les options de la partie.
 func _show_play_scroll() -> void:
 	if saved_run == null:
 		if offer_help:
 			_show_help_offer()
 		else:
-			start_requested.emit()
+			show_new_run()
 		return
 	var body := VBoxContainer.new()
 	body.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
 	var progress := saved_run.progress
-	body.add_child(ScrollRows.row("UI_SAVED_STAGE", tr("UI_STAGE") % [tr(progress.current_realm().name_key), tr(progress.current_bottleneck().name_key)]))
+	body.add_child(ScrollRows.row("UI_SAVED_STAGE", tr("UI_STAGE") % [progress.current_realm().title(), tr(progress.current_bottleneck().name_key)]))
 	var stone_icon: Array[Control] = [StoneIcon.new()]
 	body.add_child(ScrollRows.row("UI_SAVED_STONES", str(saved_run.stones), stone_icon))
 	var icons: Array[Control] = []
@@ -77,8 +100,8 @@ func _show_play_scroll() -> void:
 	var actions := HBoxContainer.new()
 	actions.alignment = BoxContainer.ALIGNMENT_CENTER
 	actions.add_theme_constant_override(&"separation", get_theme_constant(&"separation", &"ScrollPanel"))
-	actions.add_child(_seal("UI_CONTINUE", continue_requested))
-	actions.add_child(_seal("UI_ABANDON_RESTART", start_requested))
+	actions.add_child(_seal("UI_CONTINUE", continue_requested.emit))
+	actions.add_child(_seal("UI_ABANDON_RESTART", show_new_run))
 	body.add_child(actions)
 	# Deux choix explicites : pas de sceau Fermer en plus (Echap et le clic a cote ferment toujours).
 	ScrollOverlay.open(self, "UI_NEW_RUN", body, not settings.reduce_motion).hide_close()
@@ -100,7 +123,7 @@ func _show_help_offer() -> void:
 	read.theme_type_variation = &"SealButton"
 	read.text = "UI_HELP_OPEN"
 	actions.add_child(read)
-	actions.add_child(_seal("UI_HELP_START", start_requested))
+	actions.add_child(_seal("UI_HELP_START", show_new_run))
 	body.add_child(actions)
 	var overlay := ScrollOverlay.open(self, "UI_NEW_RUN", body, not settings.reduce_motion)
 	overlay.hide_close()
@@ -127,11 +150,11 @@ func _artifact_icon(artifact: ArtifactDefinition) -> TextureRect:
 	return icon
 
 
-func _seal(text_key: String, pressed: Signal) -> Button:
+func _seal(text_key: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.theme_type_variation = &"SealButton"
 	button.text = text_key
-	button.pressed.connect(pressed.emit)
+	button.pressed.connect(action)
 	return button
 
 

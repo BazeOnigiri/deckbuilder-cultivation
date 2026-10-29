@@ -257,6 +257,48 @@ func test_uid_en_double_garde_les_deux_cartes() -> void:
 	assert_eq(uids.size(), run.cards().size(), "uids tous distincts")
 
 
+func test_modes_de_partie_sauvegardes() -> void:
+	var setup := RunSetup.for_challenge(_content.challenge_by_id(&"defi_heritier"), "SAUVE")
+	setup.daily = true
+	var rng := _rng()
+	var run := _content.new_run(rng, setup)
+	run.status = RunState.Status.WON
+	run.continue_endless(_content.tribulations, rng)
+	var data := _through_json(RunSnapshot.capture(run, _content.new_shop(run, rng), rng))
+	var restored := RunSnapshot.restore(data, _content, _rng(999))
+	assert_not_null(restored)
+	assert_eq(restored.setup.seed_text, "SAUVE")
+	assert_true(restored.setup.daily)
+	assert_eq(restored.setup.challenge, setup.challenge)
+	assert_eq(restored.setup.difficulty, setup.difficulty)
+	assert_eq(restored.setup.random_tribulations, setup.random_tribulations)
+	assert_eq(restored.modifiers, run.modifiers)
+	assert_true(restored.endless)
+	assert_eq(restored.progress.realm_count(), run.progress.realm_count())
+	assert_eq(restored.progress.tribulations(), run.progress.tribulations())
+	assert_eq(restored.progress.current_realm().base_score, run.progress.current_realm().base_score)
+	assert_eq(restored.round_rules().hands_per_round, run.round_rules().hands_per_round)
+
+
+## Sauvegarde d'avant les modes de partie : ni setup, ni endless, ni tirage. Elle se relit en partie classique.
+func test_ancienne_sauvegarde_sans_les_modes() -> void:
+	var rng := _rng()
+	var run := _run_in_shop(rng)
+	var data := _through_json(RunSnapshot.capture(run, _content.new_shop(run, rng), rng))
+	data.erase("setup")
+	data.erase("endless")
+	data["progress"].erase("tribulations")
+	data["progress"].erase("endless")
+	var restored := RunSnapshot.restore(data, _content, _rng())
+	assert_not_null(restored)
+	assert_eq(restored.setup.seed_text, "")
+	assert_eq(restored.setup.difficulty, 1)
+	assert_null(restored.setup.challenge)
+	assert_false(restored.endless)
+	assert_true(restored.modifiers.is_empty())
+	assert_eq(restored.progress.tribulations(), RunProgress.new(_content.realms).tribulations())
+
+
 func test_graine_de_la_run_sauvegardee() -> void:
 	var rng := _rng()
 	var run := _run_in_shop(rng)

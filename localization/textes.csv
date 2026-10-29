@@ -459,3 +459,49 @@ UI_ACHIEVEMENT_BADGE,Succès,Achievement
 UI_ACHIEVEMENTS_BUTTON,Succès,Achievements
 UI_ACHIEVEMENTS_TITLE,Succès,Achievements
 UI_ACHIEVEMENTS_COUNT,Obtenus : %d / %d,Earned: %d / %d
+REALM_ENDLESS,Royaume céleste %d,Celestial Realm %d
+DIFFICULTY_1,Voie du mortel,Mortal Path
+DIFFICULTY_1_DESC,Le jeu de base.,The base game.
+DIFFICULTY_2,Pas de la grue,Crane Step
+DIFFICULTY_2_DESC,Aucune pierre par main restante.,No more stones per hand left.
+DIFFICULTY_3,Souffle de fer,Iron Breath
+DIFFICULTY_3_DESC,Objectifs +20 %.,Targets +20%.
+DIFFICULTY_4,Cœur de pierre,Stone Heart
+DIFFICULTY_4_DESC,Une défausse de moins par goulot.,One fewer discard per bottleneck.
+DIFFICULTY_5,Veine de jade,Jade Vein
+DIFFICULTY_5_DESC,Relancer la boutique coûte 2 pierres de plus.,Rerolling the shop costs 2 more stones.
+DIFFICULTY_6,Os de tonnerre,Thunder Bone
+DIFFICULTY_6_DESC,Intérêts plafonnés à 2 pierres.,Interest capped at 2 stones.
+DIFFICULTY_7,Âme de givre,Frost Soul
+DIFFICULTY_7_DESC,Une main de moins par goulot.,One fewer hand per bottleneck.
+DIFFICULTY_8,Ciel brisé,Broken Sky
+DIFFICULTY_8_DESC,Objectifs encore +30 %.,Targets a further +30%.
+CHALLENGE_ERMITE,Ermite des cimes,Hermit of the Peaks
+CHALLENGE_ERMITE_DESC,"La boutique ne vend aucune marchandise, seulement les sceaux-trésor. Vous partez avec l'Ermite.","The shop sells no wares, only treasure seals. You start with the Hermit."
+CHALLENGE_DEUX_SOUFFLES,Deux souffles,Two Breaths
+CHALLENGE_DEUX_SOUFFLES_DESC,Un paquet de feu et d'eau seulement : l'Harmonie est hors d'atteinte.,A deck of only fire and water: Harmony is out of reach.
+CHALLENGE_LAME_UNIQUE,Lame unique,Single Blade
+CHALLENGE_LAME_UNIQUE_DESC,Deux mains et cinq défausses par goulot. Vous partez avec l'Épée volante.,Two hands and five discards per bottleneck. You start with the Flying Sword.
+CHALLENGE_HERITIER,Héritier du clan,Clan Heir
+CHALLENGE_HERITIER_DESC,"Trois héritages dès le départ, mais en difficulté Veine de jade.","Three legacies from the start, but at Jade Vein difficulty."
+CHALLENGE_GRAINE_DESTIN,Graine du destin,Seed of Fate
+CHALLENGE_GRAINE_DESTIN_DESC,"Graine WUXING, tribulations dans l'ordre classique, difficulté Souffle de fer. Vous partez avec une pilule d'illumination.","Seed WUXING, tribulations in classic order, Iron Breath difficulty. You start with an Illumination Pill."
+UI_SETUP_SEED,Graine,Seed
+UI_SETUP_SEED_HINT,Vide : tirée au hasard,Empty: random
+UI_SETUP_DIFFICULTY,Difficulté,Difficulty
+UI_SETUP_CLASSIC,Tribulations dans l'ordre classique,Tribulations in classic order
+UI_SETUP_START,Commencer,Start
+UI_SETUP_DAILY,Partie du jour,Daily run
+UI_SETUP_CHALLENGES,Défis,Challenges
+UI_CHALLENGES,Défis,Challenges
+UI_CHALLENGE_WON,Gagné,Won
+UI_INFO_SEED,Graine,Seed
+UI_INFO_DAILY,Partie du jour,Daily run
+UI_INFO_DIFFICULTY,Difficulté,Difficulty
+UI_INFO_CHALLENGE,Défi,Challenge
+UI_INFO_ENDLESS,"Mode sans fin, royaume céleste","Endless mode, celestial realm"
+UI_INFO_TRIBULATIONS,Tribulations de la voie,Tribulations of the path
+UI_ENDLESS_CONTINUE,Continuer sans fin,Continue endlessly
+UI_STATS_DIFFICULTY,Difficulté ouverte,Difficulty unlocked
+UI_STATS_BEST_ENDLESS,Meilleur royaume céleste,Best celestial realm
+UI_STATS_CHALLENGES,Défis gagnés,Challenges won

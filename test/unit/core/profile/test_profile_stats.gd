@@ -169,3 +169,49 @@ func test_deblocages_et_succes_ecrits_tries() -> void:
 	var data := stats.to_dict()
 	assert_eq(data["unlocked"], ["a", "b"])
 	assert_eq(data["achievements"], ["z"])
+
+
+func test_modes_de_partie_au_profil() -> void:
+	var storage := SaveStorage.new(PATH)
+	var stats := ProfileStats.new()
+	stats.difficulty_unlocked = 4
+	stats.best_endless_realm = 3
+	stats.challenges_won.assign(["defi_ermite"])
+	assert_true(stats.save_to(storage))
+	var loaded := ProfileStats.load_from(storage)
+	assert_eq(loaded.difficulty_unlocked, 4)
+	assert_eq(loaded.best_endless_realm, 3)
+	assert_eq(loaded.challenges_won, ["defi_ermite"])
+
+
+func test_ancien_profil_sans_les_modes() -> void:
+	var stats := ProfileStats.from_dict({"runs_won": 2})
+	assert_eq(stats.difficulty_unlocked, 1)
+	assert_eq(stats.best_endless_realm, 0)
+	assert_true(stats.challenges_won.is_empty())
+
+
+func test_victoire_ouvre_la_difficulte_suivante() -> void:
+	var stats := ProfileStats.new()
+	var setup := RunSetup.custom("", 1, true, "X")
+	stats.record_win(setup)
+	assert_eq(stats.difficulty_unlocked, 2)
+	setup.difficulty = 5
+	stats.record_win(setup)
+	assert_eq(stats.difficulty_unlocked, 6)
+	setup.difficulty = 1
+	stats.record_win(setup)
+	assert_eq(stats.difficulty_unlocked, 6, "jamais refermee")
+	assert_eq(stats.runs_won, 3)
+
+
+func test_defi_gagne_note_une_fois() -> void:
+	var stats := ProfileStats.new()
+	var challenge := ChallengeDefinition.new()
+	challenge.id = &"defi_test"
+	challenge.difficulty = 7
+	var setup := RunSetup.for_challenge(challenge, "X")
+	stats.record_win(setup)
+	stats.record_win(setup)
+	assert_eq(stats.challenges_won, ["defi_test"])
+	assert_eq(stats.difficulty_unlocked, 1, "un defi n'ouvre pas de difficulte")

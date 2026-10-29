@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ChallengeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/modes/challenge_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/legacies/rule_modifier.gd" id="2"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="3"]
+[ext_resource type="Script" path="res://core/pills/pill_definition.gd" id="4"]
+[ext_resource type="Script" path="res://core/legacies/legacy_definition.gd" id="5"]
+[ext_resource type="Resource" path="res://content/legacies/heritage_bourse.tres" id="10"]
+[ext_resource type="Resource" path="res://content/legacies/heritage_meridien.tres" id="11"]
+[ext_resource type="Resource" path="res://content/legacies/heritage_souffle.tres" id="12"]
+
+[resource]
+script = ExtResource("1")
+id = &"defi_heritier"
+name_key = "CHALLENGE_HERITIER"
+description_key = "CHALLENGE_HERITIER_DESC"
+seed_text = ""
+difficulty = 5
+random_tribulations = true
+artifacts = Array[ExtResource("3")]([])
+pills = Array[ExtResource("4")]([])
+legacies = Array[ExtResource("5")]([ExtResource("10"), ExtResource("11"), ExtResource("12")])
+modifiers = Array[ExtResource("2")]([])

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ChallengeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/modes/challenge_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/legacies/rule_modifier.gd" id="2"]
+[ext_resource type="Script" path="res://core/artifacts/artifact_definition.gd" id="3"]
+[ext_resource type="Script" path="res://core/pills/pill_definition.gd" id="4"]
+[ext_resource type="Script" path="res://core/legacies/legacy_definition.gd" id="5"]
+[ext_resource type="Resource" path="res://content/pills/pilule_illumination.tres" id="10"]
+
+[resource]
+script = ExtResource("1")
+id = &"defi_graine_destin"
+name_key = "CHALLENGE_GRAINE_DESTIN"
+description_key = "CHALLENGE_GRAINE_DESTIN_DESC"
+seed_text = "WUXING"
+difficulty = 3
+random_tribulations = false
+artifacts = Array[ExtResource("3")]([])
+pills = Array[ExtResource("4")]([ExtResource("10")])
+legacies = Array[ExtResource("5")]([])
+modifiers = Array[ExtResource("2")]([])

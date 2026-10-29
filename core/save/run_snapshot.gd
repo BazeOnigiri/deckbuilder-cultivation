@@ -44,6 +44,8 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 		"legacy_offer_realm": run.legacy_offer_realm,
 		"hand_levels": run.hand_levels.to_dict(),
 		"stats": run.stats.to_dict(),
+		"setup": run.setup.to_dict(),
+		"endless": run.endless,
 	}
 	if run.status == RunState.Status.IN_ROUND:
 		var round_state := run.current_round
@@ -70,13 +72,16 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 	var cards := _restore_cards(save.get("cards"), content)
 	if cards.is_empty():
 		return null
-	var progress := RunProgress.new(content.realms)
-	if not progress.restore(save.get("progress")):
+	var progress := content.new_progress()
+	if not progress.restore(save.get("progress"), content.tribulations):
 		return null
 	rng.state = rng_state.to_int()
 	var deck := _restore_deck(save.get("piles"), cards, rng)
 	var run := content.equip(RunState.new(deck, content.round_rules, HandEvaluator.new(content.hands), progress, content.economy))
 	run.status = RunState.Status.BETWEEN_ROUNDS
+	# Champs absents (sauvegarde d'avant les modes) : partie sans graine, difficulte 1, ni defi ni mode sans fin.
+	content.apply_setup(run, RunSetup.from_dict(save.get("setup"), content))
+	run.endless = save.get("endless") is bool and save["endless"]
 	run.stones = maxi(0, SaveData.int_of(save, "stones"))
 	for id: String in SaveData.string_list(save.get("artifacts")):
 		var artifact := content.artifact_by_id(StringName(id))

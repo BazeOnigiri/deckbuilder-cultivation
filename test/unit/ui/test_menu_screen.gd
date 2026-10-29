@@ -23,12 +23,55 @@ func _overlay(menu: Node) -> ScrollOverlay:
 	return null
 
 
-func test_nouvelle_partie_directe_sans_sauvegarde() -> void:
+func _panel(menu: Node) -> NewRunPanel:
+	var panels := menu.find_children("*", "NewRunPanel", true, false).filter(
+		func(node: Node) -> bool: return not node.is_queued_for_deletion())
+	return panels[0] if not panels.is_empty() else null
+
+
+## Sans sauvegarde : directement le rouleau des options ; Commencer emet les options choisies.
+func test_nouvelle_partie_sans_sauvegarde_ouvre_les_options() -> void:
 	var menu := _menu(false)
 	watch_signals(menu)
 	menu.get_node("%StartButton").pressed.emit()
+	var panel := _panel(menu)
+	assert_not_null(panel)
+	assert_signal_not_emitted(menu, "start_requested")
+	panel.seed_input.text = " wuxing "
+	panel.classic.button_pressed = true
+	panel._start()
 	assert_signal_emitted(menu, "start_requested")
-	assert_null(_overlay(menu))
+	var setup: RunSetup = get_signal_parameters(menu, "start_requested")[0]
+	assert_eq(setup.seed_text, "WUXING")
+	assert_false(setup.random_tribulations)
+	assert_eq(setup.difficulty, 1, "seul le premier niveau est ouvert sur un profil neuf")
+
+
+func test_difficultes_ouvertes_selon_le_profil() -> void:
+	var menu := _menu(false)
+	menu.profile.difficulty_unlocked = 3
+	menu.get_node("%StartButton").pressed.emit()
+	var panel := _panel(menu)
+	assert_eq(panel.difficulty.item_count, 3)
+	assert_eq(panel.chosen_level(), 3, "le plus haut niveau ouvert par defaut")
+
+
+func test_partie_du_jour_et_defis() -> void:
+	var menu := _menu(false)
+	watch_signals(menu)
+	menu.get_node("%StartButton").pressed.emit()
+	var panel := _panel(menu)
+	panel._start_daily()
+	var daily: RunSetup = get_signal_parameters(menu, "start_requested")[0]
+	assert_true(daily.daily)
+	assert_eq(daily.seed_text, RunSetup.daily_code(int(Time.get_unix_time_from_system())))
+	panel._show_challenges()
+	var seals := menu.find_children("*", "Button", true, false).filter(
+		func(node: Node) -> bool: return node.text.begins_with("CHALLENGE_"))
+	assert_eq(seals.size(), menu.content.challenges.size())
+	(seals[0] as Button).pressed.emit()
+	var setup: RunSetup = get_signal_parameters(menu, "start_requested")[0]
+	assert_not_null(setup.challenge)
 
 
 func test_quitter_le_jeu() -> void:
@@ -122,7 +165,7 @@ func test_premiere_partie_propose_l_aide_une_seule_fois() -> void:
 	assert_not_null(_overlay(menu))
 	_overlay(menu).close()
 	menu.get_node("%StartButton").pressed.emit()
-	assert_signal_emitted(menu, "start_requested", "plus d'offre ensuite")
+	assert_not_null(_panel(menu), "plus d'offre ensuite : les options de la partie")
 
 
 func test_focus_initial_sur_le_premier_choix() -> void:

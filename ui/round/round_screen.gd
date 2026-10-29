@@ -23,6 +23,8 @@ var content: GameContent
 var run_storage: SaveStorage
 ## Sauvegarde a reprendre. Vide : nouvelle run.
 var resume_data: Dictionary = {}
+## Options de la nouvelle run (rouleau Nouvelle partie). Graine vide : tiree au hasard ici.
+var setup: RunSetup = RunSetup.new()
 ## Injecte par main. Par defaut des reglages neufs (scene lancee seule, tests).
 var settings: GameSettings = GameSettings.new()
 ## Injectes par main. null (scene lancee seule, tests) : boutique sur tout le contenu, ni succes ni deblocages.
@@ -66,7 +68,9 @@ func _ready() -> void:
 		_run = RunSnapshot.restore(resume_data, content, _rng)
 	var resumed: bool = _run != null
 	if not resumed:
-		_run = content.new_run(_rng)
+		if setup.seed_text.is_empty():
+			setup.seed_text = RunSetup.random_code(_rng)
+		_run = content.new_run(_rng, setup)
 		_run.seed_value = _rng.seed
 		if OS.is_debug_build():
 			_run.artifacts.append_array(debug_artifacts)
@@ -331,7 +335,27 @@ func _on_run_finished(won: bool) -> void:
 	await _after_score()
 	if won:
 		await _round_end.victory()
-	_round_end.run_over(won, _run_summary())
+	var actions: Array[Button] = []
+	if won:
+		var endless := Button.new()
+		endless.theme_type_variation = &"SealButton"
+		endless.text = "UI_ENDLESS_CONTINUE"
+		endless.pressed.connect(_continue_endless)
+		actions.append(endless)
+	_round_end.run_over(won, _run_summary(), actions)
+
+
+## Mode sans fin : un royaume genere s'ajoute, la boutique s'ouvre comme apres un goulot.
+func _continue_endless() -> void:
+	if not _run.continue_endless(content.tribulations, _rng):
+		return
+	_round_end.clear()
+	_shop = content.new_shop(_run, _rng)
+	_round = null
+	_show_stage()
+	_open_shop()
+	_continue_button.show()
+	_refresh()
 
 
 ## Bilan de la run pour le rouleau de fin : chiffres, meilleur coup, build final en emplacements, graine.
@@ -346,13 +370,15 @@ func _run_summary() -> ScrollContainer:
 	var stats := _run.stats
 	var realm := _run.progress.current_realm()
 	var bottleneck := _run.progress.current_bottleneck()
-	rows.add_child(ScrollRows.row("UI_SUMMARY_REACHED", tr("UI_STAGE") % [tr(realm.name_key), tr(bottleneck.name_key)]))
+	rows.add_child(ScrollRows.row("UI_SUMMARY_REACHED", tr("UI_STAGE") % [realm.title(), tr(bottleneck.name_key)]))
+	for line: Array in RunInfo.mode_lines(_run, content):
+		rows.add_child(ScrollRows.row(line[0], line[1]))
 	rows.add_child(ScrollRows.row("UI_INFO_CLEARED_COUNT", str(stats.bottlenecks_cleared)))
 	rows.add_child(ScrollRows.row("UI_STATS_HANDS_PLAYED", str(stats.hands.total())))
 	rows.add_child(ScrollRows.row("UI_STATS_BEST_HAND_SCORE", GameHistory.best_hand_text(stats.best_hand_score, stats.best_hand_id, content.hands)))
 	rows.add_child(ScrollRows.row("UI_STATS_FAVORITE_HAND", RunInfo.hand_name(stats.hands.most_played(), content.hands)))
 	rows.add_child(ScrollRows.row("UI_INFO_STONES", str(stats.stones_earned)))
-	if _run.seed_value != 0:
+	if _run.seed_value != 0 and _run.setup.seed_text.is_empty():
 		rows.add_child(ScrollRows.row("UI_HISTORY_SEED", str(_run.seed_value)))
 	rows.add_child(ScrollRows.row("UI_SAVED_ARTIFACTS", "" if not _run.artifacts.is_empty() else tr("UI_NONE")))
 	var build := HFlowContainer.new()

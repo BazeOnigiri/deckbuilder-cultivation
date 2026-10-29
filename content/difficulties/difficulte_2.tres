@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DifficultyDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/modes/difficulty_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/legacies/rule_modifier.gd" id="2"]
+
+[sub_resource type="Resource" id="modifier_0"]
+script = ExtResource("2")
+property = &"stones_per_hand_left"
+amount = -1
+
+[resource]
+script = ExtResource("1")
+id = &"difficulte_2"
+name_key = "DIFFICULTY_2"
+description_key = "DIFFICULTY_2_DESC"
+level = 2
+modifiers = Array[ExtResource("2")]([SubResource("modifier_0")])
