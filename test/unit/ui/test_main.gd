@@ -148,7 +148,7 @@ func test_compendium_depuis_le_menu_et_retour() -> void:
 
 func test_boutique_ouverte_enregistre_le_contenu_vu_dans_le_profil() -> void:
 	var main := _main()
-	main.get_child(0).get_node("%StartButton").pressed.emit()
+	main._start_new_run()
 	var run_screen := _current_screen(main)
 	var content := GameContent.load_default()
 	var rng := RandomNumberGenerator.new()
