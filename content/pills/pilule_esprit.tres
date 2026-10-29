@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="PillDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/pills/pill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/pills/imbue_pill_effect.gd" id="2"]
+[ext_resource type="Resource" path="res://content/enhancements/amelioration_esprit.tres" id="3"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("2")
+enhancement = ExtResource("3")
+
+[resource]
+script = ExtResource("1")
+id = &"pilule_esprit"
+name_key = "PILL_ESPRIT"
+description_key = "PILL_ESPRIT_DESC"
+glyph = "慧"
+price = 3
+min_cards = 1
+max_cards = 2
+effect = SubResource("effect")

@@ -822,6 +822,7 @@ ItemSlot/colors/tribulation_color = Color(0.4235, 0.6157, 0.8392, 1)
 ItemSlot/constants/artifact_height = 96
 ItemSlot/constants/artifact_width = 72
 ItemSlot/constants/dash = 4
+ItemSlot/constants/edition_width = 2
 ItemSlot/constants/glow_spread = 9
 ItemSlot/constants/icon_size = 56
 ItemSlot/constants/pill_size = 60

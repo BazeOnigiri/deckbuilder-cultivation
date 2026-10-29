@@ -20,6 +20,8 @@ var cover_tier: int = 0
 var cover_pattern: ManualDefinition.Pattern = ManualDefinition.Pattern.CLOUDS
 ## Aura d'un artefact qui se declenche : 1 au moment ou il se declenche, s'eteint jusqu'a 0.
 var glow_amount: float = 0.0
+## Aura d'un artefact (null : aucune) : liseret de sa couleur et badge dans l'infobulle.
+var edition: EditionDefinition
 
 
 func _ready() -> void:
@@ -72,6 +74,9 @@ func _draw() -> void:
 		box += "_hover"
 	_draw_glow(rect)
 	draw_style_box(get_theme_stylebox(StringName(box)), rect)
+	if edition != null:
+		var width: float = get_theme_constant(&"edition_width")
+		draw_rect(rect.grow(-width), edition.color, false, width)
 	var font := get_theme_font(&"font")
 	var font_size := get_theme_font_size(&"pill_font_size" if kind == Kind.PILL else &"font_size")
 	var colors := {Kind.PILL: &"pill_color", Kind.PACK: &"pack_color", Kind.LEGACY: &"legacy_color",
@@ -116,6 +121,8 @@ func _make_custom_tooltip(_for_text: String) -> Object:
 	var badges: Array = [[tr(kinds[kind][0]), kinds[kind][1]]]
 	if kind == Kind.ARTIFACT and rarity >= 0:
 		badges.append([tr("UI_RARITY_%d" % rarity), get_theme_color(StringName("rarity_%d" % rarity), &"ItemSlot")])
+	if edition != null:
+		badges.append([tr(edition.name_key), edition.color.darkened(CardView.MODIFIER_BADGE_DARKEN)])
 	return InfoBubble.build(title, description, badges)
 
 

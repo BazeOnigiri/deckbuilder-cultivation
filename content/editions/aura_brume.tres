@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EditionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/edition_definition.gd" id="1"]
+[ext_resource type="Script" path="res://core/scoring/score_effect.gd" id="score"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("score")
+phase = 0
+amount = 30.0
+
+[resource]
+script = ExtResource("1")
+id = &"aura_brume"
+name_key = "AURA_BRUME"
+description_key = "AURA_BRUME_DESC"
+glyph = "雾"
+color = Color(0.7, 0.85, 0.95, 1)
+score_effect = SubResource("effect")
+takes_slot = true
+for_cards = true
+for_artifacts = true
+weight = 50.0
+price_bonus = 2

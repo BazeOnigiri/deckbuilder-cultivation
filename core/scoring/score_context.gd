@@ -7,6 +7,11 @@ var qi: int = 0
 var comprehension: float = 0.0
 ## Chaque etape du calcul, dans l'ordre : l'affichage les rejoue une a une.
 var steps: Array[ScoreStep] = []
+## Ce que le coup produit en plus du score, rempli par RoundState : pierres des cartes qui comptent, niveaux gagnes
+## par la main jouee, cartes brisees (retirees du paquet).
+var stones: int = 0
+var level_ups: int = 0
+var broken: Array[CardInstance] = []
 
 
 func _init(p_hand: HandResult) -> void:

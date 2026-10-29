@@ -48,6 +48,16 @@ const SEAL_OVERFLOW := 7.0
 ## Sceaux decoratifs, identiques dans toutes les langues : selectionnee, scellee par la tribulation.
 const SEAL_GLYPH := "选"
 const SEALED_GLYPH := "封"
+## Amelioration : fond teinte de sa couleur (opacite) et son caractere en filigrane au centre (taille, opacite).
+const ENHANCEMENT_TINT := 0.16
+const WATERMARK_SIZE := 46
+const WATERMARK_ALPHA := 0.28
+## Carte sans rang : son caractere seul, en grand et opaque.
+const RANKLESS_SIZE := 54
+## Talisman : petit cachet qui deborde du bord gauche, a mi-hauteur.
+const TALISMAN_SIZE := 18.0
+## Badge d'un modificateur dans l'infobulle : sa couleur assombrie, pour que le texte clair reste lisible.
+const MODIFIER_BADGE_DARKEN := 0.45
 
 var card: CardInstance
 var _glow: StyleBoxFlat
@@ -72,7 +82,11 @@ func _ready() -> void:
 func refresh() -> void:
 	var style := ElementStyles.of(card.element)
 	tooltip_text = _name()
-	(material as ShaderMaterial).set_shader_parameter(&"edge_color", style.color)
+	var shader := material as ShaderMaterial
+	shader.set_shader_parameter(&"edge_color", style.color)
+	shader.set_shader_parameter(&"aura", 0.0 if card.edition == null else 1.0)
+	if card.edition != null:
+		shader.set_shader_parameter(&"aura_color", card.edition.color)
 	# Lueur de la couleur de l'element, gardee par carte : le Theme ne donne que sa forme.
 	_glow = (get_theme_stylebox(&"card_glow") as StyleBoxFlat).duplicate()
 	_glow.shadow_color = Color(style.color, _glow.shadow_color.a)
@@ -111,9 +125,20 @@ func _draw() -> void:
 	draw_style_box(get_theme_stylebox(box), Rect2(Vector2.ZERO, CARD_SIZE))
 	# +0.5 : le trait de 1 px est centre sur le bord du rectangle, on le cale sur une colonne de pixels.
 	var inset := Vector2.ONE * (FRAME_INSET + 0.5)
-	draw_rect(Rect2(inset, CARD_SIZE - 2 * inset), get_theme_color(&"frame_color"), false, 1.0)
-	_draw_corner(style)
-	_draw_center(style)
+	var frame := Rect2(inset, CARD_SIZE - 2 * inset)
+	if card.enhancement != null:
+		draw_rect(frame, Color(card.enhancement.color, ENHANCEMENT_TINT))
+	draw_rect(frame, get_theme_color(&"frame_color"), false, 1.0)
+	if card.is_rankless():
+		_draw_glyph(card.enhancement.glyph, RANKLESS_SIZE, card.enhancement.color)
+	else:
+		if card.enhancement != null:
+			_draw_glyph(card.enhancement.glyph, WATERMARK_SIZE, Color(card.enhancement.color, WATERMARK_ALPHA))
+		_draw_corner(style)
+		_draw_center(style)
+	if card.talisman != null:
+		var stamp := Rect2(-SEAL_OVERFLOW, (CARD_SIZE.y - TALISMAN_SIZE) / 2, TALISMAN_SIZE, TALISMAN_SIZE)
+		_draw_stamp(stamp, card.talisman.glyph, card.talisman.color, get_theme_color(&"seal_text_color"))
 	if button_pressed:
 		_draw_seal()
 	if _sealed:
@@ -121,9 +146,17 @@ func _draw() -> void:
 		var stamp := Rect2(-SEAL_OVERFLOW, CARD_SIZE.y - SEAL_SIZE + SEAL_OVERFLOW, SEAL_SIZE, SEAL_SIZE)
 		_draw_stamp(stamp, SEALED_GLYPH, get_theme_color(&"sealed_color"), get_theme_color(&"sealed_text_color"))
 	# Coin bas droit : le meme coin, tourne d'un demi-tour autour du coin oppose.
-	draw_set_transform(CARD_SIZE, PI)
-	_draw_corner(style)
-	draw_set_transform(Vector2.ZERO)
+	if not card.is_rankless():
+		draw_set_transform(CARD_SIZE, PI)
+		_draw_corner(style)
+		draw_set_transform(Vector2.ZERO)
+
+
+## Caractere centre sur la carte (police des sceaux).
+func _draw_glyph(glyph: String, font_size: int, color: Color) -> void:
+	var font := get_theme_font(&"seal_font")
+	var baseline: float = (CARD_SIZE.y + font.get_ascent(font_size) - font.get_descent(font_size)) / 2
+	draw_string(font, Vector2(0, baseline), glyph, HORIZONTAL_ALIGNMENT_CENTER, CARD_SIZE.x, font_size, color)
 
 
 func _draw_corner(style: ElementStyle) -> void:
@@ -156,21 +189,35 @@ func _draw_seal() -> void:
 func _draw_stamp(seal: Rect2, glyph: String, color: Color, text_color: Color) -> void:
 	draw_rect(seal, color)
 	var font := get_theme_font(&"seal_font")
-	var font_size := get_theme_font_size(&"seal_font_size")
+	# Un cachet plus petit que le sceau garde les proportions du sceau.
+	var font_size := roundi(get_theme_font_size(&"seal_font_size") * seal.size.y / SEAL_SIZE)
 	# Ligne de base qui centre le caractere en hauteur dans le sceau.
-	var baseline: float = seal.position.y + (SEAL_SIZE + font.get_ascent(font_size) - font.get_descent(font_size)) / 2
+	var baseline: float = seal.position.y + (seal.size.y + font.get_ascent(font_size) - font.get_descent(font_size)) / 2
 	draw_string(font, Vector2(seal.position.x, baseline), glyph, HORIZONTAL_ALIGNMENT_CENTER,
-		SEAL_SIZE, font_size, text_color)
+		seal.size.x, font_size, text_color)
 
 
-## Texte brut « Rang 7, Bois, Qi 7 » pour une carte sans CardView interactive (choix d'un sceau de disciples).
+## Texte brut « Rang 7, Bois, Qi 7 » pour une carte sans CardView interactive (choix d'un sceau de disciples),
+## suivi de ses ameliorations.
 static func tip_text(card_instance: CardInstance) -> String:
-	return "%s, %s, %s" % [name_of(card_instance),
+	var text := "%s, %s, %s" % [name_of(card_instance),
 		TranslationServer.translate("ELEMENT_" + Element.to_id(card_instance.element).to_upper()),
 		TranslationServer.translate("UI_CARD_QI") % card_instance.qi()]
+	return text + modifiers_text(card_instance)
+
+
+## Une ligne par amelioration, aura et talisman : « Nom : description ». Vide sans modificateur.
+static func modifiers_text(card_instance: CardInstance) -> String:
+	var text := ""
+	for modifier: CardModifier in card_instance.modifiers():
+		text += "\n%s : %s" % [TranslationServer.translate(modifier.name_key),
+			TranslationServer.translate(modifier.description_key)]
+	return text
 
 
 static func name_of(card_instance: CardInstance) -> String:
+	if card_instance.is_rankless():
+		return TranslationServer.translate(card_instance.enhancement.name_key)
 	if FIGURE_GLYPHS.has(card_instance.rank):
 		return TranslationServer.translate("CARD_RANK_%d" % card_instance.rank)
 	return TranslationServer.translate("UI_CARD_RANK") % card_instance.rank
@@ -182,8 +229,12 @@ func _name() -> String:
 
 
 func _make_custom_tooltip(_for_text: String) -> Object:
-	var element := tr("ELEMENT_" + Element.to_id(card.element).to_upper())
-	return InfoBubble.build(_name(), tr("UI_CARD_QI") % card.qi(), [[element, ElementStyles.of(card.element).color]])
+	var badges: Array = []
+	if not card.is_rankless():
+		badges.append([tr("ELEMENT_" + Element.to_id(card.element).to_upper()), ElementStyles.of(card.element).color])
+	for modifier: CardModifier in card.modifiers():
+		badges.append([tr(modifier.name_key), modifier.color.darkened(MODIFIER_BADGE_DARKEN)])
+	return InfoBubble.build(_name(), tr("UI_CARD_QI") % card.qi() + modifiers_text(card), badges)
 
 
 ## Carte reduite dans un cadre a sa taille reduite (vue du paquet, exemples de mains). Sans clic ni infobulle.

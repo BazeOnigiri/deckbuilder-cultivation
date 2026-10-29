@@ -17,6 +17,9 @@ var stones: int = 0
 var artifacts: Array[ArtifactDefinition] = []
 ## Crans des artefacts qui grandissent, par id (sauvegardes). Partages avec chaque round.
 var artifact_stacks: Dictionary = {}
+## Aura de chaque artefact possede, par id (sauvegardee). Par id comme les crans : un artefact n'est jamais possede
+## deux fois, et une vente ou un ajout ne decale rien, contrairement a un index.
+var artifact_editions: Dictionary = {}
 var hand_levels := HandLevels.new()
 var pills: Array[PillDefinition] = []
 var stats := RunStats.new()
@@ -27,6 +30,10 @@ var legacies: Array[LegacyDefinition] = []
 ## Heritage propose en boutique pendant ce royaume (null : achete ou aucun), et le royaume ou il a ete tire.
 var legacy_offer: LegacyDefinition
 var legacy_offer_realm: int = 0
+## Pilules qu'un talisman d'alchimie peut creer, et regles de boutique de base (nombre d'emplacements). Poses par
+## GameContent ; vides, aucun talisman ne cree de pilule.
+var pill_pool: Array[PillDefinition] = []
+var shop_base: ShopRules
 
 var _deck: DeckState
 var _rules: RoundRules
@@ -90,8 +97,31 @@ func sell_artifact(index: int) -> bool:
 		return false
 	stones += sell_price(artifacts[index])
 	artifact_stacks.erase(artifacts[index].id)
+	artifact_editions.erase(artifacts[index].id)
 	artifacts.remove_at(index)
 	return true
+
+
+## Ajoute un artefact, avec son aura (null : aucune). Il agit des la main suivante.
+func add_artifact(artifact: ArtifactDefinition, edition: EditionDefinition = null) -> void:
+	artifacts.append(artifact)
+	if edition != null:
+		artifact_editions[artifact.id] = edition
+
+
+## Emplacements d'artefact occupes : un artefact dont l'aura ne prend pas d'emplacement n'en occupe pas.
+func artifact_slots_used() -> int:
+	var used: int = 0
+	for artifact: ArtifactDefinition in artifacts:
+		var edition: EditionDefinition = artifact_editions.get(artifact.id)
+		if edition == null or edition.takes_slot:
+			used += 1
+	return used
+
+
+## Emplacements de pilule, heritages compris. 0 sans regles de boutique.
+func max_pills() -> int:
+	return 0 if shop_base == null else shop_rules(shop_base).max_pills
 
 
 ## Prix de vente d'une pilule : meme part sell_fraction de son prix que pour un artefact.
@@ -172,7 +202,7 @@ func _create_round() -> void:
 	if constraint == null:
 		constraint = TribulationConstraint.new()
 	current_round = RoundState.new(_deck, round_rules(), _evaluator, progress.current_target(), artifacts, hand_levels, constraint,
-		artifact_stacks)
+		artifact_stacks, artifact_editions)
 	current_round.finished.connect(_on_round_finished)
 	current_round.hand_played.connect(_on_hand_played)
 	current_round.discarded.connect(_on_discarded)
@@ -187,6 +217,7 @@ func _on_round_finished(won: bool) -> void:
 	var reward := RoundReward.compute(economy(), progress.current_bottleneck().reward, current_round.hands_left, stones)
 	reward.artifacts = ArtifactResolver.after_round_won(artifacts, artifact_stacks, current_round.hands_left,
 		current_round.discards_left)
+	reward.cards = CardEffects.held_stones(_deck.hand)
 	stones += reward.total()
 	stats.stones_earned += reward.total()
 	stats.bottlenecks_cleared += 1
@@ -199,9 +230,16 @@ func _on_round_finished(won: bool) -> void:
 
 func _on_hand_played(result: HandResult, score: ScoreContext) -> void:
 	stats.record_hand(result.definition.id, score.total())
+	stones += score.stones
+	stats.stones_earned += score.stones
 
 
-func _on_discarded(gained: int) -> void:
+## Talisman d'alchimie : une pilule au hasard par carte, tant qu'il reste un emplacement.
+func _on_discarded(gained: int, discarded: Array[CardInstance]) -> void:
 	stats.discards_used += 1
 	stones += gained
 	stats.stones_earned += gained
+	for i: int in CardEffects.pills_on_discard(discarded):
+		if pill_pool.is_empty() or pills.size() >= max_pills():
+			break
+		pills.append(pill_pool[_deck.rng().randi_range(0, pill_pool.size() - 1)])

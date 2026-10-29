@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TalismanDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cards/talisman_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"talisman_fortune"
+name_key = "TALISMAN_FORTUNE"
+description_key = "TALISMAN_FORTUNE_DESC"
+glyph = "福"
+color = Color(0.93, 0.75, 0.3, 1)
+held_stones = 3

@@ -7,10 +7,12 @@ var hands: int = 0
 var interest: int = 0
 ## Pierres des artefacts (ArtifactEffect.Trigger.ROUND_WON).
 var artifacts: int = 0
+## Pierres des cartes gardees en main (talisman de fortune).
+var cards: int = 0
 
 
 func total() -> int:
-	return base + hands + interest + artifacts
+	return base + hands + interest + artifacts + cards
 
 
 ## Les interets portent sur les pierres possedees avant la recompense.

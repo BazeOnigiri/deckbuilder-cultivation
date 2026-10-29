@@ -31,8 +31,33 @@ func _detect(cards: Array[CardInstance], low: bool) -> Array[CardInstance]:
 		var cur: CardInstance = ordered[i]
 		if value.call(cur) != value.call(prev) + 1:
 			return empty
-		if require_same_element and cur.element != prev.element:
-			return empty
-		if cycle != null and cur.element != cycle.next_of(prev.element):
-			return empty
+	if require_same_element and not _same_element(ordered):
+		return empty
+	if cycle != null and not _follows_cycle(ordered):
+		return empty
 	return ordered
+
+
+## Les cartes qui comptent pour tous les elements s'accordent a n'importe quel element.
+static func _same_element(ordered: Array[CardInstance]) -> bool:
+	var elements: Dictionary = {}
+	for card: CardInstance in ordered:
+		if not card.is_wild():
+			elements[card.element] = true
+	return elements.size() <= 1
+
+
+## La premiere carte fixe donne la place de toute la suite dans le cycle ; les autres cartes fixes doivent la suivre.
+func _follows_cycle(ordered: Array[CardInstance]) -> bool:
+	var anchor: int = -1
+	for i: int in ordered.size():
+		if not ordered[i].is_wild():
+			anchor = i
+			break
+	if anchor == -1:
+		return true
+	var start: int = cycle.order.find(ordered[anchor].element) - anchor
+	for i: int in ordered.size():
+		if not ordered[i].is_wild() and ordered[i].element != cycle.order[posmod(start + i, cycle.order.size())]:
+			return false
+	return true

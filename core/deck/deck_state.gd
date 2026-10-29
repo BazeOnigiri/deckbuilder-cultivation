@@ -68,6 +68,19 @@ func destroy(cards: Array[CardInstance]) -> bool:
 	return true
 
 
+## Retire definitivement des cartes de toutes les piles (carte brisee).
+func remove(cards: Array[CardInstance]) -> void:
+	for card: CardInstance in cards:
+		draw_pile.erase(card)
+		hand.erase(card)
+		discard_pile.erase(card)
+
+
+## RNG de la run, partagee avec les tirages qui touchent aux cartes (carte qui se brise, pilule creee).
+func rng() -> RandomNumberGenerator:
+	return _rng
+
+
 ## Glisse une carte dans la pioche a une position tiree avec la RNG du paquet : fill_hand pioche par la fin, une carte
 ## ajoutee en fin de pile serait piochee tout de suite.
 func insert_into_draw_pile(card: CardInstance) -> void:

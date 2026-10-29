@@ -7,4 +7,4 @@ extends ArtifactCondition
 
 
 func matches(_result: HandResult, card: CardInstance) -> bool:
-	return card != null and card.rank >= min_rank and card.rank <= max_rank
+	return card != null and not card.is_rankless() and card.rank >= min_rank and card.rank <= max_rank

@@ -6,6 +6,8 @@ extends RefCounted
 var pack: PackDefinition
 var choices: Array[Resource] = []
 var picks_left: int
+## Sceau de cartes : la carte proposee pour chaque choix, avec ses ameliorations (meme index que choices).
+var cards: Array[CardInstance] = []
 
 
 func _init(p_pack: PackDefinition, p_choices: Array[Resource]) -> void:

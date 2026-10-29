@@ -13,12 +13,12 @@ static func add_stones(run: RunState) -> void:
 
 ## Un artefact deja possede ou un emplacement plein : refuse, comme en boutique. rules : regles de base de la boutique.
 static func give_artifact(run: RunState, artifact: ArtifactDefinition, rules: ShopRules) -> bool:
-	if run.artifacts.size() >= run.shop_rules(rules).max_artifacts:
+	if run.artifact_slots_used() >= run.shop_rules(rules).max_artifacts:
 		return false
 	for owned: ArtifactDefinition in run.artifacts:
 		if owned.id == artifact.id:
 			return false
-	run.artifacts.append(artifact)
+	run.add_artifact(artifact)
 	return true
 
 

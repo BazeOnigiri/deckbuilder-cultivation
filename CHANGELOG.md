@@ -27,6 +27,12 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - Manette : A valider, B fermer ou deselectionner, X defausser, Y jouer, LT et RT trier, LB paquet, RB vendre, Select voie de cultivation, Start options (O au clavier). Les aides nomment les boutons quand une manette est branchee.
 - Touches reconfigurables dans Options > Touches : cliquer puis appuyer sur la nouvelle touche ; une touche d'une autre action est echangee, une touche reservee (Echap, Espace, fleches, chiffres) refusee ; bouton « Touches par defaut ». Sauvegardees avec les reglages (anciens fichiers valides).
 - Tactile : un appui long sur une carte ou un objet montre son infobulle sans cliquer, et propose la vente d'un artefact ou d'une pilule (sceau « Vendre »).
+- Ameliorations de carte (une par carte), en donnees dans content/enhancements : vigueur (+30 Qi), esprit (+4 Comprehension), tresor (+2 pierres), jade (x2 Comprehension, 1 chance sur 4 de se briser, RNG de la run), fer noir (x1,5 Comprehension gardee en main), chaos originel (compte pour les cinq elements dans la Purete, l'Harmonie, les Ascensions et le Cycle) et roc (sans rang, 50 Qi, compte toujours sans former de combinaison).
+- Auras (lueur) cumulables avec une amelioration, dans content/editions : brume (+30 Qi), aurore (+6 Comprehension), cinq couleurs (x1,5 Comprehension). Brume, cinq couleurs et vide (ne prend pas d'emplacement) vont aussi sur les artefacts, rarement proposes en boutique avec un supplement de prix (chance dans boutique_base.tres, poids dans chaque aura).
+- Talismans de carte, dans content/talismans : echo (la carte compte deux fois, artefacts compris), fortune (+3 pierres gardee en main a la fin du goulot), alchimie (cree une pilule quand defaussee), eveil (la main jouee monte d'un niveau quand la carte compte).
+- 14 pilules qui posent une amelioration, une aura ou un talisman ; le Rouleau de disciples propose parfois des cartes ameliorees (chances dans sceau_disciples.tres).
+- Cartes dessinees avec leur amelioration (fond teinte et caractere en filigrane), leur aura (reflet anime, fige par Reduire les animations) et leur talisman (cachet a gauche), decrits dans l'infobulle ; liseret et badge de l'aura sur un artefact.
+- Sauvegarde en version 2 (ameliorations, auras, talismans, auras d'artefact) avec migration : les sauvegardes precedentes restent valides.
 
 ### Corrigé
 

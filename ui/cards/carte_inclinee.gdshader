@@ -26,7 +26,14 @@ uniform float flame_height = 0.35;
 uniform float flame_speed = 0.6;
 // Opacite des flammes au plus fort.
 uniform float flame_strength = 0.5;
-// 0 fige les flammes (reduire les animations). Declare dans project.godot.
+// Aura de la carte : 0 = aucune, 1 = un reflet de sa couleur balaie la carte en diagonale. Pose par CardView.
+uniform float aura : hint_range(0.0, 1.0) = 0.0;
+uniform vec4 aura_color : source_color = vec4(1.0);
+uniform float aura_strength = 0.35;
+uniform float aura_speed = 0.5;
+// Nombre de bandes de reflet sur la diagonale de la carte.
+uniform float aura_bands = 1.5;
+// 0 fige les flammes et le reflet (reduire les animations). Declare dans project.godot.
 global uniform float motion_scale;
 
 // Position sur la carte avant la perspective : les trous restent attaches a la carte quand elle s'incline.
@@ -47,6 +54,11 @@ void vertex() {
 }
 
 void fragment() {
+	if (aura > 0.0) {
+		float inside = step(0.0, local.x) * step(local.x, 1.0) * step(0.0, local.y) * step(local.y, 1.0);
+		float sheen = sin(((local.x + local.y) * aura_bands - TIME * aura_speed * motion_scale) * 6.2832) * 0.5 + 0.5;
+		COLOR.rgb = mix(COLOR.rgb, aura_color.rgb, sheen * sheen * aura_strength * aura * inside);
+	}
 	if (sealed > 0.0) {
 		float t = TIME * flame_speed * motion_scale;
 		// Le bruit monte avec le temps : les langues de feu s'elevent.
