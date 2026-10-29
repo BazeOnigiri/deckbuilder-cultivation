@@ -6,6 +6,8 @@ signal start_requested
 signal continue_requested
 signal stats_requested
 signal options_requested
+## L'aide vient d'etre proposee : main s'en souvient pour ne plus la reproposer.
+signal help_offered
 signal quit_requested
 
 ## Les licences OFL imposent d'accompagner les polices ; export_presets.cfg les inclut dans le pck.
@@ -15,6 +17,10 @@ const FONT_LICENSES: Array[String] = ["res://ui/fonts/OFL-NotoSerif.txt", "res:/
 var saved_run: RunState
 ## Injecte par main avant add_child. Par defaut des reglages neufs (scene lancee seule, tests).
 var settings: GameSettings = GameSettings.new()
+## Injecte par main avant add_child. Par defaut le contenu du jeu, charge au premier besoin (scene lancee seule, tests).
+var content: GameContent
+## Vrai a la toute premiere partie : Nouvelle partie propose d'abord l'aide, une seule fois.
+var offer_help: bool = false
 
 
 func _ready() -> void:
@@ -23,11 +29,12 @@ func _ready() -> void:
 	%StartButton.pressed.connect(_show_play_scroll)
 	%StatsButton.pressed.connect(stats_requested.emit)
 	%OptionsButton.pressed.connect(options_requested.emit)
+	%HelpButton.pressed.connect(_show_help)
 	%CreditsButton.pressed.connect(_show_credits)
 	# Dans un navigateur, quitter n'a pas de sens : on ferme l'onglet.
 	%QuitButton.visible = not OS.has_feature("web")
 	%QuitButton.pressed.connect(quit_requested.emit)
-	for button: InkButton in [%ContinueButton, %StartButton, %StatsButton, %OptionsButton, %CreditsButton, %QuitButton]:
+	for button: InkButton in [%ContinueButton, %StartButton, %StatsButton, %OptionsButton, %HelpButton, %CreditsButton, %QuitButton]:
 		button.reduce_motion = settings.reduce_motion
 	%Orbit.reduce_motion = settings.reduce_motion
 	%Scroll.custom_minimum_size.x = get_theme_constant(&"menu_width", &"ScrollPanel")
@@ -38,7 +45,10 @@ func _ready() -> void:
 ## Sans run sauvegardee, rien a confirmer : la partie commence.
 func _show_play_scroll() -> void:
 	if saved_run == null:
-		start_requested.emit()
+		if offer_help:
+			_show_help_offer()
+		else:
+			start_requested.emit()
 		return
 	var body := VBoxContainer.new()
 	body.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
@@ -69,6 +79,37 @@ func _show_play_scroll() -> void:
 	body.add_child(actions)
 	# Deux choix explicites : pas de sceau Fermer en plus (Echap et le clic a cote ferment toujours).
 	ScrollOverlay.open(self, "UI_NEW_RUN", body, not settings.reduce_motion).hide_close()
+
+
+## Premiere partie : lire l'aide d'abord, ou commencer. Proposee une seule fois.
+func _show_help_offer() -> void:
+	offer_help = false
+	help_offered.emit()
+	var body := VBoxContainer.new()
+	var text := SideColumn.make_label(&"ScrollText", "UI_HELP_OFFER")
+	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
+	body.add_child(text)
+	var actions := HBoxContainer.new()
+	actions.alignment = BoxContainer.ALIGNMENT_CENTER
+	actions.add_theme_constant_override(&"separation", get_theme_constant(&"separation", &"ScrollPanel"))
+	var read := Button.new()
+	read.theme_type_variation = &"SealButton"
+	read.text = "UI_HELP_OPEN"
+	actions.add_child(read)
+	actions.add_child(_seal("UI_HELP_START", start_requested))
+	body.add_child(actions)
+	var overlay := ScrollOverlay.open(self, "UI_NEW_RUN", body, not settings.reduce_motion)
+	overlay.hide_close()
+	read.pressed.connect(func() -> void:
+		overlay.close()
+		_show_help())
+
+
+func _show_help() -> void:
+	if content == null:
+		content = GameContent.load_default()
+	ScrollOverlay.open(self, "UI_HELP", HelpPages.scroll(content), not settings.reduce_motion)
 
 
 ## Dessin de l'artefact a l'encre, son nom en infobulle.

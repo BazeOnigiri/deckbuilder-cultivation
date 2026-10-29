@@ -10,6 +10,13 @@ var runs_won: int = 0
 var best_realm: int = 0
 var best_hand_score: int = 0
 var hands := HandTally.new()
+## L'aide a deja ete proposee a la premiere partie. Champ optionnel : un ancien profil l'a faux.
+var help_offered: bool = false
+
+
+## Premiere partie du profil, et l'aide pas encore proposee.
+func should_offer_help() -> bool:
+	return runs_started == 0 and not help_offered
 
 
 func to_dict() -> Dictionary:
@@ -19,6 +26,7 @@ func to_dict() -> Dictionary:
 		"best_realm": best_realm,
 		"best_hand_score": best_hand_score,
 		"hand_counts": hands.to_dict(),
+		"help_offered": help_offered,
 	}
 
 
@@ -30,6 +38,8 @@ static func from_dict(data: Dictionary) -> ProfileStats:
 	stats.best_realm = _count(data, "best_realm")
 	stats.best_hand_score = _count(data, "best_hand_score")
 	stats.hands = HandTally.from_dict(data.get("hand_counts", {}))
+	var offered: Variant = data.get("help_offered", false)
+	stats.help_offered = offered is bool and offered
 	return stats
 
 

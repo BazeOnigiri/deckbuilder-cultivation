@@ -140,6 +140,15 @@ func ensure_playable() -> void:
 	if status == Status.PLAYING and _deck.hand.is_empty():
 		_refill()
 
+## Gagne le goulot sans jouer (menu debug). Refuse si le round est deja fini.
+func win_now() -> bool:
+	if status != Status.PLAYING:
+		return false
+	score = maxi(score, target_score)
+	_finish(Status.WON)
+	return true
+
+
 func _valid_selection(cards: Array[CardInstance]) -> bool:
 	return not cards.is_empty() and cards.size() <= _max_selected
 

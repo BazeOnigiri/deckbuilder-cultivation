@@ -104,3 +104,22 @@ func test_credits_incluent_les_licences_ofl_et_les_composants_tiers() -> void:
 	for path in menu.FONT_LICENSES:
 		assert_string_contains(text.text, FileAccess.get_file_as_string(path).substr(0, 40))
 	assert_string_contains(text.text, Engine.get_copyright_info()[0].name)
+
+
+func test_bouton_aide_ouvre_le_rouleau_des_regles() -> void:
+	var menu := _menu(false)
+	menu.get_node("%HelpButton").pressed.emit()
+	assert_not_null(_overlay(menu))
+
+
+func test_premiere_partie_propose_l_aide_une_seule_fois() -> void:
+	var menu := _menu(false)
+	menu.offer_help = true
+	watch_signals(menu)
+	menu.get_node("%StartButton").pressed.emit()
+	assert_signal_emitted(menu, "help_offered")
+	assert_signal_not_emitted(menu, "start_requested", "l'offre attend le choix")
+	assert_not_null(_overlay(menu))
+	_overlay(menu).close()
+	menu.get_node("%StartButton").pressed.emit()
+	assert_signal_emitted(menu, "start_requested", "plus d'offre ensuite")
