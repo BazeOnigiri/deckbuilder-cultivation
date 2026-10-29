@@ -15,6 +15,7 @@ var _run: RunState
 var _content: GameContent
 var _shop: ShopState
 var _status: Label
+var _card_choice: OptionButton
 
 
 ## shop : la boutique ouverte, null pendant un round (les sceaux ne s'ouvrent qu'en boutique).
@@ -56,6 +57,19 @@ func _fill() -> void:
 			(child as Control).tooltip_text = "Seulement en boutique"
 			if child is Button or child is OptionButton:
 				child.disabled = true
+	_give_row("Rencontre", _content.events, func(item: Resource) -> bool:
+		if not DebugActions.start_event(_run, item):
+			return false
+		close_requested.emit()
+		return true)
+	_give_row("Presage", _content.omens, func(item: Resource) -> bool:
+		DebugActions.give_omen(_run, item)
+		return true)
+	_card_row()
+	var modifiers := _content.modifiers
+	_give_row("Amelioration", modifiers.enhancements, _imbue_selected)
+	_give_row("Aura", modifiers.card_editions(), _imbue_selected)
+	_give_row("Talisman", modifiers.talismans, _imbue_selected)
 	var win := Button.new()
 	win.text = "Gagner le goulot en cours"
 	win.pressed.connect(func() -> void:
@@ -89,6 +103,28 @@ func _give_row(title: String, items: Array, give: Callable) -> HBoxContainer:
 	row.add_child(button)
 	add_child(row)
 	return row
+
+
+## La carte de la main qui recevra amelioration, aura ou talisman (vide hors round).
+func _card_row() -> void:
+	var row := HBoxContainer.new()
+	var label := Label.new()
+	label.text = "Carte de la main"
+	label.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel") / 4.0
+	row.add_child(label)
+	_card_choice = OptionButton.new()
+	_card_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if _run.current_round != null:
+		for card: CardInstance in _run.current_round.hand():
+			_card_choice.add_item("%d %s" % [card.rank, tr("ELEMENT_" + Element.to_id(card.element).to_upper())])
+	row.add_child(_card_choice)
+	add_child(row)
+
+
+func _imbue_selected(modifier: Resource) -> bool:
+	if _run.current_round == null or _card_choice.selected < 0:
+		return false
+	return DebugActions.imbue_card(_run.current_round.hand()[_card_choice.selected], modifier)
 
 
 func _jump_row() -> void:
@@ -126,4 +162,6 @@ func _done(message: String) -> void:
 func _name_of(item: Resource) -> String:
 	if item is ManualDefinition:
 		return tr(item.hand.name_key)
+	if item is EventDefinition:
+		return tr(item.title_key)
 	return tr(item.name_key)

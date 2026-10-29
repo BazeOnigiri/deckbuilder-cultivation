@@ -67,3 +67,32 @@ static func jump_to(run: RunState, realm_number: int, bottleneck_number: int) ->
 		return false
 	run.start()
 	return true
+
+
+## Ouvre cette rencontre, hors cadre du tirage. Seulement entre deux goulots (jamais pendant un round).
+static func start_event(run: RunState, event: EventDefinition) -> bool:
+	if run.status != RunState.Status.BETWEEN_ROUNDS:
+		return false
+	run.start_event(event)
+	return true
+
+
+## Donne ce presage : effet immediat applique tout de suite, sinon il attend son moment.
+static func give_omen(run: RunState, omen: OmenDefinition) -> void:
+	run.take_omen(omen)
+
+
+## Pose une amelioration, une aura ou un talisman sur une carte de la main (selon le type de modifier). Refuse
+## sans carte, ou une aura qui ne va pas aux cartes.
+static func imbue_card(card: CardInstance, modifier: CardModifier) -> bool:
+	if card == null:
+		return false
+	if modifier is EnhancementDefinition:
+		card.enhancement = modifier
+	elif modifier is EditionDefinition and modifier.for_cards:
+		card.edition = modifier
+	elif modifier is TalismanDefinition:
+		card.talisman = modifier
+	else:
+		return false
+	return true

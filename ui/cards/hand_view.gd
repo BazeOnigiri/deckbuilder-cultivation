@@ -116,6 +116,13 @@ func transmute(card: CardInstance) -> void:
 	view.create_tween().tween_property(view, "self_modulate", Color.WHITE, feel.transmute_time)
 
 
+## Une carte jouee se brise : elle prend sa teinte avant de se dissoudre avec les autres.
+func shatter(card: CardInstance) -> void:
+	var view := _view_of(card)
+	if view != null and not settings.reduce_motion:
+		view.self_modulate = feel.shatter_tint
+
+
 ## Centre de la carte a l'ecran, ou Vector2.INF si elle n'est pas affichee.
 func card_center(card: CardInstance) -> Vector2:
 	var view := _view_of(card)
@@ -147,7 +154,10 @@ func _layout(views: Array[CardView], base: Vector2, delta: float) -> void:
 		if view.button_pressed:
 			pose.y -= _lift()
 		# Carte visee a la souris ou au clavier / a la manette : elle grandit pareil.
-		var tilt := Vector3(0, 0, feel.hover_scale if view.is_hovered() or view.has_focus(true) else 1.0)
+		var aimed := view.is_hovered() or view.has_focus(true)
+		var tilt := Vector3(0, 0, feel.hover_scale if aimed else 1.0)
+		# Au-dessus de sa voisine de droite, sans toucher a l'ordre des enfants (ordre de la main, focus).
+		view.z_index = 1 if aimed else 0
 		if not settings.reduce_motion:
 			# Chaque carte a sa phase, sinon toute la main flotterait d'un bloc.
 			var phase: float = i * 1.7
@@ -197,6 +207,7 @@ func _depart(view: CardView) -> void:
 	view.set_pressed_no_signal(false)
 	view.mouse_filter = MOUSE_FILTER_IGNORE
 	view.focus_mode = FOCUS_NONE
+	view.z_index = 0
 	view.reparent(_leaving_layer)
 	_leaving[view] = 0.0
 

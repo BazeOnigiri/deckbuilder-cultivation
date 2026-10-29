@@ -4,6 +4,9 @@ extends VBoxContainer
 ## noms d'elements dans leur couleur), puis des badges (type d'objet, element...).
 ## Renvoyee par _make_custom_tooltip des cartes et des emplacements. Apparence dans le Theme (types Info*).
 
+var _description := ""
+var _text: RichTextLabel
+
 
 ## badges : liste de [texte, couleur de fond].
 static func build(title: String, description: String, badges: Array = []) -> InfoBubble:
@@ -25,6 +28,8 @@ static func build(title: String, description: String, badges: Array = []) -> Inf
 		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		text.custom_minimum_size.x = bubble.get_theme_constant(&"width", &"InfoBubble")
 		text.text = colorize(description, bubble)
+		bubble._description = description
+		bubble._text = text
 		paper.add_child(text)
 		bubble.add_child(paper)
 	if not badges.is_empty():
@@ -34,6 +39,12 @@ static func build(title: String, description: String, badges: Array = []) -> Inf
 			row.add_child(_badge(badge[0], badge[1]))
 		bubble.add_child(row)
 	return bubble
+
+
+## Les couleurs viennent du Theme : une fois dans l'arbre, la bulle reprend celles du mode contraste eleve.
+func _notification(what: int) -> void:
+	if (what == NOTIFICATION_ENTER_TREE or what == NOTIFICATION_THEME_CHANGED) and _text != null:
+		_text.text = colorize(_description, self)
 
 
 ## Description en BBCode : « +5 Qi », « x2 Comprehension » et les noms d'elements colores, le reste tel quel.

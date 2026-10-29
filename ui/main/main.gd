@@ -22,6 +22,7 @@ const WINDOW_TITLE := "五行 Wu Xing"
 @export var settings_path: String = GameSettings.DEFAULT_PATH
 
 var _screen: Node
+var _stick: StickRepeat
 var _content: GameContent
 var _profile: ProfileStats
 var _profile_storage: SaveStorage
@@ -146,6 +147,10 @@ func _confirm_fullscreen() -> void:
 ## Souris et doigt cachent le focus pose par le jeu, clavier et manette le montrent.
 func _input(event: InputEvent) -> void:
 	Focus.note_input(event)
+	if _stick == null:
+		_stick = StickRepeat.new(get_theme_constant(&"stick_repeat_ms", &"FocusNav"))
+	if not _stick.allow(event, Time.get_ticks_msec()):
+		get_viewport().set_input_as_handled()
 
 
 func _show_stats() -> void:

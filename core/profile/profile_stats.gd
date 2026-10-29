@@ -218,6 +218,12 @@ func add_game(game: GameRecord, limit: int) -> void:
 		games.remove_at(0)
 
 
+## Vrai si une partie terminee porte la graine de la partie du jour de ce moment (rejouable quand meme).
+func played_daily(unix_time: int) -> bool:
+	var code := RunSetup.daily_code(unix_time)
+	return games.any(func(game: GameRecord) -> bool: return game.seed_text == code)
+
+
 ## Les champs des versions 2 et 3 sont optionnels : une sauvegarde plus ancienne reste valide telle quelle.
 static func _migrations() -> Dictionary:
 	var keep := func(data: Dictionary) -> Dictionary: return data

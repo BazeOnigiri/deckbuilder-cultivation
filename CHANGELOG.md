@@ -8,6 +8,11 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Ajouté
 
+- Menu debug : lancer une rencontre (entre deux goulots), donner un presage, poser une amelioration, une aura ou un talisman sur une carte de la main.
+- Main de moins au prochain goulot (cout de rencontre) montree dans l'onglet Run de la Voie de cultivation et sur l'annonce du goulot.
+- Retours visuels : carte de jade brisee (teinte puis dissolution, respecte « reduire les animations »), pilule creee par le talisman d'alchimie et niveau gagne par le talisman d'eveil en notification.
+- Partie du jour : le rouleau Nouvelle partie indique si elle a deja ete jouee aujourd'hui (sans l'interdire).
+- Stick gauche de la manette : delai de repetition du focus (FocusNav/constants/stick_repeat_ms du Theme).
 - Rencontres de cultivation : 12 rencontres en donnees (content/events/ : vieil ermite, grotte de l'immortel dechu, marche noir des pilules, bete blessee, duel amical, cascade, tablette ancienne, mendiant mysterieux, partie de go, renarde des brumes, pont de lianes, reve prophetique). En quittant la boutique, 35 % de chance (content/rules/rencontres.tres) qu'une rencontre precede l'annonce du goulot, au plus une par royaume, jamais deux fois la meme dans une partie, tiree avec la RNG de la run (meme graine, memes rencontres). Conditions d'apparition (royaume minimum, artefact possede), 2 a 3 choix avec cout (pierres, carte detruite au hasard, artefact perdu, une main de moins au prochain goulot) et issues eventuellement aleatoires (chances affichees, issue montree apres). Les effets reutilisent ceux des presages et des pilules (pierres, niveau de main, copie amelioree, presage, amelioration, aura ou talisman sur des cartes au hasard, carte detruite, rang) ou tirent un artefact selon sa rarete ou une pilule, parmi le contenu debloque. Choix indisponible grise avec sa raison. Onglet Rencontres au compendium, succes « Pelerin des cinq monts » (5 rencontres differentes). Sauvegarde en version 4 : reprise dans la rencontre, avant ou apres le choix (anciennes sauvegardes migrees).
 - Choix du goulot : avant chaque round (au depart, apres la boutique, apres un goulot passe), un rouleau annonce le goulot avec son objectif, sa recompense, sa contrainte de tribulation et les trois goulots du royaume, celui en cours mis en avant. « Affronter » lance le round, « Passer » (impossible sur une tribulation) saute le goulot sans round ni recompense mais donne son presage. Le goulot passe compte pour la progression, pas dans les goulots franchis (compteur « Goulots passes » a part).
 - Presages : 8 presages en donnees (content/omens/), un tire par goulot passable avec la RNG de la run et montre sur l'annonce : artefact gratuit, sceau-tresor gratuit, relance gratuite ou offre de plus a la prochaine boutique, pierres immediates, interets doubles au prochain goulot, main la plus jouee qui monte d'un niveau, copie amelioree d'une carte du paquet. Presages en attente dans l'onglet Run de la Voie de cultivation, onglet Presages au compendium, succes « Lecteur de presages » (passer 3 goulots dans une partie). Sauvegarde en version 3 : reprise sur l'annonce, presages tires et en attente (anciennes sauvegardes migrees).
@@ -47,6 +52,11 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Corrigé
 
+- Vente d'un artefact avec aura : le supplement de l'aura entre dans le prix de vente.
+- Carte au focus ou survolee : dessinee par-dessus sa voisine de droite dans l'eventail.
+- Onglets de la Voie de cultivation (Touches, Aide...) : defilent au clavier et a la manette (haut et bas).
+- Curseurs de volume : style de focus (lueur or) comme les autres controles.
+- Infobulles : couleurs du mode contraste eleve respectees, y compris au focus clavier et manette.
 - Textes en dur passes dans les traductions : signe x des mains, Niveau, Objectif, pourcentage de victoires, vitesse x1,5 (virgule en francais), touches citees par l'aide (lues dans l'InputMap). Cle UI_STONES inutilisee supprimee.
 - Vocabulaire : « partie » partout en francais, titre du rouleau de run aligne sur « Voie de cultivation », formulations anglaises de la pilule de la roue et de la tribulation du vent noir.
 - Plein ecran en web : applique seulement au clic sur la case (jamais au demarrage), et la case se decoche si le navigateur refuse ou si on quitte avec Echap.

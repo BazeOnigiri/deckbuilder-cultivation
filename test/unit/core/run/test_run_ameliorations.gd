@@ -123,6 +123,21 @@ func test_aura_du_vide_ne_prend_pas_d_emplacement_et_part_a_la_vente() -> void:
 	assert_true(run.artifact_editions.is_empty())
 
 
+func test_vente_d_un_artefact_compte_le_supplement_de_son_aura() -> void:
+	var run := _run()
+	var artifact := _content.artifacts[0]
+	var plain := run.sell_price(artifact)
+	var edition := EditionDefinition.new()
+	edition.price_bonus = 10
+	run.add_artifact(artifact, edition)
+	var expected := floori((artifact.price + 10) * run.economy().sell_fraction)
+	assert_gt(expected, plain)
+	assert_eq(run.sell_price(artifact), expected)
+	var before := run.stones
+	assert_true(run.sell_artifact(0))
+	assert_eq(run.stones, before + expected)
+
+
 func test_pilule_pose_amelioration_aura_et_talisman() -> void:
 	for pill: PillDefinition in _content.pills:
 		var imbue := pill.effect as ImbuePillEffect

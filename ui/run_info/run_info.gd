@@ -43,7 +43,7 @@ static func _keys() -> GridContainer:
 
 
 static func _add_tab(tabs: TabContainer, title_key: String, content: Control) -> void:
-	var scroll := ScrollContainer.new()
+	var scroll := FocusScroll.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.custom_minimum_size = Vector2(tabs.get_theme_constant(&"info_width", &"ScrollPanel"),
 		tabs.get_theme_constant(&"tab_height", &"ScrollPanel"))
@@ -191,6 +191,8 @@ static func _run_tiles(run: RunState, hands: Array[HandDefinition], content: Gam
 		for omen: OmenDefinition in run.pending_omens:
 			omens.add_child(ContentSlots.of(omen))
 		column.add_child(omens)
+	if run.hand_penalty > 0:
+		column.add_child(ScrollRows.row("UI_INFO_HAND_PENALTY", "-%d" % run.hand_penalty))
 	return column
 
 
