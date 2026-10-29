@@ -27,6 +27,7 @@ static func capture(run: RunState, shop: ShopState, rng: RandomNumberGenerator) 
 		"version": VERSION,
 		# En texte : un entier 64 bits perdrait sa precision en nombre JSON (float).
 		"rng_state": str(rng.state),
+		"seed": str(run.seed_value),
 		"stones": run.stones,
 		"progress": run.progress.to_dict(),
 		"cards": cards,
@@ -95,6 +96,9 @@ static func restore(data: Dictionary, content: GameContent, rng: RandomNumberGen
 	run.legacy_offer_realm = SaveData.int_of(save, "legacy_offer_realm")
 	run.hand_levels = HandLevels.from_dict(save.get("hand_levels"))
 	run.stats = RunStats.from_dict(save.get("stats"))
+	# Champ ajoute apres la v1 des sauvegardes : absent, la graine reste inconnue (0).
+	var seed_text := str(save.get("seed", ""))
+	run.seed_value = seed_text.to_int() if seed_text.is_valid_int() else 0
 	return run
 
 

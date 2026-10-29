@@ -135,3 +135,24 @@ func test_nouvelle_partie_depuis_la_run_apres_confirmation() -> void:
 	await wait_physics_frames(1)
 	assert_false(is_instance_valid(old_run), "ancienne run fermee")
 	assert_not_null(main._screen.get_node_or_null("%SideColumn"), "nouvelle run")
+
+
+func test_compendium_depuis_le_menu_et_retour() -> void:
+	var main := _main()
+	main.get_child(0).get_node("%CompendiumButton").pressed.emit()
+	var screen := _current_screen(main)
+	assert_not_null(screen.get_node_or_null("%Tabs"))
+	screen.get_node("%BackButton").pressed.emit()
+	assert_not_null(_current_screen(main).get_node_or_null("%StartButton"))
+
+
+func test_boutique_ouverte_enregistre_le_contenu_vu_dans_le_profil() -> void:
+	var main := _main()
+	main.get_child(0).get_node("%StartButton").pressed.emit()
+	var run_screen := _current_screen(main)
+	var content := GameContent.load_default()
+	var rng := RandomNumberGenerator.new()
+	var shop := content.new_shop(run_screen._run, rng)
+	run_screen.shop_created.emit(shop)
+	assert_true(main._profile.is_seen("pack", shop.pack_offers[0].id))
+	assert_true(SaveStorage.new(TEST_PROFILE).load_data().has("stats"), "profil ecrit sur le signal changed")

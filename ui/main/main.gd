@@ -1,10 +1,11 @@
 extends Control
-## Racine du jeu : machine a etats MENU / RUN / STATS / OPTIONS.
+## Racine du jeu : machine a etats MENU / RUN / STATS / COMPENDIUM / OPTIONS.
 ## Possede le contenu, le profil, les reglages et la sauvegarde de run, partages entre les ecrans.
 
 const MENU_SCENE := preload("res://ui/menu/menu_screen.tscn")
 const RUN_SCENE := preload("res://ui/round/round_screen.tscn")
 const STATS_SCENE := preload("res://ui/stats/stats_screen.tscn")
+const COMPENDIUM_SCENE := preload("res://ui/compendium/compendium_screen.tscn")
 const OPTIONS_SCENE := preload("res://ui/options/options_screen.tscn")
 ## Parametre global de shader (declare dans project.godot) : 0 fige les shaders animes.
 const MOTION_SCALE := &"motion_scale"
@@ -42,7 +43,7 @@ func _ready() -> void:
 	_content = GameContent.load_default()
 	_profile_storage = SaveStorage.new(profile_path)
 	_profile = ProfileStats.load_from(_profile_storage)
-	_tracker = ProfileTracker.new(_profile)
+	_tracker = ProfileTracker.new(_profile, _content.profile_rules)
 	_tracker.changed.connect(_save_profile)
 	_run_storage = SaveStorage.new(run_path)
 	_show_menu()
@@ -60,6 +61,7 @@ func _show_menu() -> void:
 	menu.start_requested.connect(_start_new_run)
 	menu.continue_requested.connect(_continue_run)
 	menu.stats_requested.connect(_show_stats)
+	menu.compendium_requested.connect(_show_compendium)
 	menu.options_requested.connect(_show_options)
 	menu.quit_requested.connect(get_tree().quit)
 	_swap(menu)
@@ -152,6 +154,15 @@ func _show_stats() -> void:
 	_swap(stats)
 
 
+func _show_compendium() -> void:
+	var compendium := COMPENDIUM_SCENE.instantiate()
+	compendium.profile = _profile
+	compendium.settings = _settings
+	compendium.content = _content
+	compendium.back_requested.connect(_show_menu)
+	_swap(compendium)
+
+
 func _start_new_run() -> void:
 	_run_storage.delete()
 	_show_run({})
@@ -169,6 +180,7 @@ func _show_run(resume_data: Dictionary) -> void:
 	run_screen.settings = _settings
 	# Branche avant add_child : run_created est emis pendant le _ready de l'ecran.
 	run_screen.run_created.connect(func(run: RunState, resumed: bool) -> void: _tracker.track(run, not resumed))
+	run_screen.shop_created.connect(_tracker.track_shop)
 	run_screen.menu_requested.connect(_show_menu)
 	run_screen.options_requested.connect(_show_options_over_run)
 	run_screen.ambiance_changed.connect(Ambiance.apply)

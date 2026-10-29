@@ -7,6 +7,8 @@ signal menu_requested
 signal options_requested
 ## Emis avant le debut de la run : main y branche le suivi du profil.
 signal run_created(run: RunState, resumed: bool)
+## Emis des qu'une boutique est creee ou rouverte : main y branche le suivi du profil (contenu vu, achats).
+signal shop_created(shop: ShopState)
 ## id du goulot en cours, ou boutique : main fait changer le fond (autoload Ambiance).
 signal ambiance_changed(id: StringName)
 ## Interne : la sequence de score d'un coup est terminee.
@@ -62,6 +64,7 @@ func _ready() -> void:
 	var resumed: bool = _run != null
 	if not resumed:
 		_run = content.new_run(_rng)
+		_run.seed_value = _rng.seed
 		if OS.is_debug_build():
 			_run.artifacts.append_array(debug_artifacts)
 	_run.round_started.connect(_on_round_started)
@@ -118,6 +121,7 @@ func _ready() -> void:
 	elif not RunSnapshot.resume_round(resume_data, _run):
 		# Sauvegarde prise dans la boutique : on la rouvre avec ses offres d'origine.
 		_shop = RunSnapshot.restore_shop(resume_data, _run, content, _rng)
+		shop_created.emit(_shop)
 		_show_stage()
 		_open_shop()
 		_continue_button.show()
@@ -301,6 +305,7 @@ func _on_continue_pressed() -> void:
 func _on_round_won(reward: RoundReward) -> void:
 	# Boutique creee tout de suite (meme tirage, et sauvegardee avec le coup), affichee apres la sequence.
 	_shop = content.new_shop(_run, _rng)
+	shop_created.emit(_shop)
 	await _after_score()
 	_round_end.stones(reward.total(), _side.stones_center(), _side.bump_stones.bind(_round_end.feel.stones_bump))
 	await _round_end.victory()
@@ -318,17 +323,37 @@ func _on_run_finished(won: bool) -> void:
 	_round_end.run_over(won, _run_summary())
 
 
-## Bilan de la run pour le rouleau de fin.
-func _run_summary() -> VBoxContainer:
+## Bilan de la run pour le rouleau de fin : chiffres, meilleur coup, build final en emplacements, graine.
+## Defilant : artefacts et heritages peuvent depasser la hauteur du rouleau.
+func _run_summary() -> ScrollContainer:
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.custom_minimum_size = Vector2(get_theme_constant(&"text_width", &"ScrollPanel"), get_theme_constant(&"tab_height", &"ScrollPanel"))
 	var rows := VBoxContainer.new()
-	rows.custom_minimum_size.x = get_theme_constant(&"text_width", &"ScrollPanel")
+	rows.size_flags_horizontal = SIZE_EXPAND_FILL
+	scroll.add_child(rows)
 	var stats := _run.stats
+	var realm := _run.progress.current_realm()
+	var bottleneck := _run.progress.current_bottleneck()
+	rows.add_child(ScrollRows.row("UI_SUMMARY_REACHED", tr("UI_STAGE") % [tr(realm.name_key), tr(bottleneck.name_key)]))
 	rows.add_child(ScrollRows.row("UI_INFO_CLEARED_COUNT", str(stats.bottlenecks_cleared)))
 	rows.add_child(ScrollRows.row("UI_STATS_HANDS_PLAYED", str(stats.hands.total())))
-	rows.add_child(ScrollRows.row("UI_STATS_BEST_HAND_SCORE", str(stats.best_hand_score)))
+	rows.add_child(ScrollRows.row("UI_STATS_BEST_HAND_SCORE", GameHistory.best_hand_text(stats.best_hand_score, stats.best_hand_id, content.hands)))
 	rows.add_child(ScrollRows.row("UI_STATS_FAVORITE_HAND", RunInfo.hand_name(stats.hands.most_played(), content.hands)))
 	rows.add_child(ScrollRows.row("UI_INFO_STONES", str(stats.stones_earned)))
-	return rows
+	if _run.seed_value != 0:
+		rows.add_child(ScrollRows.row("UI_HISTORY_SEED", str(_run.seed_value)))
+	rows.add_child(ScrollRows.row("UI_SAVED_ARTIFACTS", "" if not _run.artifacts.is_empty() else tr("UI_NONE")))
+	var build := HFlowContainer.new()
+	for artifact: ArtifactDefinition in _run.artifacts:
+		build.add_child(ContentSlots.of(artifact))
+	rows.add_child(build)
+	rows.add_child(ScrollRows.row("UI_SAVED_LEGACIES", "" if not _run.legacies.is_empty() else tr("UI_NONE")))
+	var legacies := HFlowContainer.new()
+	for legacy: LegacyDefinition in _run.legacies:
+		legacies.add_child(ContentSlots.of(legacy))
+	rows.add_child(legacies)
+	return scroll
 
 
 ## La main du round gagne laisse la place a la boutique : l'ecran ne deborde pas en hauteur.

@@ -4,7 +4,7 @@ extends Button
 ## Un manuel est dessine en livre cousu (ManualCover).
 ## Une icone (artefacts) remplace le glyphe. Sans glyphe ni icone, c'est un emplacement libre en pointilles. Apparence dans le Theme (type ItemSlot).
 
-enum Kind {ARTIFACT, PILL, MANUAL, PACK, LEGACY}
+enum Kind {ARTIFACT, PILL, MANUAL, PACK, LEGACY, TRIBULATION}
 
 var kind: Kind = Kind.ARTIFACT
 ## Rarete d'un artefact (ArtifactDefinition.rarity), en badge dans l'infobulle. -1 : pas de badge.
@@ -74,7 +74,8 @@ func _draw() -> void:
 	draw_style_box(get_theme_stylebox(StringName(box)), rect)
 	var font := get_theme_font(&"font")
 	var font_size := get_theme_font_size(&"pill_font_size" if kind == Kind.PILL else &"font_size")
-	var colors := {Kind.PILL: &"pill_color", Kind.PACK: &"pack_color", Kind.LEGACY: &"legacy_color"}
+	var colors := {Kind.PILL: &"pill_color", Kind.PACK: &"pack_color", Kind.LEGACY: &"legacy_color",
+		Kind.TRIBULATION: &"tribulation_color"}
 	var color := get_theme_color(colors.get(kind, &"artifact_color"))
 	if disabled:
 		color = get_theme_color(&"disabled_color")
@@ -110,7 +111,8 @@ func _make_custom_tooltip(_for_text: String) -> Object:
 		Kind.PILL: ["UI_KIND_PILL", get_theme_color(&"pill_color", &"ItemSlot")],
 		Kind.MANUAL: ["UI_KIND_MANUAL", get_theme_color(StringName("tier_%d" % cover_tier), &"ManualCover")],
 		Kind.PACK: ["UI_KIND_PACK", get_theme_color(&"pack_color", &"ItemSlot")],
-		Kind.LEGACY: ["UI_KIND_LEGACY", get_theme_color(&"legacy_color", &"ItemSlot")]}
+		Kind.LEGACY: ["UI_KIND_LEGACY", get_theme_color(&"legacy_color", &"ItemSlot")],
+		Kind.TRIBULATION: ["UI_KIND_TRIBULATION", get_theme_color(&"tribulation_color", &"ItemSlot")]}
 	var badges: Array = [[tr(kinds[kind][0]), kinds[kind][1]]]
 	if kind == Kind.ARTIFACT and rarity >= 0:
 		badges.append([tr("UI_RARITY_%d" % rarity), get_theme_color(StringName("rarity_%d" % rarity), &"ItemSlot")])

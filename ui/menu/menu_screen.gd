@@ -5,6 +5,7 @@ extends Control
 signal start_requested
 signal continue_requested
 signal stats_requested
+signal compendium_requested
 signal options_requested
 ## L'aide vient d'etre proposee : main s'en souvient pour ne plus la reproposer.
 signal help_offered
@@ -28,13 +29,14 @@ func _ready() -> void:
 	%ContinueButton.pressed.connect(continue_requested.emit)
 	%StartButton.pressed.connect(_show_play_scroll)
 	%StatsButton.pressed.connect(stats_requested.emit)
+	%CompendiumButton.pressed.connect(compendium_requested.emit)
 	%OptionsButton.pressed.connect(options_requested.emit)
 	%HelpButton.pressed.connect(_show_help)
 	%CreditsButton.pressed.connect(_show_credits)
 	# Dans un navigateur, quitter n'a pas de sens : on ferme l'onglet.
 	%QuitButton.visible = not OS.has_feature("web")
 	%QuitButton.pressed.connect(quit_requested.emit)
-	for button: InkButton in [%ContinueButton, %StartButton, %StatsButton, %OptionsButton, %HelpButton, %CreditsButton, %QuitButton]:
+	for button: InkButton in [%ContinueButton, %StartButton, %StatsButton, %CompendiumButton, %OptionsButton, %HelpButton, %CreditsButton, %QuitButton]:
 		button.reduce_motion = settings.reduce_motion
 	%Orbit.reduce_motion = settings.reduce_motion
 	%Scroll.custom_minimum_size.x = get_theme_constant(&"menu_width", &"ScrollPanel")

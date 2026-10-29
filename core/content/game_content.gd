@@ -7,11 +7,13 @@ const DECK_PATH := "res://content/decks/paquet_depart.tres"
 const ROUND_RULES_PATH := "res://content/rules/regles_base.tres"
 const ECONOMY_PATH := "res://content/rules/economie_base.tres"
 const SHOP_RULES_PATH := "res://content/rules/boutique_base.tres"
+const PROFILE_RULES_PATH := "res://content/rules/profil_base.tres"
 
 var starter_deck: DeckDefinition
 var round_rules: RoundRules
 var economy: EconomyRules
 var shop_rules: ShopRules
+var profile_rules: ProfileRules
 var hands: Array[HandDefinition]
 var realms: Array[RealmDefinition]
 var artifacts: Array[ArtifactDefinition]
@@ -27,6 +29,7 @@ static func load_default() -> GameContent:
 	content.round_rules = load(ROUND_RULES_PATH)
 	content.economy = load(ECONOMY_PATH)
 	content.shop_rules = load(SHOP_RULES_PATH)
+	content.profile_rules = load(PROFILE_RULES_PATH)
 	content.hands = HandCatalog.load_definitions()
 	content.realms = RealmCatalog.load_definitions()
 	content.artifacts = ArtifactCatalog.load_definitions()

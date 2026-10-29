@@ -20,6 +20,8 @@ var artifact_stacks: Dictionary = {}
 var hand_levels := HandLevels.new()
 var pills: Array[PillDefinition] = []
 var stats := RunStats.new()
+## Graine de la RNG de la run, 0 si inconnue (sauvegarde ancienne). Posee par l'ecran de run, sauvegardee.
+var seed_value: int = 0
 ## Heritages achetes : leurs modificateurs changent les regles de base pour le reste de la run.
 var legacies: Array[LegacyDefinition] = []
 ## Heritage propose en boutique pendant ce royaume (null : achete ou aucun), et le royaume ou il a ete tire.
