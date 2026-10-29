@@ -138,3 +138,18 @@ func test_piles_restaurees_dans_l_ordre() -> void:
 	assert_eq(deck.all_cards().size(), _definition.cards.size())
 	var restored := DeckState.from_piles(deck.draw_pile, deck.hand, deck.discard_pile, RandomNumberGenerator.new())
 	assert_eq(restored.pile_uids(), deck.pile_uids())
+
+func _insert_position(seed_value: int) -> int:
+	var deck := _make_deck(1)
+	deck._rng.seed = seed_value
+	var card := CardInstance.new(999, _definition.cards[0], _definition.ranks)
+	deck.insert_into_draw_pile(card)
+	return deck.draw_pile.find(card)
+
+
+func test_carte_inseree_dans_la_pioche_a_une_place_deterministe() -> void:
+	var positions: Dictionary = {}
+	for seed_value: int in 20:
+		assert_eq(_insert_position(seed_value), _insert_position(seed_value), "meme seed, meme place")
+		positions[_insert_position(seed_value)] = true
+	assert_gt(positions.size(), 1, "pas toujours au meme endroit")

@@ -6,5 +6,9 @@ extends ArtifactCondition
 @export var max_count: int = 5
 
 
+func needs_hand() -> bool:
+	return true
+
+
 func matches(result: HandResult, _card: CardInstance) -> bool:
-	return result.scoring_cards.size() >= min_count and result.scoring_cards.size() <= max_count
+	return result != null and result.scoring_cards.size() >= min_count and result.scoring_cards.size() <= max_count

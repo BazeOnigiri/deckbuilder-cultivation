@@ -23,4 +23,10 @@ enum Per {ONCE, HAND_LEFT, DISCARD_LEFT}
 
 func is_valid() -> bool:
 	var scores := trigger in [Trigger.HAND_PLAYED, Trigger.CARD_SCORED, Trigger.CARD_HELD]
+	# Les pierres ne se donnent qu'a la fin du round ou a la defausse ; ces deux declencheurs n'ont pas de main jouee.
+	var no_hand := trigger in [Trigger.ROUND_WON, Trigger.CARD_DISCARDED]
+	if stones > 0 and not no_hand:
+		return false
+	if condition != null and (trigger == Trigger.ROUND_WON or (no_hand and condition.needs_hand())):
+		return false
 	return (score_effect != null and scores) or stones > 0 or grows

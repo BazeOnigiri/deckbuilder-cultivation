@@ -11,6 +11,11 @@ func _panel(stones: int) -> Array:
 	var run := content.new_run(rng)
 	run.stones = stones
 	var shop := content.new_shop(run, rng)
+	# Le tirage depend de la seed et du contenu : on garantit un artefact et un manuel en vente.
+	if shop.offers.is_empty():
+		shop.offers.append(content.artifacts.filter(func(a: ArtifactDefinition) -> bool: return not run.artifacts.has(a))[0])
+	if shop.manual_offers.is_empty():
+		shop.manual_offers.append(content.manuals[0])
 	var panel := ShopPanel.new()
 	panel.levels = run.hand_levels
 	add_child_autofree(panel)
@@ -40,9 +45,7 @@ func test_clic_achete_l_artefact() -> void:
 	var parts := _panel(100)
 	var panel: ShopPanel = parts[0]
 	var run: RunState = parts[2]
-	if parts[1].offers.is_empty():
-		pass_test("pas d'artefact dans ce tirage")
-		return
+	assert_false(parts[1].offers.is_empty())
 	var before := run.artifacts.size()
 	watch_signals(panel)
 	_slots(panel)[0].pressed.emit()
@@ -54,9 +57,7 @@ func test_manuel_montre_le_gain_de_niveau() -> void:
 	var parts := _panel(100)
 	var panel: ShopPanel = parts[0]
 	var shop: ShopState = parts[1]
-	if shop.manual_offers.is_empty():
-		pass_test("pas de manuel dans ce tirage")
-		return
+	assert_false(shop.manual_offers.is_empty())
 	var hand: HandDefinition = shop.manual_offers[0].hand
 	_slots(panel)[shop.offers.size()].pressed.emit()
 	assert_eq(parts[2].hand_levels.level_of(hand.id), 2)
@@ -112,9 +113,7 @@ func test_largeur_independante_des_textes() -> void:
 func test_manuel_dessine_en_livre() -> void:
 	var parts := _panel(0)
 	var shop: ShopState = parts[1]
-	if shop.manual_offers.is_empty():
-		pass_test("pas de manuel dans ce tirage")
-		return
+	assert_false(shop.manual_offers.is_empty())
 	var manual: ManualDefinition = shop.manual_offers[0]
 	var slot := _slots(parts[0])[shop.offers.size()]
 	assert_eq(slot.kind, ItemSlot.Kind.MANUAL)

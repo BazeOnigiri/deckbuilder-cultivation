@@ -24,6 +24,14 @@ versions selon [Semantic Versioning](https://semver.org/lang/fr/).
 - La meteo des ambiances (escarbilles, volutes, poussiere) couvre toute la largeur reelle de la fenetre, pas seulement 1152x648.
 - Les statistiques deroulent leur rouleau d'un coup avec « Reduire les animations ».
 - Largeurs, marges, separations et durees de la colonne laterale, du menu, de la Voie de cultivation et de l'ecran de round deplacees dans le Theme et score_feel.tres.
+- Heritage qui baisse la relance (Marche celeste) : la relance de la boutique en cours baisse tout de suite, plus seulement a la suivante.
+- Pilule de dedoublement : la copie est glissee a une place tiree de la pioche (RNG de la run), et non plus piochee tout de suite.
+- Profil : les statistiques sont ecrites apres chaque main jouee, plus seulement en fin de goulot.
+- Sauvegarde : une version illisible est refusee sans planter, un rang relu est plafonne au Souverain, une carte a l'uid en double garde un uid neuf au lieu d'en ecraser une autre. Une vraie sauvegarde v1.0.0 est testee.
+- Artefacts : une condition de main ne plante plus sur un declencheur sans main (defausse, goulot franchi), et la validation refuse ces combinaisons ainsi que des pierres sur un declencheur de main.
+- Boutique : plus de relance pendant qu'un sceau est ouvert, et la relance ne propose plus un artefact deja dans les choix du sceau.
+- Heritages : un modificateur sur une propriete decimale (ex : sell_fraction) garde sa partie decimale.
+- Description de la pilule de fusion : le rang est plafonne au Souverain.
 
 ## [1.1.0] - 2026-10-28
 

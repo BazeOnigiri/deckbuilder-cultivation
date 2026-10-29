@@ -106,14 +106,14 @@ func sell_pill(index: int) -> bool:
 	return true
 
 
-## Ajoute une carte au paquet de la run (sceau de disciples), avec un uid neuf, dans la pioche : le melange du
-## prochain round la place.
+## Ajoute une carte au paquet de la run (sceau de disciples), avec un uid neuf, a une place tiree de la pioche
+## (pas la prochaine carte piochee) ; le melange du prochain round la replace.
 func add_card(data: CardData, ranks: RankRules) -> CardInstance:
 	var uid := 0
 	for card: CardInstance in _deck.all_cards():
 		uid = maxi(uid, card.uid + 1)
 	var card := CardInstance.new(uid, data, ranks)
-	_deck.draw_pile.append(card)
+	_deck.insert_into_draw_pile(card)
 	return card
 
 

@@ -113,7 +113,10 @@ func buy_legacy() -> bool:
 	_run.stones -= _run.legacy_offer.price
 	_run.legacies.append(_run.legacy_offer)
 	_run.legacy_offer = null
+	var old_base := _rules.reroll_base_cost
 	_rules = _run.shop_rules(_base_rules)
+	# La relance en cours suit le changement de base, sinon l'heritage ne jouerait qu'a la prochaine boutique.
+	reroll_cost = maxi(0, reroll_cost + _rules.reroll_base_cost - old_base)
 	return true
 
 
@@ -190,8 +193,9 @@ func skip() -> void:
 	opening = null
 
 
+## Pas de relance pendant un sceau ouvert : elle changerait les artefacts possedes sous ses choix.
 func can_reroll() -> bool:
-	return _run.stones >= reroll_cost
+	return opening == null and _run.stones >= reroll_cost
 
 
 func reroll() -> bool:
@@ -208,6 +212,9 @@ func _roll_offers() -> void:
 	var owned: Dictionary = {}
 	for artifact: ArtifactDefinition in _run.artifacts:
 		owned[artifact.id] = true
+	if opening != null and opening.pack.kind == PackDefinition.Kind.ARTIFACT:
+		for choice: Resource in opening.choices:
+			owned[(choice as ArtifactDefinition).id] = true
 	var pool: Array[ArtifactDefinition] = []
 	for artifact: ArtifactDefinition in _catalog:
 		if not owned.has(artifact.id):

@@ -1,0 +1,530 @@
+{
+  "artifacts": [
+    "artefact_arbre_millenaire"
+  ],
+  "cards": [
+    {
+      "card": "carte_feu_10",
+      "element": 1,
+      "rank": 10,
+      "uid": 23
+    },
+    {
+      "card": "carte_terre_4",
+      "element": 2,
+      "rank": 4,
+      "uid": 31
+    },
+    {
+      "card": "carte_metal_3",
+      "element": 3,
+      "rank": 3,
+      "uid": 44
+    },
+    {
+      "card": "carte_metal_8",
+      "element": 3,
+      "rank": 8,
+      "uid": 49
+    },
+    {
+      "card": "carte_eau_8",
+      "element": 4,
+      "rank": 8,
+      "uid": 63
+    },
+    {
+      "card": "carte_metal_13",
+      "element": 3,
+      "rank": 13,
+      "uid": 54
+    },
+    {
+      "card": "carte_feu_2",
+      "element": 1,
+      "rank": 2,
+      "uid": 15
+    },
+    {
+      "card": "carte_terre_11",
+      "element": 2,
+      "rank": 11,
+      "uid": 38
+    },
+    {
+      "card": "carte_bois_11",
+      "element": 0,
+      "rank": 11,
+      "uid": 10
+    },
+    {
+      "card": "carte_terre_7",
+      "element": 2,
+      "rank": 7,
+      "uid": 34
+    },
+    {
+      "card": "carte_metal_4",
+      "element": 3,
+      "rank": 4,
+      "uid": 45
+    },
+    {
+      "card": "carte_feu_7",
+      "element": 1,
+      "rank": 7,
+      "uid": 20
+    },
+    {
+      "card": "carte_feu_5",
+      "element": 1,
+      "rank": 5,
+      "uid": 18
+    },
+    {
+      "card": "carte_feu_11",
+      "element": 1,
+      "rank": 11,
+      "uid": 24
+    },
+    {
+      "card": "carte_eau_11",
+      "element": 4,
+      "rank": 11,
+      "uid": 66
+    },
+    {
+      "card": "carte_feu_12",
+      "element": 1,
+      "rank": 12,
+      "uid": 25
+    },
+    {
+      "card": "carte_bois_3",
+      "element": 0,
+      "rank": 3,
+      "uid": 2
+    },
+    {
+      "card": "carte_eau_10",
+      "element": 4,
+      "rank": 10,
+      "uid": 65
+    },
+    {
+      "card": "carte_bois_9",
+      "element": 0,
+      "rank": 9,
+      "uid": 8
+    },
+    {
+      "card": "carte_eau_2",
+      "element": 4,
+      "rank": 2,
+      "uid": 57
+    },
+    {
+      "card": "carte_bois_14",
+      "element": 0,
+      "rank": 14,
+      "uid": 13
+    },
+    {
+      "card": "carte_eau_14",
+      "element": 4,
+      "rank": 14,
+      "uid": 69
+    },
+    {
+      "card": "carte_metal_12",
+      "element": 3,
+      "rank": 12,
+      "uid": 53
+    },
+    {
+      "card": "carte_eau_7",
+      "element": 4,
+      "rank": 7,
+      "uid": 62
+    },
+    {
+      "card": "carte_metal_2",
+      "element": 3,
+      "rank": 2,
+      "uid": 43
+    },
+    {
+      "card": "carte_metal_1",
+      "element": 3,
+      "rank": 1,
+      "uid": 42
+    },
+    {
+      "card": "carte_eau_5",
+      "element": 4,
+      "rank": 5,
+      "uid": 60
+    },
+    {
+      "card": "carte_feu_6",
+      "element": 1,
+      "rank": 6,
+      "uid": 19
+    },
+    {
+      "card": "carte_metal_14",
+      "element": 3,
+      "rank": 14,
+      "uid": 55
+    },
+    {
+      "card": "carte_eau_9",
+      "element": 4,
+      "rank": 9,
+      "uid": 64
+    },
+    {
+      "card": "carte_bois_13",
+      "element": 0,
+      "rank": 13,
+      "uid": 12
+    },
+    {
+      "card": "carte_metal_6",
+      "element": 3,
+      "rank": 6,
+      "uid": 47
+    },
+    {
+      "card": "carte_bois_12",
+      "element": 0,
+      "rank": 12,
+      "uid": 11
+    },
+    {
+      "card": "carte_terre_2",
+      "element": 2,
+      "rank": 2,
+      "uid": 29
+    },
+    {
+      "card": "carte_metal_11",
+      "element": 3,
+      "rank": 11,
+      "uid": 52
+    },
+    {
+      "card": "carte_eau_6",
+      "element": 4,
+      "rank": 6,
+      "uid": 61
+    },
+    {
+      "card": "carte_metal_5",
+      "element": 3,
+      "rank": 5,
+      "uid": 46
+    },
+    {
+      "card": "carte_terre_1",
+      "element": 2,
+      "rank": 1,
+      "uid": 28
+    },
+    {
+      "card": "carte_bois_1",
+      "element": 0,
+      "rank": 1,
+      "uid": 0
+    },
+    {
+      "card": "carte_terre_14",
+      "element": 2,
+      "rank": 14,
+      "uid": 41
+    },
+    {
+      "card": "carte_bois_4",
+      "element": 0,
+      "rank": 4,
+      "uid": 3
+    },
+    {
+      "card": "carte_eau_12",
+      "element": 4,
+      "rank": 12,
+      "uid": 67
+    },
+    {
+      "card": "carte_feu_13",
+      "element": 1,
+      "rank": 13,
+      "uid": 26
+    },
+    {
+      "card": "carte_feu_4",
+      "element": 1,
+      "rank": 4,
+      "uid": 17
+    },
+    {
+      "card": "carte_terre_8",
+      "element": 2,
+      "rank": 8,
+      "uid": 35
+    },
+    {
+      "card": "carte_eau_1",
+      "element": 4,
+      "rank": 1,
+      "uid": 56
+    },
+    {
+      "card": "carte_terre_3",
+      "element": 2,
+      "rank": 3,
+      "uid": 30
+    },
+    {
+      "card": "carte_eau_4",
+      "element": 4,
+      "rank": 4,
+      "uid": 59
+    },
+    {
+      "card": "carte_terre_9",
+      "element": 2,
+      "rank": 9,
+      "uid": 36
+    },
+    {
+      "card": "carte_metal_7",
+      "element": 3,
+      "rank": 7,
+      "uid": 48
+    },
+    {
+      "card": "carte_feu_3",
+      "element": 1,
+      "rank": 3,
+      "uid": 16
+    },
+    {
+      "card": "carte_feu_8",
+      "element": 1,
+      "rank": 8,
+      "uid": 21
+    },
+    {
+      "card": "carte_bois_5",
+      "element": 0,
+      "rank": 5,
+      "uid": 4
+    },
+    {
+      "card": "carte_bois_6",
+      "element": 0,
+      "rank": 6,
+      "uid": 5
+    },
+    {
+      "card": "carte_terre_5",
+      "element": 2,
+      "rank": 5,
+      "uid": 32
+    },
+    {
+      "card": "carte_terre_13",
+      "element": 2,
+      "rank": 13,
+      "uid": 40
+    },
+    {
+      "card": "carte_bois_7",
+      "element": 0,
+      "rank": 7,
+      "uid": 6
+    },
+    {
+      "card": "carte_terre_6",
+      "element": 2,
+      "rank": 6,
+      "uid": 33
+    },
+    {
+      "card": "carte_bois_8",
+      "element": 0,
+      "rank": 8,
+      "uid": 7
+    },
+    {
+      "card": "carte_feu_9",
+      "element": 1,
+      "rank": 9,
+      "uid": 22
+    },
+    {
+      "card": "carte_feu_1",
+      "element": 1,
+      "rank": 1,
+      "uid": 14
+    },
+    {
+      "card": "carte_terre_10",
+      "element": 2,
+      "rank": 10,
+      "uid": 37
+    },
+    {
+      "card": "carte_metal_10",
+      "element": 3,
+      "rank": 10,
+      "uid": 51
+    },
+    {
+      "card": "carte_eau_13",
+      "element": 4,
+      "rank": 13,
+      "uid": 68
+    },
+    {
+      "card": "carte_feu_14",
+      "element": 1,
+      "rank": 14,
+      "uid": 27
+    },
+    {
+      "card": "carte_metal_9",
+      "element": 3,
+      "rank": 9,
+      "uid": 50
+    },
+    {
+      "card": "carte_bois_2",
+      "element": 0,
+      "rank": 2,
+      "uid": 1
+    },
+    {
+      "card": "carte_terre_12",
+      "element": 2,
+      "rank": 12,
+      "uid": 39
+    },
+    {
+      "card": "carte_eau_3",
+      "element": 4,
+      "rank": 3,
+      "uid": 58
+    },
+    {
+      "card": "carte_bois_10",
+      "element": 0,
+      "rank": 10,
+      "uid": 9
+    }
+  ],
+  "hand_levels": {},
+  "piles": {
+    "discard": [
+      58,
+      9
+    ],
+    "draw": [
+      23,
+      31,
+      44,
+      49,
+      63,
+      54,
+      15,
+      38,
+      10,
+      34,
+      45,
+      20,
+      18,
+      24,
+      66,
+      25,
+      2,
+      65,
+      8,
+      57,
+      13,
+      69,
+      53,
+      62,
+      43,
+      42,
+      60,
+      19,
+      55,
+      64,
+      12,
+      47,
+      11,
+      29,
+      52,
+      61,
+      46,
+      28,
+      0,
+      41,
+      3,
+      67,
+      26,
+      17,
+      35,
+      56,
+      30,
+      59,
+      36,
+      48,
+      16,
+      21,
+      4,
+      5,
+      32,
+      40,
+      6,
+      33,
+      7,
+      22
+    ],
+    "hand": [
+      14,
+      37,
+      51,
+      68,
+      27,
+      50,
+      1,
+      39
+    ]
+  },
+  "pills": [
+    "pilule_dedoublement"
+  ],
+  "progress": {
+    "bottleneck": 0,
+    "realm": 0
+  },
+  "rng_state": "-6938568549882544882",
+  "round": {
+    "discards_left": 2,
+    "hands_left": 3,
+    "score": 15
+  },
+  "stats": {
+    "best_hand_score": 15,
+    "bottlenecks_cleared": 0,
+    "discards_used": 1,
+    "hand_counts": {
+      "main_souffle": 1
+    },
+    "stones_earned": 0
+  },
+  "stones": 9,
+  "version": 1
+}

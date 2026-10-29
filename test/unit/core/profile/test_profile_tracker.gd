@@ -87,3 +87,14 @@ func test_run_reprise_pas_comptee_comme_nouvelle() -> void:
 	_tracker = ProfileTracker.new(stats)
 	_tracker.track(_run(1, 100), false)
 	assert_eq(stats.runs_started, 0)
+
+func test_une_main_jouee_signale_le_changement() -> void:
+	var stats := ProfileStats.new()
+	var run := _run(1, 1000)
+	_tracker = ProfileTracker.new(stats)
+	_tracker.track(run)
+	run.start()
+	var emitted := [0]
+	_tracker.changed.connect(func() -> void: emitted[0] += 1)
+	_play_highest(run)
+	assert_gt(emitted[0], 0, "le profil doit etre ecrit apres une main")

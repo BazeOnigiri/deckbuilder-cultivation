@@ -5,5 +5,9 @@ extends ArtifactCondition
 @export var hand_ids: Array[String] = []
 
 
+func needs_hand() -> bool:
+	return true
+
+
 func matches(result: HandResult, _card: CardInstance) -> bool:
-	return hand_ids.has(result.definition.id)
+	return result != null and hand_ids.has(result.definition.id)

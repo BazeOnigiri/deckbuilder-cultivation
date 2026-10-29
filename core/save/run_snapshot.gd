@@ -123,15 +123,26 @@ static func _restore_cards(data: Variant, content: GameContent) -> Array[CardIns
 	var cards: Array[CardInstance] = []
 	if not data is Array:
 		return cards
+	# uid en double (sauvegarde abimee) : la seconde carte en recoit un neuf, elle ne remplace pas la premiere.
+	var seen: Dictionary = {}
+	var next_uid := 0
+	for entry: Variant in data:
+		if entry is Dictionary:
+			next_uid = maxi(next_uid, SaveData.int_of(entry, "uid") + 1)
 	for entry: Variant in data:
 		if not entry is Dictionary:
 			continue
 		var card_data := content.card_by_id(StringName(str(entry.get("card", ""))))
 		if card_data == null:
 			continue
-		var card := CardInstance.new(SaveData.int_of(entry, "uid"), card_data, content.starter_deck.ranks)
+		var uid := SaveData.int_of(entry, "uid")
+		if seen.has(uid):
+			uid = next_uid
+			next_uid += 1
+		seen[uid] = true
+		var card := CardInstance.new(uid, card_data, content.starter_deck.ranks)
 		card.element = clampi(SaveData.int_of(entry, "element"), 0, Element.Type.size() - 1) as Element.Type
-		card.rank = maxi(1, SaveData.int_of(entry, "rank", card_data.rank))
+		card.rank = clampi(SaveData.int_of(entry, "rank", card_data.rank), 1, content.starter_deck.ranks.max_rank)
 		cards.append(card)
 	return cards
 

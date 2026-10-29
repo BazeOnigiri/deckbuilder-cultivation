@@ -9,4 +9,6 @@ extends Resource
 
 func apply_to(rules: Resource) -> void:
 	if property in rules:
-		rules.set(property, maxi(0, rules.get(property) + amount))
+		var current: Variant = rules.get(property)
+		# Une propriete decimale (ex : sell_fraction) garde sa partie decimale.
+		rules.set(property, maxf(0.0, current + amount) if current is float else maxi(0, current + amount))
