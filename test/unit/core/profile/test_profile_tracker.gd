@@ -279,7 +279,7 @@ func test_gagner_sans_acheter_refuse_apres_un_achat() -> void:
 	_tracker.track(run)
 	var shop := content.new_shop(content.new_run(rng), rng)
 	_tracker.track_shop(shop)
-	shop.artifact_bought.emit(shop.offers[0])
+	shop.artifact_bought.emit(content.artifacts[0])
 	run.start()
 	_play_highest(run)
 	assert_eq(run.status, RunState.Status.WON)
