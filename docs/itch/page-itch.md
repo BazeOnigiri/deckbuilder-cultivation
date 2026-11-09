@@ -89,18 +89,18 @@ Répondre **Yes** et cocher ce qui correspond à CREDITS.md (code, graphismes SV
 
 ## Captures d'écran
 
-Fichiers à mettre dans `docs/itch/captures/`, en 1152 × 648 (taille native du jeu), PNG. Ordre conseillé sur la page :
+Dans `docs/itch/captures/`, 1152 × 648, jeu en anglais, prises sur l'export web. Ordre conseillé sur la page :
 
-1. **Round en cours** : main de 8 cartes en éventail, quelques artefacts en haut, une Paire ou mieux sélectionnée.
-2. **Scoring d'une grosse main** : capture pendant le décompte Qi × Compréhension (une Pureté ou une Ascension,
-   via le menu debug F12 pour la provoquer).
-3. **Boutique** : les offres, un sceau-trésor et des pilules.
-4. **Annonce de tribulation** : le rouleau du goulot avec sa contrainte.
-5. **Rencontre** : une rencontre de cultivation avec ses choix.
-6. **Compendium ou bilan de victoire**.
+1. `02-round.png` : round avec deux artefacts, une paire sélectionnée et l'infobulle d'un artefact.
+2. `03-score.png` : décompte d'un brelan (bannière de la main).
+3. `05-boutique.png` : la boutique.
+4. `04-goulot.png` : annonce du goulot, présages et tribulation à venir.
+5. `06-mains.png` : la Voie de cultivation, onglet des mains.
+6. `01-menu.png` : le menu principal.
 
-Comment les prendre : lancer le jeu depuis l'éditeur (F5) en fenêtre 1152 × 648, puis `Win + Maj + S` en mode
-fenêtre. Ou dans le navigateur, sur l'export web, avec l'outil de capture.
+Manquent encore une rencontre et un bilan de victoire, à prendre en jouant.
+
+`docs/itch/` contient un `.gdignore` : Godot n'importe pas ces images et elles ne partent pas dans l'export.
 
 ## Image de couverture
 
